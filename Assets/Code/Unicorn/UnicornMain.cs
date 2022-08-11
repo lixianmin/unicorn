@@ -20,13 +20,13 @@ using UnityEngine;
 
 namespace Unicorn
 {
-    public sealed class UniqueMain
+    public sealed class UnicornMain
     {
-        static UniqueMain ()
+        static UnicornMain ()
         {
         }
 
-        private UniqueMain ()
+        private UnicornMain ()
         {
         }
 
@@ -224,7 +224,7 @@ namespace Unicorn
 		public event Action			OnInited;
         public event Action   		OnDisposing;
 
-        public static readonly UniqueMain Instance = new UniqueMain();
+        public static readonly UnicornMain Instance = new UnicornMain();
 
         private readonly ArrayList _logs = new ArrayList();
         private bool _isInited;
