@@ -1,6 +1,6 @@
 ﻿
 /*********************************************************************
-created:	2022-08-11
+created:	2014-04-25
 author:		lixianmin
 
 Copyright (C) - All Rights Reserved
@@ -14,24 +14,24 @@ using System.Globalization;
 
 namespace Unicorn
 {
-	public static class StringEx
+    public static class ExtendedString
 	{
-		public static bool IsNullOrEmptyEx(this string text)
+		public static bool IsNullOrEmptyEx (this string text)
 		{
 			return string.IsNullOrEmpty(text);
 		}
 
-		public static bool StartsWithEx(this string text, string candidate, CompareOptions options)
+		public static bool StartsWithEx (this string text, string candidate, CompareOptions options)
 		{
 			if (null != text && null != candidate)
 			{
 				return _currentCompareInfo.IsPrefix(text, candidate, options);
 			}
-
+			
 			return false;
 		}
 
-		public static bool StartsWithEx(this string text, string[] candidates, CompareOptions options)
+		public static bool StartsWithEx (this string text, string[] candidates, CompareOptions options)
 		{
 			if (null != text && null != candidates && candidates.Length > 0)
 			{
@@ -43,21 +43,21 @@ namespace Unicorn
 					}
 				}
 			}
-
+			
 			return false;
 		}
 
-		public static bool EndsWithEx(this string text, string candidate, CompareOptions options)
+		public static bool EndsWithEx (this string text, string candidate, CompareOptions options)
 		{
 			if (null != text && null != candidate)
 			{
 				return _currentCompareInfo.IsSuffix(text, candidate, options);
 			}
-
+			
 			return false;
 		}
 
-		public static bool EndsWithEx(this string text, string[] candidates, CompareOptions options)
+		public static bool EndsWithEx (this string text, string[] candidates, CompareOptions options)
 		{
 			if (null != text && null != candidates && candidates.Length > 0)
 			{
@@ -69,20 +69,20 @@ namespace Unicorn
 					}
 				}
 			}
-
+		
 			return false;
 		}
 
-		public static string JoinEx(this string separator, IEnumerable collection)
-		{
+        public static string JoinEx (this string separator, IEnumerable collection)
+        {
 			if (null == separator || null == collection)
 			{
 				return string.Empty;
 			}
-
-			StringBuilder sbText = null;
+			
+			StringBuilder sbText= null;
 			var iter = collection.GetEnumerator();
-
+			
 			while (iter.MoveNext())
 			{
 				var item = iter.Current;
@@ -93,7 +93,7 @@ namespace Unicorn
 					break;
 				}
 			}
-
+			
 			while (iter.MoveNext())
 			{
 				var item = iter.Current;
@@ -103,20 +103,20 @@ namespace Unicorn
 					sbText.Append(item);
 				}
 			}
-
+			
 			return null != sbText ? sbText.ToString() : string.Empty;
-		}
+        }
 
-		public static string JoinEx<T>(this string separator
-										, IEnumerable<T> collection
-										, Func<T, string> processor)
+		public static string JoinEx<T> (this string separator
+		                                , IEnumerable<T> collection
+		                                , Func<T, string> processor)
 		{
 			if (null == separator || null == collection)
 			{
 				return string.Empty;
 			}
 
-			StringBuilder sbText = null;
+			StringBuilder sbText= null;
 			var iter = collection.GetEnumerator();
 
 			while (iter.MoveNext())
@@ -130,7 +130,7 @@ namespace Unicorn
 					break;
 				}
 			}
-
+			
 			while (iter.MoveNext())
 			{
 				var item = iter.Current;
@@ -141,51 +141,51 @@ namespace Unicorn
 					sbText.Append(result);
 				}
 			}
-
+			
 			return null != sbText ? sbText.ToString() : string.Empty;
 		}
 
-		public static int ReversedCompareToEx(this string lhs, string rhs, int deltaIndex = 0)
-		{
-			if (object.ReferenceEquals(lhs, rhs))
-			{
-				return 0;
-			}
-			else if (null == lhs)
-			{
-				return -1;
-			}
-			else if (null == rhs)
-			{
-				return 1;
-			}
+        public static int ReversedCompareToEx (this string lhs, string rhs, int deltaIndex= 0)
+        {
+            if (object.ReferenceEquals(lhs, rhs))
+            {
+                return 0;
+            }
+            else if (null == lhs)
+            {
+                return -1;
+            }
+            else if (null == rhs)
+            {
+                return 1;
+            }
 
-			var count = lhs.Length;
-			if (count < rhs.Length)
-			{
-				return -1;
-			}
-			else if (count > rhs.Length)
-			{
-				return 1;
-			}
+            var count = lhs.Length;
+            if (count < rhs.Length)
+            {
+                return -1;
+            }
+            else if (count > rhs.Length)
+            {
+                return 1;
+            }
 
-			for (int i = count - deltaIndex - 1; i >= 0; --i)
-			{
-				var a = lhs[i];
-				var b = rhs[i];
-				if (a < b)
-				{
-					return -1;
-				}
-				else if (a > b)
-				{
-					return 1;
-				}
-			}
-
-			return 0;
-		}
+            for (int i= count - deltaIndex - 1; i>= 0; --i)
+            {
+                var a = lhs[i];
+                var b = rhs[i];
+                if (a < b)
+                {
+                    return -1;
+                }
+                else if (a > b)
+                {
+                    return 1;
+                }
+            }
+            
+            return 0;
+        }
 
 		/// <summary>
 		/// 计算字符串编辑距离 https://en.wikipedia.org/wiki/Levenshtein_distance
@@ -193,7 +193,7 @@ namespace Unicorn
 		/// <returns>The edit distance ex.</returns>
 		/// <param name="s">S.</param>
 		/// <param name="t">T.</param>
-		public static int GetEditDistanceEx(this string s, string t)
+		public static int GetEditDistanceEx (this string s, string t)
 		{
 			// degenerate cases
 			if (s == t)
@@ -252,7 +252,7 @@ namespace Unicorn
 			return v1[tLength];
 		}
 
-		private static int _Minimum(int a, int b, int c)
+		private static int _Minimum (int a, int b, int c)
 		{
 			if (a < b)
 			{

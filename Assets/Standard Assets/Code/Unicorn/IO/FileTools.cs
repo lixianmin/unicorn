@@ -9,7 +9,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.IO;
 
-namespace Unicorn
+namespace Unicorn.IO
 {
 	public static class FileTools
 	{

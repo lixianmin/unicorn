@@ -1,4 +1,4 @@
-
+﻿
 /********************************************************************
 created:    2022-08-11
 author:     lixianmin
@@ -142,7 +142,7 @@ namespace Unicorn
 
 			if (null == _lpfnWatchObject)
 			{
-				var type = TypeTools.SearchType("Unique.Diagnostics.HeapDumpManager");
+				var type = TypeTools.SearchType("Unicorn.Diagnostics.HeapDumpManager");
 				var method = type.GetMethod("WatchObject", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
 				TypeTools.CreateDelegate(method, out _lpfnWatchObject);
 			}

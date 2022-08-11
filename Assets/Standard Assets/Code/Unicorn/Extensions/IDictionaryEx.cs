@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Unicorn
 {
-    public static class IDictionaryEx
+    public static class ExtendedIDictionary
     {
         public static Value GetEx<Key, Value>(this IDictionary<Key, Value> dict, Key key)
         {

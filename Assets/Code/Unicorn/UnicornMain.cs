@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
+using Unicorn.IO;
 // using Unicorn.Web;
 
 namespace Unicorn
@@ -52,7 +53,7 @@ namespace Unicorn
 
 			var persistentDataPath = Application.persistentDataPath;
             var now = DateTime.Now.ToString("yyyy-M-d HH:mm ddd");
-			Console.WriteLine("[UniqueMain.Init()]\n{0}\nplatform={1}\nos={2}\ndeviceModel={3}\nprocessorCount={4}\nsystemMemorySize={5}\ngraphicsDevice={6}\ngraphicsMemorySize={7}\n" +
+			Console.WriteLine("[UnicornMain.Init()]\n{0}\nplatform={1}\nos={2}\ndeviceModel={3}\nprocessorCount={4}\nsystemMemorySize={5}\ngraphicsDevice={6}\ngraphicsMemorySize={7}\n" +
 			                  "logPath={8}\ndataPath={9}\nstreamingAssetsPath={10}\npersistentDataPath={11}\nresolution={12}x{13}\nScreen.dpi={14}"
                               , now
 			                  , Application.platform.ToString()
@@ -112,7 +113,7 @@ namespace Unicorn
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("[UniqueMain._InitLogInfo()] ex={0}", ex);
+                Console.Error.WriteLine("[UnicornMain._InitLogInfo()] ex={0}", ex);
             }
         }
 
@@ -156,7 +157,7 @@ namespace Unicorn
 				//WebManager.Dispose();
 				_isInited = false;
 				
-				Console.WriteLine("[UniqueMain.Dispose()]");
+				Console.WriteLine("[UnicornMain.Dispose()]");
 			}
         }
 

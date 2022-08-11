@@ -1,4 +1,4 @@
-
+﻿
 /********************************************************************
 created:    2022-08-11
 author:     lixianmin
@@ -57,7 +57,7 @@ namespace Unicorn
             }
 
             private readonly char[] _splitter = new char[] { '=' };
-            private readonly string[] _nameHeaders = new string[] { "Unique", "Assembly-CSharp", "UnityEngine" };
+            private readonly string[] _nameHeaders = new string[] { "Unicorn", "Assembly-CSharp", "UnityEngine" };
         }
 
         static TypeTools()
@@ -134,9 +134,9 @@ namespace Unicorn
                 var results = new List<System.Reflection.Assembly>();
                 var validPrefixes = new string[]
                     {
-                        "Unique,",
-                        "Unique.Core,",
-                        "Unique.Editor,",
+                        "Unicorn,",
+                        "Unicorn.Core,",
+                        "Unicorn.Editor,",
 
                         "Assembly-CSharp-firstpass,",
                         "Assembly-CSharp,",

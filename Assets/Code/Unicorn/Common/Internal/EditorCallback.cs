@@ -23,7 +23,7 @@ namespace Unicorn
 
 			if (null == _lpfnAttachToUpdate)
 			{
-				var type = TypeTools.SearchType("Unique.EditorTools");
+				var type = TypeTools.SearchType("Unicorn.EditorTools");
 				if (null != type)
 				{
 					TypeTools.CreateDelegate(type, "_AttachToUpdate", out _lpfnAttachToUpdate);
