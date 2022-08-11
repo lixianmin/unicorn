@@ -1,15 +1,17 @@
 ﻿
 /********************************************************************
-created:    2013-12-14
+created:    2018-03-19
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
+
 namespace Unicorn
 {
-    public interface ITickable
+    public interface IRemoveListener
     {
-        void Tick();
+        void RemoveListener (int message, Delegate listener);    
     }
 }

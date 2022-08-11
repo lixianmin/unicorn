@@ -1,15 +1,14 @@
 ﻿
 /********************************************************************
-created:    2013-12-14
+created:    2019-08-12
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
-
 namespace Unicorn
 {
-    public interface ITickable
+    public interface IInitPart
     {
-        void Tick();
+        void InitPart(Entity entity);
     }
 }

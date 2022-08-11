@@ -1,6 +1,6 @@
 ﻿
-/********************************************************************
-created:    2013-12-14
+/*********************************************************************
+created:    2016-01-25
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
@@ -8,8 +8,8 @@ Copyright (C) - All Rights Reserved
 
 namespace Unicorn
 {
-    public interface ITickable
+    public interface IIsDisposed
     {
-        void Tick();
+        bool IsDisposed();
     }
 }

@@ -1,6 +1,6 @@
 ﻿
 /********************************************************************
-created:    2013-12-14
+created:    2019-08-12
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
@@ -8,8 +8,8 @@ Copyright (C) - All Rights Reserved
 
 namespace Unicorn
 {
-    public interface ITickable
-    {
-        void Tick();
-    }
+	public interface IHaveEntity
+	{
+		Entity GetEntity();
+	}
 }
