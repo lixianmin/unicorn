@@ -16,11 +16,9 @@ namespace Unicorn
     {
         public static void Serialize<T> (string path, T item)
         {
-            using (var writer = new StreamWriter(path))
-            {
-                writer.NewLine = "\n";
-                Serialize(writer, item);
-            }
+            using var writer = new StreamWriter(path);
+            writer.NewLine = "\n";
+            Serialize(writer, item);
         }
 
         public static void Serialize<T> (TextWriter writer, T item)
@@ -39,7 +37,7 @@ namespace Unicorn
         public static T Deserialize<T> (string path)
         {
             StreamReader reader = null;
-            T result = default(T);
+            T result = default;
 
             try 
             {
@@ -73,7 +71,7 @@ namespace Unicorn
 				return (T) _lpfnDeserialize(typeof(T), reader);
 			}
 
-			return default(T);
+			return default;
         }
 
         public static T OpenOrCreate<T> (string path) where T : new()

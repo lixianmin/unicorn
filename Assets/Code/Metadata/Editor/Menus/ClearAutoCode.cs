@@ -53,10 +53,7 @@ namespace Metadata.Menus
                     var filename = files[j];
                     if (!filename.EndsWithEx(".meta", CompareOptions.Ordinal))
                     {
-                        using (var fout= File.Create(filename))
-                        {
-                            
-                        }
+                        using var fout = File.Create(filename);
                     }
                 }
             }
