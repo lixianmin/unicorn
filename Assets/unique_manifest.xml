@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UnicornManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <RelativePaths>
+    <string>../echo_res/resource</string>
+    <string>../echo_prg/echo_client/Assets/LuaScripts</string>
+    <string />
+  </RelativePaths>
+  <MakeAutoCode>true</MakeAutoCode>
+  <ClearAutoCode>true</ClearAutoCode>
+</UnicornManifest>

@@ -75,7 +75,7 @@ namespace Unicorn
 			if (!string.IsNullOrEmpty(menuItemPath))
 			{
 				bool suc = UnityEditor.EditorApplication.ExecuteMenuItem(menuItemPath);
-				string hint = string.Format("Unique.EditorTools.ExecuteMenuItem({0})", menuItemPath);
+				string hint = string.Format("Unicorn.EditorTools.ExecuteMenuItem({0})", menuItemPath);
 				if (suc)
 				{
 					Console.WriteLine(hint + " Success!");
@@ -87,7 +87,7 @@ namespace Unicorn
 			}
 			else
 			{
-				Console.Error.WriteLine("Unique.EditorApplication.ExecuteMenuItem(arg), arg is null or empty!");
+				Console.Error.WriteLine("Unicorn.EditorApplication.ExecuteMenuItem(arg), arg is null or empty!");
 			}
 		}
 
