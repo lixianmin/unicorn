@@ -22,6 +22,11 @@ namespace Metadata
 		{
             var lookupTable = _GetLookupTableByName();
             var creator = lookupTable[typeName] as MetaCreator;
+            if (creator == null)
+            {
+                Console.Error.WriteLine("creator=null, typeName={0}, lookupTable.Count={1}", typeName, lookupTable.Count);
+            }
+
             return creator;
 		}
 
