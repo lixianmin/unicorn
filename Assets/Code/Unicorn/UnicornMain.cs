@@ -225,9 +225,9 @@ namespace Unicorn
 		public event Action			OnInited;
         public event Action   		OnDisposing;
 
-        public static readonly UnicornMain Instance = new UnicornMain();
+        public static readonly UnicornMain Instance = new ();
 
-        private readonly ArrayList _logs = new ArrayList();
+        private readonly ArrayList _logs = new ();
         private bool _isInited;
         private StreamWriter _logWriter;
         private string _lastLogString;

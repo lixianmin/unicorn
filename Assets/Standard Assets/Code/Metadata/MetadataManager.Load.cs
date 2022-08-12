@@ -5,11 +5,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
-using System;
 using System.IO;
-using System.Collections;
-using Unicorn;
-using Unicorn.IO;
 using Unicorn.Collections;
 
 namespace Metadata

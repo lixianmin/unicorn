@@ -30,10 +30,6 @@ Copyright (C) - All Rights Reserved
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using Unicorn;
-using Unicorn.IO;
 using Metadata.Build;
 
 namespace Metadata
@@ -56,9 +52,8 @@ namespace Metadata
 			var templateManager = GetTemplateManager();
 			var table = templateManager.FetchTemplateTable(templateType);
 
-			Template template;
-			var templateIndex = table.TryIndexValue(idTemplate, out template);
-			if (templateIndex >= 0)
+            var templateIndex = table.TryIndexValue(idTemplate, out Template template);
+            if (templateIndex >= 0)
 			{
 				return template;
 			}
@@ -259,12 +254,12 @@ namespace Metadata
 		public static MetadataManager Instance { get; protected set; }
 		public bool IsXmlMetadata	{ get { return _isXmlMetadata; } }
 
-		private readonly LoadAid _loadAid = new LoadAid();
+		private readonly LoadAid _loadAid = new ();
 
 		private bool  _isXmlMetadata;
 		private int _metadataVersion;
 		
-		protected readonly TemplateManager _templateManager = new TemplateManager();
-        protected readonly ConfigManager   _configManager = new ConfigManager();
+		protected readonly TemplateManager _templateManager = new ();
+        protected readonly ConfigManager   _configManager = new ();
     }
 }
