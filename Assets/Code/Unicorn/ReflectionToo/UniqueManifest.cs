@@ -18,11 +18,11 @@ namespace Unicorn
     {
 		public enum PathType
 		{
-			EditorResourceRoot,	// for exporting and loading runtime resources.
-			LuaScriptRoot,		// lua code may reside in git, company with c# code.
-			MetadataRoot,		// metadata root directory.
-			UserdataBase =  5,	// used by other editors.
-		}
+			EditorResourceRoot, // for exporting and loading runtime resources.
+            LuaScriptRoot,      // lua code may reside in git, company with c# code.
+            MetadataRoot,       // metadata root directory, containing *.xml files.
+            UserdataBase = 5,   // used by other editors.
+        }
 
 		private UnicornManifest ()
 		{

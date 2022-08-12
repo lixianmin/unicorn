@@ -6,7 +6,6 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using UnityEngine;
 using UnityEditor;
 using Unicorn;
 using System.IO;
