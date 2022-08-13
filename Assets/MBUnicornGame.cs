@@ -26,8 +26,12 @@ public class MBUnicornGame : MonoBehaviour
 
 	private void Start()
 	{
+		// 避免Game对象在场景切换的时候被干掉
+		GameObject.DontDestroyOnLoad(gameObject);
+
 		UnicornMain.Instance.Init();
 		CoroutineManager.StartCoroutine(_CoLoadMetadata());
+
 		//DependencyManager.Instance.Init();
 		// AssetManager.Instance.RequestAsset("globals.ab", "", (assetReference)=>{
 		// 	Debug.LogError("assetReference : " + assetReference);
