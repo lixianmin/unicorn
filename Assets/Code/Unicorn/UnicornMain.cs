@@ -48,7 +48,7 @@ namespace Unicorn
 //			ThreadPool.SetMaxThreads(maxWorkerThreads, maxCompletionPortThreads);
 
 			// force call static ctor of Console class
-			Console.Tick();
+			Console.Update();
 			_InitLogInfo();
 
 			var persistentDataPath = Application.persistentDataPath;
@@ -117,23 +117,22 @@ namespace Unicorn
             }
         }
 
-        public void Tick (float deltaTime)
+        public void Update (float deltaTime)
         {
             if (_isInited)
             {
 				os.frameCount = Time.frameCount;
 				os.time = Time.time;
 
-				TickTools.Tick();
-				Console.Tick();
-                _TickLogs();
+				UpdateTools.Update();
+				Console.Update();
+                _UpdateLogs();
                 
-				CoroutineManager.Tick();
-                PartTickSystem.Instance.Tick();
-                Loom.Tick();
+				CoroutineManager.Update();
+                PartUpdateSystem.Instance.Update();
+                Loom.Update();
 
-                //AssetManager.Instance.Tick();
-                DisposableRecycler.Tick();
+                DisposableRecycler.Update();
             }
         }
 
@@ -202,7 +201,7 @@ namespace Unicorn
             }
         }
 
-        private void _TickLogs ()
+        private void _UpdateLogs ()
         {
             var count = _logs.Count;
             if (count > 0 && null != _logWriter)

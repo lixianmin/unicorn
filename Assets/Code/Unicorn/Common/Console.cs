@@ -7,6 +7,8 @@ purpose:    extended debug
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Text;
 using Unicorn;
@@ -14,6 +16,7 @@ using Unicorn;
 // this class should not be placed into Unicorn namespace, because it will cause compile error 
 // when using 'System' and 'Unicorn' simutaniously.
 
+[Flags]
 public enum ConsoleFlags : ushort
 {
 	None = 0x00,
@@ -32,7 +35,7 @@ public static partial class Console
 		Flags = ConsoleFlags.DetailedMessage | ConsoleFlags.FlushOnWrite;
 	}
 
-	internal static void Tick()
+	internal static void Update()
 	{
 		_time = UnityEngine.Time.realtimeSinceStartup;
 
@@ -148,7 +151,7 @@ public static partial class Console
 				}
 			}
 		}
-		catch (System.MissingMethodException)
+		catch (MissingMethodException)
 		{
 			System.Console.WriteLine(message);
 		}
@@ -158,16 +161,17 @@ public static partial class Console
 	{
 		var trace = new System.Diagnostics.StackTrace(2, true);
 		var frames = trace.GetFrames();
-
-		for (int i = 0; i < frames.Length; ++i)
+		if (frames != null)
 		{
-			var frame = frames[i];
-			sbText.AppendFormat("{0} (at {1}:{2})\n"
-								 , frame.GetMethod().ToString()
-								 , frame.GetFileName()
-								 , frame.GetFileLineNumber().ToString());
+			foreach (var frame in frames)
+			{
+				sbText.AppendFormat("{0} (at {1}:{2})\n"
+					, frame.GetMethod()
+					, frame.GetFileName()
+					, frame.GetFileLineNumber().ToString());
+			}
 		}
-
+		
 		var result = sbText.ToString();
 		return result;
 	}
@@ -226,7 +230,7 @@ public static partial class Console
 
 	private static void _CheckFlushLogText()
 	{
-		if (null != _sbLogText && _sbLogText.Length > 0)
+		if (_sbLogText is { Length: > 0 })
 		{
 			UnityEngine.Debug.Log(_sbLogText);
 			_sbLogText.Length = 0;
@@ -240,7 +244,7 @@ public static partial class Console
 
 	public static ConsoleFlags Flags
 	{
-		get { return _flags; }
+		get => _flags;
 		set
 		{
 			if (_flags == value)
@@ -274,9 +278,9 @@ public static partial class Console
 	private static readonly StringBuilder _sbFormatter = new StringBuilder();
 	private static float _nextFlushLogTime;
 
-	private static System.Action<object> _lpfnLog = _Log;
-	private static System.Action<object> _lpfnLogWarning = _LogWarning;
-	private static System.Action<object> _lpfnLogError = _LogError;
+	private static Action<object> _lpfnLog = _Log;
+	private static Action<object> _lpfnLogWarning = _LogWarning;
+	private static Action<object> _lpfnLogError = _LogError;
 
 	private static readonly string[] _messageFormat =
 	{

@@ -8,8 +8,8 @@ Copyright (C) - All Rights Reserved
 
 namespace Unicorn
 {
-    public interface ITickable
+    public interface IUpdatable
     {
-        void Tick();
+        void Update();
     }
 }

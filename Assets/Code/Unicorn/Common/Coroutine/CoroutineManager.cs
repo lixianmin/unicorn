@@ -26,7 +26,7 @@ namespace Unicorn
     {
 		static CoroutineManager ()
 		{
-			EditorCallback.AttachToUpdate(Tick);
+			EditorCallback.AttachToUpdate(Update);
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace Unicorn
 			{
 				try
 				{
-					var needEnqueue = TickTools.IsTimeout () || routine.MoveNext();
+					var needEnqueue = UpdateTools.IsTimeout () || routine.MoveNext();
 					if (needEnqueue)
 					{
 						const bool isRecyclable = true;
@@ -64,7 +64,7 @@ namespace Unicorn
 			{
 				try
 				{
-					var needEnqueue = TickTools.IsTimeout () || routine.MoveNext();
+					var needEnqueue = UpdateTools.IsTimeout () || routine.MoveNext();
 					if (needEnqueue)
 					{
 						const bool isRecyclable = false;
@@ -106,7 +106,7 @@ namespace Unicorn
 			}
 		}
 
-        internal static void Tick ()
+        internal static void Update ()
         {
             if (_pool.Count > 0)
             {
@@ -120,7 +120,7 @@ namespace Unicorn
 
                 for (int index= 0; index < snapshotCount; ++index)
                 {
-					if (TickTools.IsTimeout())
+					if (UpdateTools.IsTimeout())
 					{
 						break;
 					}
@@ -140,7 +140,7 @@ namespace Unicorn
 						catch (Exception ex)
 						{
 							item.isDone = true;
-							Console.Error.WriteLine("[CoroutineManager.Tick()] ex={0}, StackTrace={1}", ex, ex.StackTrace);
+							Console.Error.WriteLine("[CoroutineManager.Update()] ex={0}, StackTrace={1}", ex, ex.StackTrace);
 						}
 					}
 

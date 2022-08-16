@@ -60,7 +60,7 @@ public class MBUnicornGame : MonoBehaviour
 	private void Update()
 	{
 		//AssetManager.Instance.Tick();
-		UnicornMain.Instance.Tick(Time.deltaTime);
+		UnicornMain.Instance.Update(Time.deltaTime);
 	}
 
 	private IEnumerator _CoLoadMetadata()

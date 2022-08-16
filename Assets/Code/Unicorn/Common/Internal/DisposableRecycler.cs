@@ -23,18 +23,29 @@ namespace Unicorn
 			}
 		}
 
-		internal static void Tick()
+		internal static void Update()
 		{
-			if (_receivedItems.Count > 0)
+			lock (_locker)
 			{
-				var count = _receivedItems.MoveToEx(_tempItems, _locker);
-				for (int i = 0; i < count; ++i)
+				if (_receivedItems.Count > 0)
 				{
-					var obj = _tempItems[i] as IDisposable;
-					obj.Dispose();
+					_tempItems.AddRange(_receivedItems);
+					_receivedItems.Clear();
 				}
+			}
 
-				_tempItems.Clear();
+			{
+				var count = _tempItems.Count;
+				if (count > 0)
+				{
+					for (var i = 0; i < count; i++)
+					{
+						var obj = _tempItems[i] as IDisposable;
+						obj.Dispose();
+					}
+					
+					_tempItems.Clear();
+				}
 			}
 		}
 

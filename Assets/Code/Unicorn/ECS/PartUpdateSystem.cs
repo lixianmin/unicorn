@@ -14,36 +14,36 @@ using Unicorn.Collections;
 
 namespace Unicorn
 {
-    internal class PartTickSystem
+    internal class PartUpdateSystem
     {
-        static PartTickSystem()
+        static PartUpdateSystem()
         {
 
         }
 
-        private PartTickSystem()
+        private PartUpdateSystem()
         {
             Entity.OnPartCreated += _OnPartCreated;
         }
 
         private void _OnPartCreated(IPart part)
         {
-            ITickable tickable = part as ITickable;
-            if (tickable != null && tickable is IIsDisposed)
+            var updatable = part as IUpdatable;
+            if (updatable != null && updatable is IIsDisposed)
             {
-                _AddTickPart(tickable);
+                _AddUpdatePart(updatable);
             }
         }
 
-        internal void Tick()
+        internal void Update()
         {
             if (_hasNewPart)
             {
-                Array.Sort(_typeIndices, _tickParts);
+                Array.Sort(_typeIndices, _updateParts);
                 _hasNewPart = false;
             }
 
-            var hasDisposed = _TickParts();
+            var hasDisposed = _UpdateParts();
 
             if (hasDisposed)
             {
@@ -51,7 +51,7 @@ namespace Unicorn
             }
         }
 
-        private bool _TickParts()
+        private bool _UpdateParts()
         {
             var count = _size;
             if (count > 0)
@@ -59,12 +59,11 @@ namespace Unicorn
                 var hasDisposed = false;
                 for (int i = 0; i < count; ++i)
                 {
-                    var part = _tickParts[i];
+                    var part = _updateParts[i];
                     var disposed = part as IIsDisposed;
                     if (null == disposed || !disposed.IsDisposed())
                     {
-                        part.Tick();
-
+                        part.Update();
                     }
                     else
                     {
@@ -83,7 +82,7 @@ namespace Unicorn
             int i;
             for (i = 0; i < _size; i++)
             {
-                var disposed = _tickParts[i] as IIsDisposed;
+                var disposed = _updateParts[i] as IIsDisposed;
                 if (null != disposed && disposed.IsDisposed())
                 {
                     break;
@@ -98,10 +97,10 @@ namespace Unicorn
             int j;
             for (j = i + 1; j < _size; j++)
             {
-                var disposed = _tickParts[j] as IIsDisposed;
+                var disposed = _updateParts[j] as IIsDisposed;
                 if (null == disposed || !disposed.IsDisposed())
                 {
-                    _tickParts[i] = _tickParts[j];
+                    _updateParts[i] = _updateParts[j];
                     _typeIndices[i] = _typeIndices[j];
 
                     ++i;
@@ -111,7 +110,7 @@ namespace Unicorn
             var removedCount = j - i;
             if (removedCount > 0)
             {
-                Array.Clear(_tickParts, i, removedCount);
+                Array.Clear(_updateParts, i, removedCount);
 
                 for (int k = 0; k < removedCount; ++k)
                 {
@@ -122,15 +121,15 @@ namespace Unicorn
             _size = i;
         }
 
-        private void _AddTickPart(ITickable part)
+        private void _AddUpdatePart(IUpdatable part)
         {
             if (_size == _capacity)
             {
                 _capacity <<= 1;
-                var tickParts = new ITickable[_capacity];
+                var tickParts = new IUpdatable[_capacity];
                 var typeIndices = new int[_capacity];
 
-                Array.Copy(_tickParts, 0, tickParts, 0, _size);
+                Array.Copy(_updateParts, 0, tickParts, 0, _size);
                 Array.Copy(_typeIndices, 0, typeIndices, 0, _size);
 
                 for (int i = _size; i < _capacity; ++i)
@@ -138,11 +137,11 @@ namespace Unicorn
                     typeIndices[i] = _kMaxTypeIndex;
                 }
 
-                _tickParts = tickParts;
+                _updateParts = tickParts;
                 _typeIndices = typeIndices;
             }
 
-            _tickParts[_size] = part;
+            _updateParts[_size] = part;
             _typeIndices[_size] = PartTypeIndices.SetDefaultTypeIndex(part.GetType());
             ++_size;
 
@@ -151,11 +150,11 @@ namespace Unicorn
 
         private const int _kMaxTypeIndex = 0x850506;
         private int[] _typeIndices = new int[] { _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex };
-        private ITickable[] _tickParts = new ITickable[4];
+        private IUpdatable[] _updateParts = new IUpdatable[4];
         private int _capacity = 4;
         private int _size = 0;
         private bool _hasNewPart;
 
-        public static readonly PartTickSystem Instance = new PartTickSystem();
+        public static readonly PartUpdateSystem Instance = new PartUpdateSystem();
     }
 }

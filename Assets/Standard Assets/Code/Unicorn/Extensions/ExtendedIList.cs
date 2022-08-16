@@ -49,13 +49,17 @@ namespace Unicorn
 				lock (locker)
 				{
 					var count = srcList.Count;
-					for (int i= 0; i< count; ++i)
+					if (count > 0)
 					{
-						var item = srcList[i];
-						destList.Add(item);
+						for (var i= 0; i< count; ++i)
+						{
+							var item = srcList[i];
+							destList.Add(item);
+						}
+					
+						srcList.Clear();
 					}
 					
-					srcList.Clear();
 					return count;
 				}
 			}

@@ -29,26 +29,34 @@ namespace Unicorn
 
 		public static void QueueOnMainThread(Action action)
 		{
-			if (null != action)
+			if (null == action) return;
+			lock (_locker)
 			{
-				lock (_locker)
-				{
-					_receivedActions.Add(action);
-				}
+				_receivedActions.Add(action);
 			}
 		}
 
-		internal static void Tick()
+		internal static void Update()
 		{
-			if (_receivedActions.Count > 0)
+			lock (_locker)
 			{
-				var count = _receivedActions.MoveToEx(_tempActions, _locker);
-				for (int i = 0; i < count; ++i)
+				var count = _receivedActions.Count;
+				if (count > 0)
+				{
+					_tempActions.AddRange(_receivedActions);
+					_receivedActions.Clear();
+				}
+			}
+
+			var actionCount = _tempActions.Count;
+			if (actionCount > 0)
+			{
+				for (var i = 0; i < actionCount; i++)
 				{
 					var action = _tempActions[i] as Action;
-					CallbackTools.Handle(ref action, "[Loom._Tick()]");
+					CallbackTools.Handle(ref action , "[Loom.Update()]");
 				}
-
+				
 				_tempActions.Clear();
 			}
 		}
