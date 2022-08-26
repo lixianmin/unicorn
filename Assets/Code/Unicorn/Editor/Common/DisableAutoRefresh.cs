@@ -26,11 +26,7 @@ namespace Unicorn
             {
                 // Called the moment after the user presses the Play button.
                 case PlayModeStateChange.ExitingEditMode:
-                    break;
-                
-                // Called when the initial scene is loaded and first rendered, after ExitingEditMode..
-                case PlayModeStateChange.EnteredPlayMode:
-                    // 把ExitingEditMode这个时机留出来给其它代码使用
+                    // 曾经想尝试使用EnteredPlayMode事件, 这样可以把ExitingEditMode这个时机留出来给其它代码使用. 但试验失败, EnteredPlayMode时机刷新代码会导致代码空引用报错
                     // 也可以手动关闭Preference->AssetPipeline->AutoRefresh 禁用改动代码后AutoRefresh
                     if (EditorPrefs.HasKey("kAutoRefresh"))
                     {
@@ -40,14 +36,18 @@ namespace Unicorn
                     // 进入play模式之前, 自动Refresh一把, 以加载正确的csharp代码
                     EditorApplication.ExecuteMenuItem("Assets/Refresh");
                     break;
- 
-                // Called the moment after the user presses the Stop button.
-                case PlayModeStateChange.ExitingPlayMode:
-                    break;
- 
-                // Called after the current scene is unloaded, after ExitingPlayMode.
-                case PlayModeStateChange.EnteredEditMode:
-                    break;
+                
+                // // Called when the initial scene is loaded and first rendered, after ExitingEditMode..
+                // case PlayModeStateChange.EnteredPlayMode:
+                //     break;
+                //
+                // // Called the moment after the user presses the Stop button.
+                // case PlayModeStateChange.ExitingPlayMode:
+                //     break;
+                //
+                // // Called after the current scene is unloaded, after ExitingPlayMode.
+                // case PlayModeStateChange.EnteredEditMode:
+                //     break;
             }
         }
     }
