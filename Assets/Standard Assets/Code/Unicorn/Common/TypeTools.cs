@@ -127,7 +127,7 @@ namespace Unicorn
             lpfnMethod = Delegate.CreateDelegate(typeof(T), targetType, methodName, false, false) as T;
         }
 
-        internal static System.Reflection.Assembly[] GetCustomAssemblies()
+        public static System.Reflection.Assembly[] GetCustomAssemblies()
         {
             if (null == _customAssemblies)
             {
