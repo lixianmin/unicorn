@@ -22,6 +22,9 @@ namespace Unicorn
 
                 using (CodeScope.CreateCSharpScope(_writer))
                 {
+                    // https://docs.unity3d.com/cn/2022.1/Manual/ManagedCodeStripping.html
+                    // 为了防止 Managed Stripping Level 设置把自动生成的代码剥离
+                    _writer.WriteLine("[UnityEngine.Scripting.Preserve]");
                     _writer.WriteLine("public class _KitFactory");
 
                     using (CodeScope.CreateCSharpScope(_writer))

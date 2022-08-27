@@ -20,24 +20,29 @@ namespace Metadata.Menus
 		private static bool _Make_Validate ()
 		{
 			var manifest = UnicornManifest.OpenOrCreate();
-			return manifest.MakeAutoCode;
+			var isValid = manifest.MakeAutoCode && !EditorApplication.isCompiling;
+			return isValid;
 		}
 
         [MenuItem(EditorMetaTools.MenuRoot + "Make Auto Code", false, 102)]
 		public static void Make ()
         {
-            if (EditorApplication.isCompiling)
-            {
-                EditorUtility.DisplayDialog("Warning", "Wait for compiling", "OK");
-                return;
-            }
+            // if (EditorApplication.isCompiling)
+            // {
+            //     EditorUtility.DisplayDialog("Warning", "Wait for compiling", "OK");
+            //     return;
+            // }
 
+            // make auto code之前先Refresh()一把, 因为通常只所以需要make auto code就是因为加入了新的类型, 这时如果不Refresh()一把就找不到新的类型
+            AssetDatabase.Refresh();
+            
             new MetaFactoryCodeMaker().WriteAll();
 			_RemoveEmptyFiles(EditorMetaTools.StandardAutoCodeDirectory);
             _RemoveEmptyFiles(EditorMetaTools.ClientAutoCodeDirectory);
-			AssetDatabase.Refresh();
+			// AssetDatabase.Refresh();
 
-			new LuaCodeMaker().WriteAll();
+            // lua的脚本暂时先用不到了
+			// new LuaCodeMaker().WriteAll();
         }
 
         private static void _RemoveEmptyFiles (string directory)

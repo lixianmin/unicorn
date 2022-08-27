@@ -68,6 +68,9 @@ namespace Metadata
 
                 using (CodeScope.CreateCSharpScope(_writer))
                 {
+                    // https://docs.unity3d.com/cn/2022.1/Manual/ManagedCodeStripping.html
+                    // 为了防止 Managed Stripping Level 设置把自动生成的代码剥离
+                    _writer.WriteLine("[UnityEngine.Scripting.Preserve]");
                     _writer.WriteLine("public class {0}", MetaFactory.outerFactoryName);
 
                     using (CodeScope.CreateCSharpScope(_writer))
@@ -102,19 +105,34 @@ namespace Metadata
             using (CodeScope.CreateCSharpScope(_writer))
             {
                 var metaTypeCount = System.Linq.Enumerable.Count(_EnumerateLookupTableTypes());
-                _writer.WriteLine("var table = new Hashtable({0});", metaTypeCount.ToString());
+                _writer.WriteLine("return new Hashtable({0})", metaTypeCount.ToString());
 
-                foreach (var childType in _EnumerateLookupTableTypes())
+                using (CodeScope.Create(_writer, "{\n", "};\n"))
                 {
-                    var rawType = childType.RawType;
-                    _writer.WriteLine("table.Add (\"{0}\", new {1}(()=> new {2}()));"
-                        , rawType.FullName
-                        , typeof(MetaCreator).Name
-                        , rawType.GetTypeNameEx()
-                    );
+                    foreach (var childType in _EnumerateLookupTableTypes())
+                    {
+                        var rawType = childType.RawType;
+                        _writer.WriteLine("{{ \"{0}\", new {1}(()=> new {2}()) }},"
+                            , rawType.FullName
+                            , nameof(MetaCreator)
+                            , rawType.GetTypeNameEx()
+                        );
+                    }
                 }
-
-                _writer.WriteLine("return table;");
+                
+                // _writer.WriteLine("var table = new Hashtable({0});", metaTypeCount.ToString());
+                //
+                // foreach (var childType in _EnumerateLookupTableTypes())
+                // {
+                //     var rawType = childType.RawType;
+                //     _writer.WriteLine("table.Add (\"{0}\", new {1}(()=> new {2}()));"
+                //         , rawType.FullName
+                //         , nameof(MetaCreator)
+                //         , rawType.GetTypeNameEx()
+                //     );
+                // }
+                //
+                // _writer.WriteLine("return table;");
             }
         }
 
