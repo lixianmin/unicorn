@@ -35,7 +35,7 @@ namespace Unicorn
             if (_lookupTable[key] is Func<KitBase> creator && creator() is { } kit)
             {
                 _kit = kit;
-                kit._SetAssets(assets);
+                kit._InitData(transform, assets);
                 CallbackTools.Handle(kit.Awake, "[Awake()]");
             }
             else

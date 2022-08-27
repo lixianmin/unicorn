@@ -6,6 +6,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Unicorn
@@ -30,17 +31,24 @@ namespace Unicorn
         {
             _listener.RemoveAllListeners();
         }
+
+        public Transform GetTransform()
+        {
+            return _transform;
+        }
         
         public UnityEngine.Object[] GetAssets()
         {
             return _assets;
         }
         
-        internal void _SetAssets(UnityEngine.Object[] assets)
+        internal void _InitData(Transform transform, UnityEngine.Object[] assets)
         {
+            _transform = transform;
             _assets = assets;
         }
-        
+
+        private Transform _transform;
         private UnityEngine.Object[] _assets;
         private readonly EventListener _listener = new();
     }
