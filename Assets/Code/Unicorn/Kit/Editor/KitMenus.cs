@@ -47,7 +47,7 @@ namespace Unicorn.Kit
 
         private static string _GetFactoryFilePath()
         {
-            var factoryPath = Application.dataPath + "/Code/Unicorn/Kit/AutoCode/_KitFactory.cs";
+            var factoryPath = Application.dataPath + "/Code/Unicorn/Kit/_KitFactory.cs";
             return factoryPath;
         }
     }
