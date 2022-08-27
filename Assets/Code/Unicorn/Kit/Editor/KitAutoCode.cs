@@ -22,9 +22,6 @@ namespace Unicorn
 
                 using (CodeScope.CreateCSharpScope(_writer))
                 {
-                    // https://docs.unity3d.com/cn/2022.1/Manual/ManagedCodeStripping.html
-                    // 为了防止 Managed Stripping Level 设置把自动生成的代码剥离
-                    _writer.WriteLine("[UnityEngine.Scripting.Preserve]");
                     _writer.WriteLine("public class _KitFactory");
 
                     using (CodeScope.CreateCSharpScope(_writer))
@@ -37,6 +34,9 @@ namespace Unicorn
         
         private void _WriteMetaFactory_GetLookupTableByType ()
         {
+            // https://docs.unity3d.com/cn/2022.1/Manual/ManagedCodeStripping.html
+            // 为了防止 Managed Stripping Level 设置把自动生成的代码剥离(写在类名上抗不住high级别的stripping, 但写在方法名上可以)
+            _writer.WriteLine("[UnityEngine.Scripting.Preserve]");
             _writer.WriteLine("private static Hashtable _GetLookupTableByName ()");
 
             using (CodeScope.CreateCSharpScope(_writer))
