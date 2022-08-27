@@ -14,33 +14,40 @@ namespace Unicorn.Kit
 {
     internal class KitMenus
     {
+        [MenuItem("*Kit/Make Auto Code", true)]
+        private static bool ValidateMake ()
+        {
+            var isValid = !EditorApplication.isCompiling;
+            return isValid;
+        }
+        
         [MenuItem("*Kit/Make Auto Code", false, 0)]
         private static void Make ()
         {
-            if (EditorApplication.isCompiling)
-            {
-                EditorUtility.DisplayDialog("Warning", "Wait for compiling", "OK");
-                return;
-            }
-
+            // make auto code之前先Refresh()一把, 因为通常只所以需要make auto code就是因为加入了新的类型, 这时如果不Refresh()一把就找不到新的类型
+            AssetDatabase.Refresh();
+            
             var factoryPath = _GetFactoryFilePath();
             os.makedirs(Path.GetDirectoryName(factoryPath));
             new KitAutoCode().WriteKitFactory(factoryPath);
         }
 
+        [MenuItem("*Kit/Clear Auto Code", true)]
+        private static bool ValidateClear()
+        {
+            var isValid = !EditorApplication.isCompiling;
+            return isValid;
+        }
+
         [MenuItem("*Kit/Clear Auto Code", false, 1)]
         public static void Clear ()
         {
-            if (EditorApplication.isCompiling)
-            {
-                EditorUtility.DisplayDialog("Warning", "Wait for compiling", "OK");
-                return;
-            }
-
             var factoryPath = _GetFactoryFilePath();
             if (File.Exists(factoryPath))
             {
                 File.Delete(factoryPath);
+                
+                // Delete()之后Refresh()一把, 因为通常只所以需要Clear就是因为编译出错了, 这时如果不Refresh()一把不会修正编译问题
                 AssetDatabase.Refresh();
             }
         }
