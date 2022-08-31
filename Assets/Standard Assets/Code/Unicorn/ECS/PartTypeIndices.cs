@@ -15,8 +15,7 @@ namespace Unicorn
     {
         public static int SetDefaultTypeIndex(Type type)
         {
-            int typeIndex;
-            if (!_typeIndices.TryGetValue(type, out typeIndex))
+            if (!_typeIndices.TryGetValue(type, out var typeIndex))
             {
                 typeIndex = ++_typeGenerator;
                 _typeIndices[type] = typeIndex;
@@ -26,6 +25,6 @@ namespace Unicorn
         }
 
         private static int _typeGenerator;
-        private static readonly Dictionary<Type, int> _typeIndices = new Dictionary<Type, int>();
+        private static readonly Dictionary<Type, int> _typeIndices = new();
     }
 }

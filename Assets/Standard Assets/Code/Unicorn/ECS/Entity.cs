@@ -29,11 +29,10 @@ namespace Unicorn
         {
             BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             ConstructorInfo constructor = type.GetConstructor(flags, null, CallingConventions.Any, EmptyArray<Type>.Instance, null);
-            IPart part = constructor.Invoke(EmptyArray<object>.Instance) as IPart;
+            var part = constructor?.Invoke(EmptyArray<object>.Instance) as IPart;
             if (part != null)
             {
-                IInitPart initPart = part as IInitPart;
-                if (initPart != null)
+	            if (part is IInitPart initPart)
                 {
                     initPart.InitPart(this);
                 }
@@ -51,7 +50,7 @@ namespace Unicorn
 
         public IPart GetPart(Type type)
 		{
-			EntityTable parts = _parts;
+			var parts = _parts;
 			if (type != null && parts != null)
 			{
 				return parts.GetPart(type);
@@ -73,11 +72,12 @@ namespace Unicorn
 			if (!IsDisposed() && type != null)
 			{
 				_parts = (_parts ?? new EntityTable());
-				IPart part = _parts.GetPart(type);
+				var part = _parts.GetPart(type);
 				if (part == null)
 				{
 					part = _AddPart(type, false);
 				}
+				
 				return part;
 			}
 			return null;
@@ -85,7 +85,7 @@ namespace Unicorn
 
         public bool RemovePart(Type type)
 		{
-			EntityTable parts = _parts;
+			var parts = _parts;
 			if (type != null && parts != null)
 			{
 				return parts.Remove(type);
@@ -97,14 +97,14 @@ namespace Unicorn
         {
             if (null != listener && !IsDisposed())
             {
-                _observer = _observer ?? _cacheObservers.Spawn();
+                _observer ??= _cacheObservers.Spawn();
                 _observer.AddListener(message, listener);
 
                 var listenerData = new ListenerData { sender = this, message = message, listener = listener };
                 return listenerData;
             }
 
-            return default(ListenerData);
+            return default;
         }
 
         public void RemoveListener(int message, Action listener)
