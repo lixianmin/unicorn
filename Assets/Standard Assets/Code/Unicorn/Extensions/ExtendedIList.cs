@@ -42,30 +42,30 @@ namespace Unicorn
 			return 0;
 		}
 
-        public static int MoveToEx (this IList srcList, IList destList, object locker)
-		{
-			if (null != srcList && null != destList && null != locker)
-			{
-				lock (locker)
-				{
-					var count = srcList.Count;
-					if (count > 0)
-					{
-						for (var i= 0; i< count; ++i)
-						{
-							var item = srcList[i];
-							destList.Add(item);
-						}
-					
-						srcList.Clear();
-					}
-					
-					return count;
-				}
-			}
-
-			return 0;
-		}
+        //       public static int MoveToEx (this IList srcList, IList destList, object locker)
+		// {
+		// 	if (null != srcList && null != destList && null != locker)
+		// 	{
+		// 		lock (locker)
+		// 		{
+		// 			var count = srcList.Count;
+		// 			if (count > 0)
+		// 			{
+		// 				for (var i= 0; i< count; ++i)
+		// 				{
+		// 					var item = srcList[i];
+		// 					destList.Add(item);
+		// 				}
+		// 			
+		// 				srcList.Clear();
+		// 			}
+		// 			
+		// 			return count;
+		// 		}
+		// 	}
+		//
+		// 	return 0;
+		// }
 
 		public static Type GetElementTypeEx (this IList list)
 		{
@@ -78,7 +78,8 @@ namespace Unicorn
 					var elementType = listType.GetElementType();
 					return elementType;
 				}
-				else if (listType.IsGenericType)
+
+				if (listType.IsGenericType)
 				{
 					var genericTypeDefinition = listType.GetGenericTypeDefinition();
 					if (typeof(List<>) == genericTypeDefinition)

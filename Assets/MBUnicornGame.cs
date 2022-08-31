@@ -67,7 +67,7 @@ public class MBUnicornGame : MonoBehaviour
 	{
 		var metadataManager = MetadataManager.Instance;
 		var fullpath = "/Users/xmli/code/unity-vr/resource/android/metadata.raw";
-		if (!fullpath.IsNullOrEmptyEx())
+		if (!string.IsNullOrEmpty(fullpath))
 		{
 			try
 			{

@@ -43,17 +43,7 @@ namespace Unicorn
 
         public void RemoveAllListeners()
         {
-            var count = _removeList.Count;
-            if (count > 0)
-            {
-                for (var i = 0; i < count; i++)
-                {
-                    var action = _removeList[i];
-                    action();
-                }
-                
-                _removeList.Clear();
-            }
+            _removeList.InvokeAndClearEx();
         }
 
         protected override void _DoDispose(bool isManualDisposing)
