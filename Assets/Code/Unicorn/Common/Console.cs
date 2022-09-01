@@ -284,7 +284,7 @@ public static partial class Console
 
 	private static readonly string[] _messageFormat =
 	{
-		"[frame=",
+		"[@@frame=",	// 加两个@号, 方便使用 adb logcat | grep @@ 过滤日志
 		"(-_-)",
 		", time=",
 		null,
