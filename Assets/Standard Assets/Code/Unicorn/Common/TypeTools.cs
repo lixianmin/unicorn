@@ -18,7 +18,7 @@ using FieldInfo = System.Reflection.FieldInfo;
 
 namespace Unicorn
 {
-    public static class TypeTools
+    public static partial class TypeTools
     {
         private class AssemblyComparer : IComparer<Assembly>
         {
@@ -132,7 +132,7 @@ namespace Unicorn
             if (null == _customAssemblies)
             {
                 var results = new List<System.Reflection.Assembly>();
-                var validPrefixes = new string[]
+                var validPrefixes = new[]
                     {
                         "Unicorn,",
                         "Unicorn.Core,",
@@ -211,7 +211,7 @@ namespace Unicorn
             _customAssemblies = null;
         }
 
-        private static WeakTable _sortedFields = new WeakTable(1000);
+        private static readonly WeakTable _sortedFields = new(1000);
         private static Func<Type, Type[], Type> _lpfnMakeGenericType;
 
         private static System.Reflection.Assembly _editorAssembly;

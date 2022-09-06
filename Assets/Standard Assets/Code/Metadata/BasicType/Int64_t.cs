@@ -61,7 +61,7 @@ namespace Metadata
 
         public override string ToString ()
         {
-            return string.Format("_value={0}, result={1}", _value.ToString(), (_value^_factor).ToString());
+            return $"_value={_value.ToString()}, result={(_value ^ _factor).ToString()}";
         }
 
         #if UNITY_EDITOR

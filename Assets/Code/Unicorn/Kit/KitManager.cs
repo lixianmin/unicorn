@@ -22,16 +22,29 @@ namespace Unicorn
             
         }
 
+        public void Update()
+        {
+            if (_isDirty)
+            {
+                _kits._Sort();
+                _isDirty = false;
+            }
+            
+            
+        }
+        
         public void Add(KitBase kit)
         {
             if (kit is not null)
             {
-                _kits.Add(_idGenerator++, kit);
+                _kits._Append(_idGenerator++, kit);
+                _isDirty = true;
             }
         }
         
         private readonly SortedTable<int, KitBase> _kits = new();
         private int _idGenerator;
+        private bool _isDirty;
         
         public static readonly KitManager Instance = new();
     }

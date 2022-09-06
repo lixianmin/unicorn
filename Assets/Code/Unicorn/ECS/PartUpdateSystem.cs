@@ -142,7 +142,7 @@ namespace Unicorn
             }
 
             _updateParts[_size] = part;
-            _typeIndices[_size] = PartTypeIndices.SetDefaultTypeIndex(part.GetType());
+            _typeIndices[_size] = TypeTools.SetDefaultTypeIndex(part.GetType());
             ++_size;
 
             _hasNewPart = true;

@@ -1,8 +1,9 @@
 
 /********************************************************************
-created:    2018-04-03
+created:    2022-09-06
 author:     lixianmin
 
+purpose:    assert
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
@@ -11,20 +12,22 @@ using System.Collections.Generic;
 
 namespace Unicorn
 {
-    public static class PartTypeIndices
+    public static partial class TypeTools
     {
         public static int SetDefaultTypeIndex(Type type)
         {
-            if (!_typeIndices.TryGetValue(type, out var typeIndex))
+            if (_typeIndices.TryGetValue(type, out var index))
             {
-                typeIndex = ++_typeGenerator;
-                _typeIndices[type] = typeIndex;
+                return index;
             }
+            
+            index = ++_indexGenerator;
+            _typeIndices[type] = index;
 
-            return typeIndex;
+            return index;
         }
 
-        private static int _typeGenerator;
+        private static int _indexGenerator;
         private static readonly Dictionary<Type, int> _typeIndices = new();
     }
 }
