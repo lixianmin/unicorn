@@ -27,8 +27,8 @@ namespace Unicorn
 
         private IPart _AddPart(Type type, bool checkDuplicated)
         {
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            ConstructorInfo constructor = type.GetConstructor(flags, null, CallingConventions.Any, EmptyArray<Type>.Instance, null);
+            var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            var constructor = type.GetConstructor(flags, null, CallingConventions.Any, EmptyArray<Type>.Instance, null);
             var part = constructor?.Invoke(EmptyArray<object>.Instance) as IPart;
             if (part != null)
             {
@@ -39,9 +39,9 @@ namespace Unicorn
 
                 _parts.Add(type, part, checkDuplicated);
 
-                if (Entity.OnPartCreated != null)
+                if (OnPartCreated != null)
                 {
-                    Entity.OnPartCreated(part);
+	                OnPartCreated(part);
                 }
             }
 
@@ -60,24 +60,17 @@ namespace Unicorn
 		}
 
         public void GetParts(List<IPart> results)
-		{
-			if (_parts != null)
-			{
-				_parts.GetParts(results);
-			}
-		}
+        {
+	        _parts?.GetParts(results);
+        }
 
         public IPart SetDefaultPart(Type type)
 		{
 			if (!IsDisposed() && type != null)
 			{
-				_parts = (_parts ?? new EntityTable());
-				var part = _parts.GetPart(type);
-				if (part == null)
-				{
-					part = _AddPart(type, false);
-				}
-				
+				_parts ??= new EntityTable();
+				var part = _parts.GetPart(type) ?? _AddPart(type, false);
+
 				return part;
 			}
 			return null;
@@ -90,6 +83,7 @@ namespace Unicorn
 			{
 				return parts.Remove(type);
 			}
+            
 			return false;
 		}
 
@@ -123,11 +117,7 @@ namespace Unicorn
 
         public void SendMessage(int message)
         {
-            var observer = _observer;
-            if (null != observer)
-            {
-                observer.SendMessage(message);
-            }
+            _observer?.SendMessage(message);
         }
 
         public void Dispose()

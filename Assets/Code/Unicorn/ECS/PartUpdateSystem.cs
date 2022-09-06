@@ -21,7 +21,7 @@ namespace Unicorn
 
         }
 
-        private PartUpdateSystem()
+        internal PartUpdateSystem()
         {
             Entity.OnPartCreated += _OnPartCreated;
         }
@@ -57,7 +57,7 @@ namespace Unicorn
             if (count > 0)
             {
                 var hasDisposed = false;
-                for (int i = 0; i < count; ++i)
+                for (var i = 0; i < count; ++i)
                 {
                     var part = _updateParts[i];
                     var disposed = part as IIsDisposed;
@@ -149,12 +149,10 @@ namespace Unicorn
         }
 
         private const int _kMaxTypeIndex = 0x850506;
-        private int[] _typeIndices = new int[] { _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex };
+        private int[] _typeIndices = { _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex };
         private IUpdatable[] _updateParts = new IUpdatable[4];
         private int _capacity = 4;
         private int _size = 0;
         private bool _hasNewPart;
-
-        public static readonly PartUpdateSystem Instance = new PartUpdateSystem();
     }
 }

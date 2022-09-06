@@ -83,8 +83,7 @@ namespace Unicorn
 
             private Action _GetProcessor (int message)
             {
-                object target;
-                if (_processors.TryGetValue(message, out target))
+                if (_processors.TryGetValue(message, out var target))
                 {
                     var processor = target as Action;
                     return processor;
@@ -93,7 +92,7 @@ namespace Unicorn
                 return null;
             }
 
-            private readonly SortedTable<int, object> _processors = new SortedTable<int, object>();
+            private readonly SortedTable<int, object> _processors = new();
         }
     }
 }

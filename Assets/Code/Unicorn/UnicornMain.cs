@@ -129,7 +129,7 @@ namespace Unicorn
                 _UpdateLogs();
                 
 				CoroutineManager.Update();
-                PartUpdateSystem.Instance.Update();
+				_partUpdateSystem.Update();
                 Loom.Update();
 
                 DisposableRecycler.Update();
@@ -227,6 +227,7 @@ namespace Unicorn
         public static readonly UnicornMain Instance = new ();
 
         private readonly ArrayList _logs = new ();
+        private readonly PartUpdateSystem _partUpdateSystem = new();
         private bool _isInited;
         private StreamWriter _logWriter;
         private string _lastLogString;
