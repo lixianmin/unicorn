@@ -32,7 +32,7 @@ namespace Unicorn.Kit
                     _lastFullKitName = _target.fullKitName;
                     _fullKitNameLabel = "Full Kit Name";
 
-                    var kit = MBKitProvider.CreateKit(_lastFullKitName);
+                    var kit = KitFactory.Create(_lastFullKitName);
                     if (kit is not null)
                     {
                         _fullKitNameLabel = $"Full Kit Name [sort={TypeTools.SetDefaultTypeIndex(kit.GetType())}]";

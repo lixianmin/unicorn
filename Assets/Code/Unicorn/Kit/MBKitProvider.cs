@@ -14,24 +14,9 @@ namespace Unicorn
 {
     public class MBKitProvider : MonoBehaviour
     {
-        static MBKitProvider()
-        {
-            var kitFactoryType = TypeTools.SearchType("Unicorn._KitFactory");
-            if (null != kitFactoryType)
-            {
-                TypeTools.CreateDelegate(kitFactoryType, "_GetLookupTableByName", out Func<Hashtable> method);
-                if (method != null)
-                {
-                    _lookupTable = method();
-                }
-            }
-
-            _lookupTable ??= new Hashtable();
-        }
-        
         private void Awake()
         {
-            var kit = CreateKit(fullKitName);
+            var kit = KitFactory.Create(fullKitName);
             if (kit is not null)
             {
                 kit.sort = TypeTools.SetDefaultTypeIndex(kit.GetType());
@@ -44,22 +29,24 @@ namespace Unicorn
             }
         }
 
+        /// <summary>
+        /// 引入OnEnable(), 除了本身的功能外, 还有一个用作是激活MBKitProvider脚本在Inspector窗口的复选框
+        /// </summary>
+        private void OnEnable()
+        {
+            _kit?.OnEnable();
+        }
+
+        private void OnDisable()
+        {
+            _kit?.OnDisable();
+        }
+
         private void OnDestroy()
         {
             _kit?._Dispose();
         }
 
-        public static KitBase CreateKit(string fullKitName)
-        {
-            var key = (fullKitName ?? string.Empty).Trim();
-            if (_lookupTable[key] is Func<KitBase> creator && creator() is { } kit)
-            {
-                return kit;
-            }
-
-            return null;
-        }
-        
         /// <summary>
         /// 包含namespace的kit脚本全称, 用于生成kit脚本
         /// </summary>
@@ -73,6 +60,5 @@ namespace Unicorn
         public UnityEngine.Object[] assets;
         
         private KitBase _kit;
-        private static readonly Hashtable _lookupTable;
     }
 }

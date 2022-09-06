@@ -13,10 +13,16 @@ namespace Unicorn
 {
     public class KitBase: IIsDisposed
     {
-        public virtual void Awake() { }
-        public virtual void Update() { }
-        public virtual void OnDestroy() { }
+        protected virtual void Awake() { }
+        
+        public virtual void OnEnable() { }
 
+        public virtual void OnDisable() { }
+
+        public virtual void OnDestroy() { }
+        
+        public virtual void Update() { }
+        
         /// <summary>
         /// AddListener()这个方法是送的, 子类可以用, 也可以不用
         /// </summary>

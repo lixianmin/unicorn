@@ -8,7 +8,6 @@ Copyright (C) - All Rights Reserved
 
 using System;
 using System.Collections.Generic;
-using Unicorn.Collections;
 
 namespace Unicorn
 {
@@ -87,7 +86,7 @@ namespace Unicorn
             int j;
             for (j = i + 1; j < _size; j++)
             {
-                var kit = _kits[i];
+                var kit = _kits[j];
                 var disposed = (IIsDisposed) kit ;
                 if (!disposed.IsDisposed())
                 {
