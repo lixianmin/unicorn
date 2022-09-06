@@ -11,12 +11,17 @@ using UnityEngine.Events;
 
 namespace Unicorn
 {
-    public class KitBase
+    public class KitBase: IIsDisposed
     {
         public virtual void Awake() { }
-        public virtual void OnDestroy() { }
         public virtual void Update() { }
+        public virtual void OnDestroy() { }
 
+        /// <summary>
+        /// AddListener()这个方法是送的, 子类可以用, 也可以不用
+        /// </summary>
+        /// <param name="evt"></param>
+        /// <param name="handler"></param>
         public void AddListener(UnityEvent evt, UnityAction handler)
         {
             _listener.AddListener(evt, handler);
@@ -27,9 +32,9 @@ namespace Unicorn
             _listener.AddListener(evt, handler);
         }
 
-        internal void RemoveAllListeners()
+        bool IIsDisposed.IsDisposed()
         {
-            _listener.RemoveAllListeners();
+            return _isDisposed;
         }
 
         public Transform GetTransform()
@@ -42,14 +47,25 @@ namespace Unicorn
             return _assets;
         }
         
-        internal void _InitData(Transform transform, UnityEngine.Object[] assets)
+        internal void _Init(Transform transform, UnityEngine.Object[] assets)
         {
             _transform = transform;
             _assets = assets;
+            
+            KitManager.Instance.Add(this);
+            CallbackTools.Handle(Awake, "[Awake()]");
+        }
+
+        internal void _Dispose()
+        {
+            CallbackTools.Handle(OnDestroy, "[OnDestroy()]");
+            _listener.RemoveAllListeners();
+            _isDisposed = true;
         }
 
         private Transform _transform;
         private UnityEngine.Object[] _assets;
         private readonly EventListener _listener = new();
+        private bool _isDisposed;
     }
 }

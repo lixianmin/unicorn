@@ -35,8 +35,7 @@ namespace Unicorn
             if (_lookupTable[key] is Func<KitBase> creator && creator() is { } kit)
             {
                 _kit = kit;
-                kit._InitData(transform, assets);
-                CallbackTools.Handle(kit.Awake, "[Awake()]");
+                kit._Init(transform, assets);
             }
             else
             {
@@ -46,23 +45,9 @@ namespace Unicorn
         
         private void OnDestroy()
         {
-            var kit = _kit;
-            if (kit is not null)
-            {
-                CallbackTools.Handle(kit.OnDestroy, "[OnDestroy()]");
-                kit.RemoveAllListeners();
-            }
+            _kit?._Dispose();
         }
 
-        private void Update()
-        {
-            var kit = _kit;
-            if (kit is not null)
-            {
-                CallbackTools.Handle(kit.Update, "[Update()]");
-            }
-        }
-        
         /// <summary>
         /// 包含namespace的kit脚本全称, 用于生成kit脚本
         /// </summary>

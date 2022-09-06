@@ -494,7 +494,7 @@ namespace Unicorn.Collections
 
 		protected void _EnsureCapacity (int min)
 		{
-			var num = (_keys.Length == 0) ? 4 : (_keys.Length * 2);
+			var num = _keys.Length == 0 ? 4 : _keys.Length * 2;
 			const int max = 2146435071;
 			if (num > max)
 			{

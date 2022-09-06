@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Unicorn.Collections
 {
-    public partial class Deque<T> : IEnumerable<T>, IEnumerable
+    public partial class Deque<T> : IEnumerable<T>
 	{
 		public Deque () : this (0)
 		{
@@ -20,11 +20,11 @@ namespace Unicorn.Collections
 
 		public Deque (int capacity)
 		{
-            _capacity = _CalcInitialCapaity(capacity);
+            _capacity = _CalcInitialCapacity(capacity);
             _items = new T[_capacity];
 		}
 
-        private int _CalcInitialCapaity (int candidate) 
+        private int _CalcInitialCapacity (int candidate) 
         {
             int capacity = 2;
 
