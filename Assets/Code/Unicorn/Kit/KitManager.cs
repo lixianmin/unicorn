@@ -52,7 +52,7 @@ namespace Unicorn
             {
                 var kit = _kits[i];
                 var disposed = (IIsDisposed)kit;
-                if (!disposed.IsDisposed())
+                if (kit.isActiveAndEnabled && !disposed.IsDisposed())
                 {
                     kit.Update();
                 }

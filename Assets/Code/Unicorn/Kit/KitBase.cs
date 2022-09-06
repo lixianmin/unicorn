@@ -70,13 +70,18 @@ namespace Unicorn
         }
 
         /// <summary>
+        /// 与MBKitProvider的同名属性同步
+        /// </summary>
+        public bool isActiveAndEnabled { get; internal set; }
+
+        /// <summary>
         /// Kit对象的Update()顺序, 相同class的kit对象同一批调用Update().
         /// 如何通过sort控制Update()顺序呢? 可以在client代码中, 找一个地方使用以下方式初始化:
         ///   TypeTools.SetDefaultTypeIndex(typeof(Client.BowlKit));
         ///   TypeTools.SetDefaultTypeIndex(typeof(Client.PlayerMoveKit));
         /// </summary>
         internal int sort;
-        
+
         private Transform _transform;
         private UnityEngine.Object[] _assets;
         private readonly EventListener _listener = new();

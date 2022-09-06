@@ -6,13 +6,11 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using System;
 using UnityEditor;
-using UnityEditor.UI;
 
 namespace Unicorn.Kit
 {
-    [CustomEditor(typeof(MBKitProvider), false)]
+    [CustomEditor(typeof(MBKitProvider), true)]
     [CanEditMultipleObjects]
     public class MBKitProviderEditor : Editor
     {

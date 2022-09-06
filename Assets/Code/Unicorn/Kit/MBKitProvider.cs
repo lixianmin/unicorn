@@ -7,7 +7,6 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
-using System.Collections;
 using UnityEngine;
 
 namespace Unicorn
@@ -34,14 +33,24 @@ namespace Unicorn
         /// </summary>
         private void OnEnable()
         {
-            _kit?.OnEnable();
+            var kit = _kit;
+            if (kit is not null)
+            {
+                kit.isActiveAndEnabled = isActiveAndEnabled;
+                kit.OnEnable();
+            }
         }
 
         private void OnDisable()
         {
-            _kit?.OnDisable();
+            var kit = _kit;
+            if (kit is not null)
+            {
+                kit.isActiveAndEnabled = isActiveAndEnabled;
+                kit.OnDisable();
+            }
         }
-
+        
         private void OnDestroy()
         {
             _kit?._Dispose();
