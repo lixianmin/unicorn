@@ -63,6 +63,11 @@ namespace Unicorn
             _isDisposed = true;
         }
 
+        /// <summary>
+        /// Kit对象的Update()顺序, 默认相同class的kit对象同一批更新
+        /// </summary>
+        internal int sort;
+        
         private Transform _transform;
         private UnityEngine.Object[] _assets;
         private readonly EventListener _listener = new();

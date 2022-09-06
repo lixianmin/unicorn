@@ -25,7 +25,7 @@ namespace Unicorn
         {
             if (_dirty)
             {
-                Array.Sort(_sorts, _kits);
+                Array.Sort(_kits, (a, b) => a.sort - b.sort);
                 _dirty = false;
             }
 
@@ -82,9 +82,7 @@ namespace Unicorn
                 var disposed = (IIsDisposed) kit ;
                 if (!disposed.IsDisposed())
                 {
-                    _sorts[i] = _sorts[j];
                     _kits[i] = _kits[j];
-
                     ++i;
                 }
             }
@@ -93,7 +91,6 @@ namespace Unicorn
             if (removedCount > 0)
             {
                 Array.Clear(_kits, i, removedCount);
-                Array.Clear(_sorts, i, removedCount);
             }
 
             _size = i;
@@ -107,31 +104,28 @@ namespace Unicorn
                 {
                     _capacity <<= 1;
                     
-                    var sorts = new int[_capacity];
                     var kits = new KitBase[_capacity];
-                    Array.Copy(_sorts, 0, sorts, 0, _size);
                     Array.Copy(_kits, 0, kits, 0, _size);
                     
-                    _sorts = sorts;
                     _kits = kits;
                 }
                 
-                _sorts[_size] = TypeTools.SetDefaultTypeIndex(kit.GetType());
                 _kits[_size] = kit;
-
                 ++_size;
-                _dirty = true;
+                SetDirty();
             }
         }
 
-        private const int _initialSize = 4;
+        public void SetDirty()
+        {
+            _dirty = true;
+        }
         
         private int _size;
-        private int _capacity = _initialSize;
+        private int _capacity = 4;
         private bool _dirty;
 
-        private int[] _sorts = new int[_initialSize];
-        private KitBase[] _kits = new KitBase[_initialSize];
+        private KitBase[] _kits = new KitBase[4];
 
         public static readonly KitManager Instance = new ();
     }
