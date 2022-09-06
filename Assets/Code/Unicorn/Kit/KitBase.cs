@@ -15,8 +15,14 @@ namespace Unicorn
     {
         protected virtual void Awake() { }
         
+        /// <summary>
+        /// 在 gameObject.SetActive(true) 或 script.enabled=true 时都会触发OnEnable()事件
+        /// </summary>
         public virtual void OnEnable() { }
 
+        /// <summary>
+        /// 在 gameObject.SetActive(false) 或 script.enabled=false 时都会触发OnDisable()事件
+        /// </summary>
         public virtual void OnDisable() { }
 
         public virtual void OnDestroy() { }
