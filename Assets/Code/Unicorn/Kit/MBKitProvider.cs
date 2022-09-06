@@ -31,10 +31,10 @@ namespace Unicorn
         
         private void Awake()
         {
-            var kit = _CreateKitByFullKitName();
+            var kit = CreateKit(fullKitName);
             if (kit is not null)
             {
-                kit.sort = sort;
+                kit.sort = TypeTools.SetDefaultTypeIndex(kit.GetType());
                 _kit = kit;
                 kit._Init(transform, assets);
             }
@@ -44,26 +44,12 @@ namespace Unicorn
             }
         }
 
-        private void OnValidate()
-        {
-            // 如果是在修改fullKitName
-            if (_lastFullKitName != fullKitName)
-            {
-                _lastFullKitName = fullKitName;
-                var kit = _CreateKitByFullKitName();
-                if (kit is not null)
-                {
-                    sort = TypeTools.SetDefaultTypeIndex(kit.GetType());
-                }
-            }
-        }
-        
         private void OnDestroy()
         {
             _kit?._Dispose();
         }
 
-        private KitBase _CreateKitByFullKitName()
+        public static KitBase CreateKit(string fullKitName)
         {
             var key = (fullKitName ?? string.Empty).Trim();
             if (_lookupTable[key] is Func<KitBase> creator && creator() is { } kit)
@@ -73,7 +59,7 @@ namespace Unicorn
 
             return null;
         }
-
+        
         /// <summary>
         /// 包含namespace的kit脚本全称, 用于生成kit脚本
         /// </summary>
@@ -85,9 +71,7 @@ namespace Unicorn
         /// 关联场景资源, 用于kit脚本逻辑
         /// </summary>
         public UnityEngine.Object[] assets;
-
-        public int sort;
-
+        
         private KitBase _kit;
         private static readonly Hashtable _lookupTable;
     }

@@ -7,12 +7,21 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
+using System.Collections.Generic;
 using Unicorn.Collections;
 
 namespace Unicorn
 {
     internal class KitManager
     {
+        private class KitComparer : IComparer<KitBase>
+        {
+            public int Compare(KitBase a, KitBase b)
+            {
+                return a.sort - b.sort;
+            }
+        }
+        
         static KitManager()
         {
         }
@@ -25,7 +34,7 @@ namespace Unicorn
         {
             if (_dirty)
             {
-                Array.Sort(_kits, (a, b) => a.sort - b.sort);
+                Array.Sort(_kits, 0, _size, _comparer);
                 _dirty = false;
             }
 
@@ -126,6 +135,7 @@ namespace Unicorn
         private bool _dirty;
 
         private KitBase[] _kits = new KitBase[4];
+        private KitComparer _comparer = new();
 
         public static readonly KitManager Instance = new ();
     }
