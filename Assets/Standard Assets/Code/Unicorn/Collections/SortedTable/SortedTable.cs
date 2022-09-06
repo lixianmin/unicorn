@@ -14,13 +14,7 @@ namespace Unicorn.Collections
 {
     [DebuggerDisplay ("Count={Count}")]
     [Serializable]
-	public partial class SortedTable<TKey, TValue> : 
-            IDictionary<TKey, TValue>
-			, IDictionary
-            , ICollection<KeyValuePair<TKey, TValue>>
-            , IEnumerable<KeyValuePair<TKey, TValue>>
-            , ICollection
-            , IEnumerable
+	public partial class SortedTable<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary
 	{
 		public SortedTable ()
 		{
@@ -56,7 +50,7 @@ namespace Unicorn.Collections
         {
         }
 
-        public SortedTable (IDictionary<TKey, TValue> dict, IComparer<TKey> comparer): this((null != dict)? dict.Count: 0, comparer)
+        public SortedTable (IDictionary<TKey, TValue> dict, IComparer<TKey> comparer): this(dict?.Count ?? 0, comparer)
         {
             if (null == dict)
             {
@@ -72,8 +66,7 @@ namespace Unicorn.Collections
 			// contents depending on _version.
 			++_version;
 
-			var table = dict as SortedTable<TKey, TValue>;
-			if (null != table)
+			if (dict is SortedTable<TKey, TValue> table)
 			{
 				Array.Copy(table._keys, _keys, count);
 				Array.Copy(table._values, _values, count);
@@ -292,7 +285,7 @@ namespace Unicorn.Collections
 
 		public void TrimExcess ()
 		{
-			int num = (int) ((double) _keys.Length * 0.9);
+			var num = (int) (_keys.Length * 0.9);
 
 			if (_size < num)
 			{

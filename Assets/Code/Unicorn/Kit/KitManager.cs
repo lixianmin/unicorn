@@ -10,8 +10,29 @@ using Unicorn.Collections;
 
 namespace Unicorn
 {
-    internal static class KitManager
+    internal class KitManager
     {
-        // private readonly SortedTable<>
+        static KitManager()
+        {
+            
+        }
+
+        private KitManager()
+        {
+            
+        }
+
+        public void Add(KitBase kit)
+        {
+            if (kit is not null)
+            {
+                _kits.Add(_idGenerator++, kit);
+            }
+        }
+        
+        private readonly SortedTable<int, KitBase> _kits = new();
+        private int _idGenerator;
+        
+        public static readonly KitManager Instance = new();
     }
 }
