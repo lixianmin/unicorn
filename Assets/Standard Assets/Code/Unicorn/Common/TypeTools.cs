@@ -109,7 +109,7 @@ namespace Unicorn
                 return fields;
             }
 
-            return EmptyArray<FieldInfo>.Instance;
+            return Array.Empty<FieldInfo>();
         }
 
         public static void CreateDelegate<T>(System.Reflection.MethodInfo method, out T lpfnMethod) where T : class

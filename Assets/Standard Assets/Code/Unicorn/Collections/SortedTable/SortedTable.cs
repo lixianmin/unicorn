@@ -593,8 +593,8 @@ namespace Unicorn.Collections
 		protected IComparer<TKey> _comparer;
 		protected int _version;
 
-		private static readonly TKey[] _emptyKeys = EmptyArray<TKey>.Instance;
-		private static readonly TValue[] _emptyValues = EmptyArray<TValue>.Instance;
+		private static readonly TKey[] _emptyKeys = Array.Empty<TKey>();
+		private static readonly TValue[] _emptyValues = Array.Empty<TValue>();
 		private static readonly bool _isKeyNullable = !typeof(TKey).IsSubclassOf(typeof(ValueType));
 	}
 }

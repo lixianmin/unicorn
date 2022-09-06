@@ -105,13 +105,13 @@ namespace Unicorn.IO
 		{
 			if (null == paths)
 			{
-				return EmptyArray<string>.Instance;
+				return Array.Empty<string>();
 			}
 
 			var count = paths.Length;
 			if (count == 0)
 			{
-				return EmptyArray<string>.Instance;
+				return Array.Empty<string>();
 			}
 
 			var digests = new string[count];
@@ -134,7 +134,7 @@ namespace Unicorn.IO
 				}
 				catch
 				{
-
+					// ignored
 				}
 			}
 

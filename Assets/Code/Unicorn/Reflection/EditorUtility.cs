@@ -30,7 +30,7 @@ namespace Unicorn.Reflection
 		{
 			if (!os.isEditor)
 			{
-				return EmptyArray<Object>.Instance;
+				return Array.Empty<Object>();
 			}
 
 			_CheckCreateStaticDelegate("CollectDeepHierarchy", ref _lpfnCollectDeepHierarchy);
@@ -42,7 +42,7 @@ namespace Unicorn.Reflection
 		{
 			if (!os.isEditor)
 			{
-				return EmptyArray<Object>.Instance;
+				return Array.Empty<Object>();
 			}
 
 			_CheckCreateStaticDelegate("CollectDependencies", ref _lpfnCollectDependencies);

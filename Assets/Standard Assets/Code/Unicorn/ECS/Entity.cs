@@ -28,8 +28,8 @@ namespace Unicorn
         private IPart _AddPart(Type type, bool checkDuplicated)
         {
             var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            var constructor = type.GetConstructor(flags, null, CallingConventions.Any, EmptyArray<Type>.Instance, null);
-            var part = constructor?.Invoke(EmptyArray<object>.Instance) as IPart;
+            var constructor = type.GetConstructor(flags, null, CallingConventions.Any, Array.Empty<Type>(), null);
+            var part = constructor?.Invoke(Array.Empty<object>()) as IPart;
             if (part != null)
             {
 	            if (part is IInitPart initPart)

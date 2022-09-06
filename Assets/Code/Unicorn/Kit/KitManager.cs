@@ -6,6 +6,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
 using Unicorn.Collections;
 
 namespace Unicorn
@@ -26,7 +27,7 @@ namespace Unicorn
         {
             if (_isDirty)
             {
-                _kits._Sort();
+                // _kits._Sort();
                 _isDirty = false;
             }
             
@@ -37,12 +38,14 @@ namespace Unicorn
         {
             if (kit is not null)
             {
-                _kits._Append(_idGenerator++, kit);
+                // _kits._Append(_idGenerator++, kit);
                 _isDirty = true;
             }
         }
         
-        private readonly SortedTable<int, KitBase> _kits = new();
+        private KitBase[] _kits = Array.Empty<KitBase>();
+        private int[] _priorities= Array.Empty<int>();
+        
         private int _idGenerator;
         private bool _isDirty;
         

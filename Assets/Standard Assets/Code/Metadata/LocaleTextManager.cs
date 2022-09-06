@@ -220,7 +220,7 @@ namespace Metadata
 
         private void _SetLocaleTexts (string[] localeTexts)
         {
-            _localeTexts = localeTexts ?? EmptyArray<string>.Instance;
+            _localeTexts = localeTexts ?? Array.Empty<string>();
         }
 
         private void _SetLocaleIndices (Dictionary<string, uint> localeIndices)
@@ -246,7 +246,7 @@ namespace Metadata
 
         internal void Clear ()
         {
-            _SetLocaleTexts(EmptyArray<string>.Instance);
+            _SetLocaleTexts(Array.Empty<string>());
             _SetLocaleIndices(null);
         }
 
@@ -261,9 +261,9 @@ namespace Metadata
             return _localeTexts.Length;
         }
 
-        public static LocaleTextManager Instance = new LocaleTextManager();
+        public static readonly LocaleTextManager Instance = new();
 
-        private string[] _localeTexts = EmptyArray<string>.Instance;
+        private string[] _localeTexts = Array.Empty<string>();
         private Dictionary<string, uint> _localeIndices;
 	}
 }

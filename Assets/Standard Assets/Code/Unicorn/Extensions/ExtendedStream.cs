@@ -144,7 +144,7 @@ namespace Unicorn
 			}
 
 			var buffer = new byte[count];
-			stream.Read(buffer, 0, count);
+			_ = stream.Read(buffer, 0, count);
 
 			return buffer;
 		}
@@ -156,7 +156,7 @@ namespace Unicorn
                 throw new ArgumentNullException("stream = null.");
 			}
 			
-            bytes = bytes ?? EmptyArray<byte>.Instance;
+            bytes ??= Array.Empty<byte>();
 			var count = bytes.Length;
 			stream.WriteEx(count);
 			stream.Write(bytes, 0, count);
@@ -164,7 +164,7 @@ namespace Unicorn
 
         private static void _ReadFloatBuffer (Stream stream, int count)
         {
-            stream.Read(_byteBuffer, 0, count);
+            _ = stream.Read(_byteBuffer, 0, count);
             Buffer.BlockCopy(_byteBuffer, 0, _floatBuffer, 0, count);
         }
 

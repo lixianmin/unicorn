@@ -44,7 +44,7 @@ namespace Metadata
         {
             if (null == _layout)
             {
-                var layout = EmptyArray<byte>.Instance;
+                var layout = Array.Empty<byte>();
                 var metadataType = GetMetadataType();
                 if (null != metadataType)
                 {

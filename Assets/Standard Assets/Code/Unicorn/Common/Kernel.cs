@@ -27,7 +27,7 @@ namespace Unicorn
                 return paths;
             }
 
-            return EmptyArray<string>.Instance;
+            return Array.Empty<string>();
         }
 
         public static void makedirs(string name)
