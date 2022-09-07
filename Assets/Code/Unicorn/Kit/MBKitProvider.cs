@@ -33,22 +33,12 @@ namespace Unicorn
         /// </summary>
         private void OnEnable()
         {
-            var kit = _kit;
-            if (kit is not null)
-            {
-                kit.isActiveAndEnabled = isActiveAndEnabled;
-                kit.OnEnable();
-            }
+            _kit?._Enable(isActiveAndEnabled);
         }
 
         private void OnDisable()
         {
-            var kit = _kit;
-            if (kit is not null)
-            {
-                kit.isActiveAndEnabled = isActiveAndEnabled;
-                kit.OnDisable();
-            }
+            _kit?._Disable(false);
         }
         
         private void OnDestroy()

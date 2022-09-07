@@ -17,7 +17,7 @@ namespace Unicorn
     [CanEditMultipleObjects]
     public class MBKitProviderEditor : Editor
     {
-        protected  void OnEnable ()
+        protected void OnEnable ()
         {
             _target = serializedObject.targetObject as MBKitProvider;
             _assetsProperty = serializedObject.FindProperty("assets");
