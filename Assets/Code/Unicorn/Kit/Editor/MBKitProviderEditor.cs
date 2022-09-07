@@ -34,6 +34,7 @@ namespace Unicorn
                 if (_target.fullKitName != _lastFullKitName || _kitNameHits == null)
                 {
                     _lastFullKitName = _target.fullKitName;
+                    _idxSelection = -1; // 重置选中的索引
                     
                     _ResetFullKitNameLabel();
                     
