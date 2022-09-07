@@ -30,6 +30,8 @@ namespace Unicorn
             var factoryPath = _GetFactoryFilePath();
             os.makedirs(Path.GetDirectoryName(factoryPath));
             new KitAutoCode().WriteKitFactory(factoryPath);
+            
+            AssetDatabase.Refresh();
         }
 
         [MenuItem("*Kit/Clear Auto Code", true)]

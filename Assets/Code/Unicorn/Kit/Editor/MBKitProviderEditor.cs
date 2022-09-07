@@ -8,6 +8,7 @@ Copyright (C) - All Rights Reserved
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,9 +22,6 @@ namespace Unicorn
         {
             _target = serializedObject.targetObject as MBKitProvider;
             _assetsProperty = serializedObject.FindProperty("assets");
-            
-            // 初始化 _kitNameHits
-            KitFactory.Search(_target!.fullKitName, _kitNameHints);
         }
 
         public override void OnInspectorGUI ()
@@ -31,7 +29,9 @@ namespace Unicorn
             serializedObject.Update();
             {
                 _target.fullKitName = EditorGUILayout.TextField(_fullKitNameLabel, _target.fullKitName);
-                if (_target.fullKitName != _lastFullKitName)
+                
+                // 当_kitNameHits是null的时间, 需要初始化一次
+                if (_target.fullKitName != _lastFullKitName || _kitNameHits == null)
                 {
                     _lastFullKitName = _target.fullKitName;
                     _fullKitNameLabel = "Full Kit Name";
@@ -44,23 +44,26 @@ namespace Unicorn
                     }
                     
                     // 收集hints需要的kit name
-                    _kitNameHints.Clear();
-                    KitFactory.Search(_target.fullKitName, _kitNameHints);
+                    _kitNameHitsResults.Clear();
+                    KitFactory.Search(_target.fullKitName, _kitNameHitsResults);
+                    _kitNameHits = _kitNameHitsResults.Take(100).ToArray();
                 }
                 
                 // hits部分
                 _hitScrollPosition = GUILayout.BeginScrollView(_hitScrollPosition, GUILayout.Height(100));
                 {
-                    var count = Math.Min(_kitNameHints.Count, 100);
-                    for (var i = 0; i < count; i++)
+                    if (_kitNameHits.Length > 0)
                     {
-                        var fullKitName = _kitNameHints[i];
-                        if (GUILayout.Button(fullKitName))
+                        var lastIndex = _idxSelection;
+                        _idxSelection = GUILayout.SelectionGrid(_idxSelection, _kitNameHits, 1);
+                        if (_idxSelection != lastIndex)
                         {
-                            _target.fullKitName = fullKitName;
-                            
+                            _lastFullKitName = _kitNameHits[_idxSelection];
+                            _target.fullKitName = _lastFullKitName;
+                            // EditorUtility.SetDirty(_target);
+                        
                             // 如果当前是TextField拥有输入焦点, 则设置fullKitName后TextField的文本是不会变化的, 所以需要把输入焦点切走
-                            GUI.FocusControl(fullKitName); 
+                            GUI.FocusControl(string.Empty); 
                         }
                     }
                 }
@@ -76,8 +79,10 @@ namespace Unicorn
 
         private string _lastFullKitName = "invalid default text";
         private string _fullKitNameLabel;
-        private readonly List<string> _kitNameHints = new();
+        private readonly List<string> _kitNameHitsResults = new();
+        private string[] _kitNameHits;
         private Vector2 _hitScrollPosition;
+        private int _idxSelection = -1;
 
         private SerializedProperty _assetsProperty;
         private MBKitProvider _target;

@@ -42,6 +42,7 @@ namespace Unicorn
 
         public static void Search(string kitName, List<string> results)
         {
+            kitName ??= string.Empty;
             foreach (var key in _lookupTable.Keys)
             {
                 var fullKitName = key as string;
