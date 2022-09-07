@@ -10,7 +10,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Unicorn.Kit
+namespace Unicorn
 {
     internal class KitMenus
     {

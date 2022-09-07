@@ -8,6 +8,7 @@ Copyright (C) - All Rights Reserved
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Unicorn
 {
@@ -37,6 +38,20 @@ namespace Unicorn
             }
 
             return null;
+        }
+
+        public static void Search(string kitName, List<string> results)
+        {
+            foreach (var key in _lookupTable.Keys)
+            {
+                var fullKitName = key as string;
+                if (fullKitName!.IndexOf(kitName, StringComparison.OrdinalIgnoreCase) > -1)
+                {
+                    results.Add(fullKitName);
+                }
+            }
+                
+            results.Sort();
         }
         
         private static readonly Hashtable _lookupTable;
