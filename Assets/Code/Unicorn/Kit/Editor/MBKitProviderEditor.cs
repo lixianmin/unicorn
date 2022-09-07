@@ -34,14 +34,8 @@ namespace Unicorn
                 if (_target.fullKitName != _lastFullKitName || _kitNameHits == null)
                 {
                     _lastFullKitName = _target.fullKitName;
-                    _fullKitNameLabel = "Full Kit Name";
-
-                    // 如果是有效的kit name, 则把sort也打印出来
-                    var kit = KitFactory.Create(_lastFullKitName);
-                    if (kit is not null)
-                    {
-                        _fullKitNameLabel = $"Full Kit Name [sort={TypeTools.SetDefaultTypeIndex(kit.GetType())}]";
-                    }
+                    
+                    _ResetFullKitNameLabel();
                     
                     // 收集hints需要的kit name
                     _kitNameHitsResults.Clear();
@@ -60,8 +54,10 @@ namespace Unicorn
                         {
                             _lastFullKitName = _kitNameHits[_idxSelection];
                             _target.fullKitName = _lastFullKitName;
+                            
+                            _ResetFullKitNameLabel();
+                            
                             // EditorUtility.SetDirty(_target);
-                        
                             // 如果当前是TextField拥有输入焦点, 则设置fullKitName后TextField的文本是不会变化的, 所以需要把输入焦点切走
                             GUI.FocusControl(string.Empty); 
                         }
@@ -77,6 +73,18 @@ namespace Unicorn
             serializedObject.ApplyModifiedProperties();
         }
 
+        private void _ResetFullKitNameLabel()
+        {
+            _fullKitNameLabel = "Full Kit Name";
+
+            // 如果是有效的kit name, 则把sort也打印出来
+            var kit = KitFactory.Create(_lastFullKitName);
+            if (kit is not null)
+            {
+                _fullKitNameLabel = $"Full Kit Name [sort={TypeTools.SetDefaultTypeIndex(kit.GetType())}]";
+            }
+        }
+        
         private string _lastFullKitName = "invalid default text";
         private string _fullKitNameLabel;
         private readonly List<string> _kitNameHitsResults = new();
