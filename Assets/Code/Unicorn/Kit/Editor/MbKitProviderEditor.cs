@@ -6,7 +6,6 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -16,7 +15,7 @@ namespace Unicorn
 {
     [CustomEditor(typeof(MbKitProvider), true)]
     [CanEditMultipleObjects]
-    public class MBKitProviderEditor : Editor
+    public class MbKitProviderEditor : Editor
     {
         protected void OnEnable ()
         {
