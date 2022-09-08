@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Unicorn
 {
-    public class MBKitProvider : MonoBehaviour
+    public class MbKitProvider : MonoBehaviour
     {
         private void Awake()
         {

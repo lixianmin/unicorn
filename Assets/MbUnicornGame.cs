@@ -8,13 +8,12 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.IO;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unicorn;
 using Metadata;
 //using Unicorn.Web;
 
-public class MBUnicornGame : MonoBehaviour
+public class MbUnicornGame : MonoBehaviour
 {
 	class GameMetadataManager : MetadataManager
     {

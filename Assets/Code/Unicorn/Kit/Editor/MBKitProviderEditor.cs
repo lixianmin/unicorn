@@ -14,13 +14,13 @@ using UnityEngine;
 
 namespace Unicorn
 {
-    [CustomEditor(typeof(MBKitProvider), true)]
+    [CustomEditor(typeof(MbKitProvider), true)]
     [CanEditMultipleObjects]
     public class MBKitProviderEditor : Editor
     {
         protected void OnEnable ()
         {
-            _target = serializedObject.targetObject as MBKitProvider;
+            _target = serializedObject.targetObject as MbKitProvider;
             _assetsProperty = serializedObject.FindProperty("assets");
         }
 
@@ -94,6 +94,6 @@ namespace Unicorn
         private int _idxSelection = -1;
 
         private SerializedProperty _assetsProperty;
-        private MBKitProvider _target;
+        private MbKitProvider _target;
     }
 }
