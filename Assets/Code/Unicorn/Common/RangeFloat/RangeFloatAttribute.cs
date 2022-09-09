@@ -9,9 +9,9 @@ using System;
 
 namespace Unicorn
 {
-    public class MinMaxRangeAttribute : Attribute
+    public class RangeFloatAttribute : Attribute
     {
-        public MinMaxRangeAttribute(float min, float max)
+        public RangeFloatAttribute(float min, float max)
         {
             Min = min;
             Max = max;

@@ -13,7 +13,7 @@ namespace Unicorn
     [Serializable]
     public struct RangeFloat
     {
-        public float MinValue;
-        public float MaxValue;
+        public float minValue;
+        public float maxValue;
     }
 }

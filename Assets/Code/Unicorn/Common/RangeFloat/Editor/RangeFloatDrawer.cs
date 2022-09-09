@@ -18,8 +18,8 @@ namespace Unicorn
             label = EditorGUI.BeginProperty(position, label, property);
             position = EditorGUI.PrefixLabel(position, label);
 
-            var minProp = property.FindPropertyRelative("MinValue");
-            var maxProp = property.FindPropertyRelative("MaxValue");
+            var minProp = property.FindPropertyRelative("minValue");
+            var maxProp = property.FindPropertyRelative("maxValue");
 
             var minValue = minProp.floatValue;
             var maxValue = maxProp.floatValue;
@@ -27,7 +27,7 @@ namespace Unicorn
             float rangeMin = 0;
             float rangeMax = 1;
 
-            var ranges = (MinMaxRangeAttribute[])fieldInfo.GetCustomAttributes(typeof(MinMaxRangeAttribute), true);
+            var ranges = (RangeFloatAttribute[])fieldInfo.GetCustomAttributes(typeof(RangeFloatAttribute), true);
             if (ranges.Length > 0)
             {
                 rangeMin = ranges[0].Min;
