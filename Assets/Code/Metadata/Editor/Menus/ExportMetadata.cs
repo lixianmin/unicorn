@@ -20,7 +20,7 @@ namespace Metadata.Menus
 {
     public partial class ExportMetadata
     {
-        [MenuItem(EditorMetaTools.MenuRoot + "Dispatch Metadata %#m", false, 201)]
+        [MenuItem(EditorMetaTools.MenuRoot + "Dispatch Metadata &^m", false, 201)]
 		public static void Dispatch ()
 		{
 			var startTime = Time.realtimeSinceStartup;
