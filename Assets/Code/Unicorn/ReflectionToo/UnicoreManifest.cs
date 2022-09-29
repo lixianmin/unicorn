@@ -10,13 +10,12 @@ using System;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.Serialization;
 using EditorUtility = Unicorn.Reflection.EditorUtility;
 
 namespace Unicorn
 {
 	[Serializable]
-    public class UnicornManifest
+    public partial class UnicornManifest
     {
 		public enum PathType
 		{
@@ -132,24 +131,5 @@ namespace Unicorn
 		{
 			PlayerSettings.colorSpace = playerSettings.colorSpace == "Linear" ? ColorSpace.Linear : ColorSpace.Gamma;
 		}
-		
-		public string[] relativePaths = {};
-
-		[Serializable]
-		public class Settings
-		{
-			public string colorSpace = "Linear";
-		}
-
-	    public Settings playerSettings = new();
-		
-		/// <summary>
-		/// 控制美术的项目不能执行MakeAutoCode相关逻辑
-		/// </summary>
-		public bool makeAutoCode;
-		public bool clearAutoCode;
-		
-		// public string spriteDirPath = "Assets/Art/UIResource/UI/Sprite"; // 存放碎图sprite的文件夹地址.
-        // public string uiPrefabDirPath = "Assets/prefabs/ui"; // ui界面prefab的文件夹地址.
     }
 }
