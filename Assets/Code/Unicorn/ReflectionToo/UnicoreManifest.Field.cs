@@ -18,8 +18,8 @@ namespace Unicorn
             public string colorSpace = "Linear";
         }
         
-        public Settings playerSettings = new();
-
+        public Settings editorSettings = new();
+        
         public string[] relativePaths = {};
 
         /// <summary>

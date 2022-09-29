@@ -9,7 +9,6 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.IO;
 using UnityEngine;
-using UnityEditor;
 using EditorUtility = Unicorn.Reflection.EditorUtility;
 
 namespace Unicorn
@@ -37,7 +36,6 @@ namespace Unicorn
 			if (File.Exists(manifestPath))
 			{
 				var manifest = XmlTools.Deserialize<UnicornManifest>(manifestPath);
-				manifest._LoadPlayerSettings();
 				return manifest;
             }
 			else
@@ -125,11 +123,6 @@ namespace Unicorn
 			var manifest = OpenOrCreate();
 			var fullpath = manifest._CheckChoosePath(pathType, title, true);
 			return fullpath;
-		}
-
-		private void _LoadPlayerSettings()
-		{
-			PlayerSettings.colorSpace = playerSettings.colorSpace == "Linear" ? ColorSpace.Linear : ColorSpace.Gamma;
 		}
     }
 }

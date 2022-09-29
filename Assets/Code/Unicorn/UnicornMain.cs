@@ -218,9 +218,9 @@ namespace Unicorn
             }
         }
 
-		public bool IsInited		{ get { return _isInited; } }
+		public bool IsInited => _isInited;
 
-//		[System.Obsolete("Application.logMessageReceived")]
+		//		[System.Obsolete("Application.logMessageReceived")]
 //		public event Application.LogCallback OnLogCallBack;
 		public event Action			OnInited;
         public event Action   		OnDisposing;
