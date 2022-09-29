@@ -19,7 +19,7 @@ namespace Metadata.Menus
 		private static bool _Clear_Validate ()
 		{
 			var manifest = UnicornManifest.OpenOrCreate();
-			var isValid = manifest.clearAutoCode && !EditorApplication.isCompiling;
+			var isValid = manifest.makeAutoCode && !EditorApplication.isCompiling;
             return isValid;
         }
 

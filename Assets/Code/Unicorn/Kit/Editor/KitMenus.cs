@@ -17,7 +17,8 @@ namespace Unicorn
         [MenuItem("*Kit/Make Auto Code", true)]
         private static bool ValidateMake ()
         {
-            var isValid = !EditorApplication.isCompiling;
+            var manifest = UnicornManifest.OpenOrCreate();
+            var isValid = manifest.makeAutoCode && !EditorApplication.isCompiling;
             return isValid;
         }
         
@@ -37,7 +38,8 @@ namespace Unicorn
         [MenuItem("*Kit/Clear Auto Code", true)]
         private static bool ValidateClear()
         {
-            var isValid = !EditorApplication.isCompiling;
+            var manifest = UnicornManifest.OpenOrCreate();
+            var isValid = manifest.makeAutoCode && !EditorApplication.isCompiling;
             return isValid;
         }
 
