@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UnicornManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <RelativePaths>
-    <string>../../../../../code/unity-vr/resource</string>
-    <string>../../../../../code/unity-vr/resource/lua</string>
-    <string>../../../../../code/unity-vr/resource/metadata</string>
-  </RelativePaths>
-  <MakeAutoCode>true</MakeAutoCode>
-  <ClearAutoCode>true</ClearAutoCode>
-  <spriteDirPath>Assets/Art/UIResource/UI/Sprite</spriteDirPath>
-  <uiPrefabDirPath>Assets/prefabs/ui</uiPrefabDirPath>
+  <relativePaths />
+  <playerSettings>
+    <colorSpace>Linear</colorSpace>
+  </playerSettings>
+  <makeAutoCode>false</makeAutoCode>
+  <clearAutoCode>false</clearAutoCode>
 </UnicornManifest>

@@ -9,7 +9,9 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.IO;
 using UnityEngine;
-using Unicorn.Reflection;
+using UnityEditor;
+using UnityEngine.Serialization;
+using EditorUtility = Unicorn.Reflection.EditorUtility;
 
 namespace Unicorn
 {
@@ -36,6 +38,7 @@ namespace Unicorn
 			if (File.Exists(manifestPath))
 			{
 				var manifest = XmlTools.Deserialize<UnicornManifest>(manifestPath);
+				manifest._LoadPlayerSettings();
 				return manifest;
             }
 			else
@@ -56,13 +59,13 @@ namespace Unicorn
 		private string _CheckChoosePath (PathType pathType, string title, bool manualSelect)
 		{
 			var index = (int) pathType;
-			if (null == RelativePaths || index >= RelativePaths.Length)
+			if (null == relativePaths || index >= relativePaths.Length)
 			{
 				var minCount = index + 1;
-				Array.Resize(ref RelativePaths, minCount);
+				Array.Resize(ref relativePaths, minCount);
 			}
 
-			if (string.IsNullOrEmpty(RelativePaths[index]))
+			if (string.IsNullOrEmpty(relativePaths[index]))
 			{
 				if (!manualSelect)
 				{
@@ -78,14 +81,14 @@ namespace Unicorn
 				
 				if (Directory.Exists(relativePath))
 				{
-					RelativePaths[index] = relativePath;
+					relativePaths[index] = relativePath;
 
 					var manifestPath = _GetManifestPath();
 					XmlTools.Serialize(manifestPath, this);
 				}
 			}
 			
-			var fullpath = Path.GetFullPath(RelativePaths[index]);
+			var fullpath = Path.GetFullPath(relativePaths[index]);
 			return fullpath;
 		}
 
@@ -103,6 +106,7 @@ namespace Unicorn
             {
                 return "";
             }
+            
 			var title = "Please choose lua script root directory";
 			var manifest = OpenOrCreate();
 			var fullpath = manifest._CheckChoosePath(PathType.LuaScriptRoot, title, true);
@@ -123,12 +127,29 @@ namespace Unicorn
 			var fullpath = manifest._CheckChoosePath(pathType, title, true);
 			return fullpath;
 		}
-		
-		public string[] RelativePaths;
 
-		public bool MakeAutoCode;
-		public bool ClearAutoCode;
-		public string spriteDirPath = "Assets/Art/UIResource/UI/Sprite"; // 存放碎图sprite的文件夹地址.
-        public string uiPrefabDirPath = "Assets/prefabs/ui"; // ui界面prefab的文件夹地址.
+		private void _LoadPlayerSettings()
+		{
+			PlayerSettings.colorSpace = playerSettings.colorSpace == "Linear" ? ColorSpace.Linear : ColorSpace.Gamma;
+		}
+		
+		public string[] relativePaths = {};
+
+		[Serializable]
+		public class Settings
+		{
+			public string colorSpace = "Linear";
+		}
+
+	    public Settings playerSettings = new();
+		
+		/// <summary>
+		/// 控制美术的项目不能执行MakeAutoCode相关逻辑
+		/// </summary>
+		public bool makeAutoCode;
+		public bool clearAutoCode;
+		
+		// public string spriteDirPath = "Assets/Art/UIResource/UI/Sprite"; // 存放碎图sprite的文件夹地址.
+        // public string uiPrefabDirPath = "Assets/prefabs/ui"; // ui界面prefab的文件夹地址.
     }
 }

@@ -28,6 +28,7 @@ namespace Unicorn
                 case PlayModeStateChange.ExitingEditMode:
                     // 曾经想尝试使用EnteredPlayMode事件, 这样可以把ExitingEditMode这个时机留出来给其它代码使用. 但试验失败, EnteredPlayMode时机刷新代码会导致代码空引用报错
                     // 也可以手动关闭Preference->AssetPipeline->AutoRefresh 禁用改动代码后AutoRefresh
+                    // 这个代码在unity 2022.1中失效了，所以只能手动在unity3d中设置auto refresh为Disabled
                     if (EditorPrefs.HasKey("kAutoRefresh"))
                     {
                         EditorPrefs.SetBool("kAutoRefresh", false);    

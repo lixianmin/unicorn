@@ -19,19 +19,13 @@ namespace Metadata.Menus
 		private static bool _Clear_Validate ()
 		{
 			var manifest = UnicornManifest.OpenOrCreate();
-			var isValid = manifest.ClearAutoCode && !EditorApplication.isCompiling;
+			var isValid = manifest.clearAutoCode && !EditorApplication.isCompiling;
             return isValid;
         }
 
         [MenuItem(EditorMetaTools.MenuRoot + "Clear Auto Code", false, 103)]
         public static void Clear ()
         {
-            // if (EditorApplication.isCompiling)
-            // {
-            //     EditorUtility.DisplayDialog("Warning", "Wait for compiling", "OK");
-            //     return;
-            // }
-
             var directories = new string[]
             {
                 EditorMetaTools.StandardAutoCodeDirectory,

@@ -25,9 +25,10 @@ namespace Unicorn
 		static EditorTools()
 		{
 			EditorApplication.update += _OnUpdateCallback;
-
+			// EditorSettings
+			
 			// 下面这个在scene打开时调用回调的方案，在头几帧的时候，收到不回调消息，猜测是编译未完成导致的
-			//            _AttachEditorSceneOpenedMethods();
+			// _AttachEditorSceneOpenedMethods();
 		}
 
 		//        private static void _AttachEditorSceneOpenedMethods ()
@@ -75,7 +76,7 @@ namespace Unicorn
 			if (!string.IsNullOrEmpty(menuItemPath))
 			{
 				bool suc = UnityEditor.EditorApplication.ExecuteMenuItem(menuItemPath);
-				string hint = string.Format("Unicorn.EditorTools.ExecuteMenuItem({0})", menuItemPath);
+				string hint = $"Unicorn.EditorTools.ExecuteMenuItem({menuItemPath})";
 				if (suc)
 				{
 					Console.WriteLine(hint + " Success!");
@@ -102,9 +103,9 @@ namespace Unicorn
 			}
 
 			var progress = current + cycleLength - _nextProgressTime;
-			var isCaceled = EditorUtility.DisplayCancelableProgressBar(title, info, progress);
+			var isCanceled = EditorUtility.DisplayCancelableProgressBar(title, info, progress);
 
-			return isCaceled;
+			return isCanceled;
 		}
 
 		private static void _OnUpdateCallback()
@@ -117,7 +118,7 @@ namespace Unicorn
 					for (int i = 0; i < count; ++i)
 					{
 						var callback = _updates[i] as Action;
-						callback();
+						callback?.Invoke();
 					}
 				}
 			}
@@ -153,14 +154,11 @@ namespace Unicorn
 			{
 				return width / 2;
 			}
-			else
-			{
-				return width;
-			}
+
+			return width;
 		}
 
 		private static float _nextProgressTime;
 		private static readonly ArrayList _updates = new ();
-		//        private static MethodInfo[] _sceneOpenedCallbacks;
 	}
 }
