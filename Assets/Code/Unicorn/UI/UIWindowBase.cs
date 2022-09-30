@@ -1,3 +1,4 @@
+
 /********************************************************************
 created:    2022-08-15
 author:     lixianmin
@@ -30,17 +31,17 @@ namespace Unicorn.UI
         public virtual RenderQueue GetRenderQueue() { return RenderQueue.Geometry; }
         
         // 加载事件相关
-        public virtual void OnOpened() {}
         public virtual void OnLoaded() {}
+        public virtual void OnOpened() {}
         public virtual void OnActivated() {}
         public virtual void OnDeactivating() {}
         public virtual void OnClosing() {}
         public virtual void OnUnloading() {}
 
         // 逻辑帧: 大概10fps
-        public virtual void LogicUpdate(float deltaTime) {}
+        // public virtual void LogicUpdate() {}
         // 正常Update
-        public virtual void Update(float deltaTime) {}
+        public virtual void Update() {}
 
         internal virtual void Dispose()
         {

@@ -17,6 +17,8 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 using Unicorn.IO;
+using Unicorn.UI;
+
 // using Unicorn.Web;
 
 namespace Unicorn
@@ -131,6 +133,7 @@ namespace Unicorn
 				CoroutineManager.Update();
 				_partUpdateSystem.Update();
 				_kitManager.Update();
+				UIManager.Update();
                 Loom.Update();
 
                 DisposableRecycler.Update();

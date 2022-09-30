@@ -85,22 +85,23 @@ namespace Unicorn.UI
             return GetWindow(typeof(T)) as T;
         }
         
-        public static void LogicUpdate(float deltaTime)
-        {
-            var snapshot = _TakeSnapshot();
-            var windows = snapshot.windows;
-            var count = windows.Count;
-            for (var i = 0; i < count; i++)
-            {
-                var window = windows[i];
-                if (window.GetFetus().isLoaded)
-                {
-                    window.LogicUpdate(deltaTime);
-                }
-            }
-        }
+        // 目前没有必须使用LogicUpdate的需求, 因此先注释掉, 回头有实际需求再打开
+        // public static void LogicUpdate(float deltaTime)
+        // {
+        //     var snapshot = _TakeSnapshot();
+        //     var windows = snapshot.windows;
+        //     var count = windows.Count;
+        //     for (var i = 0; i < count; i++)
+        //     {
+        //         var window = windows[i];
+        //         if (window.GetFetus().isLoaded)
+        //         {
+        //             window.LogicUpdate(deltaTime);
+        //         }
+        //     }
+        // }
         
-        public static void Update(float deltaTime)
+        internal static void Update()
         {
             var snapshot = _TakeSnapshot();
             var windows = snapshot.windows;
@@ -110,7 +111,7 @@ namespace Unicorn.UI
                 var window = windows[i];
                 if (window.GetFetus().isLoaded)
                 {
-                    window.Update(deltaTime);
+                    window.Update();
                 }
             }
         }
