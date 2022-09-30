@@ -29,7 +29,7 @@ namespace Unicorn
             if (colorSpace == ColorSpace.Linear)
             {
                 // 只有以下平台是支持Linear空间的
-                // 参考：https://docs.unity3d.com/cn/current/Manual/LinearRendering-GammaTextures.html
+                // 参考：https://docs.unity3d.com/2022.2/Documentation/Manual/LinearRendering-GammaTextures.html
                 var isValidBuildTarget = false;
                 switch (EditorUserBuildSettings.activeBuildTarget)
                 {
@@ -39,6 +39,7 @@ namespace Unicorn
                     case BuildTarget.StandaloneLinux64:
                     case BuildTarget.Android:
                     case BuildTarget.iOS:
+                    case BuildTarget.WebGL:
                         isValidBuildTarget = true;
                         break;
                 }
