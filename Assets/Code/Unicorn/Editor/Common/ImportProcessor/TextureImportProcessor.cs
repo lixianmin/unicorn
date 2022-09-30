@@ -19,6 +19,8 @@ namespace Unicorn
             var isChanged = false;
             
             // 某些纹理必须位于gamma空间，而另外一些则倾向于是linear空间
+            // 我看了texture的inspector面板，只有default的时候是可以自由勾选sRBGTexture的，这是否意味着在其它情况下无论怎么勾选的，都不影响？
+            // 比如，如果是textureType是lightmap，那是否意味着无论如何都会被当作gamma空间的纹理处理？
             // https://docs.unity3d.com/2022.2/Documentation/Manual/LinearRendering-LinearTextures.html
             var isLinear = PlayerSettings.colorSpace == ColorSpace.Linear;
             if (isLinear)
