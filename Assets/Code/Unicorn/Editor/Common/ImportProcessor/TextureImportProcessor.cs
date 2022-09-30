@@ -35,9 +35,9 @@ namespace Unicorn
                 }
             }
             
-            var mustGammaTexture = importer.textureType is TextureImporterType.Lightmap 
-                or TextureImporterType.DirectionalLightmap
-                or TextureImporterType.GUI; // GUI这个实指 Editor GUI and Legacy GUI，现在实际用的GUI类型是Sprite那个 
+            // lightmap纹理在linear空间计算但存储在gamma空间，这一点跟colorSpace无关。所以lightmap不需要代码自动转换
+            // https://docs.unity3d.com/2021.3/Documentation/Manual/LinearRendering-GammaTextures.html
+            var mustGammaTexture = importer.textureType is TextureImporterType.GUI; // GUI这个实指 Editor GUI and Legacy GUI，现在实际用的Unity.GUI类型是Sprite那个 
             if (!importer.sRGBTexture && mustGammaTexture)
             {
                 importer.sRGBTexture = true;
