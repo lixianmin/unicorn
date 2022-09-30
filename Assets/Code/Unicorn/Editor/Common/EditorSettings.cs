@@ -12,14 +12,21 @@ using UnityEngine;
 
 namespace Unicorn
 {
-    public class EditorSettings
+    internal class EditorSettings
     {
         [DidReloadScripts]
         private static void Reload()
         {
             var manifest = UnicornManifest.OpenOrCreate();
+            
             // 设置colorSpace，默认使用Linear空间
-            PlayerSettings.colorSpace = manifest.editorSettings.colorSpace == "Linear" ? ColorSpace.Linear : ColorSpace.Gamma;
+            var name = manifest.editorSettings.colorSpace;
+            var colorSpace = name == "Linear" ? ColorSpace.Linear : ColorSpace.Gamma;
+            if (PlayerSettings.colorSpace != colorSpace)
+            {
+                PlayerSettings.colorSpace = colorSpace;
+                Console.WriteLine($"(manifest.editorSettings.colorSpace={name}) => (PlayerSettings.colorSpace={name})");
+            }
         }
     }
 }
