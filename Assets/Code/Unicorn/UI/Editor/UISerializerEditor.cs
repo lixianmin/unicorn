@@ -353,6 +353,12 @@ namespace Unicorn.UI
 
         public static void SerializePrefab (UISerializer rootScript)
         {
+            if (rootScript is null)
+            {
+                Console.Error.WriteLine("rootScript is null");    
+                return;
+            }
+            
             Console.WriteLine ("Begin serializing **********************");
 
             var root = rootScript.transform;
