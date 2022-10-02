@@ -20,6 +20,7 @@ namespace Unicorn.UI.States
                 _openAnimation = serializer.openWindowAnimation;
                 if (_openAnimation is not null)
                 {
+                    _openAnimation.enabled = true;
                     _openAnimation.Init(() =>
                     {
                         _OnOpenWindowAnimationDone(fetus);
@@ -56,6 +57,7 @@ namespace Unicorn.UI.States
         {
             _playAnimationMask.CloseWindow();
             _isPlaying = false;
+            _openAnimation.enabled = false;
 
             if (fetus.isDelayedCloseWindow)
             {

@@ -14,7 +14,7 @@ namespace Unicorn
     {
         public static void SetEnabledEx (this Behaviour behaviour, bool enabled)
         {
-            if (null != behaviour)
+            if (behaviour is not null)
             {
                 behaviour.enabled = enabled;
             }
@@ -22,12 +22,7 @@ namespace Unicorn
 
         public static bool GetEnabledEx (this Behaviour behaviour)
         {
-            if (null != behaviour)
-            {
-                return behaviour.enabled;
-            }
-
-            return false;
+            return behaviour is not null && behaviour.enabled;
         }
     }
 }

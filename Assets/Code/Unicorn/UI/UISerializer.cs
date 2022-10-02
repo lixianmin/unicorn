@@ -63,6 +63,9 @@ namespace Unicorn.UI
         {
             _ResetLabelsFont();
             _scripts.Add(this, this);
+
+            openWindowAnimation.SetEnabledEx(false);
+            closeWindowAnimation.SetEnabledEx(false);
         }
 
         private void Destroy ()
