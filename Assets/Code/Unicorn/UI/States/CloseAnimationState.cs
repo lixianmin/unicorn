@@ -23,12 +23,15 @@ namespace Unicorn.UI.States
             var serializer = fetus.GetSerializer();
             if (serializer is not null)
             {
-                var script = serializer.closeWindowScript;
-                var evt = serializer.onCloseWindowFinished;
-                if (script is not null && evt is not null)
+                _closeAnimation = serializer.closeWindowAnimation;
+                if (_closeAnimation is not null)
                 {
-                    _closeAnimation = new UIAnimation(evt);
-                    _isPlaying = _closeAnimation.PlayAnimation(script, ()=>_OnCloseWindowFinishedCallback(fetus));
+                    _closeAnimation.OnAnimationDone = () =>
+                    {
+                        _OnCloseWindowAnimationDone(fetus);
+                    };
+                    
+                    _isPlaying = true;
                 }
             }
             
@@ -44,7 +47,6 @@ namespace Unicorn.UI.States
 
         public override void OnExit(WindowFetus fetus, object arg1)
         {
-            _closeAnimation?.Dispose();
             _closeAnimation = null;
 
             if (_isPlaying)
@@ -54,7 +56,7 @@ namespace Unicorn.UI.States
             }
         }
 
-        private void _OnCloseWindowFinishedCallback(WindowFetus fetus)
+        private void _OnCloseWindowAnimationDone(WindowFetus fetus)
         {
             _playAnimationMask.CloseWindow();
             _isPlaying = false;
@@ -80,7 +82,7 @@ namespace Unicorn.UI.States
             fetus.isDelayedOpenWindow = false;
         }
 
-        private UIAnimation _closeAnimation;
+        private UIWindowAnimation _closeAnimation;
         private bool _isPlaying;
     }
 }

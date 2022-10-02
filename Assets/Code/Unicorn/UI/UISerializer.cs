@@ -178,16 +178,14 @@ namespace Unicorn.UI
 
         private static string[] _rawFontNames = Array.Empty<string>();
         private static Font[] _localeFonts = null;
-        private static readonly Hashtable _scripts = new Hashtable();
+        private static readonly Hashtable _scripts = new();
 
         private static Action<UISerializer> _lpfnSerializePrefab;
 
         public WidgetData[] widgetDatas = null;
         
-        public MonoBehaviour openWindowScript;
-        public UnityEvent onOpenWindowFinished;
-        public MonoBehaviour closeWindowScript;
-        public UnityEvent onCloseWindowFinished;
+        public UIWindowAnimation openWindowAnimation;
+        public UIWindowAnimation closeWindowAnimation;
         
         public Text[] labels = null;
     }
