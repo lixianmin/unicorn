@@ -14,12 +14,18 @@ namespace Unicorn.UI
 {
     public abstract class UIWindowAnimation : MonoBehaviour
     {
-        protected virtual void Start()
+        internal void Init(Action onAnimationDone)
         {
+            if (onAnimationDone == null)
+            {
+                return;
+            }
+            
+            _onAnimationDone = onAnimationDone;
             OnAnimationComplete += _OnAnimationDone;
             CoroutineManager.StartCoroutine(_CoAnimationTimeout(), out _animationRoutine);
         }
-
+       
         private IEnumerator _CoAnimationTimeout()
         {
             const float maxTime = 5.0f;
@@ -38,13 +44,13 @@ namespace Unicorn.UI
             
             _animationRoutine = null;
             OnAnimationComplete -= _OnAnimationDone;
-            OnAnimationDone?.Invoke();
+            _onAnimationDone?.Invoke();
         }
 
         /// <summary>
         /// 无论是OnAnimationComplete还是_CoAnimationTimeout(), 都被会调用OnAnimationDone
         /// </summary>
-        internal Action OnAnimationDone;
+        private Action _onAnimationDone;
         
         private CoroutineItem _animationRoutine;
         
