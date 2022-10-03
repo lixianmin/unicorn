@@ -11,6 +11,7 @@ namespace Unicorn
 {
 	public abstract class Disposable : IDisposable, IIsDisposed
 	{
+		[Flags]
 		private enum Flags : ushort
 		{
 			None = 0,

@@ -21,18 +21,14 @@ namespace Unicorn
 			}
 		}
 
-		private static void _RunAsyncAction(object state)
+		public static void RunOnMainThread(Action action)
 		{
-			var action = state as Action;
-			CallbackTools.Handle(ref action, "[Loom._RunAsyncAction()]");
-		}
-
-		public static void QueueOnMainThread(Action action)
-		{
-			if (null == action) return;
-			lock (_locker)
+			if (null != action)
 			{
-				_receivedActions.Add(action);
+				lock (_locker)
+				{
+					_receivedActions.Add(action);
+				}
 			}
 		}
 
@@ -61,7 +57,11 @@ namespace Unicorn
 			}
 		}
 
-		private static readonly WaitCallback _lpfnRunAsyncAction = _RunAsyncAction;
+		private static readonly WaitCallback _lpfnRunAsyncAction = state =>
+		{
+			var action = state as Action;
+			CallbackTools.Handle(ref action, "[Loom._RunAsyncAction()]");
+		};
 
 		private static readonly object _locker = new();
 		private static readonly ArrayList _receivedActions = new();

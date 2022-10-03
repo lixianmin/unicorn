@@ -26,7 +26,7 @@ public enum ConsoleFlags : ushort
 	FlushAtIntervals = 0x08,
 }
 
-public static partial class Console
+public static class Console
 {
 	// We use static ctor, because in editor mode there is no Way to call Init().
 	static Console()
@@ -143,11 +143,11 @@ public static partial class Console
 					sbText.AppendLine();
 
 					var text = _AppendStackTrace(sbText);
-					Loom.QueueOnMainThread(() => output(text));
+					Loom.RunOnMainThread(() => output(text));
 				}
 				else
 				{
-					Loom.QueueOnMainThread(() => output(message));
+					Loom.RunOnMainThread(() => output(message));
 				}
 			}
 		}
