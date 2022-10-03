@@ -7,12 +7,20 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 using System;
 using System.Threading;
-using System.Collections;
+using System.Collections.Generic;
+using Unicorn.Collections;
+using UnityEngine;
 
 namespace Unicorn
 {
 	public static class Loom
 	{
+		private struct Item
+		{
+			public Action aciton;
+			public float runTime;
+		}
+		
 		public static void RunAsync(Action action)
 		{
 			if (null != action)
@@ -21,13 +29,13 @@ namespace Unicorn
 			}
 		}
 
-		public static void RunOnMainThread(Action action)
+		public static void RunDelayed(Action action, float delayedSeconds = 0)
 		{
 			if (null != action)
 			{
 				lock (_locker)
 				{
-					_receivedActions.Add(action);
+					_receivedActions.Add(new Item{aciton = action, runTime = Time.time + delayedSeconds});
 				}
 			}
 		}
@@ -39,21 +47,20 @@ namespace Unicorn
 				var count = _receivedActions.Count;
 				if (count > 0)
 				{
-					_tempActions.AddRange(_receivedActions);
+					for (int i = 0; i < count; i++)
+					{
+						var item = _receivedActions[i];
+						_delayedActions.Enqueue(item.aciton, item.runTime);
+					}
+
 					_receivedActions.Clear();
 				}
 			}
 
-			var actionCount = _tempActions.Count;
-			if (actionCount > 0)
+			while (_delayedActions.TryPeek(out var action, out var runTime) && Time.time >= runTime && !UpdateTools.IsTimeout())
 			{
-				for (var i = 0; i < actionCount; i++)
-				{
-					var action = _tempActions[i] as Action;
-					CallbackTools.Handle(ref action , "[Loom.Update()]");
-				}
-				
-				_tempActions.Clear();
+				CallbackTools.Handle(ref action , "[Loom.Update()]");
+				_delayedActions.Dequeue();
 			}
 		}
 
@@ -64,7 +71,7 @@ namespace Unicorn
 		};
 
 		private static readonly object _locker = new();
-		private static readonly ArrayList _receivedActions = new();
-		private static readonly ArrayList _tempActions = new();
+		private static readonly List<Item> _receivedActions = new();
+		private static readonly PriorityQueue<Action, float> _delayedActions = new();
 	}
 }

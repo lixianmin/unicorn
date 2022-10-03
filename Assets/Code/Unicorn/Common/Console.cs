@@ -143,11 +143,11 @@ public static class Console
 					sbText.AppendLine();
 
 					var text = _AppendStackTrace(sbText);
-					Loom.RunOnMainThread(() => output(text));
+					Loom.RunDelayed(() => output(text));
 				}
 				else
 				{
-					Loom.RunOnMainThread(() => output(message));
+					Loom.RunDelayed(() => output(message));
 				}
 			}
 		}
