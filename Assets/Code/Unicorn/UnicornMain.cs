@@ -82,10 +82,7 @@ namespace Unicorn
             //ParticleRenderQueueRemapper.Enable = true;
 			System.Net.ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d)=>true;
 
-            if (null != OnInited)
-            {
-                OnInited();
-            }
+			OnInited?.Invoke();
         }
 
 //        private bool _AcceptAllCertifications (object sender
