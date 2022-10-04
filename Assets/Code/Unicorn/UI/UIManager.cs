@@ -228,18 +228,40 @@ namespace Unicorn.UI
 
         private static void _SendActivated(UIWindowBase targetWindow)
         {
-            if (targetWindow == null)
+            if (targetWindow is not null)
             {
-                return;
+                _ActivateWindow(targetWindow);
+                CallbackTools.Handle(targetWindow.OnActivated, "[_SendActivated()]");
             }
+        }
 
+        internal static void _ActivateWindow(UIWindowBase targetWindow)
+        {
+            AssertTools.IsNotNull(targetWindow);
             _version++;
-            // todo 直接用_version不行, 最大值是32767
-            targetWindow.activateVersion = _version;
+
+            const int step = (int) RenderQueue.Geometry - (int) RenderQueue.Background;
+            var targetOrder = (int)targetWindow.GetRenderQueue();
+            var nextQueue = targetOrder + step;
+            for (int i = _windowsZOrder.Count - 1; i >= 0; i--)
+            {
+                var window = _windowsZOrder[i];
+                var order = window.sortingOrder;
+                if (order < nextQueue)
+                {
+                    if (order >= targetOrder)
+                    {
+                        targetOrder = order + 1;
+                    }
+                    break;
+                }
+            }
+            
+            targetWindow.sortingOrder = targetOrder;
 
             // 本方法中必须调整zorder, 原因是很多时候我们并不关闭窗口, 而是只不断的activate各个窗口, 这时没有load过程
             // todo 但是, 只在这里sort也许是不够的, 原因是如果存在加载动画, 我们会看到新窗口的动画是在background执行的
-            _windowsZOrder.Sort((a, b) => a.GetSortingOrder() - b.GetSortingOrder());
+            _windowsZOrder.InsertSortEx((a, b) => a.sortingOrder - b.sortingOrder);
 
             // canvas需要设置canvas.overrideSorting = true, 并且设置不一样的sortingOrder, 加载出来的按钮才不是灰化的
             // order越大, 越显示在前面
@@ -247,48 +269,17 @@ namespace Unicorn.UI
             if (canvas is not null)
             {
                 // canvas.overrideSorting = true; // 这个在资源加载完成的时候设置
-                canvas.sortingOrder = targetWindow.GetSortingOrder();
+                canvas.sortingOrder = targetWindow.sortingOrder;
                 // Console.WriteLine($"sortingOrder={canvas.sortingOrder}, {targetWindow.GetSortingOrder()}, queue={targetWindow.GetRenderQueue()}, activateVersion={_version}");
             }
-
-            // _SortWindowsTransform();
-            CallbackTools.Handle(targetWindow.OnActivated, "[_SendActivated()]");
         }
-
-        // private static void _SortWindowsTransform()
-        // {
-        //     var count = _windowsZOrder.Count;
-        //     if (count <= 1)
-        //     {
-        //         return;
-        //     }
-        //
-        //     var deltaIndex = 0;
-        //     for (var i = 0; i < count; i++)
-        //     {
-        //         var window = _windowsZOrder[i];
-        //         var transform = window.GetTransform();
-        //         if (transform is not null)
-        //         {
-        //             var targetIndex = i - deltaIndex;
-        //             var lastIndex = transform.GetSiblingIndex();
-        //             if (lastIndex != targetIndex)
-        //             {
-        //                 transform.SetSiblingIndex(targetIndex);
-        //             }
-        //             
-        //             // Console.WriteLine("transform={0}, lastIndex={1}, targetIndex={2}", transform.name, lastIndex, targetIndex);
-        //         }
-        //         else
-        //         {
-        //             deltaIndex++;
-        //         }
-        //     }
-        // }
         
         public static Transform GetUIRoot()
         {
-            if (_uiRoot is not null) return _uiRoot;
+            if (_uiRoot is not null)
+            {
+                return _uiRoot;
+            }
             
             var goRoot = GameObject.Find("UIRoot");
             if (goRoot == null)

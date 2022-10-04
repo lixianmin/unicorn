@@ -68,6 +68,7 @@ namespace Unicorn.UI.Internal
             master._InitComponents(_transform, canvas);
             master._InitWidgetsWindow();
             master._FillWidgets(serializer);
+            UIManager._ActivateWindow(master);
         }
 
         public void OpenWindow()
