@@ -233,32 +233,22 @@ namespace Unicorn.UI
                 return;
             }
 
-            var fetus = targetWindow.GetFetus();
-            fetus.activateTime = Time.realtimeSinceStartup;
+            _version++;
+            // todo 直接用_version不行, 最大值是32767
+            targetWindow.activateVersion = _version;
 
             // 本方法中必须调整zorder, 原因是很多时候我们并不关闭窗口, 而是只不断的activate各个窗口, 这时没有load过程
-            // 但是, 只在这里sort也许是不够的, 原因是如果存在加载动画, 我们会看到新窗口的动画是在background执行的
-            _windowsZOrder.Sort((a, b) =>
-            {
-                var delta = a.GetRenderQueue() - b.GetRenderQueue();
-                if (delta != 0)
-                {
-                    return delta;
-                }
+            // todo 但是, 只在这里sort也许是不够的, 原因是如果存在加载动画, 我们会看到新窗口的动画是在background执行的
+            _windowsZOrder.Sort((a, b) => a.GetSortingOrder() - b.GetSortingOrder());
 
-                var delta2 = b.GetFetus().activateTime - a.GetFetus().activateTime;
-                return (int) delta2;
-            });
-
-            _version++;
-            
             // canvas需要设置canvas.overrideSorting = true, 并且设置不一样的sortingOrder, 加载出来的按钮才不是灰化的
             // order越大, 越显示在前面
             var canvas = targetWindow.GetCanvas();
             if (canvas is not null)
             {
                 // canvas.overrideSorting = true; // 这个在资源加载完成的时候设置
-                canvas.sortingOrder = _version;
+                canvas.sortingOrder = targetWindow.GetSortingOrder();
+                // Console.WriteLine($"sortingOrder={canvas.sortingOrder}, {targetWindow.GetSortingOrder()}, queue={targetWindow.GetRenderQueue()}, activateVersion={_version}");
             }
 
             // _SortWindowsTransform();

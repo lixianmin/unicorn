@@ -105,7 +105,6 @@ namespace Unicorn.UI.Internal
         private Transform _parent = UIManager.GetUIRoot();
         private UISerializer _serializer;
         
-        public float activateTime = 0;
         public bool isWindowCached;
         public bool isLoaded;
         public bool isOpened;

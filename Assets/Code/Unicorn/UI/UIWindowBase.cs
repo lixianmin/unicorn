@@ -98,6 +98,18 @@ namespace Unicorn.UI
             _canvas = canvas;
         }
 
+        /// <summary>
+        /// canvas.sortingOrder的最大值是32767
+        /// </summary>
+        /// <returns></returns>
+        internal int GetSortingOrder()
+        {
+            var queue = (int) GetRenderQueue();
+            return queue + activateVersion;
+        }
+
+        internal int activateVersion;
+
         private WindowFetus _fetus;
         private Transform _transform;
         private Canvas _canvas;
