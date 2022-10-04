@@ -45,7 +45,7 @@ namespace Unicorn
         {
             if (!expected.Equals(actual))
             {
-                var message = string.Format("expected = {0}, actual={1}", expected.ToString(), actual.ToString());
+                var message = $"expected = {expected.ToString()}, actual={actual.ToString()}";
                 Console.Error.WriteLine(message);
             }
         }
@@ -55,7 +55,7 @@ namespace Unicorn
         {
             if (null == obj)
             {
-                var message = string.Format("obj is null, type = {0}", typeof(T));
+                var message = $"obj is null, type = {typeof(T)}";
                 Console.Error.WriteLine(message);
             }
         }
@@ -116,8 +116,7 @@ namespace Unicorn
 
             if (handleTime > timeout)
             {
-                var message = string.Format("cost={0} s, expected={1} s"
-                                            , handleTime.ToString("F3"), timeout.ToString("F3"));
+                var message = $"cost={handleTime:F3} s, expected={timeout:F3} s";
                 throw new TimeoutException(message);
             }
         }
@@ -132,8 +131,7 @@ namespace Unicorn
 
             if (handleTime > timeout)
             {
-                Console.Error.WriteLine("cost={0} s, expected={1} s, message={2}"
-                                            , handleTime.ToString("F3"), timeout.ToString("F3"), message);
+                Console.Error.WriteLine($"cost={handleTime:F3} s, expected={timeout:F3} s, message={message}");
             }
 
             BeginTimeout();

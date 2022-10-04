@@ -80,22 +80,13 @@ namespace Unicorn.Collections
 					throw new IndexOutOfRangeException(message);
 				}
 
-				set
-				{
-					throw new NotImplementedException();
-				}
+				set => throw new NotImplementedException();
 			}
 
 			object IList.this [int index]
 			{
-				get
-				{
-					return this [index];
-				}
-				set
-				{
-					throw new NotImplementedException();
-				}
+				get => this [index];
+				set => throw new NotImplementedException();
 			}
 
 			public int IndexOf (TKey item)
@@ -228,49 +219,19 @@ namespace Unicorn.Collections
 				throw new NotImplementedException();
 			}
 
-			bool IList.IsFixedSize
-			{
-				get
-				{
-					return false;
-				}
-			}
-			
-			bool IList.IsReadOnly
-			{
-				get
-				{
-					return false;
-				}
-			}
+			bool IList.IsFixedSize => false;
 
-			bool ICollection<TKey>.IsReadOnly
-			{
-				get
-				{
-					return true;
-				}
-			}
+			bool IList.IsReadOnly => false;
 
-			bool ICollection.IsSynchronized
-			{
-				get
-				{
-					return false;
-				}
-			}
-			
-			object ICollection.SyncRoot
-			{
-				get
-				{
-					return this;
-				}
-			}
-			
-			public int Count { get { return _table._size; } }
+			bool ICollection<TKey>.IsReadOnly => true;
 
-            private readonly SortedTable<TKey, TValue> _table;
+			bool ICollection.IsSynchronized => false;
+
+			object ICollection.SyncRoot => this;
+
+			public int Count => _table._size;
+
+			private readonly SortedTable<TKey, TValue> _table;
         }
 	}
 }
