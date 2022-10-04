@@ -61,7 +61,11 @@ namespace Unicorn.UI.States
         {
             _playAnimationMask.CloseWindow();
             _isPlaying = false;
-            _closeAnimation.enabled = false;
+
+            if (_closeAnimation is not null)
+            {
+                _closeAnimation.enabled = false;
+            }
 
             if (fetus.isDelayedOpenWindow)
             {
