@@ -114,8 +114,10 @@ namespace Unicorn.UI
                     window.Update();
                 }
             }
+            
+            _CheckResetSortingOrders();
         }
-
+        
         private static UIWindowBase _FetchWindow(Type windowType)
         {
             var item = _IndexWindow(windowType);
@@ -169,6 +171,7 @@ namespace Unicorn.UI
 
         private static UIWindowBase _SearchNextForeground(UIWindowBase foreground)
         {
+            // todo foreground有4个之多?
             var count = _windowsZOrder.Count;
             var found = false;
             for (var i = count - 1; i >= 0; i--)
@@ -240,40 +243,40 @@ namespace Unicorn.UI
             AssertTools.IsNotNull(targetWindow);
             _version++;
 
-            const int step = (int) RenderQueue.Geometry - (int) RenderQueue.Background;
-            var targetOrder = (int)targetWindow.GetRenderQueue();
-            var nextQueue = targetOrder + step;
-            for (int i = _windowsZOrder.Count - 1; i >= 0; i--)
-            {
-                var window = _windowsZOrder[i];
-                var order = window.sortingOrder;
-                if (order < nextQueue)
-                {
-                    if (order >= targetOrder)
-                    {
-                        targetOrder = order + 1;
-                    }
-                    break;
-                }
-            }
-            
-            targetWindow.sortingOrder = targetOrder;
+            targetWindow._SetSortingOrder((int) targetWindow.GetRenderQueue() + _maxZOrder++);
 
             // 本方法中必须调整zorder, 原因是很多时候我们并不关闭窗口, 而是只不断的activate各个窗口, 这时没有load过程
-            // todo 但是, 只在这里sort也许是不够的, 原因是如果存在加载动画, 我们会看到新窗口的动画是在background执行的
-            _windowsZOrder.InsertSortEx((a, b) => a.sortingOrder - b.sortingOrder);
+            // 但是, 只在这里sort也许是不够的, 原因是如果存在加载动画, 我们会看到新窗口的动画是在background执行的
+            _windowsZOrder.InsertSortEx((a, b) => a._GetSortingOrder() - b._GetSortingOrder());
 
-            // canvas需要设置canvas.overrideSorting = true, 并且设置不一样的sortingOrder, 加载出来的按钮才不是灰化的
-            // order越大, 越显示在前面
-            var canvas = targetWindow.GetCanvas();
-            if (canvas is not null)
-            {
-                // canvas.overrideSorting = true; // 这个在资源加载完成的时候设置
-                canvas.sortingOrder = targetWindow.sortingOrder;
-                // Console.WriteLine($"sortingOrder={canvas.sortingOrder}, {targetWindow.GetSortingOrder()}, queue={targetWindow.GetRenderQueue()}, activateVersion={_version}");
-            }
+            // Console.WriteLine($"targetWindow={targetWindow.GetType()}, windowsZOrder={",".JoinEx(_windowsZOrder, item => item._GetSortingOrder().ToString())}, targetOrder={targetWindow._GetSortingOrder()}");
         }
         
+        /// <summary>
+        /// 每隔一段时间重置一次sortingOrder
+        /// </summary>
+        private static void _CheckResetSortingOrders()
+        {
+            if (Time.time > _nextResetZOrderTime)
+            {
+                _nextResetZOrderTime = Time.time + 5f;
+
+                const int step = (int) RenderQueue.Geometry - (int) RenderQueue.Background;
+                var count = _windowsZOrder.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    var window = _windowsZOrder[i];
+                    var lastSortingOrder = window._GetSortingOrder();
+                    var nextSortingOrder = lastSortingOrder - lastSortingOrder % step + i;
+                    
+                    window._SetSortingOrder(nextSortingOrder);
+                }
+                
+                _maxZOrder = count;
+                // Console.WriteLine($"windowsZOrder={",".JoinEx(_windowsZOrder, item => item.sortingOrder.ToString())}, _maxZOrder={_maxZOrder}");
+            } 
+        }
+
         public static Transform GetUIRoot()
         {
             if (_uiRoot is not null)
@@ -308,6 +311,9 @@ namespace Unicorn.UI
         }
 
         private static readonly List<UIWindowBase> _windowsZOrder = new(4);
+        private static float _nextResetZOrderTime;
+        private static int _maxZOrder;
+        
         private static int _version;
         private static readonly Snapshot _snapshot = new ();
 

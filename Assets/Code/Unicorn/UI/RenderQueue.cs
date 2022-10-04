@@ -10,9 +10,9 @@ namespace Unicorn.UI
 {
     public enum RenderQueue : ushort
     {
-        Background  = 0,
-        Geometry    = 8000,
-        Transparent = 16000,
-        Overlay     = 24000,
+        Background  = 5000,
+        Geometry    = 10000,
+        Transparent = 15000,
+        Overlay     = 20000,
     }
 }

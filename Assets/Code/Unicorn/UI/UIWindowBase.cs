@@ -101,11 +101,33 @@ namespace Unicorn.UI
         /// <summary>
         /// canvas.sortingOrder的最大值是32767
         /// </summary>
-        internal int sortingOrder;
+        /// <param name="order"></param>
+        internal void _SetSortingOrder(int order)
+        {
+            if (_sortingOrder != order)
+            {
+                _sortingOrder = order;
+                
+                // canvas需要设置canvas.overrideSorting = true, 并且设置不一样的sortingOrder, 加载出来的按钮才不是灰化的
+                // order越大, 越显示在前面
+                if (_canvas is not null)
+                {
+                    // canvas.overrideSorting = true; // 这个在资源加载完成的时候设置
+                    _canvas.sortingOrder = order;
+                    // Console.WriteLine($"sortingOrder={canvas.sortingOrder}, queue={targetWindow.GetRenderQueue()}, activateVersion={_version}");
+                }
+            }
+        }
 
+        internal int _GetSortingOrder()
+        {
+            return _sortingOrder;
+        }
+        
         private WindowFetus _fetus;
         private Transform _transform;
         private Canvas _canvas;
+        private int _sortingOrder;
         private  bool _isReleased;
     }
 }
