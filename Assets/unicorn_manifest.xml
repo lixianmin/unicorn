@@ -3,6 +3,8 @@
   <editorSettings>
     <colorSpace>Linear</colorSpace>
   </editorSettings>
-  <relativePaths />
+  <relativePaths>
+    <string>res</string>
+  </relativePaths>
   <makeAutoCode>false</makeAutoCode>
 </UnicornManifest>

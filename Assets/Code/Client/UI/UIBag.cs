@@ -15,7 +15,12 @@
 //         {
 //             return "Assets/res/prefabs/ui/uibag.prefab";
 //         }
-//         
+//
+//         public override RenderQueue GetRenderQueue()
+//         {
+//             return RenderQueue.Background;
+//         }
+//
 //         protected override void OnLoaded()
 //         {
 //             Console.WriteLine("bag is OnLoaded");

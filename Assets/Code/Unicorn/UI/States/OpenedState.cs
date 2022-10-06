@@ -17,7 +17,7 @@ namespace Unicorn.UI.States
             var master = fetus.master;
 
             CallbackTools.Handle(master.InnerOnOpened, "[OnEnter()]");
-            UIManager._SetForegroundWindow(master);
+            UIManager._SetForegroundWindow(master, master.GetRenderQueue());
             fetus.isOpened = true;
         }
 
@@ -36,7 +36,7 @@ namespace Unicorn.UI.States
             if (fetus.isOpened)
             {
                 var master = fetus.master;
-                UIManager._SetForegroundWindow(master);
+                UIManager._SetForegroundWindow(master, master.GetRenderQueue());
             }
             else
             { // If the same window is opened again in OnClosing() or _onBeforeOpened

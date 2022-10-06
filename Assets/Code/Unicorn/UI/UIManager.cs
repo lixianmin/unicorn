@@ -164,7 +164,7 @@ namespace Unicorn.UI
                 if (isClosingForeground)
                 {
                     var nextForeground = _SearchNextForeground(closingWindow);
-                    _SetForegroundWindow(nextForeground);
+                    _SetForegroundWindow(nextForeground, queue);
                 }
                 else
                 {
@@ -214,9 +214,13 @@ namespace Unicorn.UI
         //     _SetForegroundWindow(window);
         // }
         
-        internal static void _SetForegroundWindow(UIWindowBase window)
+        /// <summary>
+        /// window有可能是null, 所以需要指定是哪一个queue
+        /// </summary>
+        /// <param name="window"></param>
+        /// <param name="queue"></param>
+        internal static void _SetForegroundWindow(UIWindowBase window, RenderQueue queue)
         {
-            var queue = window?.GetRenderQueue() ?? 0;
             var index = _GetForegroundWindowIndex(queue);
             var lastWindow = _foregroundWindows[index];
 

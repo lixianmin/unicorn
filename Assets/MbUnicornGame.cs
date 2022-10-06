@@ -11,6 +11,7 @@ using System.Collections;
 using UnityEngine;
 using Unicorn;
 using Metadata;
+
 //using Unicorn.Web;
 
 public class MbUnicornGame : MonoBehaviour
@@ -65,7 +66,7 @@ public class MbUnicornGame : MonoBehaviour
 	private IEnumerator _CoLoadMetadata()
 	{
 		var metadataManager = MetadataManager.Instance;
-		var fullpath = "/Users/xmli/code/unity-vr/resource/android/metadata.raw";
+		var fullpath = PathTools.GetFullPath("metadata.raw");
 		if (!string.IsNullOrEmpty(fullpath))
 		{
 			try
@@ -89,6 +90,8 @@ public class MbUnicornGame : MonoBehaviour
 		var version = metadataManager.GetMetadataVersion();
 		Console.WriteLine("[_CoLoadMetadata()] Metadata Loaded, metadataVersion={0}.", version.ToString());
 		yield return null;
+
+		// UIManager.OpenWindow(typeof(Client.UI.UIMain));
 	}
 
 
