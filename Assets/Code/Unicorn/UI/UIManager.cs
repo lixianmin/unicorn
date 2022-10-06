@@ -2,8 +2,16 @@
 created:    2022-08-15
 author:     lixianmin
 
+设计目标:
+    1. UI的prefab资源与client代码分离, 减少美术与程序的工作耦合
+    2. 通过UISerializer将client代码中需要使用的控件序列化, 对包含大量控件的window可有效减少加载时间
+    3. 将所有windows分为4个RenderQueue: Background, Geometry, Transparent, Overlay
+    4. 核心方法只有2个: UIManager.OpenWindow(typeof(UIBag)) 和 UIManager.CloseWindow(typeof(UIBag))
+    5. 打开和关闭window支持open/close动画
+    6. 严格把控生命周期相关回调事件: 严格对称调用 & protected控制访问权限
+    7. 尽可能自动化RemoveAllListeners()
 
- 窗体加载生命周期
+ window加载生命周期:
  ----------------------------------------------------------------------
  |  new     --> load   --> open animation  --> open  --> active  -->  |
  |                                                                    |  
@@ -41,6 +49,11 @@ namespace Unicorn.UI
             public UIWindowBase window;
         }
         
+        /// <summary>
+        /// 打开一个window. 如果window未加载, 则会先执行资源加载过程; 如果window只是在后台，则会激活window到前台
+        /// </summary>
+        /// <param name="windowType"></param>
+        /// <returns></returns>
         public static UIWindowBase OpenWindow(Type windowType)
         {
             if (windowType == null || !windowType.IsSubclassOf(typeof(UIWindowBase)))
@@ -57,7 +70,11 @@ namespace Unicorn.UI
             window.GetFetus().OpenWindow();
             return window;
         }
-
+        
+        /// <summary>
+        /// 按指定windowType关闭一个window。如果被关闭的window是前台窗体，则它后面的那个window会收到OnActivated()事件
+        /// </summary>
+        /// <param name="windowType"></param>
         public static void CloseWindow(Type windowType)
         {
             var item = _IndexWindow(windowType);
