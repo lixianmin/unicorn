@@ -157,68 +157,93 @@ namespace Unicorn.UI
 
         internal static void _OnClosingWindow(UIWindowBase closingWindow)
         {
-            var isClosingForeground = GetForegroundWindow() == closingWindow;
-            if (isClosingForeground)
+            if (closingWindow != null)
             {
-                var nextForeground = _SearchNextForeground(closingWindow);
-                _SetForegroundWindow(nextForeground);
-            }
-            else
-            {
-                _SendDeactivating(closingWindow);
+                var queue = closingWindow.GetRenderQueue();
+                var isClosingForeground = GetForegroundWindow(queue) == closingWindow;
+                if (isClosingForeground)
+                {
+                    var nextForeground = _SearchNextForeground(closingWindow);
+                    _SetForegroundWindow(nextForeground);
+                }
+                else
+                {
+                    _SendDeactivating(closingWindow);
+                }    
             }
         }
 
         private static UIWindowBase _SearchNextForeground(UIWindowBase foreground)
         {
-            // todo foreground有4个之多?
-            var count = _windowsZOrder.Count;
-            var found = false;
-            for (var i = count - 1; i >= 0; i--)
+            if (foreground != null)
             {
-                var window = _windowsZOrder[i];
-                if (window != foreground)
+                var foregroundQueue = foreground.GetRenderQueue();
+                var foregroundOrder = foreground._sortingOrder;
+            
+                var count = _windowsZOrder.Count;
+                for (var i = count - 1; i >= 0; i--)
                 {
-                    // only window behind the closingWindow can be activated.
-                    // only a isOpened window can be activated.
-                    if (!window.GetFetus().isOpened)
+                    var window = _windowsZOrder[i];
+                    if (window._sortingOrder < foregroundOrder && window.GetFetus().isOpened)
                     {
-                        continue;
+                        return window;
                     }
-                    
-                    return found ? window : null;
+
+                    if (window.GetRenderQueue() < foregroundQueue)
+                    {
+                        return null;
+                    }
                 }
-
-                found = true;
             }
-
+            
             return null;
         }
         
-        public static void SetForegroundWindow(UIWindowBase window)
-        {
-            var fetus = window?.GetFetus();
-            if (fetus is not { isOpened: true })
-            {
-                return;
-            }
-            
-            _SetForegroundWindow(window);
-        }
+        /// <summary>
+        /// 这个方法应该可以直接使用OpenWindow(typeof(XXX))代替
+        /// </summary>
+        /// <param name="window"></param>
+        // public static void SetForegroundWindow(UIWindowBase window)
+        // {
+        //     var fetus = window?.GetFetus();
+        //     if (fetus is not { isOpened: true })
+        //     {
+        //         return;
+        //     }
+        //     
+        //     _SetForegroundWindow(window);
+        // }
+        
         internal static void _SetForegroundWindow(UIWindowBase window)
         {
-            var lastWindow = GetForegroundWindow();
+            var queue = window?.GetRenderQueue() ?? 0;
+            var index = _GetForegroundWindowIndex(queue);
+            var lastWindow = _foregroundWindows[index];
+
             if (lastWindow != window)
             {
                 _SendDeactivating(lastWindow);
-                _foregroundWindow = window;
+                _foregroundWindows[index] = window;
                 _SendActivated(window);
             }
         }
 
-        public static UIWindowBase GetForegroundWindow()
+        public static UIWindowBase GetForegroundWindow(RenderQueue queue)
         {
-            return _foregroundWindow;
+            var index = _GetForegroundWindowIndex(queue);
+            return _foregroundWindows[index];
+        }
+
+        private static int _GetForegroundWindowIndex(RenderQueue queue)
+        {
+            return queue switch
+            {
+                RenderQueue.Background => 1,
+                RenderQueue.Geometry => 2,
+                RenderQueue.Transparent => 3,
+                RenderQueue.Overlay => 4,
+                _ => 0 // 第0个位置必然一直是null
+            };
         }
 
         private static void _SendDeactivating(UIWindowBase targetWindow)
@@ -247,7 +272,7 @@ namespace Unicorn.UI
 
             // 本方法中必须调整zorder, 原因是很多时候我们并不关闭窗口, 而是只不断的activate各个窗口, 这时没有load过程
             // 但是, 只在这里sort也许是不够的, 原因是如果存在加载动画, 我们会看到新窗口的动画是在background执行的
-            _windowsZOrder.InsertSortEx((a, b) => a._GetSortingOrder() - b._GetSortingOrder());
+            _windowsZOrder.InsertSortEx((a, b) => a._sortingOrder - b._sortingOrder);
 
             // Console.WriteLine($"targetWindow={targetWindow.GetType()}, windowsZOrder={",".JoinEx(_windowsZOrder, item => item._GetSortingOrder().ToString())}, targetOrder={targetWindow._GetSortingOrder()}");
         }
@@ -266,7 +291,7 @@ namespace Unicorn.UI
                 for (int i = 0; i < count; i++)
                 {
                     var window = _windowsZOrder[i];
-                    var lastSortingOrder = window._GetSortingOrder();
+                    var lastSortingOrder = window._sortingOrder;
                     var nextSortingOrder = lastSortingOrder - lastSortingOrder % step + i;
                     
                     window._SetSortingOrder(nextSortingOrder);
@@ -323,7 +348,7 @@ namespace Unicorn.UI
             public int version;
         }
         
-        private static UIWindowBase _foregroundWindow;
+        private static UIWindowBase[] _foregroundWindows = new UIWindowBase[5]; // 第0个位置必然一直是null
         private static Transform _uiRoot;
     }
 }

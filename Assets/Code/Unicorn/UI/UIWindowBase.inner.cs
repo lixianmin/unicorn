@@ -70,15 +70,14 @@ namespace Unicorn.UI
             }
         }
 
-        internal int _GetSortingOrder()
-        {
-            return _sortingOrder;
-        }
-        
+        /// <summary>
+        /// 出于性能考虑外面只读取, 设置需要走_SetSortingOrder()方法
+        /// </summary>
+        internal int _sortingOrder;
+
         private WindowFetus _fetus;
         private Transform _transform;
         private Canvas _canvas;
-        private int _sortingOrder;
         private  bool _isReleased;
     }
 }
