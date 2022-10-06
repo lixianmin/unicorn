@@ -16,7 +16,7 @@ namespace Unicorn.UI.States
             AssertTools.IsTrue(!fetus.isDelayedOpenWindow);
             var master = fetus.master;
 
-            CallbackTools.Handle(master.OnOpened, "[OnEnter()]");
+            CallbackTools.Handle(master.InnerOnOpened, "[OnEnter()]");
             UIManager._SetForegroundWindow(master);
             fetus.isOpened = true;
         }
@@ -28,7 +28,7 @@ namespace Unicorn.UI.States
             fetus.isOpened = false;
            
             UIManager._OnClosingWindow(master);
-            CallbackTools.Handle(master.OnClosing, "[OnExit()]");
+            CallbackTools.Handle(master.InnerOnClosing, "[OnExit()]");
         }
 
         public override void OnOpenWindow(WindowFetus fetus)

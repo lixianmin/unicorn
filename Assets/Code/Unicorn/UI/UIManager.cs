@@ -111,7 +111,7 @@ namespace Unicorn.UI
                 var window = windows[i];
                 if (window.GetFetus().isLoaded)
                 {
-                    window.Update();
+                    window.InnerUpdate();
                 }
             }
             
@@ -225,7 +225,7 @@ namespace Unicorn.UI
         {
             if (targetWindow is not null)
             {
-                CallbackTools.Handle(targetWindow.OnDeactivating, "[_SendDeactivating()]");
+                CallbackTools.Handle(targetWindow.InnerOnDeactivating, "[_SendDeactivating()]");
             }
         }
 
@@ -234,7 +234,7 @@ namespace Unicorn.UI
             if (targetWindow is not null)
             {
                 _ActivateWindow(targetWindow);
-                CallbackTools.Handle(targetWindow.OnActivated, "[_SendActivated()]");
+                CallbackTools.Handle(targetWindow.InnerOnActivated, "[_SendActivated()]");
             }
         }
 
