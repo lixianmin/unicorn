@@ -131,7 +131,7 @@ namespace Unicorn
 				_partUpdateSystem.Update();
 				_kitManager.Update();
 				UIManager.Update();
-                Loom.Update();
+                // Loom.Update();
 
                 DisposableRecycler.Update();
             }
