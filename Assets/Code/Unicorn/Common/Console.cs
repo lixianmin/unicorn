@@ -130,26 +130,29 @@ public static class Console
 
 		try
 		{
-			// main thread or in editor and isPlaying= false.
-			if (isMainThread || _idMainThread == 0)
-			{
-				output(message);
-			}
-			else
-			{
-				if (os.isEditor)
-				{
-					var sbText = new StringBuilder(message.ToString());
-					sbText.AppendLine();
-
-					var text = _AppendStackTrace(sbText);
-					Loom.RunDelayed(() => output(text));
-				}
-				else
-				{
-					Loom.RunDelayed(() => output(message));
-				}
-			}
+			// 现在Debug.Log()方法可以在非主线程中调用了，不再需要迂回的手段了
+			output(message);
+			
+			// // main thread or in editor and isPlaying= false.
+			// if (isMainThread || _idMainThread == 0)
+			// {
+			// 	output(message);
+			// }
+			// else
+			// {
+			// 	if (os.isEditor)
+			// 	{
+			// 		var sbText = new StringBuilder(message.ToString());
+			// 		sbText.AppendLine();
+			//
+			// 		var text = _AppendStackTrace(sbText);
+			// 		Loom.RunDelayed(() => output(text));
+			// 	}
+			// 	else
+			// 	{
+			// 		Loom.RunDelayed(() => output(message));
+			// 	}
+			// }
 		}
 		catch (MissingMethodException)
 		{
