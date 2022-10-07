@@ -6,13 +6,16 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace Unicorn.UI
 {
     public class UIToggle : Toggle
     {
-
+        protected override void OnDestroy()
+        {
+            onValueChanged.RemoveAllListeners();
+            base.OnDestroy();
+        }
     }
 }
