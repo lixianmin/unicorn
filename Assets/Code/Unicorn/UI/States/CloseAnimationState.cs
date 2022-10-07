@@ -27,7 +27,7 @@ namespace Unicorn.UI.States
                 if (_closeAnimation is not null)
                 {
                     _closeAnimation.enabled = true;
-                    _closeAnimation.Init(() =>
+                    _=_closeAnimation.Init(() =>
                     {
                         _OnCloseWindowAnimationDone(fetus);
                     });

@@ -21,7 +21,7 @@ namespace Unicorn.UI.States
                 if (_openAnimation is not null)
                 {
                     _openAnimation.enabled = true;
-                    _openAnimation.Init(() =>
+                    _=_openAnimation.Init(() =>
                     {
                         _OnOpenWindowAnimationDone(fetus);
                     });
