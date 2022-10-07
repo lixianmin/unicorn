@@ -30,7 +30,8 @@ public class MbUnicornGame : MonoBehaviour
 		GameObject.DontDestroyOnLoad(gameObject);
 
 		UnicornMain.Instance.Init();
-		CoroutineManager.StartCoroutine(_CoLoadMetadata());
+		// CoroutineManager.StartCoroutine(_CoLoadMetadata());
+
 
 		//DependencyManager.Instance.Init();
 		// AssetManager.Instance.RequestAsset("globals.ab", "", (assetReference)=>{

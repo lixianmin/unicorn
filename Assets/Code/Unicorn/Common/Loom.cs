@@ -35,7 +35,7 @@ namespace Unicorn
 			{
 				lock (_locker)
 				{
-					_receivedActions.Add(new Item{aciton = action, runTime = Time.time + delayedSeconds});
+					_receivedActions.Add(new Item{aciton = action, runTime = _currentTime + delayedSeconds});
 				}
 			}
 		}
@@ -44,6 +44,7 @@ namespace Unicorn
 		{
 			lock (_locker)
 			{
+				_currentTime = Time.time;
 				var count = _receivedActions.Count;
 				if (count > 0)
 				{
@@ -56,8 +57,8 @@ namespace Unicorn
 					_receivedActions.Clear();
 				}
 			}
-
-			while (_delayedActions.TryPeek(out var action, out var runTime) && Time.time >= runTime && !UpdateTools.IsTimeout())
+			
+			while (_delayedActions.TryPeek(out var action, out var runTime) && _currentTime >= runTime && !UpdateTools.IsTimeout())
 			{
 				CallbackTools.Handle(ref action , "[Loom.Update()]");
 				_delayedActions.Dequeue();
@@ -73,5 +74,6 @@ namespace Unicorn
 		private static readonly object _locker = new();
 		private static readonly List<Item> _receivedActions = new();
 		private static readonly PriorityQueue<Action, float> _delayedActions = new();
+		private static float _currentTime;
 	}
 }
