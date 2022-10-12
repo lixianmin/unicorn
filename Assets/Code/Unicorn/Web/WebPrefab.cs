@@ -17,7 +17,7 @@ namespace Unicorn.Web
         internal WebPrefab(WebArgument argument, Action<WebPrefab> handler)
         {
             // _webItem这里也需要同步赋值, 因为回调handler有可能是一个小时之后的事, 中间万一使用到了_webItem就可能是null了. 你永远也不知道构造方法和handler谁先到来
-            _webItem = new WebItem(argument, webItem =>
+            _webItem = WebManager.Instance.LoadAsset(argument, webItem =>
             {
                 if (webItem.Asset is not GameObject mainAsset) return;
 
@@ -48,17 +48,23 @@ namespace Unicorn.Web
             // Console.WriteLine("[_DoDispose()] {0}", this.ToString());
         }
 
-        public override string ToString()
-        {
-            return $"WebPrefab: id={_id.ToString()}, key={_webItem.Key}";
-        }
+        // public override string ToString()
+        // {
+        //     return $"WebPrefab: id={_id.ToString()}, key={_webItem.Key}";
+        // }
 
         public bool IsDone => _webItem.IsDone;
         public bool IsSucceeded => _webItem.IsSucceeded;
-        public GameObject MainAsset => _webItem.Asset as GameObject;
-
-        private WebItem _webItem;
+        
+        UnityEngine.Object IWebNode.Asset => _webItem.Asset;
+        
+        /// <summary>
+        /// 返回mainAsset
+        /// </summary>
+        public GameObject Asset => _webItem.Asset as GameObject;
+        
+        private IWebNode _webItem;
         private MBPrefabAid _aidScript;
-        private readonly int _id = WebTools.GetNextId();
+        // private readonly int _id = WebTools.GetNextId();
     }
 }

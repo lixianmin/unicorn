@@ -11,18 +11,12 @@ using System;
 
 namespace Unicorn.Web
 {
-    public class WebManager
+    public abstract class WebManager
     {
-        public WebItem LoadWebItem(string key, Action<WebItem> handler)
-        {
-            var argument = new WebArgument { key = key ?? string.Empty };
-            var item = new WebItem(argument, handler);
-            return item;
-        }
+        public abstract IWebNode LoadAsset(WebArgument argument, Action<IWebNode> handler);
 
-        public WebPrefab LoadWebPrefab(string key, Action<WebPrefab> handler)
+        public WebPrefab LoadPrefab(WebArgument argument, Action<WebPrefab> handler)
         {
-            var argument = new WebArgument { key = key ?? string.Empty };
             var prefab = new WebPrefab(argument, handler);
             return prefab;
         }

@@ -11,7 +11,19 @@ namespace Unicorn.Web
 {
     public interface IWebNode
     {
-        bool IsDone         { get; }    // 是否下载完成或已经取消
-        bool IsSucceeded    { get; }    // 是否下载成功
+        /// <summary>
+        /// 下载过程是否已结束：成功/失败/取消
+        /// </summary>
+        bool IsDone         { get; } 
+        
+        /// <summary>
+        /// 是否下载成功
+        /// </summary>
+        bool IsSucceeded    { get; }
+        
+        /// <summary>
+        /// 返回加载的资源对象
+        /// </summary>
+        UnityEngine.Object Asset { get; }
     }
 }
