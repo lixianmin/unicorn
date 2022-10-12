@@ -68,7 +68,7 @@ namespace Unicorn.UI.Internal
             master._InitComponents(_transform, canvas);
             master._InitWidgetsWindow();
             master._FillWidgets(serializer);
-            UIManager._ActivateWindow(master);
+            UIManager.Instance._ActivateWindow(master);
         }
 
         public void OpenWindow()
@@ -103,7 +103,7 @@ namespace Unicorn.UI.Internal
 
         private StateBase _state = StateBase.Create(StateKind.None);
         private Transform _transform;
-        private Transform _parent = UIManager.GetUIRoot();
+        private Transform _parent = UIManager.Instance.GetUIRoot();
         private UISerializer _serializer;
         
         public bool isWindowCached;

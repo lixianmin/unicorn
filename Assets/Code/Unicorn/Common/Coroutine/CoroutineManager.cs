@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-08-11
 author:     lixianmin
@@ -17,96 +16,102 @@ excuted continuously for logic requirement.
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 using System;
 using System.Collections;
 
 namespace Unicorn
 {
-    public static class CoroutineManager
+    public class CoroutineManager
     {
-		static CoroutineManager ()
-		{
-			EditorCallback.AttachToUpdate(Update);
-		}
+        static CoroutineManager()
+        {
+            
+        }
 
-		/// <summary>
-		/// coroutine will be called once immediately after StartCoroutine();
-		/// </summary>
-		public static void StartCoroutine (IEnumerator routine)
-		{
-			if (null != routine)
-			{
-				try
-				{
-					var needEnqueue = UpdateTools.IsTimeout () || routine.MoveNext();
-					if (needEnqueue)
-					{
-						const bool isRecyclable = true;
-						_pool.Spawn(routine, isRecyclable);
-					}
-				}
-				catch (Exception ex)
-				{
-					Console.Error.WriteLine("[CoroutineManager.StartCoroutine()] ex={0}", ex);
-				}
-			}
-		}
+        private CoroutineManager()
+        {
+            EditorCallback.AttachToUpdate(Update);
+        }
 
-		/// <summary>
-		/// coroutine will be called once immediately after StartCoroutine();
-		/// </summary>
-		public static void StartCoroutine (IEnumerator routine, out CoroutineItem item)
-		{
-			// StartCorountine() 不能返回IEnumerator，处理代码会有时序问题.
-			item = null;
+        /// <summary>
+        /// coroutine will be called once immediately after StartCoroutine();
+        /// </summary>
+        public void StartCoroutine(IEnumerator routine)
+        {
+            if (null != routine)
+            {
+                try
+                {
+                    var needEnqueue = UpdateTools.IsTimeout() || routine.MoveNext();
+                    if (needEnqueue)
+                    {
+                        const bool isRecyclable = true;
+                        _pool.Spawn(routine, isRecyclable);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine("[CoroutineManager.StartCoroutine()] ex={0}", ex);
+                }
+            }
+        }
 
-			if (null != routine)
-			{
-				try
-				{
-					var needEnqueue = UpdateTools.IsTimeout () || routine.MoveNext();
-					if (needEnqueue)
-					{
-						const bool isRecyclable = false;
-						item = _pool.Spawn(routine, isRecyclable);
-					}
-				}
-				catch (Exception ex)
-				{
-					Console.Error.WriteLine("[CoroutineManager.StartCoroutine()] ex={0}", ex);
-				}
-			}
-		}
+        /// <summary>
+        /// coroutine will be called once immediately after StartCoroutine();
+        /// </summary>
+        public void StartCoroutine(IEnumerator routine, out CoroutineItem item)
+        {
+            // StartCorountine() 不能返回IEnumerator，处理代码会有时序问题.
+            item = null;
 
-		public static bool KillCoroutine (IEnumerator routine)
-		{
-			if (null != routine)
-			{
-				var count = _pool.Count;
-				for (int i = 0; i < count; i++)
-				{
-					var item = _pool[i];
-					if (item.routine == routine)
-					{
-						item.Kill();
-						return true;
-					}
-				}
-			}
+            if (null != routine)
+            {
+                try
+                {
+                    var needEnqueue = UpdateTools.IsTimeout() || routine.MoveNext();
+                    if (needEnqueue)
+                    {
+                        const bool isRecyclable = false;
+                        item = _pool.Spawn(routine, isRecyclable);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine("[CoroutineManager.StartCoroutine()] ex={0}", ex);
+                }
+            }
+        }
 
-			return false;
-		}
+        public bool KillCoroutine(IEnumerator routine)
+        {
+            if (null != routine)
+            {
+                var count = _pool.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    var item = _pool[i];
+                    if (item.routine == routine)
+                    {
+                        item.Kill();
+                        return true;
+                    }
+                }
+            }
 
-		public static void KillCoroutine (ref IEnumerator routine)
-		{
-			if (null != routine)
-			{
-				KillCoroutine(routine);
-				routine = null;
-			}
-		}
+            return false;
+        }
 
-        internal static void Update ()
+        public void KillCoroutine(ref IEnumerator routine)
+        {
+            if (null != routine)
+            {
+                KillCoroutine(routine);
+                routine = null;
+            }
+        }
+
+        internal void Update()
         {
             if (_pool.Count > 0)
             {
@@ -115,53 +120,55 @@ namespace Unicorn
                 // 3. StopCoroutine() just set item.isDone= true, and never decrease _currents.Count;
                 // 4. The Prediate<T> in List.RemoveAll(Predicate<T>) will be called several times, so it can not have any logic;
 
-				var someIsDone = false;
+                var someIsDone = false;
                 var snapshotCount = _pool.Count;
 
-                for (int index= 0; index < snapshotCount; ++index)
+                for (int index = 0; index < snapshotCount; ++index)
                 {
-					if (UpdateTools.IsTimeout())
-					{
-						break;
-					}
+                    if (UpdateTools.IsTimeout())
+                    {
+                        break;
+                    }
 
-					var item = _pool[index];
-					if (!item.isDone && !item.isKilled)
-					{
-						try
-						{
-							var routine   = item.routine;
-							var checkDone = routine.Current as IIsYieldable;
-							if (null == checkDone || checkDone.isYieldable)
-							{
-								item.isDone = !routine.MoveNext();
-							}
-						}
-						catch (Exception ex)
-						{
-							item.isDone = true;
-							Console.Error.WriteLine("[CoroutineManager.Update()] ex={0}, StackTrace={1}", ex, ex.StackTrace);
-						}
-					}
+                    var item = _pool[index];
+                    if (!item.isDone && !item.isKilled)
+                    {
+                        try
+                        {
+                            var routine = item.routine;
+                            var checkDone = routine.Current as IIsYieldable;
+                            if (null == checkDone || checkDone.isYieldable)
+                            {
+                                item.isDone = !routine.MoveNext();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            item.isDone = true;
+                            Console.Error.WriteLine("[CoroutineManager.Update()] ex={0}, StackTrace={1}", ex,
+                                ex.StackTrace);
+                        }
+                    }
 
-					if (item.isDone || item.isKilled)
-					{
-						someIsDone = true;
-					}
+                    if (item.isDone || item.isKilled)
+                    {
+                        someIsDone = true;
+                    }
                 }
 
                 if (someIsDone)
                 {
-					_pool.Recycle();
-				}
+                    _pool.Recycle();
+                }
             }
         }
 
-        internal static void Clear ()
+        internal void Clear()
         {
-			_pool.Clear();
+            _pool.Clear();
         }
 
-		private static readonly CoroutinePool _pool = new CoroutinePool();
+        public static readonly CoroutineManager Instance = new();
+        private readonly CoroutinePool _pool = new CoroutinePool();
     }
 }

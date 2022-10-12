@@ -31,7 +31,7 @@ namespace Unicorn.UI
                 if (_discolorTime > 0)
                 {
                     _discolorRoutine = _CoDelayedDiscolor();
-                    CoroutineManager.StartCoroutine(_discolorRoutine);
+                    CoroutineManager.Instance.StartCoroutine(_discolorRoutine);
                 }
             }
 
@@ -51,7 +51,7 @@ namespace Unicorn.UI
                 _gameObject.SetActive(false);
                 if (_discolorRoutine != null)
                 {
-                    CoroutineManager.KillCoroutine(ref _discolorRoutine);
+                    CoroutineManager.Instance.KillCoroutine(ref _discolorRoutine);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace Unicorn.UI
             var transform = goLoadingMask.transform;
             transform.localScale = new Vector3(bigEnoughScale, bigEnoughScale, bigEnoughScale);
 
-            var parent = UIManager.GetUIRoot();
+            var parent = UIManager.Instance.GetUIRoot();
             transform.SetParent(parent, false);
 
             _gameObject = goLoadingMask;

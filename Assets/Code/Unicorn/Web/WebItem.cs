@@ -21,7 +21,7 @@ namespace Unicorn.Web
         internal WebItem(WebArgument argument, Action<WebItem> handler)
         {
             _argument = argument;
-            CoroutineManager.StartCoroutine(_CoLoad(argument, handler));
+            CoroutineManager.Instance.StartCoroutine(_CoLoad(argument, handler));
         }
 
         private IEnumerator _CoLoad(WebArgument argument, Action<WebItem> handler)

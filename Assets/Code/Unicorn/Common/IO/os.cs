@@ -117,7 +117,7 @@ namespace Unicorn
 		{
 			isUnloadingUnusedAssets = true;
 			var ao = Resources.UnloadUnusedAssets();
-			CoroutineManager.StartCoroutine(_CoUnloadUnusedAssets(ao));
+			CoroutineManager.Instance.StartCoroutine(_CoUnloadUnusedAssets(ao));
 
 			return ao;
 		}

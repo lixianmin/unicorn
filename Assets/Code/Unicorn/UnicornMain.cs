@@ -127,10 +127,10 @@ namespace Unicorn
 				Console.Update();
                 _UpdateLogs();
                 
-				CoroutineManager.Update();
+                _coroutineManager.Update();
 				_partUpdateSystem.Update();
 				_kitManager.Update();
-				UIManager.Update();
+				_uiManager.Update();
                 // Loom.Update();
 
                 DisposableRecycler.Update();
@@ -152,8 +152,7 @@ namespace Unicorn
 				}
 				
 //				WebPrefab._GetLruCache().Clear();
-//				_coroutineManager.Dispose();
-				CoroutineManager.Clear();
+				_coroutineManager.Clear();
 				//WebManager.Dispose();
 				_isInited = false;
 				
@@ -229,7 +228,9 @@ namespace Unicorn
 
         private readonly ArrayList _logs = new ();
         private readonly PartUpdateSystem _partUpdateSystem = new();
+        private readonly CoroutineManager _coroutineManager = CoroutineManager.Instance;
         private readonly KitManager _kitManager = KitManager.Instance;
+        private readonly UIManager _uiManager = UIManager.Instance;
 
         private bool _isInited;
         private StreamWriter _logWriter;

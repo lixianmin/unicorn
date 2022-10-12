@@ -45,7 +45,7 @@ namespace Unicorn.UI.States
                 return;
             }
 
-            WebManager.LoadWebPrefab(resourcePath, prefab =>
+            WebManager.Instance.LoadWebPrefab(resourcePath, prefab =>
             {
                 var master = fetus.master;
                 var isLoading = this == fetus.GetState();
