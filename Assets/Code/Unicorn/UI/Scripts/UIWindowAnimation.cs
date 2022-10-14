@@ -14,7 +14,7 @@ namespace Unicorn.UI
 {
     public abstract class UIWindowAnimation : MonoBehaviour
     {
-        internal async Task Init(Action onAnimationDone)
+        public async Task Init(Action onAnimationDone)
         {
             if (onAnimationDone == null)
             {

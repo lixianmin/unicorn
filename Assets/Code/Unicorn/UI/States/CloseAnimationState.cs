@@ -24,20 +24,17 @@ namespace Unicorn.UI.States
             if (serializer is not null)
             {
                 _closeAnimation = serializer.closeWindowAnimation;
-                if (_closeAnimation is not null)
-                {
-                    _closeAnimation.enabled = true;
-                    _=_closeAnimation.Init(() =>
-                    {
-                        _OnCloseWindowAnimationDone(fetus);
-                    });
-                    
-                    _isPlaying = true;
-                }
+                _isPlaying = _closeAnimation != null;
             }
             
             if (_isPlaying)
             {
+                _closeAnimation.enabled = true;
+                _=_closeAnimation.Init(() =>
+                {
+                    _OnCloseWindowAnimationDone(fetus);
+                });
+                
                 _playAnimationMask.OpenWindow();
             }
             else

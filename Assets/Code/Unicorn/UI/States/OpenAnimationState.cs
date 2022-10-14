@@ -18,20 +18,16 @@ namespace Unicorn.UI.States
             if (serializer is not null)
             {
                 _openAnimation = serializer.openWindowAnimation;
-                if (_openAnimation is not null)
-                {
-                    _openAnimation.enabled = true;
-                    _=_openAnimation.Init(() =>
-                    {
-                        _OnOpenWindowAnimationDone(fetus);
-                    });
-
-                    _isPlaying = true;
-                }
+                _isPlaying = _openAnimation != null;
             }
             
             if (_isPlaying)
             {
+                _openAnimation.enabled = true;
+                _=_openAnimation.Init(() =>
+                {
+                    _OnOpenWindowAnimationDone(fetus);
+                });
                 _playAnimationMask.OpenWindow();
             }
             else

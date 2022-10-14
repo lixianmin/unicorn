@@ -12,7 +12,7 @@ namespace Unicorn.UI
 {
     public class UIText1 : Text
     {
-        internal void AssignDefaultFont ()
+        public void AssignDefaultFont ()
         {
             font = Resources.GetBuiltinResource<Font>("Arial.ttf");
         }
