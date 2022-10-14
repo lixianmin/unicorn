@@ -18,7 +18,7 @@ namespace Metadata
 	{
         public LocaleText ReadLocaleText (IOctetsReader reader)
         {
-            LocaleText ret = new LocaleText { text = string.Empty };
+            var ret = new LocaleText { text = string.Empty };
 
             if (null != reader)
             {

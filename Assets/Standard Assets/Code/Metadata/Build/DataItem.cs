@@ -73,7 +73,7 @@ namespace Metadata.Build
 			{
 				var metadata = GetMetadata();
 				
-                var typeFullName = metadata.GetType().FullName;
+                var typeFullName = metadata.GetType().FullName ?? string.Empty;
 				writer.Write(typeFullName);
 				
                 MetaTools.Save(writer, metadata, true);

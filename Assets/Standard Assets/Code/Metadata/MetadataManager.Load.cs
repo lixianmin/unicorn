@@ -26,12 +26,12 @@ namespace Metadata
 					var iter = aid.GetEnumerator();
 					while (iter.MoveNext())
 					{
-                        var section = iter.Value as SortedTable<int, LoadAid.NodeValue>;
-                        foreach (var pair in section)
+						if (iter.Value is SortedTable<int, LoadAid.NodeValue> section)
                         {
-                            var key = pair.Key;
-                            var val = pair.Value;
-                            _CreateOneMetadata(aid, key, val);
+	                        foreach (var (key, val) in section)
+	                        {
+		                        _CreateOneMetadata(aid, key, val);
+	                        }    
                         }
 					}
 				}
@@ -59,7 +59,7 @@ namespace Metadata
 			if (null != stream && stream.CanRead && stream.Length > 0 && null != aid)
 			{
 				var reader = MetaFactory.CreateChunkReader(stream);
-                var isIncrement = true;
+                const bool isIncrement = true;
                 aid.Load(reader, isIncrement, out _metadataVersion);
 			}
 		}

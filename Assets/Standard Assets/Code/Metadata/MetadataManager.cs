@@ -198,33 +198,29 @@ namespace Metadata
             var version = builtFile.GetMetadataVersion();
             _SetMetadataVersion(version);
 
-			Hashtable tableCache = new Hashtable();
+			var tableCache = new Hashtable();
 			foreach (var metadata in builtFile.EnumerateMetadata())
 			{
-				var template = metadata as Template;
-				if (null != template)
+				switch (metadata)
 				{
-					var templateType = template.GetType();
-					var table = tableCache[templateType] as TemplateTable;
-					if (null == table)
+					case Template template:
 					{
-						table = _templateManager.FetchTemplateTable(templateType);
-						tableCache[templateType] = table;
+						var templateType = template.GetType();
+						if (tableCache[templateType] is not TemplateTable table)
+						{
+							table = _templateManager.FetchTemplateTable(templateType);
+							tableCache[templateType] = table;
+						}
+
+						table._Append(template.id, template);
+						continue;
 					}
-
-					table._Append(template.id, template);
-					continue;
-				}
-
-				var config = metadata as Config;
-				if (null != config)
-				{
-					_configManager.AddConfig(config);
+					case Config config:
+						_configManager.AddConfig(config);
+						break;
 				}
 			}
             Console.WriteLine("--> add metadata to _templateManager & _configManager done");
-
-			tableCache = null;
 
             foreach (var pair in _templateManager.EnumerateTemplateTables())
             {
@@ -252,7 +248,7 @@ namespace Metadata
 		}
 
 		public static MetadataManager Instance { get; protected set; }
-		public bool IsXmlMetadata	{ get { return _isXmlMetadata; } }
+		public bool IsXmlMetadata => _isXmlMetadata;
 
 		private readonly LoadAid _loadAid = new ();
 
