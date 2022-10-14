@@ -12,11 +12,6 @@ namespace Unicorn.UI
 {
     public class UIText1 : Text
     {
-        public void AssignDefaultFont ()
-        {
-            font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-        }
-
         public string GetGUID ()
         {
             return _guid;

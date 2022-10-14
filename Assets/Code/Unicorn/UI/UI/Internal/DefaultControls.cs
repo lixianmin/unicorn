@@ -60,7 +60,8 @@ namespace Unicorn.UI.Internal
             lbl.color = s_TextColor;
 
             // Reset() is not called when playing. We still want the default font to be assigned
-            lbl.AssignDefaultFont();
+            // lbl.AssignDefaultFont();
+            lbl.font = UnityEngine.Resources.GetBuiltinResource<Font>("Arial.ttf");
         }
 
         private static void SetDefaultColorTransitionValues(Selectable slider)
