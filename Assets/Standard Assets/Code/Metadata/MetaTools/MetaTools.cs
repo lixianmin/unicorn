@@ -359,7 +359,7 @@ namespace Metadata
                 return true;
             }
 
-            if (null == rhsMetadata || null == rhsMetadata)
+            if (null == lhsMetadata || null == rhsMetadata)
             {
                 return false;
             }
@@ -396,10 +396,10 @@ namespace Metadata
             {
                 return PrimitiveUtil.IsEqual(lhsTarget, rhsTarget, targetType);
             }
-            else if (targetType == typeof(String))
+            else if (targetType == typeof(string))
             {
-                var lhs = (String) lhsTarget;
-                var rhs = (String) rhsTarget;
+                var lhs = (string) lhsTarget;
+                var rhs = (string) rhsTarget;
 
                 // 这是因为XmlMetadata.Deserialize()中，空的string出来就是null，而我们自己加载的会是""
                 if (string.IsNullOrEmpty(lhs) && string.IsNullOrEmpty(rhs))
