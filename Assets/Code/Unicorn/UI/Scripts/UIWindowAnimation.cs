@@ -24,7 +24,7 @@ namespace Unicorn.UI
             _onAnimationDoneCallback = onAnimationDone;
             OnAnimationComplete += _OnAnimationDone;
             
-            await Task.Delay(TimeSpan.FromSeconds(_animationExpireSeconds));
+            await Task.Delay(TimeSpan.FromSeconds(_timeout));
             _OnAnimationDone();
         }
 
@@ -41,9 +41,9 @@ namespace Unicorn.UI
         }
 
         /// <summary>
-        /// 动画超时会被强制中断
+        /// 动画超时会被强制中断，单位（秒）
         /// </summary>
-        [SerializeField] private float _animationExpireSeconds = 3f;
+        [SerializeField] private float _timeout = 3f;
         
         /// <summary>
         /// 无论是OnAnimationComplete还是_CoAnimationTimeout(), 都被会调用OnAnimationDone
