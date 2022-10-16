@@ -23,7 +23,7 @@ namespace Unicorn.UI.States
             
             if (_isPlaying)
             {
-                _openAnimation.enabled = true;
+                _openAnimation!.enabled = true;
                 _=_openAnimation.Init(() =>
                 {
                     _OnOpenWindowAnimationDone(fetus);

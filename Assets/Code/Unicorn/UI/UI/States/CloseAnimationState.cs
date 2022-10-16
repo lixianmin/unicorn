@@ -29,7 +29,7 @@ namespace Unicorn.UI.States
             
             if (_isPlaying)
             {
-                _closeAnimation.enabled = true;
+                _closeAnimation!.enabled = true;
                 _=_closeAnimation.Init(() =>
                 {
                     _OnCloseWindowAnimationDone(fetus);
