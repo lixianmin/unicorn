@@ -12,6 +12,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using TMPro;
 using TMPro.EditorUtilities;
+using UnityEngine.UI;
 using TMP_DefaultControls = Unicorn.UI.Internal.TMP_DefaultControls;
 
 namespace Unicorn.UI
@@ -22,7 +23,7 @@ namespace Unicorn.UI
         private static void CreateTextMeshProGuiObjectPerform(MenuCommand menuCommand)
         {
             GameObject go = TMP_DefaultControls.CreateText(GetStandardResources());
-            
+
             // Override text color and font size
             UIText textComponent = go.GetComponent<UIText>();
             
@@ -57,6 +58,7 @@ namespace Unicorn.UI
                 textComponent.text = "New Text";
             }
 
+            textComponent.raycastTarget = false;
             PlaceUIElementRoot(go, menuCommand);
         }
         
@@ -64,10 +66,12 @@ namespace Unicorn.UI
         public static void AddButton(MenuCommand menuCommand)
         {
             var go = TMP_DefaultControls.CreateButton(GetStandardResources());
+            DisableRaycastTarget<Image>(go);
 
             // Override font size
             var textComponent = go.GetComponentInChildren<TMP_Text>();
             textComponent.fontSize = 24;
+            textComponent.raycastTarget = false;
 
             PlaceUIElementRoot(go, menuCommand);
         }
@@ -86,6 +90,18 @@ namespace Unicorn.UI
             PlaceUIElementRoot(go, menuCommand);
         }
 
+        private static void DisableRaycastTarget<T>(GameObject go) where T: Graphic
+        {
+            if (go != null)
+            {
+                var widget = go.GetComponentInChildren<T>();
+                if (widget != null)
+                {
+                    widget.raycastTarget = false;
+                }
+            }
+        }
+        
         private static bool IsWaitingOnResourceLoad(UIText script)
         {
             var type = script.GetType();
