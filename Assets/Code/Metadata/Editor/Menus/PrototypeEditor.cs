@@ -18,6 +18,11 @@ namespace Metadata.Menus
 {
     public class PrototypeEditor: EditorWindow
     {
+        private enum MetadataType {
+            Template = 0,
+            Config = 1
+        }
+        
         [MenuItem(EditorMetaTools.MenuRoot + "Prototype Editor", false, 109)]
         public static void OpenEditor ()
         {
@@ -46,15 +51,14 @@ namespace Metadata.Menus
 
         private string _GetMetadataName ()
         {
-            var name = string.Empty;
-
-            if(_isTemplate)
+            var metadataName = string.Empty;
+            if(_metadataType == MetadataType.Template)
             {
                 var index = _idxTemplateType;
 
                 if(index >= 0 && index < _templateNames.Length)
                 {
-                    name = _templateNames[index];
+                    metadataName = _templateNames[index];
                 }
             }
             else 
@@ -63,19 +67,19 @@ namespace Metadata.Menus
 
                 if(index >= 0 && index < _configNames.Length)
                 {
-                    name = _configNames[index];
+                    metadataName = _configNames[index];
                 }
             }
 
-            return name;
+            return metadataName;
         }
 
         private void OnGUI ()
         {
-            var isTemplate = EditorGUILayout.Toggle("Choose Template or Config: ", _isTemplate);
-            if (_isTemplate != isTemplate)
+            var metadataType = (MetadataType) EditorGUILayout.EnumPopup("Metadata Type", _metadataType);
+            if (_metadataType != metadataType)
             {
-                _isTemplate = isTemplate;
+                _metadataType = metadataType;
                 _CheckChangeMetadataType();
             }
 
@@ -102,7 +106,7 @@ namespace Metadata.Menus
         private void _DrawSearchField ()
         {
             _searchText = EditorGUILayout.TextField("Search: ", _searchText);
-            if (_isTemplate)
+            if (_metadataType == MetadataType.Template)
             {
                 if (_searchText != _lastSearchText) 
                 {
@@ -123,7 +127,6 @@ namespace Metadata.Menus
                     _idxTemplateType = idxTemplateType;
                     _CheckChangeMetadataType();
                 }
-
             }
             else
             {
@@ -255,7 +258,7 @@ namespace Metadata.Menus
         {
             var xml = new XmlMetadata();
 
-            if (_isTemplate)
+            if (_metadataType == MetadataType.Template)
             {
                 var template = _metadata as Template;
                 xml.Templates.Add(template);
@@ -266,8 +269,8 @@ namespace Metadata.Menus
                 xml.Configs.Add(config);
             }
 
-            var name = _metadata.GetType().Name;
-            var filepath = GetDesktopFilePath(name);
+            var metadataName = _metadata.GetType().Name;
+            var filepath = GetDesktopFilePath(metadataName);
 
             using (var writer = new StreamWriter(filepath))
             {
@@ -279,18 +282,18 @@ namespace Metadata.Menus
             os.startfile(filepath, null, true);
         }
 
-        public static string GetDesktopFilePath (string name)
+        private static string GetDesktopFilePath (string name)
         {
             name = name ?? string.Empty;
             var filepath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/" + name + ".xml";
             return filepath;
         }
 
+        private MetadataType _metadataType;
         private int _idxTemplateType;
         private int _idxConfigType;
         private string[] _templateNames;
         private string[] _configNames;
-        private bool _isTemplate = true;
 
         private IMetadata _metadata;
 		private string _searchText;
