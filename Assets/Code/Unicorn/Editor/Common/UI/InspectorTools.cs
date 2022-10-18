@@ -77,33 +77,33 @@ namespace Unicorn
             {
                 isChanged = _DrawToggleField(target, field);
             }
-            else if (type == typeof(Byte))
+            else if (type == typeof(byte))
             {
-                isChanged = _DrawIntField<Byte>(target, field);
+                isChanged = _DrawIntField<byte>(target, field);
             }
-            else if (type == typeof(SByte))
+            else if (type == typeof(sbyte))
             {
-                isChanged = _DrawIntField<SByte>(target, field);
+                isChanged = _DrawIntField<sbyte>(target, field);
             }
-            else if (type == typeof(Int16))
+            else if (type == typeof(short))
             {
-                isChanged = _DrawIntField<Int16>(target, field);
+                isChanged = _DrawIntField<short>(target, field);
             }
-            else if (type == typeof(UInt16))
+            else if (type == typeof(ushort))
             {
-                isChanged = _DrawIntField<UInt16>(target, field);
+                isChanged = _DrawIntField<ushort>(target, field);
             }
-            else if (type == typeof(Int32))
+            else if (type == typeof(int))
             {
-                isChanged = _DrawIntField<Int32>(target, field);
+                isChanged = _DrawIntField<int>(target, field);
             }
-            else if (type == typeof(UInt32))
+            else if (type == typeof(uint))
             {
-                isChanged = _DrawLongField<UInt32>(target, field);
+                isChanged = _DrawLongField<uint>(target, field);
             }
-            else if (type == typeof(Int64))
+            else if (type == typeof(long))
             {
-                isChanged = _DrawLongField<Int64>(target, field);
+                isChanged = _DrawLongField<long>(target, field);
             }
             else if (type == typeof(float))
             {
