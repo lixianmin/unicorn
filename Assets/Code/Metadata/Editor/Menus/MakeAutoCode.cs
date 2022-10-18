@@ -39,6 +39,8 @@ namespace Metadata.Menus
             new MetaFactoryCodeMaker().WriteAll();
 			_RemoveEmptyFiles(EditorMetaTools.StandardAutoCodeDirectory);
             _RemoveEmptyFiles(EditorMetaTools.ClientAutoCodeDirectory);
+            
+            // make auto code之后, 但因为执行时会自动Refresh()，所以这里似乎不需要Refresh
 			// AssetDatabase.Refresh();
 
             // lua的脚本暂时先用不到了
