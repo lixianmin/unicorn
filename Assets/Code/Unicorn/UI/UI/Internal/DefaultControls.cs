@@ -118,6 +118,7 @@ namespace Unicorn.UI.Internal
 
             var lbl = go.AddComponent<UIText1>();
             lbl.text = "New UIText";
+            lbl.raycastTarget = false;
             SetDefaultTextValues(lbl);
 
             return go;
@@ -126,14 +127,16 @@ namespace Unicorn.UI.Internal
         public static GameObject CreateImage (Resources resources)
         {
             GameObject go = CreateUIElementRoot("UIImage", s_ImageElementSize);
-            go.AddComponent<UIImage>();
+            var image = go.AddComponent<UIImage>();
+            image.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
             return go;
         }
 
         public static GameObject CreateRawImage (Resources resources)
         {
             GameObject go = CreateUIElementRoot("UIRawImage", s_ImageElementSize);
-            go.AddComponent<UIRawImage>();
+            var image = go.AddComponent<UIRawImage>();
+            image.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
             return go;
         }
 
@@ -149,6 +152,7 @@ namespace Unicorn.UI.Internal
             image.sprite = resources.standard;
             image.type = Image.Type.Sliced;
             image.color = s_DefaultSelectableColor;
+            image.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
 
             var bt = buttonRoot.AddComponent<UIButton>();
             SetDefaultColorTransitionValues(bt);
@@ -156,6 +160,7 @@ namespace Unicorn.UI.Internal
             var text = childText.AddComponent<UIText1>();
             text.text = "UIButton";
             text.alignment = TextAnchor.MiddleCenter;
+            text.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
             SetDefaultTextValues(text);
 
             RectTransform textRectTransform = childText.GetComponent<RectTransform>();
@@ -183,12 +188,15 @@ namespace Unicorn.UI.Internal
             bgImage.sprite = resources.standard;
             bgImage.type = Image.Type.Sliced;
             bgImage.color = s_DefaultSelectableColor;
+            bgImage.raycastTarget = false;  // 设置raycastTarget=false，减少cpu成本
 
             var checkmarkImage = checkmark.AddComponent<UIImage>();
             checkmarkImage.sprite = resources.checkmark;
+            checkmarkImage.raycastTarget = false;   // 设置raycastTarget=false，减少cpu成本
 
             var label = childLabel.AddComponent<UIText1>();
             label.text = "Toggle";
+            label.raycastTarget = false;    // 设置raycastTarget=false，减少cpu成本
             SetDefaultTextValues(label);
 
             toggle.graphic = checkmarkImage;

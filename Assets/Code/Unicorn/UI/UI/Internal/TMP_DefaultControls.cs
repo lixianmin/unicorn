@@ -77,7 +77,9 @@ namespace Unicorn.UI.Internal
         private static void SetParentAndAlign(GameObject child, GameObject parent)
         {
             if (parent == null)
+            {
                 return;
+            }
 
             child.transform.SetParent(parent.transform, false);
             SetLayerRecursively(child, parent.layer);
@@ -88,7 +90,9 @@ namespace Unicorn.UI.Internal
             go.layer = layer;
             Transform t = go.transform;
             for (int i = 0; i < t.childCount; i++)
+            {
                 SetLayerRecursively(t.GetChild(i).gameObject, layer);
+            }
         }
 
         // Actual controls
@@ -139,6 +143,7 @@ namespace Unicorn.UI.Internal
             image.sprite = resources.standard;
             image.type = Image.Type.Sliced;
             image.color = s_DefaultSelectableColor;
+            // image.raycastTarget = false;    // 这个不能设置raycastTarget=false，否则button点不了啦
 
             Button bt = buttonRoot.AddComponent<UIButton>();
             SetDefaultColorTransitionValues(bt);
@@ -146,6 +151,7 @@ namespace Unicorn.UI.Internal
             TextMeshProUGUI text = childText.AddComponent<UIText>();
             text.text = "Button";
             text.alignment = TextAlignmentOptions.Center;
+            text.raycastTarget = false;     // 设置raycastTarget=false，减少cpu成本
             SetDefaultTextValues(text);
 
             RectTransform textRectTransform = childText.GetComponent<RectTransform>();
@@ -162,10 +168,12 @@ namespace Unicorn.UI.Internal
 
             #if UNITY_EDITOR
                 go = ObjectFactory.CreateGameObject("UIText");
-                ObjectFactory.AddComponent<UIText>(go);
+                var text = ObjectFactory.AddComponent<UIText>(go);
+                text.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
             #else
                 go = CreateUIElementRoot("UIText", s_TextElementSize);
-                go.AddComponent<UIText>();
+                var text = go.AddComponent<UIText>();
+                text.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
             #endif
 
             return go;
@@ -184,6 +192,7 @@ namespace Unicorn.UI.Internal
             image.sprite = resources.inputField;
             image.type = Image.Type.Sliced;
             image.color = s_DefaultSelectableColor;
+            image.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
 
             var inputField = root.AddComponent<UIInputField>();
             SetDefaultColorTransitionValues(inputField);
@@ -207,6 +216,7 @@ namespace Unicorn.UI.Internal
             text.enableWordWrapping = false;
             text.extraPadding = true;
             text.richText = true;
+            text.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
             SetDefaultTextValues(text);
 
             var placeholder = childPlaceholder.AddComponent<UIText>();
@@ -215,6 +225,7 @@ namespace Unicorn.UI.Internal
             placeholder.fontStyle = FontStyles.Italic;
             placeholder.enableWordWrapping = false;
             placeholder.extraPadding = true;
+            placeholder.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
 
             // Make placeholder color half as opaque as normal text color.
             Color placeholderColor = text.color;

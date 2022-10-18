@@ -25,7 +25,6 @@ namespace Unicorn.UI
             var label = go.GetComponent<UIText1>();
             if (null != label)
             {
-                label.raycastTarget = false;
                 label.text = "panda";
             }
         }
@@ -35,12 +34,6 @@ namespace Unicorn.UI
         {
             GameObject go = DefaultControls.CreateImage(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
-
-            var image = go.GetComponent<UIImage>();
-            if (null != image)
-            {
-                image.raycastTarget = false;
-            }
         }
 
         [MenuItem(MenuRoot + "UI Raw Image", false, 1802)]
@@ -48,12 +41,6 @@ namespace Unicorn.UI
         {
             GameObject go = DefaultControls.CreateRawImage(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
-
-            var rawImage = go.GetComponent<UIRawImage>();
-            if (null != rawImage)
-            {
-                rawImage.raycastTarget = false;
-            }
         }
 
         [MenuItem(MenuRoot + "Legacy/UI Button", false, 1830)]
