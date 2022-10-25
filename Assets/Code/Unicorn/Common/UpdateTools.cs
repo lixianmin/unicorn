@@ -20,7 +20,7 @@ namespace Unicorn
 			var count = _updateItems.Count;
 			for (var i = 0; i < count; ++i)
 			{
-				var updatable = _updateItems[i] as IExpensiveUpdate;
+				var updatable = _updateItems[i] as IExpensiveUpdater;
 				updatable?.ExpensiveUpdate(deltaTime);
 			}
 		}
@@ -30,19 +30,19 @@ namespace Unicorn
 			return Time.realtimeSinceStartup > _frameStartTime + timeout;
 		}
 
-		internal static void AttachUpdate(IExpensiveUpdate expensiveUpdate)
+		internal static void AttachUpdate(IExpensiveUpdater expensiveUpdater)
 		{
-			if (null != expensiveUpdate)
+			if (null != expensiveUpdater)
 			{
-				_updateItems.Add(expensiveUpdate);
+				_updateItems.Add(expensiveUpdater);
 			}
 		}
 
-		internal static void DetachUpdate(IExpensiveUpdate expensiveUpdate)
+		internal static void DetachUpdate(IExpensiveUpdater expensiveUpdater)
 		{
-			if (null != expensiveUpdate)
+			if (null != expensiveUpdater)
 			{
-				_updateItems.Remove(expensiveUpdate);
+				_updateItems.Remove(expensiveUpdater);
 			}
 		}
 

@@ -130,7 +130,7 @@ namespace Unicorn
                 _coroutineManager.Update();
 				_partUpdateSystem.Update(deltaTime);
 				_kitManager.Update();
-				_uiManager.Update();
+				_uiManager.Update(deltaTime);
                 // Loom.Update();
 
                 DisposableRecycler.Update();

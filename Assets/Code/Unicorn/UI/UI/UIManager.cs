@@ -118,7 +118,7 @@ namespace Unicorn.UI
         //     }
         // }
 
-        internal void Update()
+        internal void Update(float deltaTime)
         {
             var snapshot = _TakeSnapshot();
             var windows = snapshot.windows;
@@ -128,7 +128,8 @@ namespace Unicorn.UI
                 var window = windows[i];
                 if (window.GetFetus().isLoaded)
                 {
-                    window.InnerUpdate();
+                    var updater = window as IExpensiveUpdater;
+                    updater?.ExpensiveUpdate(deltaTime);
                 }
             }
 

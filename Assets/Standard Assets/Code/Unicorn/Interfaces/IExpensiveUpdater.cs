@@ -8,7 +8,7 @@ Copyright (C) - All Rights Reserved
 
 namespace Unicorn
 {
-    public interface IExpensiveUpdate
+    public interface IExpensiveUpdater
     {
         /// <summary>
         /// 实际上就是Update()，只所以起名ExpensiveUpdate()，只为了心理压制，使用的人需要郑重考虑是不启用这个可能会比较费的更新逻辑

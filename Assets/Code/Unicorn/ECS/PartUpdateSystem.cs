@@ -28,7 +28,7 @@ namespace Unicorn
 
         private void _OnPartCreated(IPart part)
         {
-            var updatable = part as IExpensiveUpdate;
+            var updatable = part as IExpensiveUpdater;
             if (updatable != null && updatable is IIsDisposed)
             {
                 _AddUpdatePart(updatable);
@@ -121,12 +121,12 @@ namespace Unicorn
             _size = i;
         }
 
-        private void _AddUpdatePart(IExpensiveUpdate part)
+        private void _AddUpdatePart(IExpensiveUpdater part)
         {
             if (_size == _capacity)
             {
                 _capacity <<= 1;
-                var tickParts = new IExpensiveUpdate[_capacity];
+                var tickParts = new IExpensiveUpdater[_capacity];
                 var typeIndices = new int[_capacity];
 
                 Array.Copy(_updateParts, 0, tickParts, 0, _size);
@@ -150,7 +150,7 @@ namespace Unicorn
 
         private const int _kMaxTypeIndex = 0x850506;
         private int[] _typeIndices = { _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex };
-        private IExpensiveUpdate[] _updateParts = new IExpensiveUpdate[4];
+        private IExpensiveUpdater[] _updateParts = new IExpensiveUpdater[4];
         private int _capacity = 4;
         private int _size = 0;
         private bool _hasNewPart;

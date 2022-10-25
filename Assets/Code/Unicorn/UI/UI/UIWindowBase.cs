@@ -67,8 +67,5 @@ namespace Unicorn.UI
 
         // 逻辑帧: 大概10fps
         // protected virtual void LogicUpdate() {}
-        
-        // 正常Update
-        protected virtual void Update() {}
     }
 }
