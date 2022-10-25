@@ -28,14 +28,14 @@ namespace Unicorn
 
         private void _OnPartCreated(IPart part)
         {
-            var updatable = part as IUpdatable;
+            var updatable = part as IExpensiveUpdate;
             if (updatable != null && updatable is IIsDisposed)
             {
                 _AddUpdatePart(updatable);
             }
         }
 
-        internal void Update()
+        internal void Update(float deltaTime)
         {
             if (_hasNewPart)
             {
@@ -43,7 +43,7 @@ namespace Unicorn
                 _hasNewPart = false;
             }
 
-            var hasDisposed = _UpdateParts();
+            var hasDisposed = _UpdateParts(deltaTime);
 
             if (hasDisposed)
             {
@@ -51,7 +51,7 @@ namespace Unicorn
             }
         }
 
-        private bool _UpdateParts()
+        private bool _UpdateParts(float deltaTime)
         {
             var count = _size;
             if (count > 0)
@@ -63,7 +63,7 @@ namespace Unicorn
                     var disposed = part as IIsDisposed;
                     if (null == disposed || !disposed.IsDisposed())
                     {
-                        part.Update();
+                        part.ExpensiveUpdate(deltaTime);
                     }
                     else
                     {
@@ -121,12 +121,12 @@ namespace Unicorn
             _size = i;
         }
 
-        private void _AddUpdatePart(IUpdatable part)
+        private void _AddUpdatePart(IExpensiveUpdate part)
         {
             if (_size == _capacity)
             {
                 _capacity <<= 1;
-                var tickParts = new IUpdatable[_capacity];
+                var tickParts = new IExpensiveUpdate[_capacity];
                 var typeIndices = new int[_capacity];
 
                 Array.Copy(_updateParts, 0, tickParts, 0, _size);
@@ -150,7 +150,7 @@ namespace Unicorn
 
         private const int _kMaxTypeIndex = 0x850506;
         private int[] _typeIndices = { _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex, _kMaxTypeIndex };
-        private IUpdatable[] _updateParts = new IUpdatable[4];
+        private IExpensiveUpdate[] _updateParts = new IExpensiveUpdate[4];
         private int _capacity = 4;
         private int _size = 0;
         private bool _hasNewPart;

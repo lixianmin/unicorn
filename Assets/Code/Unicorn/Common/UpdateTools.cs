@@ -15,12 +15,13 @@ namespace Unicorn
 		internal static void Update()
 		{
 			_frameStartTime = Time.realtimeSinceStartup;
+			var deltaTime = Time.deltaTime;
 
 			var count = _updateItems.Count;
 			for (var i = 0; i < count; ++i)
 			{
-				var updatable = _updateItems[i] as IUpdatable;
-				updatable?.Update();
+				var updatable = _updateItems[i] as IExpensiveUpdate;
+				updatable?.ExpensiveUpdate(deltaTime);
 			}
 		}
 
@@ -29,24 +30,24 @@ namespace Unicorn
 			return Time.realtimeSinceStartup > _frameStartTime + timeout;
 		}
 
-		internal static void AttachUpdate(IUpdatable updatable)
+		internal static void AttachUpdate(IExpensiveUpdate expensiveUpdate)
 		{
-			if (null != updatable)
+			if (null != expensiveUpdate)
 			{
-				_updateItems.Add(updatable);
+				_updateItems.Add(expensiveUpdate);
 			}
 		}
 
-		internal static void DetachUpdate(IUpdatable updatable)
+		internal static void DetachUpdate(IExpensiveUpdate expensiveUpdate)
 		{
-			if (null != updatable)
+			if (null != expensiveUpdate)
 			{
-				_updateItems.Remove(updatable);
+				_updateItems.Remove(expensiveUpdate);
 			}
 		}
 
 		// to ensure IsTimeout() is false when Update() is not called (in editor).
 		private static float _frameStartTime = float.MaxValue;
-		private static readonly  ArrayList _updateItems = new ArrayList();
+		private static readonly  ArrayList _updateItems = new();
 	}
 }

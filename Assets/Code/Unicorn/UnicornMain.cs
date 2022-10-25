@@ -128,7 +128,7 @@ namespace Unicorn
                 _UpdateLogs();
                 
                 _coroutineManager.Update();
-				_partUpdateSystem.Update();
+				_partUpdateSystem.Update(deltaTime);
 				_kitManager.Update();
 				_uiManager.Update();
                 // Loom.Update();
