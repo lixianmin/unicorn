@@ -64,8 +64,11 @@ namespace Unicorn.UI
         /// 用途: unregister在OnLoaded()中注册的events
         /// </summary>
         protected virtual void OnUnloading() {}
-
-        // 逻辑帧: 大概10fps
-        // protected virtual void LogicUpdate() {}
+        
+        /// <summary>
+        /// 慢速帧，大概10fps；如果感觉频率不够，可考虑实现IExpensiveUpdater接口
+        /// </summary>
+        /// <param name="deltaTime">两帧之间的时间间隔，远大于Time.deltaTime</param>
+        protected virtual void SlowUpdate(float deltaTime) {}
     }
 }

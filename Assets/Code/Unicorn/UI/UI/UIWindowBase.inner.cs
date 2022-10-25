@@ -24,6 +24,7 @@ namespace Unicorn.UI
         internal void InnerOnDeactivating() { OnDeactivating(); }
         internal void InnerOnClosing() { OnClosing(); }
         internal void InnerOnUnloading() { OnUnloading(); }
+        internal void InnerSlowUpdate(float deltaTime) { SlowUpdate(deltaTime); }
         
         internal void Dispose()
         {

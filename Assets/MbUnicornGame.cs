@@ -61,7 +61,8 @@ public class MbUnicornGame : MonoBehaviour
 	private void Update()
 	{
 		//AssetManager.Instance.Tick();
-		UnicornMain.Instance.Update(Time.deltaTime);
+		UnicornMain.Instance.ExpensiveUpdate(Time.deltaTime);
+		UnicornMain.Instance.SlowUpdate(Time.deltaTime);
 	}
 
 	private IEnumerator _CoLoadMetadata()

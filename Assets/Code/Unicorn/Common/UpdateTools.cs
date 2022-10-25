@@ -12,10 +12,9 @@ namespace Unicorn
 {
 	public static class UpdateTools
 	{
-		internal static void Update()
+		internal static void ExpensiveUpdate(float deltaTime)
 		{
 			_frameStartTime = Time.realtimeSinceStartup;
-			var deltaTime = Time.deltaTime;
 
 			var count = _updateItems.Count;
 			for (var i = 0; i < count; ++i)

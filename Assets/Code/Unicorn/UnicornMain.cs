@@ -116,25 +116,41 @@ namespace Unicorn
             }
         }
 
-        public void Update (float deltaTime)
+        /// <summary>
+        /// 实际上就是Update()，只所以起名ExpensiveUpdate()，是为了让使用者郑重考虑是否启用这个可能会比较费的更新逻辑
+        /// </summary>
+        /// <param name="deltaTime"></param>
+        public void ExpensiveUpdate (float deltaTime)
         {
             if (_isInited)
             {
 				os.frameCount = Time.frameCount;
 				os.time = Time.time;
 
-				UpdateTools.Update();
+				UpdateTools.ExpensiveUpdate(deltaTime);
 				Console.Update();
                 _UpdateLogs();
                 
                 _coroutineManager.Update();
 				_partUpdateSystem.Update(deltaTime);
 				_kitManager.Update();
-				_uiManager.Update(deltaTime);
+				_uiManager.ExpensiveUpdate(deltaTime);
                 // Loom.Update();
 
                 DisposableRecycler.Update();
             }
+        }
+
+        /// <summary>
+        /// 慢速帧，约10fps，可以节约CPU
+        /// </summary>
+        /// <param name="deltaTime">两帧之间的时间间隔，远大于Time.deltaTime</param>
+        public void SlowUpdate(float deltaTime)
+        {
+	        if (_isInited)
+	        {
+		        _uiManager.SlowUpdate(deltaTime);
+	        }
         }
 
         public void Dispose ()
