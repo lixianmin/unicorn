@@ -17,12 +17,9 @@ using Metadata;
 public class MbUnicornGame : MonoBehaviour
 {
 	class GameMetadataManager : MetadataManager
-    {
-		public GameMetadataManager()
-        {
-			Instance = this;
-        }
-    }
+	{
+		public static readonly GameMetadataManager Instance = new();
+	}
 
 	private void Start()
 	{
@@ -95,7 +92,4 @@ public class MbUnicornGame : MonoBehaviour
 
 		// UIManager.OpenWindow(typeof(Client.UI.UIMain));
 	}
-
-
-	private readonly GameMetadataManager _metadataManager = new ();
 }

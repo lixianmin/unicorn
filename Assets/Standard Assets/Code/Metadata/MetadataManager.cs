@@ -36,10 +36,10 @@ namespace Metadata
 {
     public partial class MetadataManager: IDisposable
     {
-        protected MetadataManager ()
+	    protected MetadataManager ()
         {
-
-		}
+	        Instance = this;
+        }
 
 		public virtual Template GetTemplate (Type templateType, int idTemplate)
 		{
@@ -57,25 +57,26 @@ namespace Metadata
 			{
 				return template;
 			}
-			else if (!table.IsCompleted)
-			{
-                var typeName = templateType.FullName;
-                var creator = MetaFactory.GetMetaCreator(typeName);
-                if (null != creator)
-                {
-                    if (aid.Seek(typeName, idTemplate))
-                    {
-                        var metadata = creator.Create();
-                        MetaTools.Load(aid, metadata);
-                        template = metadata as Template;
-                    }
 
-                    table.InsertByIndex(~templateIndex, idTemplate, template);
-                    return template;
-                }
-			}
+            if (!table.IsCompleted)
+            {
+	            var typeName = templateType.FullName;
+	            var creator = MetaFactory.GetMetaCreator(typeName);
+	            if (null != creator)
+	            {
+		            if (aid.Seek(typeName, idTemplate))
+		            {
+			            var metadata = creator.Create();
+			            MetaTools.Load(aid, metadata);
+			            template = metadata as Template;
+		            }
 
-			return null;
+		            table.InsertByIndex(~templateIndex, idTemplate, template);
+		            return template;
+	            }
+            }
+
+            return null;
 		}
 		
 		public virtual TemplateTable GetTemplateTable (Type templateType)
@@ -247,7 +248,15 @@ namespace Metadata
 			return _metadataVersion;
 		}
 
-		public static MetadataManager Instance { get; protected set; }
+		/// <summary>
+		/// 设计为singleton而不是static类，是为了给未来的自己一个机会：万一client端需要重写一些方法呢？
+		/// 2022-10-22 原本Instance是由子类负责设置的，综合考虑后决定由基类自己做这件事，理由包括：
+		///     1. 把权利收回来，并且避免子类忘记
+		///     2. 因为子类需提供更多的方法，方便起见会添加：public new static readonly GameWebManager Instance = new(); 性能也会比基类中Property版的更好一些
+		///     3. 设计中，这就是一个singleton，不应该同时存在多个instance
+		///     4. 但是，Instance对象是lazy load的，如果基类的Instance先于子类的调用了，会报NullReferenceException
+		/// </summary>
+		public static MetadataManager Instance { get; private set; }
 		public bool IsXmlMetadata => _isXmlMetadata;
 
 		private readonly LoadAid _loadAid = new ();
