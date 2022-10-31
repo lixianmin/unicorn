@@ -21,10 +21,10 @@ namespace Unicorn.Web
             {
                 if (webItem.Asset is not GameObject mainAsset) return;
 
-                var script = mainAsset.GetComponent<MBPrefabAid>();
+                var script = mainAsset.GetComponent<MbPrefabAid>();
                 if (script is null)
                 {
-                     script = mainAsset.AddComponent<MBPrefabAid>();
+                     script = mainAsset.AddComponent<MbPrefabAid>();
                      script.key = argument.key;
                      
 #if UNITY_EDITOR
@@ -64,7 +64,7 @@ namespace Unicorn.Web
         public GameObject Asset => _webItem.Asset as GameObject;
         
         private IWebNode _webItem;
-        private MBPrefabAid _aidScript;
+        private MbPrefabAid _aidScript;
         // private readonly int _id = WebTools.GetNextId();
     }
 }
