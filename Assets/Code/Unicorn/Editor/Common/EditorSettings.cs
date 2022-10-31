@@ -19,6 +19,7 @@ namespace Unicorn
         {
             var manifest = UnicornManifest.OpenOrCreate();
             _SetColorSpace(manifest);
+            _SetBakeCollisionMeshes(manifest);
         }
 
         // 设置colorSpace，默认使用Linear空间
@@ -54,6 +55,16 @@ namespace Unicorn
             {
                 PlayerSettings.colorSpace = colorSpace;
                 Console.WriteLine($"(manifest.editorSettings.colorSpace={name}) => (PlayerSettings.colorSpace={name})");
+            }
+        }
+
+        private static void _SetBakeCollisionMeshes(UnicornManifest manifest)
+        {
+            var bakeCollisionMeshes = manifest.editorSettings.bakeCollisionMeshes;
+            if ( PlayerSettings.bakeCollisionMeshes != bakeCollisionMeshes)
+            {
+                PlayerSettings.bakeCollisionMeshes = bakeCollisionMeshes;
+                Console.WriteLine($"(manifest.editorSettings.bakeCollisionMeshes={bakeCollisionMeshes}) => (PlayerSettings.bakeCollisionMeshes={bakeCollisionMeshes})");
             }
         }
     }

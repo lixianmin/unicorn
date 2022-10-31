@@ -18,7 +18,7 @@ public class MbUnicornGame : MonoBehaviour
 {
 	class GameMetadataManager : MetadataManager
 	{
-		public static readonly GameMetadataManager Instance = new();
+		public new static readonly GameMetadataManager Instance = new();
 	}
 
 	private void Start()
