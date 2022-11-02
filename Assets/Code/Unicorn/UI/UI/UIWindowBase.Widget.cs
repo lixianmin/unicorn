@@ -70,14 +70,17 @@ namespace Unicorn.UI
 
         internal void _FillWidgets(UISerializer serializer)
         {
-            var dataList = serializer?.widgetDatas;
-            if (dataList != null)
+            if (serializer != null)
             {
-                foreach (var data in dataList)
+                var dataList = serializer.widgetDatas;
+                if (dataList != null)
                 {
-                    var key = new WidgetKey { name = data.name, type = data.target.GetType() };
-                    _widgets.Add(key, data.target);
-                }
+                    foreach (var data in dataList)
+                    {
+                        var key = new WidgetKey { name = data.name, type = data.target.GetType() };
+                        _widgets.Add(key, data.target);
+                    }
+                }    
             }
         }
 

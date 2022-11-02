@@ -43,10 +43,11 @@ namespace Unicorn.UI.Internal
         {
             _transform = goCloned.transform;
             var serializer = goCloned.GetComponent(typeof(UISerializer)) as UISerializer;
-            if (serializer is null)
-            {
-                Console.Error.WriteLine("serializer is null, gameObject={0}", goCloned.ToString());
-            }
+            // 接下来，计划无论有无UISerializer脚本，UI相关代码都可以正常运行
+            // if (serializer is null)
+            // {
+            //     Console.Error.WriteLine("serializer is null, gameObject={0}", goCloned.ToString());
+            // }
 
             _serializer = serializer;
             
