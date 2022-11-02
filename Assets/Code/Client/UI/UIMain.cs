@@ -23,12 +23,12 @@
 //         {
 //             _btnOpenBag.UI.onClick.AddListener(() =>
 //             {
-//                 UIManager.OpenWindow(typeof(UIBag));
+//                 UIManager.Instance.OpenWindow(typeof(UIBag));
 //             });
 //             
 //             _btnCloseBag.UI.onClick.AddListener(() =>
 //             {
-//                 UIManager.CloseWindow(typeof(UIBag));
+//                 UIManager.Instance.CloseWindow(typeof(UIBag));
 //             });
 //         }
 //     }
