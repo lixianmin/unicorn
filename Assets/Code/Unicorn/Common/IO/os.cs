@@ -29,14 +29,17 @@ namespace Unicorn
 			{
 				isAndroid = true;
 			}
+			
+			isWindows = platform is RuntimePlatform.WindowsEditor or RuntimePlatform.WindowsPlayer;
+		}
 
+		internal static void Init()
+		{
+			// 这些代码不能在MbGame这个MonoBehaviour的构造方法中调用
 			isBigMemory = SystemInfo.systemMemorySize > 1024 + 512;
-			isWindows = platform == RuntimePlatform.WindowsEditor
-						|| platform == RuntimePlatform.WindowsPlayer;
-
 			frameCount = Time.frameCount;
 			time = Time.realtimeSinceStartup;
-
+			
 			// init editor mode properties.
 			_InitModeTypes();
 		}
@@ -88,9 +91,7 @@ namespace Unicorn
 
 		public static void swap<T>(ref T lhs, ref T rhs)
 		{
-			var temp = lhs;
-			lhs = rhs;
-			rhs = temp;
+			(lhs, rhs) = (rhs, lhs);
 		}
 
 		public static void collectgarbage()
@@ -186,11 +187,11 @@ namespace Unicorn
 			}
 		}
 
-		public static bool isEditor { get; private set; }
-		public static bool isIPhonePlayer { get; private set; }
-		public static bool isAndroid { get; private set; }
+		public static bool isEditor { get; }
+		public static bool isIPhonePlayer { get; }
+		public static bool isAndroid { get; }
 		public static bool isBigMemory { get; private set; }
-		public static bool isWindows { get; private set; }
+		public static bool isWindows { get; }
 		internal static bool isUnloadingUnusedAssets { get; private set; }
 
 		public static int frameCount { get; internal set; }
@@ -198,7 +199,7 @@ namespace Unicorn
 
 		public const string linesep = "\n";
 
-		public static readonly StringIntern intern = new StringIntern();
+		public static readonly StringIntern intern = new();
 		public static readonly Encoding UTF8 = new UTF8Encoding(false, false);
 	}
 }

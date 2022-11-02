@@ -103,18 +103,19 @@ public static class Console
 
 		if (_HasFlags(ConsoleFlags.DetailedMessage))
 		{
-			var frameCount = 0;
-			var realtime = string.Empty;
-
+			int frameCount;
+			string time;
+			
 			if (isMainThread)
 			{
+				// 以下两行代码不能在MonoBehaviour的构造方法中调用
 				frameCount = UnityEngine.Time.frameCount;
-				realtime = UnityEngine.Time.realtimeSinceStartup.ToString("F3");
+				time = UnityEngine.Time.realtimeSinceStartup.ToString("F3");
 			}
 			else
 			{
 				frameCount = os.frameCount;
-				realtime = _time.ToString("F3");
+				time = _time.ToString("F3");
 			}
 
 			if (_lastFrameCount != frameCount)
@@ -123,8 +124,8 @@ public static class Console
 				_messageFormat[1] = frameCount.ToString();
 			}
 
-			_messageFormat[3] = realtime;
-			_messageFormat[5] = null != message ? message.ToString() : "null mesage (-_-)";
+			_messageFormat[3] = time;
+			_messageFormat[5] = null != message ? message.ToString() : "null message (-_-)";
 			message = string.Concat(_messageFormat);
 		}
 
@@ -273,12 +274,12 @@ public static class Console
 
 	private static ConsoleFlags _flags;
 
-	private static int _idMainThread;
+	private static readonly int _idMainThread;
 	private static float _time;
 
-	private static int _lastFrameCount = 0;
+	private static int _lastFrameCount;
 	private static StringBuilder _sbLogText;
-	private static readonly StringBuilder _sbFormatter = new StringBuilder();
+	private static readonly StringBuilder _sbFormatter = new();
 	private static float _nextFlushLogTime;
 
 	private static Action<object> _lpfnLog = _Log;

@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2013-12-23
 author:     lixianmin
 
@@ -12,6 +11,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 using System;
 using System.Collections;
 using System.IO;
@@ -25,15 +25,15 @@ namespace Unicorn
 {
     public sealed class UnicornMain
     {
-        static UnicornMain ()
+        static UnicornMain()
         {
         }
 
-        private UnicornMain ()
+        private UnicornMain()
         {
         }
 
-        public void Init ()
+        public void Init()
         {
             if (_isInited)
             {
@@ -42,47 +42,50 @@ namespace Unicorn
 
             _isInited = true;
 
-			// Default value on Android:
-			// Max workerThreads :60  completionPortThreads:30
-			// Min workerThreads:4  completionPortThreads:4
+            // Default value on Android:
+            // Max workerThreads :60  completionPortThreads:30
+            // Min workerThreads:4  completionPortThreads:4
 //			const int maxWorkerThreads = 8;
 //			const int maxCompletionPortThreads = 8;
 //			ThreadPool.SetMaxThreads(maxWorkerThreads, maxCompletionPortThreads);
 
-			// force call static ctor of Console class
-			Console.Update();
-			_InitLogInfo();
+            // force call static ctor of Console class
+            Console.Update();
+            _InitLogInfo();
+            os.Init();
 
-			var persistentDataPath = Application.persistentDataPath;
+            var persistentDataPath = Application.persistentDataPath;
             var now = DateTime.Now.ToString("yyyy-M-d HH:mm ddd");
-			Console.WriteLine("[UnicornMain.Init()]\n{0}\nplatform={1}\nos={2}\ndeviceModel={3}\nprocessorCount={4}\nsystemMemorySize={5}\ngraphicsDevice={6}\ngraphicsMemorySize={7}\n" +
-			                  "logPath={8}\ndataPath={9}\nstreamingAssetsPath={10}\npersistentDataPath={11}\nresolution={12}x{13}\nScreen.dpi={14}"
-                              , now
-			                  , Application.platform.ToString()
-			                  , SystemInfo.operatingSystem
-			                  , SystemInfo.deviceModel
-							  , SystemInfo.processorCount
-							  , SystemInfo.systemMemorySize.ToString()
-							  , SystemInfo.graphicsDeviceName
-			                  , SystemInfo.graphicsMemorySize.ToString()
-                              , Constants.LogPath
-                              , Application.dataPath
-                              , Application.streamingAssetsPath
-                              , persistentDataPath
-			                  , Screen.width.ToString()
-			                  , Screen.height.ToString()
-			                  , Screen.dpi.ToString("F2")
-			                  );
+            Console.WriteLine(
+                "[UnicornMain.Init()]\n{0}\nplatform={1}\nos={2}\ndeviceModel={3}\nprocessorCount={4}\nsystemMemorySize={5}\ngraphicsDevice={6}\ngraphicsMemorySize={7}\n" +
+                "logPath={8}\ndataPath={9}\nstreamingAssetsPath={10}\npersistentDataPath={11}\nresolution={12}x{13}\nScreen.dpi={14}"
+                , now
+                , Application.platform.ToString()
+                , SystemInfo.operatingSystem
+                , SystemInfo.deviceModel
+                , SystemInfo.processorCount
+                , SystemInfo.systemMemorySize.ToString()
+                , SystemInfo.graphicsDeviceName
+                , SystemInfo.graphicsMemorySize.ToString()
+                , Constants.LogPath
+                , Application.dataPath
+                , Application.streamingAssetsPath
+                , persistentDataPath
+                , Screen.width.ToString()
+                , Screen.height.ToString()
+                , Screen.dpi.ToString("F2")
+            );
 
-			if (string.IsNullOrEmpty(persistentDataPath))
-			{
-				Console.Error.WriteLine("Android Error: persistentDataPath is empty, please restart the Android System.");
-			}
+            if (string.IsNullOrEmpty(persistentDataPath))
+            {
+                Console.Error.WriteLine(
+                    "Android Error: persistentDataPath is empty, please restart the Android System.");
+            }
 
             //ParticleRenderQueueRemapper.Enable = true;
-			System.Net.ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d)=>true;
+            System.Net.ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
 
-			OnInited?.Invoke();
+            OnInited?.Invoke();
         }
 
 //        private bool _AcceptAllCertifications (object sender
@@ -93,12 +96,12 @@ namespace Unicorn
 //            return true;
 //        }
 
-        private void _InitLogInfo ()
+        private void _InitLogInfo()
         {
-            try 
+            try
             {
-				var lastLogPath = Constants.LastLogPath;
-				var logPath = Constants.LogPath;
+                var lastLogPath = Constants.LastLogPath;
+                var logPath = Constants.LogPath;
 
                 if (File.Exists(logPath))
                 {
@@ -107,8 +110,8 @@ namespace Unicorn
 
                 var stream = new FileStream(logPath, FileMode.Create, FileAccess.Write, FileShare.Read);
                 _logWriter = new StreamWriter(stream);
-                
-				Application.logMessageReceived += _HandlerLogCallBack;
+
+                Application.logMessageReceived += _HandlerLogCallBack;
             }
             catch (Exception ex)
             {
@@ -120,21 +123,21 @@ namespace Unicorn
         /// 实际上就是Update()，只所以起名ExpensiveUpdate()，是为了让使用者郑重考虑是否启用这个可能会比较费的更新逻辑
         /// </summary>
         /// <param name="deltaTime"></param>
-        public void ExpensiveUpdate (float deltaTime)
+        public void ExpensiveUpdate(float deltaTime)
         {
             if (_isInited)
             {
-				os.frameCount = Time.frameCount;
-				os.time = Time.time;
+                os.frameCount = Time.frameCount;
+                os.time = Time.time;
 
-				UpdateTools.ExpensiveUpdate(deltaTime);
-				Console.Update();
+                Console.Update();
+                UpdateTools.ExpensiveUpdate(deltaTime);
                 _UpdateLogs();
-                
+
                 _coroutineManager.Update();
-				_partUpdateSystem.Update(deltaTime);
-				_kitManager.Update();
-				_uiManager.ExpensiveUpdate(deltaTime);
+                _partUpdateSystem.Update(deltaTime);
+                _kitManager.Update();
+                _uiManager.ExpensiveUpdate(deltaTime);
                 // Loom.Update();
 
                 DisposableRecycler.Update();
@@ -147,68 +150,68 @@ namespace Unicorn
         /// <param name="deltaTime">两帧之间的时间间隔，远大于Time.deltaTime</param>
         public void SlowUpdate(float deltaTime)
         {
-	        if (_isInited)
-	        {
-		        _uiManager.SlowUpdate(deltaTime);
-	        }
+            if (_isInited)
+            {
+                _uiManager.SlowUpdate(deltaTime);
+            }
         }
 
-        public void Dispose ()
+        public void Dispose()
         {
-			if (_isInited)
-			{
-				if (null != OnDisposing)
-				{
-					OnDisposing();
-				}
-				
-				if (null != _logWriter)
-				{
-					_logWriter.Close();
-				}
-				
+            if (_isInited)
+            {
+                if (null != OnDisposing)
+                {
+                    OnDisposing();
+                }
+
+                if (null != _logWriter)
+                {
+                    _logWriter.Close();
+                }
+
 //				WebPrefab._GetLruCache().Clear();
-				_coroutineManager.Clear();
-				//WebManager.Dispose();
-				_isInited = false;
-				
-				Console.WriteLine("[UnicornMain.Dispose()]");
-			}
+                _coroutineManager.Clear();
+                //WebManager.Dispose();
+                _isInited = false;
+
+                Console.WriteLine("[UnicornMain.Dispose()]");
+            }
         }
 
-        private void _HandlerLogCallBack (string logString, string stackTrace, LogType type)
+        private void _HandlerLogCallBack(string logString, string stackTrace, LogType type)
         {
             // the same log should not be write twice.
             if (_lastLogString != logString)
             {
                 _lastLogString = logString;
 
-				bool needMark = false;
+                bool needMark = false;
 
-				if (type == LogType.Error)
-				{
-					needMark = true;
-					_logs.Add("[[[Error]]]");
-				}
-				else if (type == LogType.Exception)
-				{
-					needMark = true;
-					_logs.Add("[[[Exception]]]");
-				}
+                if (type == LogType.Error)
+                {
+                    needMark = true;
+                    _logs.Add("[[[Error]]]");
+                }
+                else if (type == LogType.Exception)
+                {
+                    needMark = true;
+                    _logs.Add("[[[Exception]]]");
+                }
 
-				_logs.Add(logString);
-                
+                _logs.Add(logString);
+
                 if (type == LogType.Error || type == LogType.Warning || type == LogType.Exception)
                 {
                     _logs.Add(stackTrace);
                 }
 
-				if (needMark)
-				{
-					_logs.Add("[[[-]]]");
-				}
+                if (needMark)
+                {
+                    _logs.Add("[[[-]]]");
+                }
 
-				_logs.Add(os.linesep);
+                _logs.Add(os.linesep);
 
 //				if (null != OnLogCallBack)
 //				{
@@ -217,12 +220,12 @@ namespace Unicorn
             }
         }
 
-        private void _UpdateLogs ()
+        private void _UpdateLogs()
         {
             var count = _logs.Count;
             if (count > 0 && null != _logWriter)
             {
-                for (int i= 0; i< count; ++i)
+                for (int i = 0; i < count; ++i)
                 {
                     var log = _logs[i];
                     _logWriter.WriteLine(log);
@@ -233,16 +236,16 @@ namespace Unicorn
             }
         }
 
-		public bool IsInited => _isInited;
+        public bool IsInited => _isInited;
 
-		//		[System.Obsolete("Application.logMessageReceived")]
+        //		[System.Obsolete("Application.logMessageReceived")]
 //		public event Application.LogCallback OnLogCallBack;
-		public event Action			OnInited;
-        public event Action   		OnDisposing;
+        public event Action OnInited;
+        public event Action OnDisposing;
 
-        public static readonly UnicornMain Instance = new ();
+        public static readonly UnicornMain Instance = new();
 
-        private readonly ArrayList _logs = new ();
+        private readonly ArrayList _logs = new();
         private readonly PartUpdateSystem _partUpdateSystem = new();
         private readonly CoroutineManager _coroutineManager = CoroutineManager.Instance;
         private readonly KitManager _kitManager = KitManager.Instance;
