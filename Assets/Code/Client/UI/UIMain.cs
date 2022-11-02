@@ -6,6 +6,7 @@
 // *********************************************************************/
 //
 // using Unicorn.UI;
+// using UnityEngine;
 //
 // namespace Client.UI
 // {
@@ -16,9 +17,6 @@
 //             return "Assets/res/prefabs/ui/uimain.prefab";
 //         }
 //         
-//         private readonly UIWidget<UIButton> _btnOpenBag = new( "btn_open_bag");
-//         private readonly UIWidget<UIButton> _btnCloseBag = new( "btn_close_bag");
-//
 //         protected override void OnLoaded()
 //         {
 //             _btnOpenBag.UI.onClick.AddListener(() =>
@@ -30,6 +28,12 @@
 //             {
 //                 UIManager.Instance.CloseWindow(typeof(UIBag));
 //             });
+//
+//             Console.WriteLine(_btnCloseBagObject.UI.localPosition);
 //         }
+//         
+//         private readonly UIWidget<UIButton> _btnOpenBag = new( "btn_open_bag");
+//         private readonly UIWidget<UIButton> _btnCloseBag = new( "btn_close_bag");
+//         private readonly UIWidget<Transform> _btnCloseBagObject = new("btn_close_bag");
 //     }
 // }
