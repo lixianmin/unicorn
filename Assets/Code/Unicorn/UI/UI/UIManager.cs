@@ -336,11 +336,12 @@ namespace Unicorn.UI
                 throw new NullReferenceException("can not find UIRoot");
             }
 
-#if !UNITY_EDITOR
             // DontDestroyOnLoad()只能在play mode下调用，否则会报InvalidOperationException
-            // 后续，因为加载很可能会使用LoadScene()，因此必须保证UIRoot不会被莫名其妙的销毁
-            UnityEngine.Object.DontDestroyOnLoad(goRoot);
-#endif
+            // 保证切换场景时UIRoot不会被莫名其妙的销毁
+            if (Application.isPlaying)
+            {
+                UnityEngine.Object.DontDestroyOnLoad(goRoot);
+            }
 
             _uiRoot = goRoot.transform;
             return _uiRoot;
