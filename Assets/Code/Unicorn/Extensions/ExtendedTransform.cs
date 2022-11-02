@@ -8,7 +8,6 @@ Copyright (C) - All Rights Reserved
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-//using Unicorn.Collections;
 
 namespace Unicorn
 {
@@ -19,11 +18,13 @@ namespace Unicorn
             if (null != type)
             {
                 var trans = father.DeepFindEx(name);
-                if (null != trans)
+                if (null != trans && type != typeof(Transform))
                 {
                     var component = trans.GetComponent(type);
                     return component;
                 }
+
+                return trans;
             }
 
             return null;
