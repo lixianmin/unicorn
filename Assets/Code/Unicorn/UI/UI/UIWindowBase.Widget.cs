@@ -72,7 +72,7 @@ namespace Unicorn.UI
         {
             if (serializer != null)
             {
-                var dataList = serializer.widgetDatas;
+                var dataList = serializer.widgets;
                 if (dataList != null)
                 {
                     foreach (var data in dataList)

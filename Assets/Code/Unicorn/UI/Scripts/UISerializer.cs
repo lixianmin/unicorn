@@ -53,9 +53,9 @@ namespace Unicorn.UI
             public string name = string.Empty;
             public string type = string.Empty;  // 这里只能序列化字符串, 无法序列化System.Type
 
-            public Component target = null;
+            public Component target;
 
-            [HideInInspector] public string userdata = null;
+            [HideInInspector] public string userdata;
         }
 
         private void Awake ()
@@ -159,7 +159,6 @@ namespace Unicorn.UI
             _SerializePrefab();
         }
 
-        [ContextMenu("*Refresh UISerializer")]
         private void _SerializePrefab ()
         {
             if (null == _lpfnSerializePrefab)
@@ -180,16 +179,16 @@ namespace Unicorn.UI
         }
 
         private static string[] _rawFontNames = Array.Empty<string>();
-        private static Font[] _localeFonts = null;
+        private static Font[] _localeFonts;
         private static readonly Hashtable _scripts = new();
 
         private static Action<UISerializer> _lpfnSerializePrefab;
 
-        public WidgetData[] widgetDatas = null;
+        public WidgetData[] widgets;
         
         public UIWindowAnimation openWindowAnimation;
         public UIWindowAnimation closeWindowAnimation;
         
-        public Text[] labels = null;
+        public Text[] labels;
     }
 }

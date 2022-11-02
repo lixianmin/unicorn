@@ -10,14 +10,29 @@ using UnityEditor;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.IO;
 using System.Reflection;
 
 namespace Unicorn.UI
 {
-    internal static class UISerializerEditor
+    [CustomEditor(typeof(UISerializer), true)]
+    internal class UISerializerEditor : Editor
     {
+        protected void OnEnable ()
+        {
+            _target = serializedObject.targetObject as UISerializer;
+        }
+
+        public override void OnInspectorGUI()
+        {
+            var isOk = GUILayout.Button("Refresh Widgets");
+            if (isOk)
+            {
+                SerializePrefab(_target);
+            }
+            
+            base.OnInspectorGUI();
+        }
+
         private static UISerializer.WidgetData _FillWidgetData (Transform root, string key, string name, string type)
         {
             var trans = _DeepFindWidget (root, name);
@@ -366,14 +381,14 @@ namespace Unicorn.UI
             _CheckNameDuplication(root);
             _CheckEventSystemExistence(root);
 
-            rootScript.widgetDatas = null;
+            rootScript.widgets = null;
             var dataList = ListPool<UISerializer.WidgetData>.Spawn();
             _CollectWidgetFromCode(root, dataList);
 
             _FetchLabels(rootScript);
             _CollectUITextWithGUID(rootScript, dataList);
 
-            rootScript.widgetDatas = dataList.ToArray();
+            rootScript.widgets = dataList.ToArray();
             ListPool<UISerializer.WidgetData>.Recycle(dataList);
 
             _SavePrefab(root);
@@ -381,32 +396,8 @@ namespace Unicorn.UI
             Console.WriteLine ("End serializing **********************");
         }
         
-        [MenuItem("Assets/*Refresh UISerializer", true)]
-        private static bool _SerializePrefab_Validate()
-        {
-            var prefab = Selection.activeGameObject;
-            if (prefab is null)
-            {
-                return false;
-            }
-            
-            var script = prefab.GetComponent<UISerializer>();
-            if (script is null)
-            {
-                prefab.AddComponent<UISerializer>();
-            }
-            
-            return true;
-        }
-        
-        [MenuItem("Assets/*Refresh UISerializer", false, 2000)]
-        private static void _SerializePrefab()
-        {
-            var prefab = Selection.activeGameObject;
-            var script = prefab.GetComponent<UISerializer>();
-            SerializePrefab(script);
-        }
-        
         private static List<Type> _allWindowTypes;
+        
+        private UISerializer _target;
     }
 }
