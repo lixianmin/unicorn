@@ -159,13 +159,14 @@ namespace Unicorn.UI
             _SerializePrefab();
         }
 
-        [ContextMenu("*Serialize Prefab")]
+        [ContextMenu("*Refresh UISerializer")]
         private void _SerializePrefab ()
         {
             if (null == _lpfnSerializePrefab)
             {
                 var type = _GetUISerializerEditorType();
-                var method = type.GetMethod("SerializePrefab", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                var flags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static;
+                var method = type.GetMethod("SerializePrefab", flags);
                 TypeTools.CreateDelegate(method, out _lpfnSerializePrefab);
             }
 

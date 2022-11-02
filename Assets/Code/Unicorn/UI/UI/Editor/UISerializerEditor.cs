@@ -381,7 +381,7 @@ namespace Unicorn.UI
             Console.WriteLine ("End serializing **********************");
         }
         
-        [MenuItem("Assets/*Serialize Prefab", true)]
+        [MenuItem("Assets/*Refresh UISerializer", true)]
         private static bool _SerializePrefab_Validate()
         {
             var prefab = Selection.activeGameObject;
@@ -399,7 +399,7 @@ namespace Unicorn.UI
             return true;
         }
         
-        [MenuItem("Assets/*Serialize Prefab", false, 2000)]
+        [MenuItem("Assets/*Refresh UISerializer", false, 2000)]
         private static void _SerializePrefab()
         {
             var prefab = Selection.activeGameObject;
