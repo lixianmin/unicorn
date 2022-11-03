@@ -86,13 +86,13 @@ namespace Unicorn
 			const float eps = 0.000001f;
 
 			var delta = a - b;
-			return delta < eps && delta > -eps;
+			return delta is < eps and > -eps;
 		}
 
-		public static void swap<T>(ref T lhs, ref T rhs)
-		{
-			(lhs, rhs) = (rhs, lhs);
-		}
+		// public static void swap<T>(ref T lhs, ref T rhs)
+		// {
+		// 	(lhs, rhs) = (rhs, lhs);
+		// }
 
 		public static void collectgarbage()
 		{

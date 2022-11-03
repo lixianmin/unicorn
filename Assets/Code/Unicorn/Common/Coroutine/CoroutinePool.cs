@@ -83,7 +83,9 @@ namespace Unicorn
 					}
 					else
 					{
-						os.swap(ref _items[i++], ref _items[j]);
+						(_items[i], _items[j]) = (_items[j], _items[i]);
+						++i;
+						// os.swap(ref _items[i++], ref _items[j]);
 					}
 				}
 				
@@ -93,11 +95,8 @@ namespace Unicorn
 
 		internal CoroutineItem this[int index]
 		{
-			get
-			{
-				return _items[index];
-			}
-			
+			get => _items[index];
+
 			set
 			{
 				_items [index] = value;
@@ -109,7 +108,7 @@ namespace Unicorn
 			_size = 0;
 		}
 
-		internal int Count	{ get { return _size; } }
+		internal int Count => _size;
 
 		private int _size;
 		private int _capacity;
