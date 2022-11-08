@@ -16,7 +16,7 @@ namespace Unicorn.Kit
     {
         static KitFactory()
         {
-            var kitFactoryType = TypeTools.SearchType("Unicorn._KitFactory");
+            var kitFactoryType = TypeTools.SearchType("Unicorn.Kit._KitFactory");
             if (null != kitFactoryType)
             {
                 TypeTools.CreateDelegate(kitFactoryType, "_GetLookupTableByName", out Func<Hashtable> method);
