@@ -29,7 +29,7 @@ namespace Unicorn.Kit
         {
         }
 
-        public void Update()
+        public void SlowUpdate(float deltaTime)
         {
             if (_dirty)
             {
@@ -37,14 +37,14 @@ namespace Unicorn.Kit
                 _dirty = false;
             }
 
-            var hasDisposed = _UpdateKits();
+            var hasDisposed = _SlowUpdateKits(deltaTime);
             if (hasDisposed)
             {
                 _RemoveDisposedKits();
             }
         }
         
-        private bool _UpdateKits()
+        private bool _SlowUpdateKits(float deltaTime)
         {
             var count = _size; // 在update的过程中, 即使_size大小改变了也无影响
             var hasDisposed = false;
@@ -54,7 +54,47 @@ namespace Unicorn.Kit
                 var disposed = (IIsDisposed)kit;
                 if (!disposed.IsDisposed())
                 {
-                    kit._Update();
+                    kit.InnerSlowUpdate(deltaTime);
+                }
+                else 
+                {
+                    hasDisposed = true;
+                }
+            }
+
+            return hasDisposed;
+        }
+
+        public void ExpensiveUpdate(float deltaTime)
+        {
+            if (_dirty)
+            {
+                Array.Sort(_kits, 0, _size, _comparer);
+                _dirty = false;
+            }
+
+            var hasDisposed = _ExpensiveUpdateKits(deltaTime);
+            if (hasDisposed)
+            {
+                _RemoveDisposedKits();
+            }
+        }
+
+        private bool _ExpensiveUpdateKits(float deltaTime)
+        {
+            var count = _size; // 在update的过程中, 即使_size大小改变了也无影响
+            var hasDisposed = false;
+            for (var i = 0; i < count; ++i)
+            {
+                var kit = _kits[i];
+                var disposed = (IIsDisposed)kit;
+                if (!disposed.IsDisposed())
+                {
+                    if (kit.isActiveAndEnabled)
+                    {
+                        var updater = kit as IExpensiveUpdater;
+                        updater?.ExpensiveUpdate(deltaTime);
+                    }
                 }
                 else 
                 {

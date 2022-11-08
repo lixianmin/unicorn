@@ -136,7 +136,7 @@ namespace Unicorn
 
                 _coroutineManager.Update();
                 _partUpdateSystem.Update(deltaTime);
-                _kitManager.Update();
+                _kitManager.ExpensiveUpdate(deltaTime);
                 _uiManager.ExpensiveUpdate(deltaTime);
                 // Loom.Update();
 
@@ -152,6 +152,7 @@ namespace Unicorn
         {
             if (_isInited)
             {
+                _kitManager.SlowUpdate(deltaTime);
                 _uiManager.SlowUpdate(deltaTime);
             }
         }

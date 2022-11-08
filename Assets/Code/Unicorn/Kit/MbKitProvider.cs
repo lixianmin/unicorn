@@ -19,7 +19,7 @@ namespace Unicorn.Kit
             {
                 kit.sort = TypeTools.SetDefaultTypeIndex(kit.GetType());
                 _kit = kit;
-                kit._Init(transform, assets);
+                kit.InnerInit(transform, assets);
             }
             else
             {
@@ -32,17 +32,17 @@ namespace Unicorn.Kit
         /// </summary>
         private void OnEnable()
         {
-            _kit?._Enable(isActiveAndEnabled);
+            _kit?.InnerEnable(isActiveAndEnabled);
         }
 
         private void OnDisable()
         {
-            _kit?._Disable(false);
+            _kit?.InnerDisable(false);
         }
         
         private void OnDestroy()
         {
-            _kit?._Dispose();
+            _kit?.InnerDispose();
         }
 
         /// <summary>

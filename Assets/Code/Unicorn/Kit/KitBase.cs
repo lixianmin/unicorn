@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-08-26
 author:     lixianmin
@@ -7,45 +6,61 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Unicorn.Kit
 {
-    public class KitBase: IIsDisposed
+    public class KitBase : IIsDisposed
     {
         /// <summary>
-        /// Awake()之类的方法都尽可能设计成protected类型, 这是为了防止client自己主动调用这些方法
+        /// 对标MonoBehaviour的Awake()方法。设计成protected是为了防止client自己主动调用这些方法
         /// </summary>
-        protected virtual void Awake() { }
-        
+        protected virtual void Awake()
+        {
+        }
+
         /// <summary>
         /// 在 gameObject.SetActive(true) 或 script.enabled=true 时都会触发OnEnable()事件
         /// </summary>
-        protected virtual void OnEnable() { }
+        protected virtual void OnEnable()
+        {
+        }
 
         /// <summary>
         /// 在 gameObject.SetActive(false) 或 script.enabled=false 时都会触发OnDisable()事件
         /// </summary>
-        protected virtual void OnDisable() { }
+        protected virtual void OnDisable()
+        {
+        }
 
-        protected virtual void OnDestroy() { }
-        
-        protected virtual void Update() { }
-        
         /// <summary>
-        /// AddListener()这个方法是送的, 子类可以用, 也可以不用
+        /// gameObject销毁事件, 对标MonoBehaviour的OnDestroy()
         /// </summary>
-        /// <param name="evt"></param>
-        /// <param name="handler"></param>
-        public void AddListener(UnityEvent evt, UnityAction handler)
+        protected virtual void OnDestroy()
         {
-            _listener.AddListener(evt, handler);
         }
-        
-        public void AddListener<T>(UnityEvent<T> evt, UnityAction<T> handler)
+
+        /// <summary>
+        /// 慢速帧，大概10fps；如果感觉频率不够，可考虑实现IExpensiveUpdater接口
+        /// </summary>
+        /// <param name="deltaTime">两帧之间的时间间隔，远大于Time.deltaTime</param>
+        protected virtual void SlowUpdate(float deltaTime)
         {
-            _listener.AddListener(evt, handler);
         }
+
+        // /// <summary>
+        // /// AddListener()这个方法是送的, 子类可以用, 也可以不用
+        // /// </summary>
+        // /// <param name="evt"></param>
+        // /// <param name="handler"></param>
+        // public void AddListener(UnityEvent evt, UnityAction handler)
+        // {
+        //     _listener.AddListener(evt, handler);
+        // }
+        //
+        // public void AddListener<T>(UnityEvent<T> evt, UnityAction<T> handler)
+        // {
+        //     _listener.AddListener(evt, handler);
+        // }
 
         bool IIsDisposed.IsDisposed()
         {
@@ -56,45 +71,45 @@ namespace Unicorn.Kit
         {
             return _transform;
         }
-        
+
         public UnityEngine.Object[] GetAssets()
         {
             return _assets;
         }
-        
-        internal void _Init(Transform transform, UnityEngine.Object[] assets)
+
+        internal void InnerInit(Transform transform, UnityEngine.Object[] assets)
         {
             _transform = transform;
             _assets = assets;
-            
+
             KitManager.Instance.Add(this);
             CallbackTools.Handle(Awake, "[Awake()]");
         }
-        
-        internal void _Enable(bool enabled)
+
+        internal void InnerEnable(bool enabled)
         {
             isActiveAndEnabled = enabled;
             CallbackTools.Handle(OnEnable, "[OnEnable()]");
         }
 
-        internal void _Disable(bool enabled)
+        internal void InnerDisable(bool enabled)
         {
             isActiveAndEnabled = enabled;
             CallbackTools.Handle(OnDisable, "[OnDisable()]");
         }
 
-        internal void _Dispose()
+        internal void InnerDispose()
         {
             CallbackTools.Handle(OnDestroy, "[OnDestroy()]");
-            _listener.RemoveAllListeners();
+            // _listener.RemoveAllListeners();
             _isDisposed = true;
         }
 
-        internal void _Update()
+        internal void InnerSlowUpdate(float deltaTime)
         {
             if (isActiveAndEnabled)
             {
-                Update();
+                SlowUpdate(deltaTime);
             }
         }
 
@@ -112,8 +127,10 @@ namespace Unicorn.Kit
         internal int sort;
 
         private Transform _transform;
+
         private UnityEngine.Object[] _assets;
-        private readonly EventListener _listener = new();
+
+        // private readonly EventListener _listener = new();
         private bool _isDisposed;
     }
 }
