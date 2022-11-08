@@ -3,7 +3,7 @@
 created:    2022-08-26
 author:     lixianmin
 
-基于UIEventListener挂载的事件, 如果不主动调用RemoveAllListeners()释放回调方法的话, 会导致UIWindowBase对象无法正常释放
+基于EventListener挂载的事件, 如果不主动调用RemoveAllListeners()释放回调方法的话, 会导致UIWindowBase对象无法正常释放
 所以, 现在的办法是在UIButton的OnDestroy()方法中, 主动调用onClick事件的RemoveAllListeners()方法, 其它类后续效仿.
 
 Copyright (C) - All Rights Reserved

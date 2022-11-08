@@ -6,7 +6,7 @@
 //
 // Copyright (C) - All Rights Reserved
 // *********************************************************************/
-// using Unicorn;
+// using Unicorn.Kit;
 //
 // public class TestKit : KitBase
 // {

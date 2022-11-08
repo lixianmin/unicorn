@@ -9,7 +9,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.Collections.Generic;
 
-namespace Unicorn
+namespace Unicorn.Kit
 {
     internal class KitManager
     {
@@ -17,7 +17,7 @@ namespace Unicorn
         {
             public int Compare(KitBase a, KitBase b)
             {
-                return a.sort - b.sort;
+                return a!.sort - b!.sort;
             }
         }
         
@@ -124,7 +124,7 @@ namespace Unicorn
             }
         }
 
-        public void SetDirty()
+        private void SetDirty()
         {
             _dirty = true;
         }
@@ -134,7 +134,7 @@ namespace Unicorn
         private bool _dirty;
 
         private KitBase[] _kits = new KitBase[4];
-        private KitComparer _comparer = new();
+        private readonly KitComparer _comparer = new();
 
         public static readonly KitManager Instance = new ();
     }

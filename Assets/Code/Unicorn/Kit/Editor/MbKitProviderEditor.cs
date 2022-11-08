@@ -11,7 +11,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Unicorn
+namespace Unicorn.Kit
 {
     [CustomEditor(typeof(MbKitProvider), true)]
     [CanEditMultipleObjects]

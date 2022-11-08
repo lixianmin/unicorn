@@ -9,7 +9,7 @@ Copyright (C) - All Rights Reserved
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Unicorn
+namespace Unicorn.Kit
 {
     public class KitBase: IIsDisposed
     {

@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using Unicorn.AutoCode;
 
-namespace Unicorn
+namespace Unicorn.Kit
 {
     internal class KitAutoCode
     {
@@ -64,7 +64,7 @@ namespace Unicorn
             _writer.WriteLine("using System.Collections;");
 
             _writer.WriteLine();
-            _writer.WriteLine("namespace Unicorn");
+            _writer.WriteLine("namespace Unicorn.Kit");
         }
         
         internal static IEnumerable<Type> CollectSubTypes(Type baseType)

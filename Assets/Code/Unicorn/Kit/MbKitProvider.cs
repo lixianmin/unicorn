@@ -6,10 +6,9 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using System;
 using UnityEngine;
 
-namespace Unicorn
+namespace Unicorn.Kit
 {
     public class MbKitProvider : MonoBehaviour
     {
