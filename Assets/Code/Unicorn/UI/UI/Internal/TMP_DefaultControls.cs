@@ -6,13 +6,8 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using TMPro;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace Unicorn.UI.Internal
 {
@@ -166,15 +161,17 @@ namespace Unicorn.UI.Internal
         {
             GameObject go = null;
 
-            #if UNITY_EDITOR
-                go = ObjectFactory.CreateGameObject("UIText");
-                var text = ObjectFactory.AddComponent<UIText>(go);
-                text.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
-            #else
+            // 以下两部分代码从创建出一UIText控件的参数看, 我没有看出区别;
+            // 但是, 如果按原来的写法, Unicorn.dll会引用UnityEditor, 导致无法发版
+            // #if UNITY_EDITOR
+            //     go = UnityEditor.ObjectFactory.CreateGameObject("UIText");
+            //     var text = UnityEditor.ObjectFactory.AddComponent<UIText>(go);
+            //     text.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
+            // #else
                 go = CreateUIElementRoot("UIText", s_TextElementSize);
                 var text = go.AddComponent<UIText>();
                 text.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
-            #endif
+            // #endif
 
             return go;
         }
