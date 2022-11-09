@@ -18,7 +18,7 @@ namespace Unicorn
 		/// <param name="localPath">Local path.</param>
 		public static void DispatchFile (string localPath)
 		{
-			var platforms = new TargetPlatform[]
+			var platforms = new[]
 			{
 				TargetPlatform.Android
 				, TargetPlatform.iPhone
@@ -26,11 +26,11 @@ namespace Unicorn
 			
 			var srcFilePath = PathTools.GetExportPath(localPath);
 			
-			try 
+			try
 			{
-				for (int i= 0; i< platforms.Length; ++i)
+				foreach (var platform in platforms)
 				{
-					var destFilePath = os.path.join(PathTools.GetExportResourceRoot(platforms[i]), localPath);
+					var destFilePath = os.path.join(PathTools.GetExportResourceRoot(platform), localPath);
 					if (srcFilePath != destFilePath)
 					{
 						File.Copy(srcFilePath, destFilePath, true);

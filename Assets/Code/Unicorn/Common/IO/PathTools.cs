@@ -20,11 +20,6 @@ namespace Unicorn
             return os.path.join(ExportResourceRoot, localPath);
         }
 
-		public static string GetFullPath (string localPath)
-		{
-			return os.path.join(ExportResourceRoot, localPath);
-		}
-
         public static string GetLocalPath (string exportPath)
         {
             if (null != exportPath)
@@ -96,7 +91,7 @@ namespace Unicorn
 				
 			default:
 				{
-					var message = "Unsupported buildTarget found: " + targetPlatform.ToString()
+					var message = "Unsupported buildTarget found: " + targetPlatform
 						+ ", please change the 'Platform' in 'Build Settings'";
 					throw new NotImplementedException(message);
 				}
@@ -278,29 +273,29 @@ namespace Unicorn
 			return 0 == sign;
 		}
 
-		internal static void TestAssetDigest ()
-		{
-			var localPath = "android/movie.ab";
-			var digest = "1234";
-			
-			var localPathWithDigest = PathTools.GetLocalPathWithDigest(localPath, digest);
-			string localPathExtracted, digestExtracted;
-			PathTools.ExtractLocalPath(localPathWithDigest, out localPathExtracted);
-			PathTools.ExtractAssetDigest(localPathWithDigest, out digestExtracted);
-			Console.WriteLine("localPathWithDigest={0}, localPathExtracted={1}, digestExtracted={2}"
-			                  , localPathWithDigest, localPathExtracted, digestExtracted);
-
-			localPath = "android/mapping";
-			localPathWithDigest = PathTools.GetLocalPathWithDigest(localPath, digest);
-			PathTools.ExtractLocalPath(localPathWithDigest, out localPathExtracted);
-			PathTools.ExtractAssetDigest(localPathWithDigest, out digestExtracted);
-			Console.WriteLine("localPathWithDigest={0}, localPathExtracted={1}, digestExtracted={2}"
-			                  , localPathWithDigest, localPathExtracted, digestExtracted);
-		}
+		// internal static void TestAssetDigest ()
+		// {
+		// 	var localPath = "android/movie.ab";
+		// 	var digest = "1234";
+		// 	
+		// 	var localPathWithDigest = PathTools.GetLocalPathWithDigest(localPath, digest);
+		// 	string localPathExtracted, digestExtracted;
+		// 	PathTools.ExtractLocalPath(localPathWithDigest, out localPathExtracted);
+		// 	PathTools.ExtractAssetDigest(localPathWithDigest, out digestExtracted);
+		// 	Console.WriteLine("localPathWithDigest={0}, localPathExtracted={1}, digestExtracted={2}"
+		// 	                  , localPathWithDigest, localPathExtracted, digestExtracted);
+		//
+		// 	localPath = "android/mapping";
+		// 	localPathWithDigest = PathTools.GetLocalPathWithDigest(localPath, digest);
+		// 	PathTools.ExtractLocalPath(localPathWithDigest, out localPathExtracted);
+		// 	PathTools.ExtractAssetDigest(localPathWithDigest, out digestExtracted);
+		// 	Console.WriteLine("localPathWithDigest={0}, localPathExtracted={1}, digestExtracted={2}"
+		// 	                  , localPathWithDigest, localPathExtracted, digestExtracted);
+		// }
 
 		/// <summary>
 		/// Resource root, this is platform specific, so may be: "resource/android"
-		/// Used by System.IO codes, so will not startswith "file:///"
+		/// Used by System.IO codes, so will not start with "file:///"
 		/// </summary>
 		/// <value>The default base path.</value>
         public static string DefaultBasePath
