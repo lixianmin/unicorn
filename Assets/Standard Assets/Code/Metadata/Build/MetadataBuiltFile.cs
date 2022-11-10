@@ -48,6 +48,7 @@ namespace Metadata.Build
             var filepath = _GetBuiltFilePath();
             if (string.IsNullOrEmpty(filepath) || !File.Exists(filepath))
             {
+	            Console.Error.WriteLine($"invalid filepath={filepath}, maybe you need to Dispatch Metadata firstly.");
                 return false;
             }
 
@@ -57,6 +58,7 @@ namespace Metadata.Build
             var version = reader.ReadInt32();
             if (version != _currentVersion)
             {
+	            Console.Error.WriteLine($"version does not match, version={version}, _currentVersion={_currentVersion}");
 	            return false;
             }
 
@@ -337,7 +339,7 @@ namespace Metadata.Build
 				if (!dataItems.ContainsKey (itemName))
 				{
 					var filepath = pair.Value as string;
-					entries.Remove (filepath);
+					entries.Remove (filepath!);
 					isEntriesRemoved = true;
 				}
 			}
@@ -366,33 +368,18 @@ namespace Metadata.Build
 				_SaveEntries(writer, entries);
 				_SaveDataItems(writer, dataItems);
 
-                if (null != writer)
-                {
-                    writer.Close();
-                    writer = null;
-                }
+				writer.Close();
+                writer = null;
 
-                if (null != stream)
-                {
-                    stream.Close();
-                    stream = null;
-                }
+                stream.Close();
+                stream = null;
 
-				FileTools.Overwrite(tempFilePath, filepath);
+                FileTools.Overwrite(tempFilePath, filepath);
 			}
 			catch (Exception)
 			{
-                if (null != writer)
-                {
-                    writer.Close();
-                    writer = null;
-                }
-
-                if (null != stream)
-                {
-                    stream.Close();
-                    stream = null;
-                }
+				writer?.Close();
+				stream?.Close();
 			}
 		}
 
@@ -511,8 +498,8 @@ namespace Metadata.Build
 		
 		private string _GetBuiltFilePath ()
 		{
-			var fullpath = _GetDataFolder() + "/built-file.bf";
-			return fullpath;
+			var fullPath = _GetDataFolder() + "/built-file.bf";
+			return fullPath;
 		}
 
 		private static readonly int _currentVersion = 0x0318;

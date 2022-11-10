@@ -37,6 +37,18 @@ namespace Metadata
             }
         }
 
+        public void AddLacked(string guid, string text)
+        {
+            if (null != guid && null != text)
+            {
+                var last = _table[guid];
+                if (null == last)
+                {
+                    _table[guid] = text;
+                }
+            }
+        }
+
 //        public string Get (string guid)
 //        {
 //            if (null != guid)
@@ -58,8 +70,8 @@ namespace Metadata
             return _table.GetEnumerator();
         }
 
-        public int Count { get { return _table.Count; } }
+        public int Count => _table.Count;
 
-        private readonly Hashtable _table = new Hashtable();
+        private readonly Hashtable _table = new();
 	}
 }

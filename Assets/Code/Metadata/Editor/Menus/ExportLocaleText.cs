@@ -16,17 +16,16 @@ namespace Metadata.Menus
 {
     public class ExportLocaleText
     {
-        // todo 这个流程需要重新测试来过
-        // [MenuItem(EditorMetaTools.MenuRoot + "Dispatch I18N", false, 205)]
+        [MenuItem(EditorMetaTools.MenuRoot + "Dispatch I18N", false, 205)]
 		public static void Dispatch ()
 		{
-            var title = "Choose locale text directory.";
+            const string title = "Choose locale xml files folder, folder name will be the exported locale file name.";
             var dataPath = PathTools.EditorResourceRoot;
             var folderPath = EditorUtility.OpenFolderPanel(title, dataPath, string.Empty);
-
-            if (string.IsNullOrEmpty(folderPath))
+            
+            if (string.IsNullOrEmpty(folderPath)|| !Directory.Exists(folderPath))
             {
-                Console.WriteLine("No folder selected, just ignore.");
+                Console.Error.WriteLine($"invalid folderPath={folderPath}, just ignore.");
                 return;    
             }
 
@@ -38,6 +37,7 @@ namespace Metadata.Menus
             var localeCount = 0;
             var localeTable = new LocaleTable();
             var filePaths = os.walk(folderPath, "*.xml");
+            Console.WriteLine($"Scan *.xml in foldPath={folderPath}, filePaths.Length={filePaths.Length}");
 
             foreach (var filepath in filePaths)
             {
@@ -55,22 +55,22 @@ namespace Metadata.Menus
             }
 
             LocaleTextManager.Instance.AddLocaleTable(localeTable);
-
+            
+            // folderPath就是导出的本地化文件的名字
             var name = Path.GetFileName(folderPath) + ".bytes";
-            var localeTextPath = PathTools.GetExportPath(name);
+            var localeTextPath = os.path.join(UnicornManifest.GetExportMetadataRoot(), name);
             FileTools.DeleteSafely(localeTextPath);
             using (var stream = new FileStream(localeTextPath, FileMode.CreateNew))
             {
                 LocaleTextManager.Instance.Save(stream, false);
             }
 
-            PlatformTools.DispatchFile(localeTextPath);
+            // PlatformTools.DispatchFile(localeTextPath);
 
 			var costTime = Time.realtimeSinceStartup - startTime;
             var totalCount = LocaleTextManager.Instance.GetCount();
 
-            Console.WriteLine("Dispatch locale texts (I18N), filename={0}, localeRatio={1}/{2}, costTime={3}"
-                , name, localeCount.ToString(), totalCount.ToString(), costTime.ToString("F3"));
+            Console.WriteLine($"Dispatch locale texts (I18N), filename={name}, localeRatio={localeCount}/{totalCount}, costTime={costTime:F3}");
 		}
     }
 }

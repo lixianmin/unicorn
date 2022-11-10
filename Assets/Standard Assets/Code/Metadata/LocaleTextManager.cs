@@ -1,10 +1,10 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2017-07-15
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,14 +15,14 @@ using Unicorn.IO;
 namespace Metadata
 {
     public class LocaleTextManager
-	{
-        public LocaleText ReadLocaleText (IOctetsReader reader)
+    {
+        public LocaleText ReadLocaleText(IOctetsReader reader)
         {
             var ret = new LocaleText { text = string.Empty };
 
             if (null != reader)
             {
-                int index = (int) reader.ReadUInt32 ();
+                int index = (int)reader.ReadUInt32();
                 var isFullMode = reader.ReadBoolean();
                 if (isFullMode)
                 {
@@ -39,7 +39,7 @@ namespace Metadata
             return ret;
         }
 
-        internal void WriteLocaleText (IOctetsWriter writer, LocaleText text, bool isFullMode)
+        internal void WriteLocaleText(IOctetsWriter writer, LocaleText text, bool isFullMode)
         {
             if (null == writer)
             {
@@ -57,9 +57,9 @@ namespace Metadata
             }
         }
 
-        internal void Load (Stream stream)
+        internal void Load(Stream stream)
         {
-            if (null != stream && stream.CanRead && stream.Length > 0)
+            if (stream is { CanRead: true, Length: > 0 })
             {
                 try
                 {
@@ -74,12 +74,12 @@ namespace Metadata
             }
         }
 
-        private void _LoadLocaleTexts (BinaryReader reader)
+        private void _LoadLocaleTexts(BinaryReader reader)
         {
             var count = reader.ReadInt32();
 
             var localeTexts = new string[count];
-            for (int i= 0; i< count; ++i)
+            for (int i = 0; i < count; ++i)
             {
                 localeTexts[i] = reader.ReadString();
             }
@@ -87,7 +87,7 @@ namespace Metadata
             _SetLocaleTexts(localeTexts);
         }
 
-        private void _LoadLocaleIndices (BinaryReader reader)
+        private void _LoadLocaleIndices(BinaryReader reader)
         {
             var count = reader.ReadInt32();
             if (count > 0)
@@ -103,7 +103,7 @@ namespace Metadata
                     _SetLocaleIndices(localeIndices);
                 }
 
-                for (int i= 0; i< count; ++i)
+                for (int i = 0; i < count; ++i)
                 {
                     string guid = reader.ReadString();
                     uint index = reader.ReadUInt32();
@@ -112,7 +112,7 @@ namespace Metadata
             }
         }
 
-        public void Save (Stream stream, bool isFullMode)
+        public void Save(Stream stream, bool isFullMode)
         {
             if (null != stream && stream.CanWrite)
             {
@@ -130,19 +130,19 @@ namespace Metadata
             }
         }
 
-        private void _SaveLocaleTexts (BinaryWriter writer)
+        private void _SaveLocaleTexts(BinaryWriter writer)
         {
             var localeTexts = _localeTexts;
             var count = localeTexts.Length;
             writer.Write(count);
 
-            for (int i= 0; i< count; ++i)
+            for (int i = 0; i < count; ++i)
             {
                 writer.Write(localeTexts[i]);
             }
         }
 
-        private void _SaveLocaleIndices (BinaryWriter writer, bool isFullMode)
+        private void _SaveLocaleIndices(BinaryWriter writer, bool isFullMode)
         {
             var localeIndices = _localeIndices;
             var count = isFullMode && null != localeIndices ? localeIndices.Count : 0;
@@ -155,7 +155,7 @@ namespace Metadata
                 {
                     var pair = iter.Current;
                     string guid = pair.Key;
-                    uint index= pair.Value;
+                    uint index = pair.Value;
 
                     writer.Write(guid);
                     writer.Write(index);
@@ -163,14 +163,14 @@ namespace Metadata
             }
         }
 
-        public void AddLocaleTable (LocaleTable localeTable)
+        public void AddLocaleTable(LocaleTable localeTable)
         {
             if (null == localeTable)
             {
                 return;
             }
 
-            _AddLocaleIndicesToLocaleTable(localeTable);
+            _AddLackedToLocaleTable(localeTable);
 
             var count = localeTable.Count;
             var guidArray = new string[count];
@@ -192,43 +192,38 @@ namespace Metadata
             var localeIndices = new Dictionary<string, uint>(count);
             _SetLocaleIndices(localeIndices);
 
-            for (uint i= 0; i< count; ++i)
+            for (uint i = 0; i < count; ++i)
             {
                 var guid = guidArray[i]; // from entry.Key, so can not be null.
                 localeIndices[guid] = i;
             }
         }
 
-        private void _AddLocaleIndicesToLocaleTable (LocaleTable localeTable)
+        private void _AddLackedToLocaleTable(LocaleTable localeTable)
         {
-            var localeIndices = _localeIndices;
-            if (null == localeIndices)
+            if (null != _localeIndices)
             {
-                return;
-            }
+                foreach (var pair in _localeIndices)
+                {
+                    var guid = pair.Key;
+                    var text = _localeTexts[pair.Value];
 
-            var iter = localeIndices.GetEnumerator();
-            while (iter.MoveNext())
-            {
-                var pair = iter.Current;
-                var guid = pair.Key;
-                var text = _localeTexts[pair.Value];
-
-                localeTable.Add(guid, text, true);
+                    localeTable.AddLacked(guid, text);
+                }
             }
         }
 
-        private void _SetLocaleTexts (string[] localeTexts)
+        private void _SetLocaleTexts(string[] localeTexts)
         {
             _localeTexts = localeTexts ?? Array.Empty<string>();
         }
 
-        private void _SetLocaleIndices (Dictionary<string, uint> localeIndices)
+        private void _SetLocaleIndices(Dictionary<string, uint> localeIndices)
         {
             _localeIndices = localeIndices ?? new Dictionary<string, uint>();
         }
 
-        internal uint GetLocaleIndex (string guid)
+        internal uint GetLocaleIndex(string guid)
         {
             var localeIndices = _localeIndices;
             uint index = 0;
@@ -244,19 +239,19 @@ namespace Metadata
             return index;
         }
 
-        internal void Clear ()
+        internal void Clear()
         {
             _SetLocaleTexts(Array.Empty<string>());
             _SetLocaleIndices(null);
         }
 
-        public bool Contains (string guid)
+        public bool Contains(string guid)
         {
             var ret = null != guid && null != _localeIndices && _localeIndices.ContainsKey(guid);
             return ret;
         }
 
-        public int GetCount ()
+        public int GetCount()
         {
             return _localeTexts.Length;
         }
@@ -265,5 +260,5 @@ namespace Metadata
 
         private string[] _localeTexts = Array.Empty<string>();
         private Dictionary<string, uint> _localeIndices;
-	}
+    }
 }
