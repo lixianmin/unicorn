@@ -19,7 +19,7 @@ namespace Unicorn
         // 扩展名由.raw改为.bytes，目的是为了以TextAsset的方式加载，兼容Addressable加载流程
         public const string LocalMetadataPath = "metadata.bytes";
         public const string LocalIncrementMetadataPath = "metadata@.bytes";
-        public const string LocalLocaleTextPath = "locale.zh_cn.byes";
+        public const string LocalLocaleTextPath = "locale.zh_cn.bytes";
 
         // public const string LocalGlobalResourcesPath = "globals" + BundleExtension;
         // public const string GlobalResourcesDirectory = "Assets/GlobalResources";

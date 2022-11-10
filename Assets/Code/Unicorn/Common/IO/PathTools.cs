@@ -114,13 +114,13 @@ namespace Unicorn
 			for (int i= length - 1; i>= 0; i--)
 			{
 				var c = path[i];
-				if (c == '.')
+				switch (c)
 				{
-					return i;
-				}
-				else if (c == '/' || c =='\\')
-				{
-					return -1;
+					case '.':
+						return i;
+					case '/':
+					case '\\':
+						return -1;
 				}
 			}
 
@@ -165,8 +165,7 @@ namespace Unicorn
 		[System.Obsolete("use new version ExtractLocalPath()")]
 		public static string ExtractLocalPath (string localPathWithDigest)
 		{
-			string localPath;
-			var isExtracted = ExtractLocalPath(localPathWithDigest, out localPath);
+			var isExtracted = ExtractLocalPath(localPathWithDigest, out var localPath);
 			if (!isExtracted)
 			{
 				localPath = localPathWithDigest;
@@ -272,27 +271,7 @@ namespace Unicorn
 			var sign = string.CompareOrdinal(path1, length1 - delta, path2, length2 - delta, digestLength);
 			return 0 == sign;
 		}
-
-		// internal static void TestAssetDigest ()
-		// {
-		// 	var localPath = "android/movie.ab";
-		// 	var digest = "1234";
-		// 	
-		// 	var localPathWithDigest = PathTools.GetLocalPathWithDigest(localPath, digest);
-		// 	string localPathExtracted, digestExtracted;
-		// 	PathTools.ExtractLocalPath(localPathWithDigest, out localPathExtracted);
-		// 	PathTools.ExtractAssetDigest(localPathWithDigest, out digestExtracted);
-		// 	Console.WriteLine("localPathWithDigest={0}, localPathExtracted={1}, digestExtracted={2}"
-		// 	                  , localPathWithDigest, localPathExtracted, digestExtracted);
-		//
-		// 	localPath = "android/mapping";
-		// 	localPathWithDigest = PathTools.GetLocalPathWithDigest(localPath, digest);
-		// 	PathTools.ExtractLocalPath(localPathWithDigest, out localPathExtracted);
-		// 	PathTools.ExtractAssetDigest(localPathWithDigest, out digestExtracted);
-		// 	Console.WriteLine("localPathWithDigest={0}, localPathExtracted={1}, digestExtracted={2}"
-		// 	                  , localPathWithDigest, localPathExtracted, digestExtracted);
-		// }
-
+		
 		/// <summary>
 		/// Resource root, this is platform specific, so may be: "resource/android"
 		/// Used by System.IO codes, so will not start with "file:///"

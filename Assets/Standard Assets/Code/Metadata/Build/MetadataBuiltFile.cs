@@ -21,12 +21,7 @@ namespace Metadata.Build
 
     public class MetadataBuiltFile
     {
-		public MetadataBuiltFile ()
-		{
-
-		}
-
-		public IEnumerable<IMetadata> EnumerateMetadata ()
+	    public IEnumerable<IMetadata> EnumerateMetadata ()
 		{
 			foreach (DataItem item in _dataItems.Values)
 			{
@@ -56,18 +51,17 @@ namespace Metadata.Build
                 return false;
             }
 
-            using (var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
-            using (var reader = new BinaryReader(stream))
+            using var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read);
+            using var reader = new BinaryReader(stream);
+            
+            var version = reader.ReadInt32();
+            if (version != _currentVersion)
             {
-                var version = reader.ReadInt32();
-                if (version != _currentVersion)
-                {
-                    return false;
-                }
-
-                LocaleTextManager.Instance.Load(stream);
-                return true;
+	            return false;
             }
+
+            LocaleTextManager.Instance.Load(stream);
+            return true;
         }
 
 		public void Build ()
@@ -126,15 +120,15 @@ namespace Metadata.Build
                 return string.Empty;
             }
 
-            System.Func<string> lpfnGetMetadataRoot;
-            TypeTools.CreateDelegate(type, "GetMetadataRoot", out lpfnGetMetadataRoot);
-            if (null == lpfnGetMetadataRoot)
+            Func<string> lpfnGetXmlMetadataRoot;
+            TypeTools.CreateDelegate(type, "GetXmlMetadataRoot", out lpfnGetXmlMetadataRoot);
+            if (null == lpfnGetXmlMetadataRoot)
             {
-                Console.Error.WriteLine("lpfnGetMetadataRoot is null");
+                Console.Error.WriteLine("lpfnGetXmlMetadataRoot is null");
                 return string.Empty;
             }
 
-            var metadataRoot = lpfnGetMetadataRoot();
+            var metadataRoot = lpfnGetXmlMetadataRoot();
             return metadataRoot;
         }
 

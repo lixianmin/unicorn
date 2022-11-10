@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2015-03-30
 author:     lixianmin
 
@@ -13,116 +12,93 @@ using EditorUtility = Unicorn.Reflection.EditorUtility;
 
 namespace Unicorn
 {
-	[Serializable]
+    [Serializable]
     public partial class UnicornManifest
     {
-		public enum PathType
-		{
-			EditorResourceRoot, // for exporting and loading runtime resources.
-            LuaScriptRoot,      // lua code may reside in git, company with c# code.
-            MetadataRoot,       // metadata root directory, containing *.xml files.
-            UserdataBase = 5,   // used by other editors.
+        private UnicornManifest()
+        {
         }
 
-		private UnicornManifest ()
-		{
+        public static UnicornManifest OpenOrCreate()
+        {
+            var manifestPath = _GetManifestPath();
 
-		}
-
-		public static UnicornManifest OpenOrCreate ()
-		{
-			var manifestPath = _GetManifestPath();
-
-			if (File.Exists(manifestPath))
-			{
-				var manifest = XmlTools.Deserialize<UnicornManifest>(manifestPath);
-				return manifest;
-            }
-			else
-			{
-				var manifest = new UnicornManifest();
-				XmlTools.Serialize(manifestPath, manifest);
-                
+            if (File.Exists(manifestPath))
+            {
+                var manifest = XmlTools.Deserialize<UnicornManifest>(manifestPath);
                 return manifest;
             }
-		}
-
-		private static string _GetManifestPath ()
-		{
-			var path = os.path.join(Application.dataPath, "unicorn_manifest.xml");
-			return path;
-		}
-
-		private string _CheckChoosePath (PathType pathType, string title, bool manualSelect)
-		{
-			var index = (int) pathType;
-			if (null == relativePaths || index >= relativePaths.Length)
-			{
-				var minCount = index + 1;
-				Array.Resize(ref relativePaths, minCount);
-			}
-
-			if (string.IsNullOrEmpty(relativePaths[index]))
-			{
-				if (!manualSelect)
-				{
-					return string.Empty;
-				}
-
-				var dataPath = Application.dataPath;
-				var folderPath = EditorUtility.OpenFolderPanel(title, dataPath, string.Empty);
-				
-				var uri1 = new Uri(dataPath);
-				var uri2 = new Uri(folderPath);
-				var relativePath = uri1.MakeRelativeUri(uri2).ToString();
-				
-				if (Directory.Exists(relativePath))
-				{
-					relativePaths[index] = relativePath;
-
-					var manifestPath = _GetManifestPath();
-					XmlTools.Serialize(manifestPath, this);
-				}
-			}
-			
-			var fullpath = Path.GetFullPath(relativePaths[index]);
-			return fullpath;
-		}
-
-		internal static string _GetEditorResourceRoot ()
-		{
-			var title = "Please choose the editor resource root for exporting or downloading assetBundles";
-			var manifest = OpenOrCreate();
-			var fullpath = manifest._CheckChoosePath(PathType.EditorResourceRoot, title, true);
-			return fullpath;
-		}
-
-		public static string GetLuaScriptRoot ()
-		{
-            if (!Application.isEditor)
+            else
             {
-                return "";
+                var manifest = new UnicornManifest();
+                XmlTools.Serialize(manifestPath, manifest);
+
+                return manifest;
+            }
+        }
+
+        private static string _GetManifestPath()
+        {
+            var path = os.path.join(Application.dataPath, "unicorn_manifest.xml");
+            return path;
+        }
+
+        private static string _ChooseRelativePath(string title)
+        {
+            var dataPath = Application.dataPath;
+            var folderPath = EditorUtility.OpenFolderPanel(title, dataPath, string.Empty);
+
+            var uri1 = new Uri(dataPath);
+            var uri2 = new Uri(folderPath);
+            var relativePath = uri1.MakeRelativeUri(uri2).ToString();
+            return relativePath;
+        }
+
+        private string _CheckChooseFullPath(ref string targetRelativePath, string title)
+        {
+            if (targetRelativePath.IsNullOrEmptyEx() || !Directory.Exists(targetRelativePath))
+            {
+                targetRelativePath = _ChooseRelativePath(title);
+
+                if (Directory.Exists(targetRelativePath))
+                {
+                    var manifestPath = _GetManifestPath();
+                    XmlTools.Serialize(manifestPath, this);
+                }
             }
             
-			var title = "Please choose lua script root directory";
-			var manifest = OpenOrCreate();
-			var fullpath = manifest._CheckChoosePath(PathType.LuaScriptRoot, title, true);
-			return fullpath;
-		}
+            var fullPath = Path.GetFullPath(targetRelativePath);
+            return fullPath;
+        }
 
-		public static string GetMetadataRoot ()
-		{
-			var title = "Please choose metadata root directory";
-			var manifest = OpenOrCreate();
-			var fullpath = manifest._CheckChoosePath(PathType.MetadataRoot, title, true);
-			return fullpath;
-		}
+        internal static string _GetEditorResourceRoot()
+        {
+            var manifest = OpenOrCreate();
+            const string title = "Please choose the editor resource root for exporting or downloading assetBundles";
+            var fullPath = manifest._CheckChooseFullPath(ref manifest.relativePaths.editorResourceRoot, title);
+            return fullPath;
+        }
 
-		public static string GetUserdataRoot (PathType pathType, string title)
-		{
-			var manifest = OpenOrCreate();
-			var fullpath = manifest._CheckChoosePath(pathType, title, true);
-			return fullpath;
-		}
+        public static string GetXmlMetadataRoot()
+        {
+            var manifest = OpenOrCreate();
+            const string title = "Please choose metadata xml files root directory";
+            var fullPath = manifest._CheckChooseFullPath(ref manifest.relativePaths.xmlMetadataRoot, title);
+            return fullPath;
+        }
+        
+        public static string GetExportMetadataRoot()
+        {
+            var manifest = OpenOrCreate();
+            const string title = "Please choose exported metadata root directory";
+            var fullPath = manifest._CheckChooseFullPath(ref manifest.relativePaths.exportMetadataRoot, title);
+            return fullPath;
+        }
+        
+        public static string GetLuaScriptRoot()
+        {
+            // 我们暂时没有使用lua的需求
+            return string.Empty;
+        }
     }
 }

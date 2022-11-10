@@ -19,16 +19,21 @@ namespace Unicorn
             public bool bakeCollisionMeshes = true;
         }
         
-        public Settings editorSettings = new();
+        [Serializable]
+        public class Paths
+        {
+            public string editorResourceRoot = string.Empty;
+            public string xmlMetadataRoot = string.Empty;
+            public string exportMetadataRoot = string.Empty;
+        }
         
-        public string[] relativePaths = {};
+        public Settings editorSettings = new();
+
+        public Paths relativePaths = new();
 
         /// <summary>
-        /// 控制美术的项目不能执行MakeAutoCode, ClearAutoCode相关逻辑
+        /// 美术的项目不能执行MakeAutoCode, ClearAutoCode等自动生成代码的逻辑
         /// </summary>
         public bool makeAutoCode;
-		
-        // public string spriteDirPath = "Assets/Art/UIResource/UI/Sprite"; // 存放碎图sprite的文件夹地址.
-        // public string uiPrefabDirPath = "Assets/prefabs/ui"; // ui界面prefab的文件夹地址.
     }
 }

@@ -16,7 +16,8 @@ namespace Metadata.Menus
 {
     public class ExportLocaleText
     {
-        [MenuItem(EditorMetaTools.MenuRoot + "Dispatch I18N", false, 205)]
+        // todo 这个流程需要重新测试来过
+        // [MenuItem(EditorMetaTools.MenuRoot + "Dispatch I18N", false, 205)]
 		public static void Dispatch ()
 		{
             var title = "Choose locale text directory.";
@@ -36,9 +37,9 @@ namespace Metadata.Menus
 
             var localeCount = 0;
             var localeTable = new LocaleTable();
-            var filepaths = os.walk(folderPath, "*.xml");
+            var filePaths = os.walk(folderPath, "*.xml");
 
-            foreach (var filepath in filepaths)
+            foreach (var filepath in filePaths)
             {
                 var translator = XmlTools.Deserialize<XmlLocaleTextTranslator>(filepath);
                 foreach (var item in translator.items)
@@ -55,7 +56,7 @@ namespace Metadata.Menus
 
             LocaleTextManager.Instance.AddLocaleTable(localeTable);
 
-            var name = Path.GetFileName(folderPath) + ".raw";
+            var name = Path.GetFileName(folderPath) + ".bytes";
             var localeTextPath = PathTools.GetExportPath(name);
             FileTools.DeleteSafely(localeTextPath);
             using (var stream = new FileStream(localeTextPath, FileMode.CreateNew))

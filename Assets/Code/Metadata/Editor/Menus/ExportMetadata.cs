@@ -9,43 +9,38 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Threading;
 using Unicorn;
-using Unicorn.Collections;
 using Unicorn.IO;
 
 namespace Metadata.Menus
 {
-    public partial class ExportMetadata
+    public class ExportMetadata
     {
         [MenuItem(EditorMetaTools.MenuRoot + "Dispatch Metadata &^m", false, 201)]
         public static void Dispatch()
         {
             var startTime = Time.realtimeSinceStartup;
             var manager = Export(ExportFlags.ClearBuiltFile);
-            PlatformTools.DispatchFile(Constants.LocalMetadataPath);
-            PlatformTools.DispatchFile(Constants.LocalIncrementMetadataPath);
-            PlatformTools.DispatchFile(Constants.LocalLocaleTextPath);
+            // PlatformTools.DispatchFile(Constants.LocalMetadataPath);
+            // PlatformTools.DispatchFile(Constants.LocalIncrementMetadataPath);
+            // PlatformTools.DispatchFile(Constants.LocalLocaleTextPath);
 
             var metadataVersion = manager.GetMetadataVersion();
             var costTime = Time.realtimeSinceStartup - startTime;
-            Console.WriteLine("Export metadata, metadataVersion={0}, costTime={1}", metadataVersion.ToString(),
-                costTime.ToString("F3"));
+            Console.WriteLine($"Export metadata, metadataVersion={metadataVersion.ToString()}, costTime={costTime:F3}");
         }
 
         [MenuItem(EditorMetaTools.MenuRoot + "Dispatch Increment Metadata", false, 202)]
         public static void DispatchIncrement()
         {
             Export(ExportFlags.IncrementBuild | ExportFlags.ClearBuiltFile);
-            PlatformTools.DispatchFile(Constants.LocalIncrementMetadataPath);
-            PlatformTools.DispatchFile(Constants.LocalLocaleTextPath);
+            // PlatformTools.DispatchFile(Constants.LocalIncrementMetadataPath);
+            // PlatformTools.DispatchFile(Constants.LocalLocaleTextPath);
         }
 
         private static SaveAid.IncrementData _ExceptWithLastMetadata(XmlMetadataManager currentData)
         {
-            var localPath = Constants.LocalMetadataPath;
-            var exportPath = PathTools.GetExportPath(localPath);
+            var exportPath = _GetExportMetadataPath(Constants.LocalMetadataPath);
 
             var lastStream = new FileStream(exportPath, FileMode.Open);
             var lastData = new XmlMetadataManager();
@@ -77,7 +72,7 @@ namespace Metadata.Menus
 
                 if (!manager.IsEmpty())
                 {
-                    var exportPath = PathTools.GetExportPath(Constants.LocalIncrementMetadataPath);
+                    var exportPath = _GetExportMetadataPath(Constants.LocalIncrementMetadataPath);
                     _ExportMetadata(manager, exportPath, incrementData);
                 }
                 else
@@ -87,7 +82,7 @@ namespace Metadata.Menus
             }
             else
             {
-                var exportPath = PathTools.GetExportPath(Constants.LocalMetadataPath);
+                var exportPath = _GetExportMetadataPath(Constants.LocalMetadataPath);
                 _ExportMetadata(manager, exportPath, null);
                 _ExportEmptyIncrementMetadata();
             }
@@ -96,16 +91,21 @@ namespace Metadata.Menus
             return manager;
         }
 
+        private static string _GetExportMetadataPath(string localPath)
+        {
+            var root = UnicornManifest.GetExportMetadataRoot();
+            return os.path.join(root, localPath);
+        }
+
         private static void _ExportEmptyIncrementMetadata()
         {
-            var exportPath = PathTools.GetExportPath(Constants.LocalIncrementMetadataPath);
-            // empty increment metadata@.raw will have a length= 0
+            var exportPath = _GetExportMetadataPath(Constants.LocalIncrementMetadataPath);
+            // empty increment metadata@.bytes will have a length= 0
             // while a real increment metadata bundle will have contents;
             FileTools.WriteAllBytesSafely(exportPath, Constants.EmptyBytes);
         }
 
-        private static void _ExportMetadata(XmlMetadataManager manager, string exportPath,
-            SaveAid.IncrementData incrementData)
+        private static void _ExportMetadata(MetadataManager manager, string exportPath, SaveAid.IncrementData incrementData)
         {
             FileTools.DeleteSafely(exportPath);
             using (var exportStream = new FileStream(exportPath, FileMode.CreateNew))
@@ -114,11 +114,11 @@ namespace Metadata.Menus
                 aid.Save(exportStream, manager, false);
             }
 
-            var localeTextPath = PathTools.GetExportPath(Constants.LocalLocaleTextPath);
+            var localeTextPath = _GetExportMetadataPath(Constants.LocalLocaleTextPath);
             FileTools.DeleteSafely(localeTextPath);
             using (var stream = new FileStream(localeTextPath, FileMode.CreateNew))
             {
-                var isFullMode = false;
+                const bool isFullMode = false;
                 LocaleTextManager.Instance.Save(stream, isFullMode);
             }
         }
