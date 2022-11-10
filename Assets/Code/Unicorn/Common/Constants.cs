@@ -15,15 +15,11 @@ namespace Unicorn
     {
         public static readonly string LogPath = Application.persistentDataPath + "/panda.log";
         public static readonly string LastLogPath = Application.persistentDataPath + "/last-panda.log";
-
-        // public const string LocalGFXActionDatabasePath = "gfxactiondatabase.raw";
-        // public const string LocalGFXActionDatabaseIncrementPath = "gfxactiondatabase@.raw";
-        // public const string LocalSkillDatabasePath = "skilldatabase.raw";
-        // public const string LocalSkillDatabaseIncrementPath = "skilldatabase@.raw";
-
-        public const string LocalMetadataPath = "metadata.raw";
-        public const string LocalIncrementMetadataPath = "metadata@.raw";
-        public const string LocalLocaleTextPath = "locale.zh_cn.raw";
+        
+        // 扩展名由.raw改为.bytes，目的是为了以TextAsset的方式加载，兼容Addressable加载流程
+        public const string LocalMetadataPath = "metadata.bytes";
+        public const string LocalIncrementMetadataPath = "metadata@.bytes";
+        public const string LocalLocaleTextPath = "locale.zh_cn.byes";
 
         // public const string LocalGlobalResourcesPath = "globals" + BundleExtension;
         // public const string GlobalResourcesDirectory = "Assets/GlobalResources";

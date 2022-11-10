@@ -9,6 +9,7 @@ using System;
 
 namespace Metadata
 {
+    [Flags]
     public enum ExportFlags: ushort
     {
 		None			= 0x00,
