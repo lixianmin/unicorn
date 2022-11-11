@@ -17,7 +17,24 @@ namespace Unicorn.UI.States
         {
             AssertTools.IsTrue(!fetus.isDelayedCloseWindow);
             _loadWindowMask.OpenWindow();
-            _Load(fetus);
+
+            var resourcePath = fetus.master.GetResourcePath();
+            if (string.IsNullOrEmpty(resourcePath))
+            {
+                Console.Error.WriteLine("resourcePath is empty.");
+                return;
+            }
+
+            // 2d界面通常是单独加载的，而3d界面则可以随场景一起加载（此时直接用uibag这样的名字查找到对应的gameObject）
+            var needLoad = resourcePath.Contains("/");
+            if (needLoad)
+            {
+                _LoadResource(fetus, resourcePath);
+            }
+            else
+            {
+                _FindGameObject(fetus, resourcePath);
+            }
         }
 
         public override void OnExit(WindowFetus fetus, object arg1)
@@ -36,15 +53,8 @@ namespace Unicorn.UI.States
             fetus.isDelayedCloseWindow = true;
         }
 
-        private void _Load(WindowFetus fetus)
+        private void _LoadResource(WindowFetus fetus, string resourcePath)
         {
-            var resourcePath = fetus.master.GetResourcePath();
-            if (string.IsNullOrEmpty(resourcePath))
-            {
-                Console.Error.WriteLine("resourcePath is empty.");
-                return;
-            }
-
             var argument = new WebArgument { key = resourcePath };
             WebManager.Instance.LoadPrefab(argument, prefab =>
             {
@@ -55,7 +65,7 @@ namespace Unicorn.UI.States
                     fetus.isDelayedCloseWindow = false;
                     fetus.ChangeState(StateKind.None);
                     master.Dispose();
-                } 
+                }
                 else if (isLoading)
                 {
                     var mainAsset = prefab.Asset;
@@ -64,7 +74,7 @@ namespace Unicorn.UI.States
                     {
                         goCloned.name = mainAsset.name;
                         fetus.OnLoadGameObject(goCloned);
-                        CallbackTools.Handle(master.InnerOnLoaded, "[_Load()]");
+                        CallbackTools.Handle(master.InnerOnLoaded, "[_LoadResource()]");
                         fetus.isLoaded = true;
                         fetus.ChangeState(StateKind.OpenAnimation);
                     }
@@ -77,9 +87,27 @@ namespace Unicorn.UI.States
                 {
                     Console.Error.WriteLine("invalid state={0}", fetus.GetState());
                 }
-                
+
                 prefab.Dispose();
             });
+        }
+
+        private void _FindGameObject(WindowFetus fetus, string resourcePath)
+        {
+            var master = fetus.master;
+            var uiRoot = UIManager.Instance.GetUIRoot();
+            var transform = uiRoot.DeepFindEx(resourcePath);
+            if (null == transform)
+            {
+                Console.Error.WriteLine($"can not find transform under UIRoot in scene, resourcePath={resourcePath}");
+                return;
+            }
+            
+            var gameObject = transform.gameObject;
+            fetus.OnLoadGameObject(gameObject);
+            CallbackTools.Handle(master.InnerOnLoaded, "[_FindGameObject()]");
+            fetus.isLoaded = true;
+            fetus.ChangeState(StateKind.OpenAnimation);
         }
     }
 }
