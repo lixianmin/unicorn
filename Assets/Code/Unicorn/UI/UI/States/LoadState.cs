@@ -18,22 +18,22 @@ namespace Unicorn.UI.States
             AssertTools.IsTrue(!fetus.isDelayedCloseWindow);
             _loadWindowMask.OpenWindow();
 
-            var resourcePath = fetus.master.GetResourcePath();
-            if (string.IsNullOrEmpty(resourcePath))
+            var assetPath = fetus.master.GetAssetPath();
+            if (string.IsNullOrEmpty(assetPath))
             {
-                Console.Error.WriteLine("resourcePath is empty.");
+                Console.Error.WriteLine("assetPath is empty.");
                 return;
             }
 
             // 2d界面通常是单独加载的，而3d界面则可以随场景一起加载（此时直接用uibag这样的名字查找到对应的gameObject）
-            var needLoad = resourcePath.Contains("/");
-            if (needLoad)
+            var needLoadAsset = assetPath.Contains("/");
+            if (needLoadAsset)
             {
-                _LoadResource(fetus, resourcePath);
+                _LoadAsset(fetus, assetPath);
             }
             else
             {
-                _FindGameObject(fetus, resourcePath);
+                _FindGameObject(fetus, assetPath);
             }
         }
 
@@ -53,7 +53,7 @@ namespace Unicorn.UI.States
             fetus.isDelayedCloseWindow = true;
         }
 
-        private void _LoadResource(WindowFetus fetus, string resourcePath)
+        private void _LoadAsset(WindowFetus fetus, string resourcePath)
         {
             var argument = new WebArgument { key = resourcePath };
             WebManager.Instance.LoadPrefab(argument, prefab =>

@@ -156,7 +156,7 @@ namespace Unicorn.UI
             {
                 var windowType = windowTypes[i];
                 var window = Activator.CreateInstance(windowType) as UIWindowBase;
-                var resourcePath = window?.GetResourcePath();
+                var resourcePath = window?.GetAssetPath();
                 if (resourcePath?.LastIndexOf(prefabName) > 0)
                 {
                     return window;

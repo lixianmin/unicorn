@@ -24,7 +24,7 @@ namespace Unicorn.UI
         /// 如果从addressable加载，则返回加载UI的资源路径；如果是场景中已经预加载了，则返回UIRoot下的Canvas节点名字
         /// </summary>
         /// <returns>加载UI的资源路径，或者UIRoot下的Canvas节点名</returns>
-        public abstract string GetResourcePath();
+        public abstract string GetAssetPath();
         public virtual RenderQueue GetRenderQueue() { return RenderQueue.Geometry; }
         
         public Transform GetTransform() { return _transform; }
