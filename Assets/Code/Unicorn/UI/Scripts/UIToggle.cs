@@ -10,12 +10,11 @@ using UnityEngine.UI;
 
 namespace Unicorn.UI
 {
-    public class UIToggle : Toggle
+    public class UIToggle : Toggle, IRemoveAllListeners
     {
-        protected override void OnDestroy()
+        void IRemoveAllListeners.RemoveAllListeners()
         {
             onValueChanged.RemoveAllListeners();
-            base.OnDestroy();
         }
     }
 }

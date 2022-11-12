@@ -15,7 +15,7 @@ using UnityEngine.EventSystems;
 
 namespace Unicorn.UI
 {
-    public class UIButton : Button
+    public class UIButton : Button, IRemoveAllListeners
     {
         [Serializable]
         public class ButtonLongClickedEvent : UnityEvent
@@ -68,11 +68,10 @@ namespace Unicorn.UI
             _SetHasLongClick(hasOnLongClick);
         }
 
-        protected override void OnDestroy()
+        void IRemoveAllListeners.RemoveAllListeners()
         {
             onClick.RemoveAllListeners();
             onLongClick?.RemoveAllListeners();
-            base.OnDestroy();
         }
 
         private void _Press ()

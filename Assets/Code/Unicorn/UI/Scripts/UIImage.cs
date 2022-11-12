@@ -12,6 +12,6 @@ namespace Unicorn.UI
 {
     public class UIImage : Image
     {
-
+        
     }
 }

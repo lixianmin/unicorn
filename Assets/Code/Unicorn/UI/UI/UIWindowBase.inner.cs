@@ -8,6 +8,7 @@ Copyright (C) - All Rights Reserved
 
 using Unicorn.UI.Internal;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Unicorn.UI
 {
@@ -38,7 +39,24 @@ namespace Unicorn.UI
             
             _fetus.Dispose();
             _fetus = null;
-            _widgets.Clear();
+            _transform = null;
+            _canvas = null;
+            UnregisterWidgetEvents();
+        }
+
+        private void UnregisterWidgetEvents()
+        {
+            if (_widgets.Count > 0)
+            {
+                foreach (var widget in _widgets.Values)
+                {
+                    if (widget is IRemoveAllListeners item)
+                    {
+                        item.RemoveAllListeners();
+                    }
+                }
+                _widgets.Clear();
+            }
         }
 
         internal WindowFetus GetFetus() { return _fetus; }

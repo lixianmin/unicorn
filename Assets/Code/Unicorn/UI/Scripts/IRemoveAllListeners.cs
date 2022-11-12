@@ -1,20 +1,14 @@
 
 /********************************************************************
-created:    2017-07-28
+created:    2022-11-12
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
-
-using UnityEngine.UI;
-
 namespace Unicorn.UI
 {
-    public class UISlider : Slider, IRemoveAllListeners
+    internal interface IRemoveAllListeners
     {
-        void IRemoveAllListeners.RemoveAllListeners()
-        {
-            onValueChanged.RemoveAllListeners();
-        }
+        void RemoveAllListeners();
     }
 }

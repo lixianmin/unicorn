@@ -15,44 +15,39 @@ namespace Unicorn.UI.States
     {
         public static StateBase Create(StateKind kind)
         {
-            if (_states.TryGetValue(kind, out var last))
-            {
-                return last;
-            }
-
+            StateBase state = null;
             switch (kind)
             {
                 case StateKind.None:
-                    last = new NoneState();
+                    state = new NoneState();
                     break;
                 case StateKind.Load:
-                    last = new LoadState();
+                    state = new LoadState();
                     break;
                 case StateKind.OpenAnimation:
-                    last = new OpenAnimationState();
+                    state = new OpenAnimationState();
                     break;
                 case StateKind.Opened:
-                    last = new OpenedState();
+                    state = new OpenedState();
                     break;
                 case StateKind.Unload:
-                    last = new UnloadState();
+                    state = new UnloadState();
                     break;
                 case StateKind.CloseAnimation:
-                    last = new CloseAnimationState();
+                    state = new CloseAnimationState();
                     break;
                 case StateKind.Closed:
-                    last = new ClosedState();
+                    state = new ClosedState();
                     break;
                 case StateKind.Failure:
-                    last = new FailureState();
+                    state = new FailureState();
                     break;
                 default:
                     Console.Error.WriteLine("invalid state kind={0}", kind);
                     break;
             }
 
-            _states[kind] = last;
-            return last;
+            return state;
         }
 
         public virtual void OnEnter(WindowFetus fetus, object arg1) {}
@@ -62,7 +57,6 @@ namespace Unicorn.UI.States
         public virtual void OnOpenWindow(WindowFetus fetus) {}
         public virtual void OnCloseWindow(WindowFetus fetus) {}
 
-        private static readonly SortedTable<StateKind, StateBase> _states = new(8);
         protected static readonly UILoadingMask _loadWindowMask = new(0.5f);
         protected static readonly UILoadingMask _playAnimationMask = new(0);
     }

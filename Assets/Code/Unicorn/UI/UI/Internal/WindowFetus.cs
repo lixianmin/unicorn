@@ -27,7 +27,12 @@ namespace Unicorn.UI.Internal
 
             if (_transform is not null)
             {
-                Object.Destroy(_transform.gameObject);
+                // 如果是3D界面，则不销毁
+                if (master.Is2D())
+                {
+                    Object.Destroy(_transform.gameObject);
+                }
+                
                 _transform = null;
             }
         }
@@ -75,7 +80,7 @@ namespace Unicorn.UI.Internal
                     canvas.worldCamera = Camera.main;
                 }
 
-                // 设置layer
+                // 自动设置layer：如果后续有不自动调整layer的需求，只需要在UISerializer中补一个autoSetLayer变量控制即可
                 var layerName = is2D ? "UI" : "Default";
                 var layer = LayerMask.NameToLayer(layerName);
                 if (gameObject.layer != layer)
@@ -122,7 +127,7 @@ namespace Unicorn.UI.Internal
             return _serializer;
         }
 
-        public readonly UIWindowBase master;
+        internal readonly UIWindowBase master;
 
         private StateBase _state = StateBase.Create(StateKind.None);
         private Transform _transform;

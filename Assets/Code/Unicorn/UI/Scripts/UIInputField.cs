@@ -9,16 +9,14 @@ using TMPro;
 
 namespace Unicorn.UI
 {
-    public class UIInputField : TMP_InputField
+    public class UIInputField : TMP_InputField, IRemoveAllListeners
     {
-        protected override void OnDestroy()
+        void IRemoveAllListeners.RemoveAllListeners()
         {
             onValueChanged.RemoveAllListeners();
             onEndEdit.RemoveAllListeners();
             onSelect.RemoveAllListeners();
             onDeselect.RemoveAllListeners();
-            
-            base.OnDestroy();
         }
     }
 }

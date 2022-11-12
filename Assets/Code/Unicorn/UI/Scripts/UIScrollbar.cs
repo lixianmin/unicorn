@@ -9,12 +9,11 @@ using UnityEngine.UI;
 
 namespace Unicorn.UI
 {
-    public class UIScrollbar : Scrollbar
+    public class UIScrollbar : Scrollbar, IRemoveAllListeners
     {
-        protected override void OnDestroy()
+        void IRemoveAllListeners.RemoveAllListeners()
         {
             onValueChanged.RemoveAllListeners();
-            base.OnDestroy();
         }
     }
 }

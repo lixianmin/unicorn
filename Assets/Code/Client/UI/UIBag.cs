@@ -11,9 +11,9 @@
 // {
 //     public class UIBag: UIWindowBase
 //     {
-//         public override string GetResourcePath()
+//         public override string GetAssetPath()
 //         {
-//             return "Assets/res/prefabs/ui/uibag.prefab";
+//             return "uibag";
 //         }
 //
 //         public override RenderQueue GetRenderQueue()
@@ -23,6 +23,11 @@
 //
 //         protected override void OnLoaded()
 //         {
+//             _btnClickBag.UI.onClick.AddListener(() =>
+//             {
+//                 Console.WriteLine("bag button is clicked");
+//             });
+//             
 //             Console.WriteLine("bag is OnLoaded");
 //         }
 //         
@@ -50,5 +55,7 @@
 //         {
 //             Console.WriteLine("bag is OnUnloading");
 //         }
+//
+//         private readonly UIWidget<UIButton> _btnClickBag = new("btn_click_bag");
 //     }
 // }
