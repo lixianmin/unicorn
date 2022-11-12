@@ -20,7 +20,8 @@ namespace Unicorn.UI
             {
                 return;
             }
-            
+
+            _isHandled = false;
             _onAnimationDoneCallback = onAnimationDone;
             OnAnimationComplete += _OnAnimationDone;
             

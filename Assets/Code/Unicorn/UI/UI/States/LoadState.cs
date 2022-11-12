@@ -53,9 +53,9 @@ namespace Unicorn.UI.States
             fetus.isDelayedCloseWindow = true;
         }
 
-        private void _LoadAsset(WindowFetus fetus, string resourcePath)
+        private void _LoadAsset(WindowFetus fetus, string assetPath)
         {
-            var argument = new WebArgument { key = resourcePath };
+            var argument = new WebArgument { key = assetPath };
             WebManager.Instance.LoadPrefab(argument, prefab =>
             {
                 var master = fetus.master;

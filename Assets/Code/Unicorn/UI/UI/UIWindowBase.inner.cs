@@ -8,7 +8,6 @@ Copyright (C) - All Rights Reserved
 
 using Unicorn.UI.Internal;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Unicorn.UI
 {
@@ -41,10 +40,10 @@ namespace Unicorn.UI
             _fetus = null;
             _transform = null;
             _canvas = null;
-            UnregisterWidgetEvents();
+            RemoveWidgetListeners();
         }
 
-        private void UnregisterWidgetEvents()
+        private void RemoveWidgetListeners()
         {
             if (_widgets.Count > 0)
             {

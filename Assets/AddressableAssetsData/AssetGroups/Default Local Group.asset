@@ -17,16 +17,10 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 25f2cea4613584f2db21c49e3f723b81
   m_SerializeEntries:
-  - m_GUID: 1e72b24196bf2433fb975010afcfa8be
-    m_Address: Assets/res/prefabs/ui/uibag.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: be2ecc010f6b84761971537bc4d78285
     m_Address: Assets/res/prefabs/ui/uimain.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0f7c6cac043c847b29e652c254d6f0c1, type: 2}
   m_SchemaSet:

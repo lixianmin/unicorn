@@ -751,6 +751,10 @@ GameObject:
   - component: {fileID: 1800893445}
   - component: {fileID: 1800893444}
   - component: {fileID: 1800893443}
+  - component: {fileID: 1800893449}
+  - component: {fileID: 1800893448}
+  - component: {fileID: 1800893447}
+  - component: {fileID: 1800893446}
   m_Layer: 0
   m_Name: uibag
   m_TagString: Untagged
@@ -841,6 +845,66 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1800893446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800893441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 131cec401e4c04a0dabccaf2eb925423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  widgets: []
+  openWindowAnimation: {fileID: 1800893448}
+  closeWindowAnimation: {fileID: 1800893447}
+  labels: []
+--- !u!114 &1800893447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800893441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4970562599e134f90ada068eb4c469d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timeout: 3
+  canvasGroup: {fileID: 1800893449}
+  duration: 1
+  targetAlpha: 0
+--- !u!114 &1800893448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800893441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4970562599e134f90ada068eb4c469d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timeout: 3
+  canvasGroup: {fileID: 1800893449}
+  duration: 1
+  targetAlpha: 1
+--- !u!225 &1800893449
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800893441}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1860314672
 GameObject:
   m_ObjectHideFlags: 0
