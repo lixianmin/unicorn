@@ -39,10 +39,10 @@ namespace Unicorn.UI.Internal
             _state?.OnEnter(this, arg1);
         }
 
-        public void OnLoadGameObject(GameObject goCloned)
+        public void OnLoadGameObject(GameObject gameObject)
         {
-            _transform = goCloned.transform;
-            var serializer = goCloned.GetComponent(typeof(UISerializer)) as UISerializer;
+            _transform = gameObject.transform;
+            var serializer = gameObject.GetComponent(typeof(UISerializer)) as UISerializer;
             // 接下来，计划无论有无UISerializer脚本，UI相关代码都可以正常运行
             // if (serializer is null)
             // {
@@ -57,13 +57,14 @@ namespace Unicorn.UI.Internal
             }
 
             // 对于UI来说，canvas其实是必须的
-            var canvas = goCloned.GetComponent(typeof(Canvas)) as Canvas;
+            var canvas = gameObject.GetComponent(typeof(Canvas)) as Canvas;
             if (canvas != null)
             {
                 canvas.overrideSorting = true;
                 
                 // 2d和3d界面分别设置不同的camera
-                if (master.Is2D())
+                var is2D = master.Is2D();
+                if (is2D)
                 {
                     canvas.renderMode = RenderMode.ScreenSpaceCamera;
                     canvas.worldCamera= UIManager.Instance.GetUICamera();
@@ -72,6 +73,14 @@ namespace Unicorn.UI.Internal
                 {
                     canvas.renderMode = RenderMode.WorldSpace;
                     canvas.worldCamera = Camera.main;
+                }
+
+                // 设置layer
+                var layerName = is2D ? "UI" : "Default";
+                var layer = LayerMask.NameToLayer(layerName);
+                if (gameObject.layer != layer)
+                {
+                    gameObject.SetLayerRecursivelyEx(layer);
                 }
             }
             else

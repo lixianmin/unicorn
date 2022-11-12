@@ -74,7 +74,7 @@ namespace Unicorn.UI.States
                     {
                         goCloned.name = mainAsset.name;
                         fetus.OnLoadGameObject(goCloned);
-                        CallbackTools.Handle(master.InnerOnLoaded, "[_LoadResource()]");
+                        CallbackTools.Handle(master.InnerOnLoaded, "[_LoadAsset()]");
                         fetus.isLoaded = true;
                         fetus.ChangeState(StateKind.OpenAnimation);
                     }
@@ -99,7 +99,7 @@ namespace Unicorn.UI.States
             var child = uiRoot.Find(name);
             if (null == child)
             {
-                Console.Error.WriteLine($"can not find transform under UIRoot in scene, resourcePath={name}");
+                Console.Error.WriteLine($"can not find transform under UIRoot in scene, assetPath={name}");
                 return;
             }
             

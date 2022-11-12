@@ -105,6 +105,18 @@ namespace Unicorn
             }
         }
 
+        public static void SetLayerRecursivelyEx(this GameObject go, int layer) 
+        {
+	        if (null != go)
+	        {
+		        go.layer = layer;
+		        foreach (Transform child in go.transform)
+		        {
+			        child.gameObject.SetLayerRecursivelyEx(layer);
+		        }
+	        }
+        }
+        
 //        public static bool GetActiveInHierarchyEx (this GameObject go)
 //        {
 //            if (null != go)
