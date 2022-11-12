@@ -28,7 +28,7 @@ namespace Unicorn.UI.Internal
             if (_transform is not null)
             {
                 // 如果是3D界面，则不销毁
-                if (master.Is2D())
+                if (master._is2D)
                 {
                     Object.Destroy(_transform.gameObject);
                 }
@@ -67,8 +67,10 @@ namespace Unicorn.UI.Internal
             {
                 canvas.overrideSorting = true;
                 
+                var is2D = canvas.renderMode != RenderMode.WorldSpace;
+                master._is2D = is2D;
+                
                 // 2d和3d界面分别设置不同的camera
-                var is2D = master.Is2D();
                 if (is2D)
                 {
                     canvas.renderMode = RenderMode.ScreenSpaceCamera;
@@ -76,7 +78,6 @@ namespace Unicorn.UI.Internal
                 }
                 else
                 {
-                    canvas.renderMode = RenderMode.WorldSpace;
                     canvas.worldCamera = Camera.main;
                 }
 

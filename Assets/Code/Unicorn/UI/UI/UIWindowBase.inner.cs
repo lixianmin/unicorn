@@ -60,12 +60,6 @@ namespace Unicorn.UI
 
         internal WindowFetus GetFetus() { return _fetus; }
 
-        internal bool Is2D()
-        {
-            var assetPath = GetAssetPath();
-            return assetPath != null && assetPath.Contains("/");
-        }
-        
         internal void _InitComponents(Transform transform, Canvas canvas)
         {
             _transform = transform;
@@ -97,6 +91,11 @@ namespace Unicorn.UI
         /// 出于性能考虑外面只读取, 设置需要走_SetSortingOrder()方法
         /// </summary>
         internal int _sortingOrder;
+
+        /// <summary>
+        /// 默认是2D的界面，当有canvas时通过canvas.renderMode != WorldSpace判断是否是2D界面，因为3D的界面必须设置空间位置和scale，而这必须在renderMode是WorldSpace的情况下才能调整
+        /// </summary>
+        internal bool _is2D = true;
 
         private WindowFetus _fetus;
         private Transform _transform;

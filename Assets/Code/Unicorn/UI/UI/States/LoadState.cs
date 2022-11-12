@@ -25,15 +25,19 @@ namespace Unicorn.UI.States
                 return;
             }
 
-            // 2d界面通常是单独加载的，而3d界面则可以随场景一起加载（此时直接用uibag这样的名字查找到对应的gameObject）
-            var needLoadAsset = fetus.master.Is2D();
+            var uiRoot = UIManager.Instance.GetUIRoot();
+            var child = uiRoot.Find(assetPath);
+            
+            // 如果在UIRoot下找到名为assetPath的节点，则直接使用该节点；否则当作UI资源的路径从addressable加载
+            // 通常3d界面可能是内置到场景中的
+            var needLoadAsset = child == null;
             if (needLoadAsset)
             {
                 _LoadAsset(fetus, assetPath);
             }
             else
             {
-                _FindGameObject(fetus, assetPath);
+                _UsePreloadGameObject(fetus, child.gameObject);
             }
         }
         
@@ -91,21 +95,13 @@ namespace Unicorn.UI.States
                 prefab.Dispose();
             });
         }
-
-        private void _FindGameObject(WindowFetus fetus, string name)
+        
+        private void _UsePreloadGameObject(WindowFetus fetus, GameObject gameObject)
         {
-            var master = fetus.master;
-            var uiRoot = UIManager.Instance.GetUIRoot();
-            var child = uiRoot.Find(name);
-            if (null == child)
-            {
-                Console.Error.WriteLine($"can not find transform under UIRoot in scene, assetPath={name}");
-                return;
-            }
-            
-            var gameObject = child.gameObject;
             fetus.OnLoadGameObject(gameObject);
-            CallbackTools.Handle(master.InnerOnLoaded, "[_FindGameObject()]");
+            
+            var master = fetus.master;
+            CallbackTools.Handle(master.InnerOnLoaded, "[_UsePreloadGameObject()]");
             fetus.isLoaded = true;
             fetus.ChangeState(StateKind.OpenAnimation);
         }

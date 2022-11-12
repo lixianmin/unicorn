@@ -21,9 +21,9 @@ namespace Unicorn.UI
     public abstract partial class UIWindowBase
     {
         /// <summary>
-        /// 如果从addressable加载，则返回加载UI的资源路径；如果是场景中已经预加载了，则返回UIRoot下的Canvas节点名字
+        /// 如果UIRoot的直接子节点存在以assetPath命名的Canvas节点，则直接使用该节点; 否则被当作UI资源的路径从addressable加载
         /// </summary>
-        /// <returns>加载UI的资源路径，或者UIRoot下的Canvas节点名</returns>
+        /// <returns>assetPath：UIRoot下的Canvas节点名， 或加载UI的资源路径</returns>
         public abstract string GetAssetPath();
         public virtual RenderQueue GetRenderQueue() { return RenderQueue.Geometry; }
         
