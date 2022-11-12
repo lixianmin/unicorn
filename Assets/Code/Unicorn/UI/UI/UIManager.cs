@@ -101,7 +101,7 @@ namespace Unicorn.UI
         {
             return GetWindow(typeof(T)) as T;
         }
-        
+
         internal void SlowUpdate(float deltaTime)
         {
             var snapshot = _TakeSnapshot();
@@ -330,10 +330,11 @@ namespace Unicorn.UI
                 return _uiRoot;
             }
 
-            var goRoot = GameObject.Find("UIRoot");
+            const string name = "UIRoot";
+            var goRoot = GameObject.Find(name);
             if (goRoot == null)
             {
-                throw new NullReferenceException("can not find UIRoot");
+                goRoot = new GameObject(name);
             }
 
             // DontDestroyOnLoad()只能在play mode下调用，否则会报InvalidOperationException

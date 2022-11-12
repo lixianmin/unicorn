@@ -28,6 +28,7 @@
 // 		GameObject.DontDestroyOnLoad(gameObject);
 //
 // 		UnicornMain.Instance.Init();
+// 		UIManager.Instance.GetUIRoot();
 // 		// CoroutineManager.Instance.StartCoroutine(_CoLoadMetadata());
 //
 // 		//DependencyManager.Instance.Init();
@@ -62,34 +63,34 @@
 // 		UnicornMain.Instance.SlowUpdate(Time.deltaTime);
 // 	}
 //
-// 	private IEnumerator _CoLoadMetadata()
-// 	{
-// 		var metadataManager = MetadataManager.Instance;
-// 		var fullpath = PathTools.GetFullPath("metadata.raw");
-// 		if (!string.IsNullOrEmpty(fullpath))
-// 		{
-// 			try
-// 			{
-// 				var stream = File.OpenRead(fullpath);
-// 				metadataManager.LoadRawStream(stream);
-// 			}
-// 			catch (Exception ex)
-// 			{
-// 				Console.Error.WriteLine("[_CoLoadMetadata()] load metadata failed, ex={0}", ex.ToString());
-// 			}
-// 		}
-//
-//
-// 		//var table = metadataManager.GetTemplateTable(typeof(PetEatFishTemplate));
-// 		//foreach (var template in table.Values)
-// 		//{
-// 		//	Console.WriteLine("template={0}", template);
-// 		//}
-//
-// 		var version = metadataManager.GetMetadataVersion();
-// 		Console.WriteLine("[_CoLoadMetadata()] Metadata Loaded, metadataVersion={0}.", version.ToString());
-// 		yield return null;
-//
-// 		UIManager.Instance.OpenWindow(typeof(Client.UI.UIMain));
-// 	}
+// 	// private IEnumerator _CoLoadMetadata()
+// 	// {
+// 	// 	var metadataManager = MetadataManager.Instance;
+// 	// 	var fullpath = PathTools.GetFullPath("metadata.raw");
+// 	// 	if (!string.IsNullOrEmpty(fullpath))
+// 	// 	{
+// 	// 		try
+// 	// 		{
+// 	// 			var stream = File.OpenRead(fullpath);
+// 	// 			metadataManager.LoadRawStream(stream);
+// 	// 		}
+// 	// 		catch (Exception ex)
+// 	// 		{
+// 	// 			Console.Error.WriteLine("[_CoLoadMetadata()] load metadata failed, ex={0}", ex.ToString());
+// 	// 		}
+// 	// 	}
+// 	//
+// 	//
+// 	// 	//var table = metadataManager.GetTemplateTable(typeof(PetEatFishTemplate));
+// 	// 	//foreach (var template in table.Values)
+// 	// 	//{
+// 	// 	//	Console.WriteLine("template={0}", template);
+// 	// 	//}
+// 	//
+// 	// 	var version = metadataManager.GetMetadataVersion();
+// 	// 	Console.WriteLine("[_CoLoadMetadata()] Metadata Loaded, metadataVersion={0}.", version.ToString());
+// 	// 	yield return null;
+// 	//
+// 	// 	// UIManager.Instance.OpenWindow(typeof(Client.UI.UIMain));
+// 	// }
 // }

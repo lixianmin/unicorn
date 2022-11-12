@@ -26,7 +26,7 @@ namespace Unicorn.UI.States
             }
 
             // 2d界面通常是单独加载的，而3d界面则可以随场景一起加载（此时直接用uibag这样的名字查找到对应的gameObject）
-            var needLoadAsset = assetPath.Contains("/");
+            var needLoadAsset = _Is2D(assetPath);
             if (needLoadAsset)
             {
                 _LoadAsset(fetus, assetPath);
@@ -35,6 +35,11 @@ namespace Unicorn.UI.States
             {
                 _FindGameObject(fetus, assetPath);
             }
+        }
+
+        private static bool _Is2D(string assetPath)
+        {
+            return assetPath.Contains("/");
         }
 
         public override void OnExit(WindowFetus fetus, object arg1)
@@ -92,18 +97,18 @@ namespace Unicorn.UI.States
             });
         }
 
-        private void _FindGameObject(WindowFetus fetus, string resourcePath)
+        private void _FindGameObject(WindowFetus fetus, string name)
         {
             var master = fetus.master;
             var uiRoot = UIManager.Instance.GetUIRoot();
-            var transform = uiRoot.DeepFindEx(resourcePath);
-            if (null == transform)
+            var child = uiRoot.Find(name);
+            if (null == child)
             {
-                Console.Error.WriteLine($"can not find transform under UIRoot in scene, resourcePath={resourcePath}");
+                Console.Error.WriteLine($"can not find transform under UIRoot in scene, resourcePath={name}");
                 return;
             }
             
-            var gameObject = transform.gameObject;
+            var gameObject = child.gameObject;
             fetus.OnLoadGameObject(gameObject);
             CallbackTools.Handle(master.InnerOnLoaded, "[_FindGameObject()]");
             fetus.isLoaded = true;
