@@ -26,7 +26,7 @@ namespace Unicorn.UI.States
             }
 
             // 2d界面通常是单独加载的，而3d界面则可以随场景一起加载（此时直接用uibag这样的名字查找到对应的gameObject）
-            var needLoadAsset = _Is2D(assetPath);
+            var needLoadAsset = fetus.master.Is2D();
             if (needLoadAsset)
             {
                 _LoadAsset(fetus, assetPath);
@@ -36,12 +36,7 @@ namespace Unicorn.UI.States
                 _FindGameObject(fetus, assetPath);
             }
         }
-
-        private static bool _Is2D(string assetPath)
-        {
-            return assetPath.Contains("/");
-        }
-
+        
         public override void OnExit(WindowFetus fetus, object arg1)
         {
             _loadWindowMask.CloseWindow();

@@ -348,6 +348,23 @@ namespace Unicorn.UI
             return _uiRoot;
         }
 
+        internal Camera GetUICamera()
+        {
+            if (_uiCamera == null)
+            {
+                var gameObject = GameObject.Find("UICamera");
+                if (null == gameObject)
+                {
+                    Console.Error.WriteLine("Can not find UICamera");
+                    return null;
+                }
+                
+                _uiCamera = gameObject.GetComponent<Camera>();
+            }
+
+            return _uiCamera;
+        }
+
         private Snapshot _TakeSnapshot()
         {
             if (_version != _snapshot.version)
@@ -380,5 +397,6 @@ namespace Unicorn.UI
 
         private UIWindowBase[] _foregroundWindows = new UIWindowBase[5]; // 第0个位置必然一直是null
         private Transform _uiRoot;
+        private Camera _uiCamera;   // 用于canvas.renderMode = ScreenSpaceCamera
     }
 }

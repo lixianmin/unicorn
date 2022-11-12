@@ -42,6 +42,12 @@ namespace Unicorn.UI
         }
 
         internal WindowFetus GetFetus() { return _fetus; }
+
+        internal bool Is2D()
+        {
+            var assetPath = GetAssetPath();
+            return assetPath != null && assetPath.Contains("/");
+        }
         
         internal void _InitComponents(Transform transform, Canvas canvas)
         {

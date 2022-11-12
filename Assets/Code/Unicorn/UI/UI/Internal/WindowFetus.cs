@@ -56,10 +56,23 @@ namespace Unicorn.UI.Internal
                 _transform.SetParent(_parent, false);
             }
 
+            // 对于UI来说，canvas其实是必须的
             var canvas = goCloned.GetComponent(typeof(Canvas)) as Canvas;
             if (canvas != null)
             {
                 canvas.overrideSorting = true;
+                
+                // 2d和3d界面分别设置不同的camera
+                if (master.Is2D())
+                {
+                    canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    canvas.worldCamera= UIManager.Instance.GetUICamera();
+                }
+                else
+                {
+                    canvas.renderMode = RenderMode.WorldSpace;
+                    canvas.worldCamera = Camera.main;
+                }
             }
             else
             {   // 当不存在canvas的时候, GetComponent()好像也能给取一个出来, 只是使用is not null判断会失败
