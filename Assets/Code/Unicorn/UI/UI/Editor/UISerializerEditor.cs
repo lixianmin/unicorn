@@ -156,13 +156,16 @@ namespace Unicorn.UI
             {
                 var windowType = windowTypes[i];
                 var window = Activator.CreateInstance(windowType) as UIWindowBase;
-                var resourcePath = window?.GetAssetPath();
-                if (resourcePath?.LastIndexOf(prefabName) > 0)
+                var assetPath = window?.GetAssetPath();
+                if (assetPath?.LastIndexOf(prefabName) >= 0)
                 {
                     return window;
                 }
+                
+                // Console.WriteLine("assetPath={0}", assetPath);
             }
-
+            
+            Console.Error.WriteLine($"Can not find assetPath ends with prefabName={prefabName}， windowTypes.Count={windowTypes.Count}");
             return null;
         }
 
