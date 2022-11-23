@@ -11,7 +11,6 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
-using System.IO;
 
 namespace Metadata
 {
@@ -174,11 +173,7 @@ namespace Metadata
         {
             this.guid = reader.GetAttribute("guid");
             this.text = reader.ReadElementContentAsString();
-
-            if (null != OnDeserialize)
-            {
-                OnDeserialize(this);
-            }
+            OnDeserialize?.Invoke(this);
         }
 
         #endif

@@ -5,7 +5,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
-using System;
+
 using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
@@ -121,10 +121,6 @@ namespace Metadata
 			{
                 _unknownElementNames.Clear();
 				metadata = _serializer.Deserialize(reader) as XmlMetadata;
-			}
-			catch
-			{
-				throw;
 			}
 			finally
 			{
