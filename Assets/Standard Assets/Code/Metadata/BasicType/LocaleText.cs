@@ -14,6 +14,7 @@ using System;
 
 namespace Metadata
 {
+    // todo 这里UNITY_EDITOR中的System.Xml.Serialization.IXmlSerializable有可能是引入System.Xml.dll的原因
     [Serializable]
     public struct LocaleText
     #if UNITY_EDITOR

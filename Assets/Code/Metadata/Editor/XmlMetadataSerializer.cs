@@ -99,8 +99,10 @@ namespace Metadata
                 {
                     if (EditorMetaTools.IsAutoCodeIgnore(field))
                     {
-                        var attributes = new XmlAttributes();
-                        attributes.XmlIgnore = true;
+                        var attributes = new XmlAttributes
+                        {
+	                        XmlIgnore = true
+                        };
                         overrides.Add(type.RawType, field.Name, attributes);
                     }
                 }
