@@ -2,9 +2,17 @@
 <UnicornManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <editorSettings>
     <colorSpace>Linear</colorSpace>
+    <bakeCollisionMeshes>true</bakeCollisionMeshes>
   </editorSettings>
   <relativePaths>
-    <string>res</string>
+    <editorResourceRoot />
+    <xmlMetadataRoot />
+    <exportMetadataRoot />
   </relativePaths>
+  <managedStrippingLevels>
+    <Android>Low</Android>
+    <iOS>Low</iOS>
+    <WebGL>Low</WebGL>
+  </managedStrippingLevels>
   <makeAutoCode>false</makeAutoCode>
 </UnicornManifest>

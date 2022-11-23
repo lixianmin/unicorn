@@ -6,6 +6,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -71,15 +72,30 @@ namespace Unicorn
 
         private static void _SetManagedStrippingLevel(UnicornManifest manifest)
         {
-            var name = manifest.editorSettings.managedStrippingLevel;
-            var nextLevel = _GetManagedStrippingLevel(name);
+            var buildTarget = EditorUserBuildSettings.activeBuildTarget;
+           
+            var levels = manifest.managedStrippingLevels;
+            var name = buildTarget switch
+            {
+                BuildTarget.Android => levels.Android,
+                BuildTarget.iOS => levels.iOS,
+                BuildTarget.WebGL => levels.WebGL,
+                _ => string.Empty
+            };
+
+            if (name == string.Empty)
+            {
+                Console.Error.WriteLine($"using unsupported buildTarget={buildTarget}");
+                return;
+            }
             
-            var target = EditorUserBuildSettings.activeBuildTarget;
-            var group = BuildPipeline.GetBuildTargetGroup(target);
-            var lastLevel = PlayerSettings.GetManagedStrippingLevel(group);
+            var targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
+            var lastLevel = PlayerSettings.GetManagedStrippingLevel(targetGroup);
+            var nextLevel = _GetManagedStrippingLevel(name);
+
             if (lastLevel != nextLevel)
             {
-                PlayerSettings.SetManagedStrippingLevel(group, nextLevel);
+                PlayerSettings.SetManagedStrippingLevel(targetGroup, nextLevel);
                 Console.WriteLine($"(manifest.editorSettings.managedStrippingLevel={name}) => ({lastLevel} → {nextLevel})");
             }
         }
