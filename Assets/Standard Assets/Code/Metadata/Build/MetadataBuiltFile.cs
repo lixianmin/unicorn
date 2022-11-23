@@ -84,14 +84,14 @@ namespace Metadata.Build
             _metadataVerison = SVNTools.GetRevision(metadataRoot);
 
             var xmlFiles = Kernel.walk(metadataRoot, "*.xml");
-			
-			var title = "Building *.xml metadata";
+
+            var title = "Building *.xml metadata";
             ScanTools.ScanAll(title, xmlFiles, _OnBuildOneXmlFile);
             LocaleText.OnDeserialize -= _OnDeserializeLocaleText;
             LocaleTextManager.Instance.AddLocaleTable(_localeTable);
             Console.WriteLine("--> AddLocaleTable() done");
 
-			if (_sbBuiltXmlPaths.Length > 0)
+            if (_sbBuiltXmlPaths.Length > 0)
 			{
 				Console.WriteLine("--> build *.xml metadata, builtXmlPaths={0}", _sbBuiltXmlPaths);
 			}

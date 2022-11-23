@@ -20,6 +20,7 @@ namespace Unicorn
             var manifest = UnicornManifest.OpenOrCreate();
             _SetColorSpace(manifest);
             _SetBakeCollisionMeshes(manifest);
+            _SetManagedStrippingLevel(manifest);
         }
 
         // 设置colorSpace，默认使用Linear空间
@@ -66,6 +67,33 @@ namespace Unicorn
                 PlayerSettings.bakeCollisionMeshes = bakeCollisionMeshes;
                 Console.WriteLine($"(manifest.editorSettings.bakeCollisionMeshes={bakeCollisionMeshes}) => (PlayerSettings.bakeCollisionMeshes={bakeCollisionMeshes})");
             }
+        }
+
+        private static void _SetManagedStrippingLevel(UnicornManifest manifest)
+        {
+            var name = manifest.editorSettings.managedStrippingLevel;
+            var nextLevel = _GetManagedStrippingLevel(name);
+            
+            var target = EditorUserBuildSettings.activeBuildTarget;
+            var group = BuildPipeline.GetBuildTargetGroup(target);
+            var lastLevel = PlayerSettings.GetManagedStrippingLevel(group);
+            if (lastLevel != nextLevel)
+            {
+                PlayerSettings.SetManagedStrippingLevel(group, nextLevel);
+                Console.WriteLine($"(manifest.editorSettings.managedStrippingLevel={name}) => ({lastLevel} → {nextLevel})");
+            }
+        }
+
+        private static ManagedStrippingLevel _GetManagedStrippingLevel(string name)
+        {
+            return name switch
+            {
+                "Minimal" => ManagedStrippingLevel.Minimal,
+                "Low" => ManagedStrippingLevel.Low,
+                "Medium" => ManagedStrippingLevel.Medium,
+                "High" => ManagedStrippingLevel.High,
+                _ => ManagedStrippingLevel.Disabled
+            };
         }
     }
 }

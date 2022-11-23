@@ -17,6 +17,10 @@ namespace Unicorn
         {
             public string colorSpace = "Linear";
             public bool bakeCollisionMeshes = true;
+            
+            // managed stripping level：以High最狠，但目前只能支持到Low，因为到了Medium级别UI库中的反射就不能用了
+            // https://docs.unity3d.com/ScriptReference/ManagedStrippingLevel.html
+            public string managedStrippingLevel = "Low";
         }
         
         [Serializable]
