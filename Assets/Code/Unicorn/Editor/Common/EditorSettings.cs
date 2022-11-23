@@ -6,7 +6,6 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using System;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -19,13 +18,18 @@ namespace Unicorn
         private static void Reload()
         {
             var manifest = UnicornManifest.OpenOrCreate();
-            _SetColorSpace(manifest);
-            _SetBakeCollisionMeshes(manifest);
-            _SetManagedStrippingLevel(manifest);
+            var isChanged = _SetColorSpace(manifest);
+            isChanged = _SetBakeCollisionMeshes(manifest) || isChanged;
+            isChanged = _SetManagedStrippingLevel(manifest) || isChanged;
+
+            if (isChanged)
+            {
+                manifest.Save();
+            }
         }
 
         // 设置colorSpace，默认使用Linear空间
-        private static void _SetColorSpace(UnicornManifest manifest)
+        private static bool _SetColorSpace(UnicornManifest manifest)
         {
             var name = manifest.editorSettings.colorSpace;
             var colorSpace = name == "Linear" ? ColorSpace.Linear : ColorSpace.Gamma;
@@ -49,7 +53,7 @@ namespace Unicorn
 
                 if (!isValidBuildTarget)
                 {
-                    return;
+                    return false;
                 }
             }
             
@@ -57,20 +61,26 @@ namespace Unicorn
             {
                 PlayerSettings.colorSpace = colorSpace;
                 Console.WriteLine($"(manifest.editorSettings.colorSpace={name}) => (PlayerSettings.colorSpace={name})");
+                return true;
             }
+
+            return false;
         }
 
-        private static void _SetBakeCollisionMeshes(UnicornManifest manifest)
+        private static bool _SetBakeCollisionMeshes(UnicornManifest manifest)
         {
             var bakeCollisionMeshes = manifest.editorSettings.bakeCollisionMeshes;
             if ( PlayerSettings.bakeCollisionMeshes != bakeCollisionMeshes)
             {
                 PlayerSettings.bakeCollisionMeshes = bakeCollisionMeshes;
                 Console.WriteLine($"(manifest.editorSettings.bakeCollisionMeshes={bakeCollisionMeshes}) => (PlayerSettings.bakeCollisionMeshes={bakeCollisionMeshes})");
+                return true;
             }
+
+            return false;
         }
 
-        private static void _SetManagedStrippingLevel(UnicornManifest manifest)
+        private static bool _SetManagedStrippingLevel(UnicornManifest manifest)
         {
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
            
@@ -86,7 +96,7 @@ namespace Unicorn
             if (name == string.Empty)
             {
                 Console.Error.WriteLine($"using unsupported buildTarget={buildTarget}");
-                return;
+                return false;
             }
             
             var targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
@@ -97,7 +107,10 @@ namespace Unicorn
             {
                 PlayerSettings.SetManagedStrippingLevel(targetGroup, nextLevel);
                 Console.WriteLine($"(manifest.editorSettings.managedStrippingLevel={name}) => ({lastLevel} → {nextLevel})");
+                return true;
             }
+
+            return false;
         }
 
         private static ManagedStrippingLevel _GetManagedStrippingLevel(string name)

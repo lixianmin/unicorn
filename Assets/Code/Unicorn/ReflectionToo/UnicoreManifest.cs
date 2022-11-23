@@ -37,6 +37,12 @@ namespace Unicorn
             }
         }
 
+        public void Save()
+        {
+            var manifestPath = _GetManifestPath();
+            XmlTools.Serialize(manifestPath, this);
+        }
+
         private static string _GetManifestPath()
         {
             var path = os.path.join(Application.dataPath, "unicorn_manifest.xml");
