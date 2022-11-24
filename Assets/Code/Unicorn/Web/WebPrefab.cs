@@ -17,28 +17,37 @@ namespace Unicorn.Web
         internal WebPrefab(WebArgument argument, Action<WebPrefab> handler)
         {
             // _webItem这里也需要同步赋值, 因为回调handler有可能是一个小时之后的事, 中间万一使用到了_webItem就可能是null了. 你永远也不知道构造方法和handler谁先到来
-            _webItem = WebManager.Instance.LoadAsset(argument, webItem =>
+            var node = WebManager.Instance.LoadAsset(argument, webItem =>
             {
-                if (webItem.Asset is not GameObject mainAsset) return;
-
-                var script = mainAsset.GetComponent<MbPrefabAid>();
-                if (script is null)
+                if (webItem.Asset is GameObject mainAsset)
                 {
-                     script = mainAsset.AddComponent<MbPrefabAid>();
-                     script.key = argument.key;
-                     
+                    var script = mainAsset.GetComponent<MbPrefabAid>();
+                    if (script is null)
+                    {
+                        script = mainAsset.AddComponent<MbPrefabAid>();
+                        script.key = argument.key;
+// 这个注释似乎没有意义，因此这个项目会编译成dll                     
 #if UNITY_EDITOR
-                     _ProcessDependenciesInEditor(mainAsset);
+                        _ProcessDependenciesInEditor(mainAsset);
 #endif
+                    }
+
+                    _aidScript = script;
+                    PrefabRecycler.TryAddPrefab(argument.key, this);
+
+                    // 这里的handler是有可能立即调用到的, 所以不能外面new WebItem()返回值的时候设置_webItem
+                    _webItem = webItem;
                 }
-
-                _aidScript = script;
-                PrefabRecycler.TryAddPrefab(argument.key, this);
-
-                // 这里的handler是有可能立即调用到的, 所以不能外面new WebItem()返回值的时候设置_webItem
-                _webItem = webItem;
+                else
+                {
+                    _webItem = EmptyWebNode.Instance;
+                }
+                
                 CallbackTools.Handle(ref handler, this, "[WebPrefab()]");
             });
+
+            // 如果_webItem==null，说明LoadAsset()的handler还未执行，所以在些设置一次；之所以这样做，是因为_webItem有可能已经被设置为EmptyWebNode了
+            _webItem ??= node;
         }
 
         protected override void _DoDispose(bool isManualDisposing)

@@ -25,8 +25,8 @@ namespace Unicorn.Web
             
             ReassignShaders(goAsset);
         }
-        
-        internal static void ReassignShaders(GameObject goAsset)
+
+        private static void ReassignShaders(GameObject goAsset)
         {
             if (!Application.isEditor)
             {
