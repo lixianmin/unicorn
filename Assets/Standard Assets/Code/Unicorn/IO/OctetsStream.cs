@@ -5,21 +5,9 @@ namespace Unicorn.IO
 {
     public class OctetsStream : Stream
     {
-        private int _initialIndex;
-
-        private int _dirtyBytes;
-
-        private int _position;
-
-        private int _capacity;
-
-        private byte[] _buffer;
-
-        private int _length;
-
         public virtual int Capacity
         {
-            get { return _capacity - _initialIndex; }
+            get => _capacity - _initialIndex;
             set
             {
                 if (value != _capacity)
@@ -53,7 +41,7 @@ namespace Unicorn.IO
 
         public override long Position
         {
-            get { return _position - _initialIndex; }
+            get => _position - _initialIndex;
             set
             {
                 if (value < 0)
@@ -71,25 +59,13 @@ namespace Unicorn.IO
             }
         }
 
-        public override long Length
-        {
-            get { return _length - _initialIndex; }
-        }
+        public override long Length => _length - _initialIndex;
 
-        public override bool CanRead
-        {
-            get { return true; }
-        }
+        public override bool CanRead => true;
 
-        public override bool CanSeek
-        {
-            get { return true; }
-        }
+        public override bool CanSeek => true;
 
-        public override bool CanWrite
-        {
-            get { return true; }
-        }
+        public override bool CanWrite => true;
 
         public OctetsStream()
             : this(0)
@@ -303,6 +279,15 @@ namespace Unicorn.IO
                 _length = _position;
             }
         }
+        
+        public void Tidy()
+        {
+            var count = _length -  _position;
+            Buffer.BlockCopy(_buffer, _position, _buffer, _initialIndex, count);
+
+            _position = _initialIndex;
+            SetLength(count);
+        }
 
         public void WriteTo(Stream stream)
         {
@@ -334,5 +319,17 @@ namespace Unicorn.IO
         public override void Flush()
         {
         }
+        
+        private readonly int _initialIndex;
+
+        private int _dirtyBytes;
+
+        private int _position;
+
+        private int _capacity;
+
+        private byte[] _buffer;
+
+        private int _length;
     }
 }
