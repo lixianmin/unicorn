@@ -420,7 +420,7 @@ namespace Unicorn.UI.Internal
             templateImage.sprite = resources.standard;
             templateImage.type = Image.Type.Sliced;
 
-            ScrollRect templateScrollRect = template.AddComponent<ScrollRect>();
+            UIScrollRect templateScrollRect = template.AddComponent<UIScrollRect>();
             templateScrollRect.content = (RectTransform)content.transform;
             templateScrollRect.viewport = (RectTransform)viewport.transform;
             templateScrollRect.horizontal = false;
@@ -572,7 +572,7 @@ namespace Unicorn.UI.Internal
 
             // Setup UI components.
 
-            ScrollRect scrollRect = root.AddComponent<ScrollRect>();
+            UIScrollRect scrollRect = root.AddComponent<UIScrollRect>();
             scrollRect.content = contentRT;
             scrollRect.viewport = viewportRT;
             scrollRect.horizontalScrollbar = hScrollbar.GetComponent<Scrollbar>();

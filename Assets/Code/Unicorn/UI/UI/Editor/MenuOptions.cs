@@ -16,6 +16,48 @@ namespace Unicorn.UI
 {
     internal static class MenuOptions
     {
+        [MenuItem(MenuRoot + "UI Image", false, 1832)]
+        private static void _AddImage (MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateImage(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem(MenuRoot + "UI Raw Image", false, 1834)]
+        private static void _AddRawImage (MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateRawImage(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+        
+        [MenuItem(MenuRoot + "UI Scrollbar", false, 1835)]
+        private static void _AddScrollbar (MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateScrollbar(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+        
+        [MenuItem(MenuRoot + "UI Scroll View", false, 1836)]
+        public static void AddScrollView(MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateScrollView(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+        
+        [MenuItem(MenuRoot + "UI Slider", false, 1837)]
+        private static void _AddSlider (MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateSlider(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem(MenuRoot + "UI Toggle", false, 1839)]
+        private static void _AddToggle (MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateToggle(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
         [MenuItem(MenuRoot + "Legacy/UI Text", false, 1800)]
         private static void _AddText (MenuCommand menuCommand)
         {
@@ -29,20 +71,6 @@ namespace Unicorn.UI
             }
         }
 
-        [MenuItem(MenuRoot + "UI Image", false, 1801)]
-        private static void _AddImage (MenuCommand menuCommand)
-        {
-            GameObject go = DefaultControls.CreateImage(GetStandardResources());
-            PlaceUIElementRoot(go, menuCommand);
-        }
-
-        [MenuItem(MenuRoot + "UI Raw Image", false, 1802)]
-        private static void _AddRawImage (MenuCommand menuCommand)
-        {
-            GameObject go = DefaultControls.CreateRawImage(GetStandardResources());
-            PlaceUIElementRoot(go, menuCommand);
-        }
-
         [MenuItem(MenuRoot + "Legacy/UI Button", false, 1830)]
         private static void _AddButton (MenuCommand menuCommand)
         {
@@ -50,35 +78,14 @@ namespace Unicorn.UI
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem(MenuRoot + "UI Toggle", false, 1831)]
-        private static void _AddToggle (MenuCommand menuCommand)
-        {
-            GameObject go = DefaultControls.CreateToggle(GetStandardResources());
-            PlaceUIElementRoot(go, menuCommand);
-        }
-
-        [MenuItem(MenuRoot + "UI Slider", false, 1833)]
-        private static void _AddSlider (MenuCommand menuCommand)
-        {
-            GameObject go = DefaultControls.CreateSlider(GetStandardResources());
-            PlaceUIElementRoot(go, menuCommand);
-        }
-
-        [MenuItem(MenuRoot + "UI Scrollbar", false, 1834)]
-        private static void _AddScrollbar (MenuCommand menuCommand)
-        {
-            GameObject go = DefaultControls.CreateScrollbar(GetStandardResources());
-            PlaceUIElementRoot(go, menuCommand);
-        }
-
-        [MenuItem(MenuRoot + "Legacy/UI Dropdown", false, 1835)]
+        [MenuItem(MenuRoot + "Legacy/UI Dropdown", false, 1836)]
         private static void _AddDropdown(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateDropdown(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem(MenuRoot + "Legacy/UI Input Field", false, 1836)]
+        [MenuItem(MenuRoot + "Legacy/UI Input Field", false, 1837)]
         private static void _AddInputField (MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateInputField(GetStandardResources());
@@ -112,14 +119,7 @@ namespace Unicorn.UI
 			rect.anchoredPosition = Vector2.zero;
 			rect.sizeDelta = Vector2.zero;
 		}
-
-        [MenuItem(MenuRoot + "UI Scroll View", false, 1862)]
-        public static void AddScrollView(MenuCommand menuCommand)
-        {
-            GameObject go = DefaultControls.CreateScrollView(GetStandardResources());
-            PlaceUIElementRoot(go, menuCommand);
-        }
-
+        
         // [MenuItem(MenuRoot + "----------", false, 1999)]
         // private static void _CreateSeparator (MenuCommand menuCommand)
         // {

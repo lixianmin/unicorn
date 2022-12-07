@@ -19,7 +19,34 @@ namespace Unicorn.UI
 {
     internal static class MenuOptionsTMP
     {
-        [MenuItem(MenuRoot + "UI Text", false, 1800)]
+        [MenuItem(MenuRoot+"UI Button", false, 1830)]
+        public static void AddButton(MenuCommand menuCommand)
+        {
+            var go = TMP_DefaultControls.CreateButton(GetStandardResources());
+
+            // Override font size
+            var textComponent = go.GetComponentInChildren<TMP_Text>();
+            textComponent.fontSize = 24;
+            textComponent.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
+
+            PlaceUIElementRoot(go, menuCommand);
+        }
+        
+        [MenuItem(MenuRoot+"UI Dropdown", false, 1831)]
+        public static void AddDropdown(MenuCommand menuCommand)
+        {
+            GameObject go = TMP_DefaultControls.CreateDropdown(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+        
+        [MenuItem(MenuRoot+"UI Input Field", false, 1833)]
+        static void AddTextMeshProInputField(MenuCommand menuCommand)
+        {
+            GameObject go = TMP_DefaultControls.CreateInputField(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem(MenuRoot + "UI Text", false, 1838)]
         private static void CreateTextMeshProGuiObjectPerform(MenuCommand menuCommand)
         {
             GameObject go = TMP_DefaultControls.CreateText(GetStandardResources());
@@ -61,33 +88,6 @@ namespace Unicorn.UI
             PlaceUIElementRoot(go, menuCommand);
         }
         
-        [MenuItem(MenuRoot+"/UI Button", false, 1830)]
-        public static void AddButton(MenuCommand menuCommand)
-        {
-            var go = TMP_DefaultControls.CreateButton(GetStandardResources());
-
-            // Override font size
-            var textComponent = go.GetComponentInChildren<TMP_Text>();
-            textComponent.fontSize = 24;
-            textComponent.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
-
-            PlaceUIElementRoot(go, menuCommand);
-        }
-        
-        [MenuItem(MenuRoot+"UI Input Field", false, 1836)]
-        static void AddTextMeshProInputField(MenuCommand menuCommand)
-        {
-            GameObject go = TMP_DefaultControls.CreateInputField(GetStandardResources());
-            PlaceUIElementRoot(go, menuCommand);
-        }
-        
-        [MenuItem(MenuRoot+"UI Dropdown", false, 1835)]
-        public static void AddDropdown(MenuCommand menuCommand)
-        {
-            GameObject go = TMP_DefaultControls.CreateDropdown(GetStandardResources());
-            PlaceUIElementRoot(go, menuCommand);
-        }
-
         private static bool IsWaitingOnResourceLoad(UIText script)
         {
             var type = script.GetType();
