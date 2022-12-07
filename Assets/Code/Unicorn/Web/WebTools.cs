@@ -1,6 +1,5 @@
-
 /********************************************************************
-created:    2022-08-13
+created:    2022-12-07
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
@@ -11,28 +10,15 @@ using UnityEngine.UI;
 
 namespace Unicorn.Web
 {
-    public partial class WebPrefab
+    public static class WebTools
     {
-        private static void _ProcessDependenciesInEditor (GameObject goAsset)
+        public static void ReloadShaders(GameObject goAsset)
         {
-			// 1. Currently all _partGroup are textures, fonts, atlases, so they do not need to reassgin shaders.
-            // 2. We must use CollectDependencies(), because GetComponents() will not collect dependencies attached in script.
-            
-			if (!Application.isEditor ||  goAsset is null)
+            if (!Application.isEditor || goAsset == null)
             {
                 return;
             }
-            
-            ReassignShaders(goAsset);
-        }
 
-        private static void ReassignShaders(GameObject goAsset)
-        {
-            if (!Application.isEditor)
-            {
-                return;
-            }
-            
             var renderers = goAsset.GetComponentsInChildren<Renderer>(true);
             if (renderers != null)
             {
@@ -46,7 +32,7 @@ namespace Unicorn.Web
 
                     foreach (var material in sharedMaterials)
                     {
-                        _ReassignMaterialShader(material);
+                        _ReloadMaterialShader(material);
                     }
                 }
             }
@@ -56,18 +42,37 @@ namespace Unicorn.Web
             {
                 foreach (var graphic in graphics)
                 {
-                    _ReassignMaterialShader(graphic.material);
-                    _ReassignMaterialShader(graphic.materialForRendering);
+                    _ReloadMaterialShader(graphic.material);
+                    _ReloadMaterialShader(graphic.materialForRendering);
                 }
             }
         }
 
-        private static void _ReassignMaterialShader(Material material)
+        private static void _ReloadMaterialShader(Material material)
         {
-            if (material?.shader != null)
+            if (material == null)
             {
-                material.shader = Shader.Find(material.shader.name);
+                Console.WriteLine("material is null");
+                return;
             }
+
+            var shader = material.shader;
+            if (shader == null)
+            {
+                Console.Error.WriteLine($"material.name={material.name}, shader is null");
+                return;
+            }
+
+            var shaderName = shader.name;
+            material.shader = Shader.Find(shaderName);
+            // Console.WriteLine($"material.name={material.name}, shader.name={shaderName}");
         }
+
+        internal static int GetNextId()
+        {
+            return ++_idGenerator;
+        }
+
+        private static int _idGenerator;
     }
 }

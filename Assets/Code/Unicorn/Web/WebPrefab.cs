@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-08-13
 author:     lixianmin
@@ -12,7 +11,7 @@ using Unicorn.Web.Internal;
 
 namespace Unicorn.Web
 {
-    public partial class WebPrefab: Disposable, IWebNode
+    public partial class WebPrefab : Disposable, IWebNode
     {
         internal WebPrefab(WebArgument argument, Action<WebPrefab> handler)
         {
@@ -26,9 +25,9 @@ namespace Unicorn.Web
                     {
                         script = mainAsset.AddComponent<MbPrefabAid>();
                         script.key = argument.key;
-// 这个注释似乎没有意义，因此这个项目会编译成dll                     
+// 实践证明这个注释没有意义，因为这个项目会编译成dll，编译时UNITY_EDITOR是有的                
 #if UNITY_EDITOR
-                        _ProcessDependenciesInEditor(mainAsset);
+                        WebTools.ReloadShaders(mainAsset);
 #endif
                     }
 
@@ -42,7 +41,7 @@ namespace Unicorn.Web
                 {
                     _webItem = EmptyWebNode.Instance;
                 }
-                
+
                 CallbackTools.Handle(ref handler, this, "[WebPrefab()]");
             });
 
@@ -64,15 +63,16 @@ namespace Unicorn.Web
 
         public bool IsDone => _webItem.IsDone;
         public bool IsSucceeded => _webItem.IsSucceeded;
-        
+
         UnityEngine.Object IWebNode.Asset => _webItem.Asset;
-        
+
         /// <summary>
         /// 返回mainAsset
         /// </summary>
         public GameObject Asset => _webItem.Asset as GameObject;
-        
+
         private IWebNode _webItem;
+
         private MbPrefabAid _aidScript;
         // private readonly int _id = WebTools.GetNextId();
     }
