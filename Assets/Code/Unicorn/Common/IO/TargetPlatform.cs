@@ -3,18 +3,28 @@
 created:    2022-08-11
 author:     lixianmin
 
+数值同步： UnityEngine.BuildTarget
+
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
+using UnityEditor;
 
 namespace Unicorn
 {
     public enum TargetPlatform
     {
         None,
-        StandaloneOSXIntel = 4,
-        StandaloneWindows = 5,
-        WebPlayer = 6,
-        iPhone = 9,
+        iOS = 9,
         Android = 13,
+        StandaloneWindows64 = 19,
     }
+
+    // class Test
+    // {
+    //     public void test()
+    //     {
+    //         BuildTarget.Android
+    //     }
+    // }
 }

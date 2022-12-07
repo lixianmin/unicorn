@@ -21,7 +21,8 @@ namespace Unicorn
 			var platforms = new[]
 			{
 				TargetPlatform.Android
-				, TargetPlatform.iPhone
+				, TargetPlatform.iOS
+				, TargetPlatform.StandaloneWindows64
 			};
 			
 			var srcFilePath = PathTools.GetExportPath(localPath);

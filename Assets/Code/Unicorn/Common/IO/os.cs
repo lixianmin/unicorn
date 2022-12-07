@@ -171,7 +171,10 @@ namespace Unicorn
 					}
 					else if (Application.platform == RuntimePlatform.IPhonePlayer)
 					{
-						_targetPlatform = TargetPlatform.iPhone;
+						_targetPlatform = TargetPlatform.iOS;
+					}else if (Application.platform == RuntimePlatform.WindowsPlayer)
+					{
+						_targetPlatform = TargetPlatform.StandaloneWindows64;
 					}
 					// else if (Application.isWebPlayer)
 					// {
