@@ -19,11 +19,11 @@ namespace Unicorn.Menus
         {
             var sbLog = new StringBuilder("Deleted empty folders:\n");
 
-            var topdir = Application.dataPath;
-            var directories = Directory.GetDirectories(topdir);
-            foreach (var dirpath in directories)
+            var topDir = Application.dataPath;
+            var directories = Directory.GetDirectories(topDir);
+            foreach (var dirPath in directories)
             {
-                _CheckDeleteEmptyFolders(dirpath, sbLog);
+                _CheckDeleteEmptyFolders(dirPath, sbLog);
             }
 
             var log = sbLog.ToString();
