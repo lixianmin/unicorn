@@ -12,7 +12,7 @@ namespace Unicorn.UI.Internal
 {
     internal class WebNode : IWebNode
     {
-        public bool IsCompleted { get; private set; }
+        public bool IsDone { get; private set; }
         public bool IsSucceeded { get; private set; }
         public Object Asset { get; private set; }
 
@@ -20,7 +20,7 @@ namespace Unicorn.UI.Internal
         {
             if (other != null)
             {
-                IsCompleted = other.IsCompleted;
+                IsDone = other.IsDone;
                 IsSucceeded = other.IsSucceeded;
                 Asset = other.Asset;    
             }
@@ -28,7 +28,7 @@ namespace Unicorn.UI.Internal
         
         public void Reset()
         {
-            IsCompleted = false;
+            IsDone = false;
             IsSucceeded = false;
             Asset = null;
         }

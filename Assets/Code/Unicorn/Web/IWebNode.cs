@@ -10,10 +10,11 @@ namespace Unicorn.Web
 {
     public interface IWebNode
     {
+        // Task使用IsCompleted，而AsyncOperationHandle使用IsDone，先保持IsDone吧
         /// <summary>
-        /// 下载过程是否已结束：成功/失败/取消。只所以使用IsCompleted代替IsDone是因为Task使用IsCompleted
+        /// 下载过程是否已结束：成功/失败/取消
         /// </summary>
-        bool IsCompleted    { get; } 
+        bool IsDone    { get; } 
         
         /// <summary>
         /// 是否下载成功

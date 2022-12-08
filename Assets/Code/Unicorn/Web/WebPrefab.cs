@@ -61,7 +61,7 @@ namespace Unicorn.Web
         //     return $"WebPrefab: id={_id.ToString()}, key={_webItem.Key}";
         // }
 
-        public bool IsCompleted => _webItem.IsCompleted;
+        public bool IsDone => _webItem.IsDone;
         public bool IsSucceeded => _webItem.IsSucceeded;
 
         UnityEngine.Object IWebNode.Asset => _webItem.Asset;

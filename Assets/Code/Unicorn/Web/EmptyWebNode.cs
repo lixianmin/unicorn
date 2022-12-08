@@ -13,7 +13,7 @@ namespace Unicorn.Web
         /// <summary>
         /// 下载过程是否已结束：成功/失败/取消
         /// </summary>
-        public bool IsCompleted => true;
+        public bool IsDone => true;
 
         /// <summary>
         /// 是否下载成功
