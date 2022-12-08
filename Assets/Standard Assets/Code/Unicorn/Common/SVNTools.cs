@@ -76,6 +76,7 @@ namespace Unicorn
             {
                 separator = ':';
                 slash = '/';
+                // unity3d自带的$PATH过于精简，自动补一些更接地气的
                 environmentPath += ":/usr/local/bin:/opt/homebrew/bin";
             }
 
