@@ -16,7 +16,7 @@ Copyright (C) - All Rights Reserved
 
 using UnityEditor;
 
-namespace Unicorn
+namespace Unicorn.Menus
 {
 	internal class HotKeyMenus
 	{
@@ -37,5 +37,11 @@ namespace Unicorn
 		{
 			EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
 		}
+		
+		// [MenuItem("Edit/Project Settings2... &^s", false, 250)]
+		// public static void OpenSettings ()
+		// {
+		// 	EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
+		// }
 	}
 }
