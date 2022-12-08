@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2018-01-23
 author:     lixianmin
 
@@ -49,50 +48,65 @@ namespace Unicorn
         {
             var process = new Process();
             var si = process.StartInfo;
-            si.FileName = _GetSVNFilePath();
+            si.FileName = _GetSVNExecutablePath();
             si.Arguments = command + " " + directory;
-            si.UseShellExecute = false; // The Process object must have the UseShellExecute property set to false in order to redirect IO streams.
+            si.UseShellExecute = false; // UseShellExecute must be false in order to redirect IO streams.
             si.RedirectStandardOutput = true;
-            
+
             process.Start();
 
             var text = process.StandardOutput.ReadToEnd();
             return text;
         }
 
-        private static string _GetSVNFilePath()
+        public static string GetExecutablePath(string name)
         {
-            if (_svnFilePath == null)
+            if (string.IsNullOrEmpty(name))
             {
-                var environmentPath = Environment.GetEnvironmentVariable("PATH")??string.Empty;
-                var isWindows = environmentPath.Contains(';');
-                var separator = isWindows ? ';' : ':';
-                var slash = isWindows ? '\\' : '/';
-                var paths = environmentPath.Split(separator);
-                if (paths != null)
+                return name;
+            }
+
+            var environmentPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+            var isWindows = environmentPath.Contains(';');
+
+            var separator = ';';
+            var slash = '\\';
+
+            if (!isWindows)
+            {
+                separator = ':';
+                slash = '/';
+                environmentPath += ":/usr/local/bin:/opt/homebrew/bin";
+            }
+
+            var paths = environmentPath.Split(separator);
+            if (paths != null)
+            {
+                foreach (var folder in paths)
                 {
-                    foreach (var folder in paths)
+                    var filePath = folder + slash + name;
+                    if (File.Exists(filePath))
                     {
-                        var filePath = folder + slash + "svn";
-                        if (File.Exists(filePath))
-                        {
-                            _svnFilePath = filePath;
-                            break;
-                        }
+                        return filePath;
                     }
                 }
             }
 
-            if (_svnFilePath == null)
-            {
-                _svnFilePath = "svn";
-                var environmentPath = Environment.GetEnvironmentVariable("PATH")??string.Empty;
-                Console.Error.WriteLine($"can not find svn command in $PATH={environmentPath}");
-            }
-            
-            return _svnFilePath;
+            Console.Error.WriteLine($"can not find command in $PATH={environmentPath}");
+            return name;
         }
 
-        private static string _svnFilePath;
+        private static string _GetSVNExecutablePath()
+        {
+            if (_svnExecutablePath == null)
+            {
+                const string name = "svn";
+                _svnExecutablePath = GetExecutablePath(name);
+            }
+
+            return _svnExecutablePath;
+        }
+
+        private static string _svnExecutablePath;
     }
 }
