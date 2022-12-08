@@ -42,19 +42,19 @@ namespace Unicorn
             public const string MetaName = "__LotAssetMeta"; // in increment bundle
         }
 
-        public static class WebPrefab
-        {
-            // version changes:
-            // 0->1 导出WebPrefab时,shared part那部分原本一个bool变量表示是否真正的导出了那个shared part
-            //      ，新的设计中partsCount将是真正导出的个数
-            public const ushort Version = 1;
-            public const string MetaName = "850506";	// Today is 2015-05-06, happy birthday.
-        }
-
-        public static class Tag
-        {
-            public const string MayDiscard = "MayDiscard";
-            public const string EmptyUITexture = "EmptyUITexture";
-        }
+        // public static class WebPrefab
+        // {
+        //     // version changes:
+        //     // 0->1 导出WebPrefab时,shared part那部分原本一个bool变量表示是否真正的导出了那个shared part
+        //     //      ，新的设计中partsCount将是真正导出的个数
+        //     public const ushort Version = 1;
+        //     public const string MetaName = "850506";	// Today is 2015-05-06, happy birthday.
+        // }
+        //
+        // public static class Tag
+        // {
+        //     public const string MayDiscard = "MayDiscard";
+        //     public const string EmptyUITexture = "EmptyUITexture";
+        // }
     }
 }

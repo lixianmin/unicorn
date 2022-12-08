@@ -161,17 +161,10 @@ namespace Unicorn
         {
             if (_isInited)
             {
-                if (null != OnDisposing)
-                {
-                    OnDisposing();
-                }
+                OnDisposing?.Invoke();
+                _logWriter?.Close();
 
-                if (null != _logWriter)
-                {
-                    _logWriter.Close();
-                }
-
-//				WebPrefab._GetLruCache().Clear();
+                //				WebPrefab._GetLruCache().Clear();
                 _coroutineManager.Clear();
                 //WebManager.Dispose();
                 _isInited = false;

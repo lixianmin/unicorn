@@ -38,8 +38,8 @@ namespace Unicorn.IO
 			var existence = File.Exists(path);
 			if (!existence)
 			{
-				var dirpath = Path.GetDirectoryName(path);
-				Kernel.makedirs(dirpath);
+				var dirPath = Path.GetDirectoryName(path);
+				Kernel.makedirs(dirPath);
 			}
 
 			var tempFileName = path + ".tmp.0506";
@@ -60,14 +60,14 @@ namespace Unicorn.IO
 				return;
 			}
 
-			FileTools.DeleteSafely(destFileName);
+			DeleteSafely(destFileName);
 			File.Move(sourceFileName, destFileName);
 		}
 
 		public static string ShowTempFile(string fname, string contents)
 		{
-			fname = fname ?? "tempfilename";
-			contents = contents ?? string.Empty;
+			fname ??= "temp-file-name";
+			contents ??= string.Empty;
 
 			var directory = Path.GetTempPath() + "/temp-files";
 			Kernel.makedirs(directory);
@@ -94,7 +94,7 @@ namespace Unicorn.IO
 				}
 				catch (Exception)
 				{
-
+					// ignored
 				}
 			}
 
