@@ -14,6 +14,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using Unicorn.Web;
 using UnityEngine;
 
 namespace Unicorn.UI
@@ -29,6 +30,7 @@ namespace Unicorn.UI
         
         public Transform GetTransform() { return _transform; }
         public Canvas GetCanvas() { return _canvas; }
+        public IWebNode GetWebNode() { return _fetus.GetWebNode(); }
         
         // 事件相关: 以下6个事件, gameObject都是可用的, widget变量都是可用的
         

@@ -11,7 +11,7 @@ using Unicorn.Web.Internal;
 
 namespace Unicorn.Web
 {
-    public partial class WebPrefab : Disposable, IWebNode
+    public class WebPrefab : Disposable, IWebNode
     {
         internal WebPrefab(WebArgument argument, Action<WebPrefab> handler)
         {
@@ -61,7 +61,7 @@ namespace Unicorn.Web
         //     return $"WebPrefab: id={_id.ToString()}, key={_webItem.Key}";
         // }
 
-        public bool IsDone => _webItem.IsDone;
+        public bool IsCompleted => _webItem.IsCompleted;
         public bool IsSucceeded => _webItem.IsSucceeded;
 
         UnityEngine.Object IWebNode.Asset => _webItem.Asset;

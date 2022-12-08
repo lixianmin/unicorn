@@ -24,6 +24,7 @@ namespace Unicorn.UI.Internal
 
             _parent = null;
             _serializer = null;
+            _webNode.Reset();
 
             if (_transform is not null)
             {
@@ -128,12 +129,18 @@ namespace Unicorn.UI.Internal
             return _serializer;
         }
 
+        public WebNode GetWebNode()
+        {
+            return _webNode;
+        }
+
         internal readonly UIWindowBase master;
 
         private StateBase _state = StateBase.Create(StateKind.None);
         private Transform _transform;
         private Transform _parent = UIManager.Instance.GetUIRoot();
         private UISerializer _serializer;
+        private readonly WebNode _webNode = new ();
         
         public bool isWindowCached;
         public bool isLoaded;

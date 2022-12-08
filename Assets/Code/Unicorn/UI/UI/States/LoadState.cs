@@ -62,6 +62,9 @@ namespace Unicorn.UI.States
             var argument = new WebArgument { key = assetPath };
             WebManager.Instance.LoadPrefab(argument, prefab =>
             {
+                var node = fetus.GetWebNode();
+                node.CopyProperty(prefab);
+                
                 var master = fetus.master;
                 var isLoading = this == fetus.GetState();
                 if (fetus.isDelayedCloseWindow)
@@ -74,6 +77,7 @@ namespace Unicorn.UI.States
                 {
                     var mainAsset = prefab.Asset;
                     var goCloned = Object.Instantiate(mainAsset);
+                    
                     if (goCloned is not null)
                     {
                         goCloned.name = mainAsset.name;

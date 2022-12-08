@@ -13,7 +13,7 @@ namespace Unicorn.Web
         /// <summary>
         /// 下载过程是否已结束：成功/失败/取消
         /// </summary>
-        public bool IsDone => true;
+        public bool IsCompleted => true;
 
         /// <summary>
         /// 是否下载成功
@@ -23,7 +23,7 @@ namespace Unicorn.Web
         /// <summary>
         /// 返回加载的资源对象
         /// </summary>
-        public UnityEngine.Object Asset => null;
+        UnityEngine.Object IWebNode.Asset => null;
 
         public static readonly EmptyWebNode Instance = new();
     }

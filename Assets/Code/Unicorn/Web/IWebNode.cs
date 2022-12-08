@@ -3,7 +3,6 @@
 created:    2022-08-12
 author:     lixianmin
 
-
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
@@ -12,9 +11,9 @@ namespace Unicorn.Web
     public interface IWebNode
     {
         /// <summary>
-        /// 下载过程是否已结束：成功/失败/取消
+        /// 下载过程是否已结束：成功/失败/取消。只所以使用IsCompleted代替IsDone是因为Task使用IsCompleted
         /// </summary>
-        bool IsDone         { get; } 
+        bool IsCompleted    { get; } 
         
         /// <summary>
         /// 是否下载成功
