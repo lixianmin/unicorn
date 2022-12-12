@@ -13,7 +13,7 @@ namespace Unicorn.Collections
 {
 	partial class SortedTable<TKey, TValue>
 	{
-        public struct Snapshot : IEnumerable<TValue>
+        public class Snapshot : IEnumerable<TValue>
 		{
 			internal TValue[] _values;
 
@@ -40,12 +40,12 @@ namespace Unicorn.Collections
 				return _version;
 			}
 
-			public void Take(SortedTable<TKey, TValue> table)
+			public bool Take(SortedTable<TKey, TValue> table)
 			{
 				if (table != null && _version != table._version)
 				{
-					int capacity = table._capacity;
-					TValue[] values = _values;
+					var capacity = table._capacity;
+					var values = _values;
 					if (values == null || values.Length != capacity)
 					{
 						_values = new TValue[capacity];
@@ -54,7 +54,10 @@ namespace Unicorn.Collections
 					Array.Copy(table._values, 0, _values, 0, capacity);
 					_version = table._version;
 					_size = table._size;
+					return true;
 				}
+
+				return false;
 			}
 
 			public SnapshotEnumerator GetEnumerator()
@@ -66,7 +69,7 @@ namespace Unicorn.Collections
 			{
 				int lastVersion = _version;
 				int count = _size;
-				TValue[] values = _values;
+				var values = _values;
 				int i = 0;
 				while (true)
 				{
@@ -74,6 +77,7 @@ namespace Unicorn.Collections
 					{
 						yield break;
 					}
+					
 					yield return values[i];
 					if (lastVersion != _version)
 					{
@@ -93,15 +97,9 @@ namespace Unicorn.Collections
 
 			private TValue _value;
 
-			private int _version;
+			private readonly int _version;
 
-			public TValue Current
-			{
-				get
-				{
-					return _value;
-				}
-			}
+			public TValue Current => _value;
 
 			public SnapshotEnumerator(Snapshot snapshot)
 			{
@@ -113,34 +111,31 @@ namespace Unicorn.Collections
 
 			public bool MoveNext()
 			{
-				int version = _version;
-				Snapshot snapshot = _snapshot;
-				if (version != snapshot._version)
+				if (_version != _snapshot._version)
 				{
 					throw new InvalidOperationException("Invalid table version");
 				}
-				Snapshot snapshot2 = _snapshot;
-				int size = snapshot2._size;
+				
+				int size = _snapshot._size;
 				if (_index < size)
 				{
-					Snapshot snapshot3 = _snapshot;
-					_value = snapshot3._values[_index];
+					_value = _snapshot._values[_index];
 					_index++;
 					return true;
 				}
+				
 				_index = size + 1;
-				_value = default(TValue);
+				_value = default;
 				return false;
 			}
 
 			public void Reset()
 			{
-				int version = _version;
-				Snapshot snapshot = _snapshot;
-				if (version != snapshot._version)
+				if (_version != _snapshot._version)
 				{
 					throw new InvalidOperationException("Invalid table version");
 				}
+				
 				_index = 0;
 				_value = default;
 			}
