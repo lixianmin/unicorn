@@ -29,9 +29,9 @@ namespace Unicorn.UI
 
         private void _Handle(Action handler, string title, int index)
         {
-            if (!_ongoings[index])
+            if (((_ongoings >> index) & 1) == 0)
             {
-                _ongoings[index] = true;
+                _ongoings |= (byte)(1 << index);
                 try
                 {
                     handler();
@@ -41,7 +41,8 @@ namespace Unicorn.UI
                     Console.Error.WriteLine("[_Handle()] {0}, ex= {1},\n\n StackTrace={2}", title, ex, ex.StackTrace);
                 }
 
-                _ongoings[index] = false;
+                _ongoings &= (byte)~(1 << index);
+                // AssertTools.IsTrue(((_ongoings >> index) & 1) == 0);
             }
         }
         
@@ -120,6 +121,6 @@ namespace Unicorn.UI
         private Transform _transform;
         private Canvas _canvas;
         private bool _isReleased;
-        private readonly bool[] _ongoings = new bool[6];    // 防止回调方法递归调用自己
+        private byte _ongoings;    // 防止回调方法递归调用自己
     }
 }

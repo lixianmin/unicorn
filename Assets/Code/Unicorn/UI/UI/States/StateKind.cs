@@ -7,7 +7,7 @@ Copyright (C) - All Rights Reserved
 
 namespace Unicorn.UI.States
 {
-    internal enum StateKind
+    internal enum StateKind : byte
     {
         None,
         Load,

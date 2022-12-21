@@ -39,7 +39,7 @@ namespace Unicorn.UI.Internal
         }
 
         /// <summary>
-        /// 这个方法可以在OnEnter()中调用，但不适合在OnExit()方法调用，因为_state会在OnExit()后被替换掉
+        /// 因为改成使用ExpensiveUpdate()实现状态转换，现在可以在OnEnter()与OnExit()中调用了
         /// </summary>
         /// <param name="kind"></param>
         /// <param name="arg1"></param>
@@ -159,7 +159,7 @@ namespace Unicorn.UI.Internal
         private StateBase _state = StateBase.Create(StateKind.None);
         private StateKind _lastKind = StateKind.None;
         private StateKind _nextKind = StateKind.None;
-        private object _nextArg1 = null;
+        private object _nextArg1;
 
         private Transform _transform;
         private Transform _parent = UIManager.Instance.GetUIRoot();
