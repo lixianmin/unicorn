@@ -15,7 +15,6 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!_isDelayedClosing);
             _loadWindowMask.OpenWindow();
 
             var assetPath = fetus.master.GetAssetPath();

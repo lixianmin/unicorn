@@ -45,9 +45,19 @@ namespace Unicorn.UI.Internal
         /// <param name="arg1"></param>
         public void ChangeState(StateKind kind, object arg1 = null)
         {
-            _state?.OnExit(this, arg1);
-            _state = StateBase.Create(kind);
-            _state?.OnEnter(this, arg1);
+            _nextKind = kind;
+            _nextArg1 = arg1;
+        }
+
+        public void ExpensiveUpdate(float deltaTime)
+        {
+            if (_lastKind != _nextKind)
+            {
+                _lastKind = _nextKind;
+                _state.OnExit(this, _nextArg1);
+                _state = StateBase.Create(_nextKind);
+                _state.OnEnter(this, _nextArg1);
+            }
         }
 
         public void OnLoadGameObject(GameObject gameObject)
@@ -147,11 +157,15 @@ namespace Unicorn.UI.Internal
         internal readonly UIWindowBase master;
 
         private StateBase _state = StateBase.Create(StateKind.None);
+        private StateKind _lastKind = StateKind.None;
+        private StateKind _nextKind = StateKind.None;
+        private object _nextArg1 = null;
+
         private Transform _transform;
         private Transform _parent = UIManager.Instance.GetUIRoot();
         private UISerializer _serializer;
         private readonly WebNode _webNode = new();
-
+        
         public bool isWindowCached;
         public bool isLoaded;
         public bool isOpened;

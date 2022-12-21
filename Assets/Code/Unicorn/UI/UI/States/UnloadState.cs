@@ -13,18 +13,17 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!_isDelayedOpening);
             var master = fetus.master;
             master.InnerOnUnloading("[OnEnterUnloadState()]");
 
+            var isDelayedOpening = _isDelayedOpening;
             fetus.isLoaded = false;
             fetus.ChangeState(StateKind.None);
-            master.Dispose();
+            master.Dispose();   // 这个会设置_isDelayedOpening=false;
 
             // 如果在关闭的过程中遇到了打开本window的请示，则在关闭后重新打开自己
-            if (_isDelayedOpening)
+            if (isDelayedOpening)
             {
-                _isDelayedOpening = false;
                 UIManager.Instance.OpenWindow(master.GetType());
             }
             

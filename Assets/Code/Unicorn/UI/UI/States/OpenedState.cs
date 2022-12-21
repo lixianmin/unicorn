@@ -13,7 +13,6 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!_isDelayedClosing);
             var master = fetus.master;
 
             master.InnerOnOpened("[OnEnter()]");
@@ -36,12 +35,21 @@ namespace Unicorn.UI.States
 
             UIManager.Instance._OnClosingWindow(master);
             master.InnerOnClosing("[OnExit()]");
+
+            if (_isDelayedOpening)
+            {
+                _isDelayedOpening = false;
+                fetus.ChangeState(StateKind.Opened);
+            }
+            
             AssertTools.IsTrue(!_isDelayedClosing);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
+            _isDelayedOpening = true;
             _isDelayedClosing = false;
+            
             if (fetus.isOpened)
             {
                 var master = fetus.master;
@@ -51,6 +59,7 @@ namespace Unicorn.UI.States
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
+            _isDelayedOpening = false;
             if (fetus.isOpened)
             {
                 fetus.ChangeState(StateKind.CloseAnimation);
@@ -61,6 +70,7 @@ namespace Unicorn.UI.States
             }
         }
 
+        private bool _isDelayedOpening;
         private bool _isDelayedClosing;
     }
 }

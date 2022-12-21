@@ -13,8 +13,6 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!_isDelayedOpening);
-            
             var serializer = fetus.GetSerializer();
             if (serializer is not null)
             {

@@ -125,7 +125,10 @@ namespace Unicorn.UI
             for (var i = 0; i < count; i++)
             {
                 var window = windows[i];
-                if (window.GetFetus().isLoaded)
+                var fetus = window.GetFetus();
+                fetus.ExpensiveUpdate(deltaTime);
+                
+                if (fetus.isLoaded)
                 {
                     var updater = window as IExpensiveUpdater;
                     updater?.ExpensiveUpdate(deltaTime);
