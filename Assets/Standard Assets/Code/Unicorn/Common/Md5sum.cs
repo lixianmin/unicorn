@@ -43,7 +43,7 @@ namespace Unicorn
 
         public string GetHexDigest16(byte[] inputBuffer, int startIndex, int length)
         {
-            // ---unable to reproduce the following commented bug.---
+            // unable to reproduce the following commented bug
             // (If inputBuffer.Length is 0, then _md5.ComputeHash will deadlock.)
             //
             if (null == inputBuffer)

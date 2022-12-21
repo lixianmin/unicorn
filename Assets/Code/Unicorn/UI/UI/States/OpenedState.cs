@@ -13,7 +13,7 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!fetus.isDelayedOpenWindow);
+            AssertTools.IsTrue(!_isDelayedOpenWindow);
             var master = fetus.master;
 
             CallbackTools.Handle(master.InnerOnOpened, "[OnEnter()]");
@@ -40,17 +40,19 @@ namespace Unicorn.UI.States
             }
             else
             { // If the same window is opened again in OnClosing() or _onBeforeOpened
-                fetus.isDelayedOpenWindow = true;
+                _isDelayedOpenWindow = true;
             }
         }
 
         public override  void OnCloseWindow(WindowFetus fetus)
         {
-            fetus.isDelayedOpenWindow = false;
+            _isDelayedOpenWindow = false;
             if (fetus.isOpened)
             {
                 fetus.ChangeState(StateKind.CloseAnimation);
             }
         }
+        
+        private bool _isDelayedOpenWindow; // 遇到了OpenWindow()的请求
     }
 }

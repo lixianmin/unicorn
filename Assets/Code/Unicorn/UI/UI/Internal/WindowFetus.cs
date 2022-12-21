@@ -150,8 +150,5 @@ namespace Unicorn.UI.Internal
         public bool isWindowCached;
         public bool isLoaded;
         public bool isOpened;
-
-        public bool isDelayedOpenWindow; // 在某个state遇到了OpenWindow()的请求
-        public bool isDelayedCloseWindow; // 在某个state遇到了CloseWindow()的请示
     }
 }

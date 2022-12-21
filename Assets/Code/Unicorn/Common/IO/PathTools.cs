@@ -91,9 +91,8 @@ namespace Unicorn
                     return EditorResourceRoot + "/windows64";
                 default:
                 {
-                    var message = "Unsupported buildTarget found: " + targetPlatform
-                                                                    + ", please change the 'Platform' in 'Build Settings'";
-                    throw new NotImplementedException(message);
+                    var message = $"Unsupported buildTarget found: {targetPlatform}, please change the 'Platform' in 'Build Settings'";
+                    throw new InvalidDataException(message);
                 }
             }
         }
@@ -304,7 +303,7 @@ namespace Unicorn
                         return Application.persistentDataPath + "/res";
 
                     default:
-                        throw new NotImplementedException("Invalid platform type");
+                        throw new InvalidDataException("Invalid platform type");
                 }
             }
         }

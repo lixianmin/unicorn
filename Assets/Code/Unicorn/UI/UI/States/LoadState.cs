@@ -15,7 +15,7 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!fetus.isDelayedCloseWindow);
+            AssertTools.IsTrue(!_isDelayedCloseWindow);
             _loadWindowMask.OpenWindow();
 
             var assetPath = fetus.master.GetAssetPath();
@@ -44,17 +44,17 @@ namespace Unicorn.UI.States
         public override void OnExit(WindowFetus fetus, object arg1)
         {
             _loadWindowMask.CloseWindow();
-            AssertTools.IsTrue(!fetus.isDelayedCloseWindow);
+            AssertTools.IsTrue(!_isDelayedCloseWindow);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            fetus.isDelayedCloseWindow = false;
+            _isDelayedCloseWindow = false;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            fetus.isDelayedCloseWindow = true;
+            _isDelayedCloseWindow = true;
         }
 
         private void _LoadAsset(WindowFetus fetus, string assetPath)
@@ -67,9 +67,9 @@ namespace Unicorn.UI.States
                 
                 var master = fetus.master;
                 var isLoading = this == fetus.GetState();
-                if (fetus.isDelayedCloseWindow)
+                if (_isDelayedCloseWindow)
                 {
-                    fetus.isDelayedCloseWindow = false;
+                    _isDelayedCloseWindow = false;
                     fetus.ChangeState(StateKind.None);
                     master.Dispose();
                 }
@@ -109,5 +109,7 @@ namespace Unicorn.UI.States
             fetus.isLoaded = true;
             fetus.ChangeState(StateKind.OpenAnimation);
         }
+        
+        private bool _isDelayedCloseWindow; // 遇到了CloseWindow()的请示
     }
 }
