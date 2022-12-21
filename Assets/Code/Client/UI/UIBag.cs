@@ -18,7 +18,7 @@
 //
 //         public override RenderQueue GetRenderQueue()
 //         {
-//             return RenderQueue.Background;
+//             return RenderQueue.Geometry;
 //         }
 //
 //         protected override void OnLoaded()
@@ -26,6 +26,7 @@
 //             _btnClickBag.UI.onClick.AddListener(() =>
 //             {
 //                 Console.WriteLine("bag button is clicked");
+//                 UIManager.Instance.CloseWindow(typeof(UIMain));
 //             });
 //             
 //             Console.WriteLine("bag is OnLoaded");
