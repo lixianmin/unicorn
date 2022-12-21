@@ -13,34 +13,34 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!_isDelayedOpenWindow);
+            AssertTools.IsTrue(!_isDelayedOpening);
             var master = fetus.master;
-            CallbackTools.Handle(master.InnerOnUnloading, "[OnEnterUnloadState()]");
+            master.InnerOnUnloading("[OnEnterUnloadState()]");
 
             fetus.isLoaded = false;
             fetus.ChangeState(StateKind.None);
             master.Dispose();
 
             // 如果在关闭的过程中遇到了打开本window的请示，则在关闭后重新打开自己
-            if (_isDelayedOpenWindow)
+            if (_isDelayedOpening)
             {
-                _isDelayedOpenWindow = false;
+                _isDelayedOpening = false;
                 UIManager.Instance.OpenWindow(master.GetType());
             }
             
-            AssertTools.IsTrue(!_isDelayedOpenWindow);
+            AssertTools.IsTrue(!_isDelayedOpening);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            _isDelayedOpenWindow = true;
+            _isDelayedOpening = true;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            _isDelayedOpenWindow = false;
+            _isDelayedOpening = false;
         }
         
-        private bool _isDelayedOpenWindow; // 遇到了OpenWindow()的请求
+        private bool _isDelayedOpening; // 遇到了OpenWindow()的请求
     }
 }

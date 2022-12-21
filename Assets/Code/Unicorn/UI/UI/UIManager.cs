@@ -271,7 +271,7 @@ namespace Unicorn.UI
         {
             if (targetWindow is not null)
             {
-                CallbackTools.Handle(targetWindow.InnerOnDeactivating, "[_SendDeactivating()]");
+                targetWindow.InnerOnDeactivating("[_SendDeactivating()]");
             }
         }
 
@@ -280,7 +280,7 @@ namespace Unicorn.UI
             if (targetWindow is not null)
             {
                 _ActivateWindow(targetWindow);
-                CallbackTools.Handle(targetWindow.InnerOnActivated, "[_SendActivated()]");
+                targetWindow.InnerOnActivated("[_SendActivated()]");
             }
         }
 

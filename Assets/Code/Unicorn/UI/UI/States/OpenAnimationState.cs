@@ -13,7 +13,7 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!_isDelayedCloseWindow);
+            AssertTools.IsTrue(!_isDelayedClosing);
             var serializer = fetus.GetSerializer();
             if (serializer is not null)
             {
@@ -46,7 +46,7 @@ namespace Unicorn.UI.States
                 _isPlaying = false;
             }
             
-            AssertTools.IsTrue(!_isDelayedCloseWindow);
+            AssertTools.IsTrue(!_isDelayedClosing);
         }
 
         private void _OnOpenWindowAnimationDone(WindowFetus fetus)
@@ -55,9 +55,9 @@ namespace Unicorn.UI.States
             _isPlaying = false;
             _openAnimation.SetEnabledEx(false);
             
-            if (_isDelayedCloseWindow)
+            if (_isDelayedClosing)
             {
-                _isDelayedCloseWindow = false;
+                _isDelayedClosing = false;
                 fetus.ChangeState(StateKind.CloseAnimation);
             }
             else
@@ -68,16 +68,16 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            _isDelayedCloseWindow = false;
+            _isDelayedClosing = false;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            _isDelayedCloseWindow = true;
+            _isDelayedClosing = true;
         }
 
         private UIWindowAnimation _openAnimation;
         private bool _isPlaying;
-        private bool _isDelayedCloseWindow; // 遇到了CloseWindow()的请示
+        private bool _isDelayedClosing; // 遇到了CloseWindow()的请示
     }
 }

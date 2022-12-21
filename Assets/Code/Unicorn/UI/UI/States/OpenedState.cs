@@ -13,12 +13,19 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!_isDelayedOpenWindow);
+            AssertTools.IsTrue(!_isDelayedClosing);
             var master = fetus.master;
 
-            CallbackTools.Handle(master.InnerOnOpened, "[OnEnter()]");
+            master.InnerOnOpened("[OnEnter()]");
             UIManager.Instance._SetForegroundWindow(master, master.GetRenderQueue());
             fetus.isOpened = true;
+
+            // 如果在OnOpened()或OnActivated()中收到了CloseWindow()
+            if (_isDelayedClosing)
+            {
+                _isDelayedClosing = false;
+                fetus.ChangeState(StateKind.CloseAnimation);
+            }
         }
 
         public override void OnExit(WindowFetus fetus, object arg1)
@@ -26,33 +33,34 @@ namespace Unicorn.UI.States
             var master = fetus.master;
             // isOpened is used to judge whether the window can be activated, thus it must be set to be false as soon as OnExit() is called.
             fetus.isOpened = false;
-           
+
             UIManager.Instance._OnClosingWindow(master);
-            CallbackTools.Handle(master.InnerOnClosing, "[OnExit()]");
+            master.InnerOnClosing("[OnExit()]");
+            AssertTools.IsTrue(!_isDelayedClosing);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
+            _isDelayedClosing = false;
             if (fetus.isOpened)
             {
                 var master = fetus.master;
                 UIManager.Instance._SetForegroundWindow(master, master.GetRenderQueue());
             }
-            else
-            { // If the same window is opened again in OnClosing() or _onBeforeOpened
-                _isDelayedOpenWindow = true;
-            }
         }
 
-        public override  void OnCloseWindow(WindowFetus fetus)
+        public override void OnCloseWindow(WindowFetus fetus)
         {
-            _isDelayedOpenWindow = false;
             if (fetus.isOpened)
             {
                 fetus.ChangeState(StateKind.CloseAnimation);
             }
+            else
+            {
+                _isDelayedClosing = true;
+            }
         }
-        
-        private bool _isDelayedOpenWindow; // 遇到了OpenWindow()的请求
+
+        private bool _isDelayedClosing;
     }
 }

@@ -6,6 +6,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
 using Unicorn.UI.Internal;
 using UnityEngine;
 
@@ -18,13 +19,31 @@ namespace Unicorn.UI
             _fetus = new WindowFetus(this);
         }
 
-        internal void InnerOnLoaded() { OnLoaded(); }
-        internal void InnerOnOpened() { OnOpened(); }
-        internal void InnerOnActivated() { OnActivated(); }
-        internal void InnerOnDeactivating() { OnDeactivating(); }
-        internal void InnerOnClosing() { OnClosing(); }
-        internal void InnerOnUnloading() { OnUnloading(); }
+        internal void InnerOnLoaded(string title) { _Handle(OnLoaded, title, 0); }
+        internal void InnerOnOpened(string title) { _Handle(OnOpened, title, 1); }
+        internal void InnerOnActivated(string title) { _Handle(OnActivated, title, 2); }
+        internal void InnerOnDeactivating(string title) { _Handle(OnDeactivating, title, 3); }
+        internal void InnerOnClosing(string title) { _Handle(OnClosing, title, 4); }
+        internal void InnerOnUnloading(string title) { _Handle(OnUnloading, title, 5); }
         internal void InnerSlowUpdate(float deltaTime) { SlowUpdate(deltaTime); }
+
+        private void _Handle(Action handler, string title, int index)
+        {
+            if (!_ongoings[index])
+            {
+                _ongoings[index] = true;
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine("[_Handle()] {0}, ex= {1},\n\n StackTrace={2}", title, ex, ex.StackTrace);
+                }
+
+                _ongoings[index] = false;
+            }
+        }
         
         internal void Dispose()
         {
@@ -100,6 +119,7 @@ namespace Unicorn.UI
         private WindowFetus _fetus;
         private Transform _transform;
         private Canvas _canvas;
-        private  bool _isReleased;
+        private bool _isReleased;
+        private readonly bool[] _ongoings = new bool[6];    // 防止回调方法递归调用自己
     }
 }

@@ -15,7 +15,7 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            AssertTools.IsTrue(!_isDelayedCloseWindow);
+            AssertTools.IsTrue(!_isDelayedClosing);
             _loadWindowMask.OpenWindow();
 
             var assetPath = fetus.master.GetAssetPath();
@@ -37,24 +37,24 @@ namespace Unicorn.UI.States
             }
             else
             {
-                _UsePreloadGameObject(fetus, child.gameObject);
+                _OnLoadGameObject(fetus, child.gameObject);
             }
         }
         
         public override void OnExit(WindowFetus fetus, object arg1)
         {
             _loadWindowMask.CloseWindow();
-            AssertTools.IsTrue(!_isDelayedCloseWindow);
+            AssertTools.IsTrue(!_isDelayedClosing);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            _isDelayedCloseWindow = false;
+            _isDelayedClosing = false;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            _isDelayedCloseWindow = true;
+            _isDelayedClosing = true;
         }
 
         private void _LoadAsset(WindowFetus fetus, string assetPath)
@@ -67,9 +67,9 @@ namespace Unicorn.UI.States
                 
                 var master = fetus.master;
                 var isLoading = this == fetus.GetState();
-                if (_isDelayedCloseWindow)
+                if (_isDelayedClosing)
                 {
-                    _isDelayedCloseWindow = false;
+                    _isDelayedClosing = false;
                     fetus.ChangeState(StateKind.None);
                     master.Dispose();
                 }
@@ -81,10 +81,7 @@ namespace Unicorn.UI.States
                     if (goCloned is not null)
                     {
                         goCloned.name = mainAsset.name;
-                        fetus.OnLoadGameObject(goCloned);
-                        CallbackTools.Handle(master.InnerOnLoaded, "[_LoadAsset()]");
-                        fetus.isLoaded = true;
-                        fetus.ChangeState(StateKind.OpenAnimation);
+                        _OnLoadGameObject(fetus, goCloned);
                     }
                     else
                     {
@@ -100,16 +97,19 @@ namespace Unicorn.UI.States
             });
         }
         
-        private void _UsePreloadGameObject(WindowFetus fetus, GameObject gameObject)
+        private void _OnLoadGameObject(WindowFetus fetus, GameObject gameObject)
         {
             fetus.OnLoadGameObject(gameObject);
-            
+
             var master = fetus.master;
-            CallbackTools.Handle(master.InnerOnLoaded, "[_UsePreloadGameObject()]");
+            master.InnerOnLoaded( "[_OnLoadGameObject()]");
             fetus.isLoaded = true;
-            fetus.ChangeState(StateKind.OpenAnimation);
+
+            var next = _isDelayedClosing ? StateKind.Unload : StateKind.OpenAnimation;
+            _isDelayedClosing = false;
+            fetus.ChangeState(next);
         }
         
-        private bool _isDelayedCloseWindow; // 遇到了CloseWindow()的请示
+        private bool _isDelayedClosing; // 遇到了CloseWindow()的请示
     }
 }
