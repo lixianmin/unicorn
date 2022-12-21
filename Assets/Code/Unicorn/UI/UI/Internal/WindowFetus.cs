@@ -17,7 +17,7 @@ namespace Unicorn.UI.Internal
         {
             this.master = master;
         }
-        
+
         public void Dispose()
         {
             CloseWindow();
@@ -33,12 +33,12 @@ namespace Unicorn.UI.Internal
                 {
                     Object.Destroy(_transform.gameObject);
                 }
-                
+
                 _transform = null;
             }
         }
-        
-        public void ChangeState(StateKind kind, object arg1=null)
+
+        public void ChangeState(StateKind kind, object arg1 = null)
         {
             _state?.OnExit(this, arg1);
             _state = StateBase.Create(kind);
@@ -56,7 +56,7 @@ namespace Unicorn.UI.Internal
             // }
 
             _serializer = serializer;
-            
+
             if (_parent is not null)
             {
                 _transform.SetParent(_parent, false);
@@ -67,15 +67,15 @@ namespace Unicorn.UI.Internal
             if (canvas != null)
             {
                 canvas.overrideSorting = true;
-                
+
                 var is2D = canvas.renderMode != RenderMode.WorldSpace;
                 master._is2D = is2D;
-                
+
                 // 2d和3d界面分别设置不同的camera
                 if (is2D)
                 {
                     canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                    canvas.worldCamera= UIManager.Instance.GetUICamera();
+                    canvas.worldCamera = UIManager.Instance.GetUICamera();
                 }
                 else
                 {
@@ -91,10 +91,11 @@ namespace Unicorn.UI.Internal
                 }
             }
             else
-            {   // 当不存在canvas的时候, GetComponent()好像也能给取一个出来, 只是使用is not null判断会失败
+            {
+                // 当不存在canvas的时候, GetComponent()好像也能给取一个出来, 只是使用is not null判断会失败
                 canvas = null;
             }
-            
+
             master._InitComponents(_transform, canvas);
             master._InitWidgetsWindow();
             master._FillWidgets(serializer);
@@ -129,6 +130,10 @@ namespace Unicorn.UI.Internal
             return _serializer;
         }
 
+        /// <summary>
+        /// 用于度量window的加载进度
+        /// </summary>
+        /// <returns></returns>
         public WebNode GetWebNode()
         {
             return _webNode;
@@ -140,12 +145,13 @@ namespace Unicorn.UI.Internal
         private Transform _transform;
         private Transform _parent = UIManager.Instance.GetUIRoot();
         private UISerializer _serializer;
-        private readonly WebNode _webNode = new ();
-        
+        private readonly WebNode _webNode = new();
+
         public bool isWindowCached;
         public bool isLoaded;
         public bool isOpened;
-        public bool isDelayedOpenWindow;
-        public bool isDelayedCloseWindow;
+
+        public bool isDelayedOpenWindow; // 在某个state遇到了OpenWindow()的请求
+        public bool isDelayedCloseWindow; // 在某个state遇到了CloseWindow()的请示
     }
 }

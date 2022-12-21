@@ -5,8 +5,6 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using System;
-using Unicorn.Collections;
 using Unicorn.UI.Internal;
 
 namespace Unicorn.UI.States

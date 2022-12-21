@@ -15,7 +15,7 @@ namespace Unicorn.UI.States
         {
             AssertTools.IsTrue(!fetus.isDelayedOpenWindow);
             var master = fetus.master;
-            CallbackTools.Handle(master.InnerOnUnloading, "[OnEnter()]");
+            CallbackTools.Handle(master.InnerOnUnloading, "[OnEnterUnloadState()]");
 
             fetus.isLoaded = false;
             fetus.ChangeState(StateKind.None);

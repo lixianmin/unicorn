@@ -7,7 +7,6 @@ purpose:    assert
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using UnityEngine;
 using System;
 using System.Diagnostics;
 
@@ -29,16 +28,6 @@ namespace Unicorn
                 Console.Error.WriteLine(message);
             }
         }
-
-        //		[System.Diagnostics.Conditional("UNITY_EDITOR")]
-        //        public static void IsTrue(bool condition, string format, params object[] args)
-        //        {
-        //            if (!condition)
-        //            {
-        //                var message = string.Format(null, format, args);
-        //				Console.Error.WriteLine(message);
-        //			}
-        //        }
 
         [System.Diagnostics.Conditional("UNITY_EDITOR")]
         public static void AreEqual<T>(T expected, T actual)
@@ -139,12 +128,7 @@ namespace Unicorn
 
         private static Stopwatch _GetStopwatch()
         {
-            if (null == _stopwatch)
-            {
-                _stopwatch = new Stopwatch();
-            }
-
-            return _stopwatch;
+            return _stopwatch ??= new Stopwatch();
         }
 
         private static Stopwatch _stopwatch;
