@@ -38,6 +38,11 @@ namespace Unicorn.UI.Internal
             }
         }
 
+        /// <summary>
+        /// 这个方法可以在OnEnter()中调用，但不适合在OnExit()方法调用，因为_state会在OnExit()后被替换掉
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <param name="arg1"></param>
         public void ChangeState(StateKind kind, object arg1 = null)
         {
             _state?.OnExit(this, arg1);
