@@ -18,7 +18,7 @@ namespace Unicorn
         {
             if (!IsDisposed() && type != null)
             {
-                _parts = (_parts ?? new EntityTable());
+                _parts ??= new EntityTable();
                 return _AddPart(type, true);
             }
 
@@ -39,10 +39,7 @@ namespace Unicorn
 
                 _parts.Add(type, part, checkDuplicated);
 
-                if (OnPartCreated != null)
-                {
-	                OnPartCreated(part);
-                }
+                OnPartCreated?.Invoke(part);
             }
 
             return part;

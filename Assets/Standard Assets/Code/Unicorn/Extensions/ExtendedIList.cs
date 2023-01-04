@@ -23,7 +23,7 @@ namespace Unicorn
 
             return 0;
         }
-
+        
         public static int MoveToEx (this IList srcList, IList destList)
         {
 			if (null != srcList && null != destList)
@@ -41,6 +41,19 @@ namespace Unicorn
 
 			return 0;
 		}
+        
+        public static void ReserveEx<T> (this List<T> list, int minCapacity)
+        {
+	        if (null != list)
+	        {
+		        var capacity = list.Capacity;
+                
+		        if (minCapacity > capacity)
+		        {
+			        list.Capacity = Math.Max (Math.Max (capacity * 2, 4), minCapacity);
+		        }
+	        }
+        }
 
         //       public static int MoveToEx (this IList srcList, IList destList, object locker)
 		// {
@@ -100,25 +113,79 @@ namespace Unicorn
                 var count = list.Count;
                 for (int i= count; i< size; ++i)
                 {
-                    list.Add(default(T));
+                    list.Add(default);
                 }
             }
         }
 
         public static void ClearEx<T> (this IList<T> list)
         {
-            if (null != list && list.Count > 0)
+            if (list is { Count: > 0 })
             {
                 list.Clear();
             }
         }
+        
+        public static bool IsNullOrEmptyEx<T> (this List<T> list)
+        {
+	        return list is { Count: 0 };
+        }
 
-//        public static void AddIfNotNullEx<T> (this IList<T> list, T item)
-//        {
-//            if (null != list && null != item)
-//            {
-//                list.Add(item);
-//            }
-//        }
+        public static bool AddIfNotNullEx<T> (this IList<T> list, T item)
+        {
+            if (null != list && null != item)
+            {
+	            list.Add(item);
+	            return true;
+            }
+
+            return false;
+        }
+        
+        public static bool AddUniqueEx<T> (this List<T> list, T item)
+        {
+	        if (null != list && list.IndexOf(item) < 0)
+	        {
+		        list.Add(item);
+		        return true;
+	        }
+
+	        return false;
+        }
+        
+        public static T PopBackEx<T> (this List<T> list)
+        {
+	        if (null != list)
+	        {
+		        var count = list.Count;
+		        if (count > 0)
+		        {
+			        var idxLast = count - 1;
+			        var back = list[idxLast];
+			        list.RemoveAt(idxLast);
+                    
+			        return back;
+		        }
+	        }
+            
+	        return default;
+        }
+        
+        public static T BackEx<T> (this List<T> list)
+        {
+	        if (null != list)
+	        {
+		        var count = list.Count;
+		        if (count > 0)
+		        {
+			        var idxLast = count - 1;
+			        var back = list[idxLast];
+                    
+			        return back;
+		        }
+	        }
+            
+	        return default;
+        }
     }
 }
