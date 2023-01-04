@@ -6,6 +6,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using UnityEngine;
+using UObject = UnityEngine.Object;
 
 namespace Unicorn.Kit
 {
@@ -72,12 +73,12 @@ namespace Unicorn.Kit
             return _transform;
         }
 
-        public UnityEngine.Object[] GetAssets()
+        public UObject[] GetAssets()
         {
             return _assets;
         }
 
-        internal void InnerInit(Transform transform, UnityEngine.Object[] assets)
+        internal void InnerInit(Transform transform, UObject[] assets)
         {
             _transform = transform;
             _assets = assets;
@@ -128,7 +129,7 @@ namespace Unicorn.Kit
 
         private Transform _transform;
 
-        private UnityEngine.Object[] _assets;
+        private UObject[] _assets;
 
         // private readonly EventListener _listener = new();
         private bool _isDisposed;

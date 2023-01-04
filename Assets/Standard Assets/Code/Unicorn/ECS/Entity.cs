@@ -156,6 +156,6 @@ namespace Unicorn
 
         // global variables
         public static event Action<IPart> OnPartCreated;
-        private static readonly ObjectPool<Observer> _cacheObservers = new ObjectPool<Observer>(null, item => item.RemoveAllListeners());
+        private static readonly ObjectPool<Observer> _cacheObservers = new(null, item => item.RemoveAllListeners());
     }
 }
