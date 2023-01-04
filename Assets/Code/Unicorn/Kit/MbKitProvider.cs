@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-08-26
 author:     lixianmin
@@ -7,6 +6,8 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using UnityEngine;
+using UObject = UnityEngine.Object;
+// ReSharper disable SuspiciousTypeConversion.Global
 
 namespace Unicorn.Kit
 {
@@ -20,6 +21,7 @@ namespace Unicorn.Kit
                 kit.sort = TypeTools.SetDefaultTypeIndex(kit.GetType());
                 _kit = kit;
                 kit.InnerInit(transform, assets);
+                _CheckInterfaces(kit);
             }
             else
             {
@@ -27,19 +29,33 @@ namespace Unicorn.Kit
             }
         }
 
-        /// <summary>
-        /// 引入OnEnable(), 除了本身的功能外, 还有一个用作是激活MBKitProvider脚本在Inspector窗口的复选框
-        /// </summary>
-        private void OnEnable()
+        private void _CheckInterfaces(KitBase kit)
         {
-            _kit?.InnerEnable(isActiveAndEnabled);
+            var go = gameObject;
+            if (kit is IOnEnable or IOnDisable)
+            {
+                go.AddComponent<MbKitOnEnableDisable>().kit = kit;
+            }
+            
+            if (kit is IOnTriggerEnter or IOnTriggerExit)
+            {
+                go.AddComponent<MbKitOnTriggerEnterExit>().kit = kit;
+            }
         }
 
-        private void OnDisable()
-        {
-            _kit?.InnerDisable(false);
-        }
-        
+        // /// <summary>
+        // /// 引入OnEnable(), 除了本身的功能外, 还有一个用作是激活MBKitProvider脚本在Inspector窗口的复选框
+        // /// </summary>
+        // private void OnEnable()
+        // {
+        //     _kit?.InnerEnable(isActiveAndEnabled);
+        // }
+        //
+        // private void OnDisable()
+        // {
+        //     _kit?.InnerDisable(false);
+        // }
+
         private void OnDestroy()
         {
             _kit?.InnerDispose();
@@ -55,8 +71,8 @@ namespace Unicorn.Kit
         /// <summary>
         /// 关联场景资源, 用于kit脚本逻辑
         /// </summary>
-        public UnityEngine.Object[] assets;
-        
+        public UObject[] assets;
+
         private KitBase _kit;
     }
 }

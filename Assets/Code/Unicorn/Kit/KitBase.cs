@@ -20,20 +20,6 @@ namespace Unicorn.Kit
         }
 
         /// <summary>
-        /// 在 gameObject.SetActive(true) 或 script.enabled=true 时都会触发OnEnable()事件
-        /// </summary>
-        protected virtual void OnEnable()
-        {
-        }
-
-        /// <summary>
-        /// 在 gameObject.SetActive(false) 或 script.enabled=false 时都会触发OnDisable()事件
-        /// </summary>
-        protected virtual void OnDisable()
-        {
-        }
-
-        /// <summary>
         /// gameObject销毁事件, 对标MonoBehaviour的OnDestroy()
         /// </summary>
         protected virtual void OnDestroy()
@@ -87,18 +73,6 @@ namespace Unicorn.Kit
             CallbackTools.Handle(Awake, "[Awake()]");
         }
 
-        internal void InnerEnable(bool enabled)
-        {
-            isActiveAndEnabled = enabled;
-            CallbackTools.Handle(OnEnable, "[OnEnable()]");
-        }
-
-        internal void InnerDisable(bool enabled)
-        {
-            isActiveAndEnabled = enabled;
-            CallbackTools.Handle(OnDisable, "[OnDisable()]");
-        }
-
         internal void InnerDispose()
         {
             CallbackTools.Handle(OnDestroy, "[OnDestroy()]");
@@ -115,9 +89,9 @@ namespace Unicorn.Kit
         }
 
         /// <summary>
-        /// 与MBKitProvider的同名属性同步
+        /// 与MbKitOnEnable的同名属性同步
         /// </summary>
-        public bool isActiveAndEnabled { get; private set; }
+        public bool isActiveAndEnabled { get; internal set; }
 
         /// <summary>
         /// Kit对象的Update()顺序, 相同class的kit对象同一批调用Update().
