@@ -7,7 +7,6 @@ Copyright (C) - All Rights Reserved
 
 using UnityEngine;
 using UObject = UnityEngine.Object;
-// ReSharper disable SuspiciousTypeConversion.Global
 
 namespace Unicorn.Kit
 {
@@ -21,7 +20,6 @@ namespace Unicorn.Kit
                 kit.sort = TypeTools.SetDefaultTypeIndex(kit.GetType());
                 _kit = kit;
                 kit.InnerInit(transform, assets);
-                _CheckInterfaces(kit);
             }
             else
             {
@@ -29,32 +27,45 @@ namespace Unicorn.Kit
             }
         }
 
-        private void _CheckInterfaces(KitBase kit)
+        // private void _CheckInterfaces(KitBase kit)
+        // {
+        //     var go = gameObject;
+        //     if (kit is IOnEnable or IOnDisable)
+        //     {
+        //         go.AddComponent<MbKitOnEnableDisable>().kit = kit;
+        //     }
+        //     
+        //     if (kit is IOnTriggerEnter or IOnTriggerExit)
+        //     {
+        //         go.AddComponent<MbKitOnTriggerEnterExit>().kit = kit;
+        //     }
+        // }
+
+        /// <summary>
+        /// 引入OnEnable(), 除了本身的功能外, 还有一个用作是激活MBKitProvider脚本在Inspector窗口的复选框
+        /// </summary>
+        private void OnEnable()
         {
-            var go = gameObject;
-            if (kit is IOnEnable or IOnDisable)
-            {
-                go.AddComponent<MbKitOnEnableDisable>().kit = kit;
-            }
-            
-            if (kit is IOnTriggerEnter or IOnTriggerExit)
-            {
-                go.AddComponent<MbKitOnTriggerEnterExit>().kit = kit;
-            }
+            _kit?.InnerEnable();
+        }
+        
+        /// <summary>
+        /// 在 gameObject.SetActive(false) 或 script.enabled=false 时都会触发OnDisable()事件
+        /// </summary>
+        private void OnDisable()
+        {
+            _kit?.InnerDisable();
         }
 
-        // /// <summary>
-        // /// 引入OnEnable(), 除了本身的功能外, 还有一个用作是激活MBKitProvider脚本在Inspector窗口的复选框
-        // /// </summary>
-        // private void OnEnable()
-        // {
-        //     _kit?.InnerEnable(isActiveAndEnabled);
-        // }
-        //
-        // private void OnDisable()
-        // {
-        //     _kit?.InnerDisable(false);
-        // }
+        private void OnTriggerEnter(Collider other)
+        {
+            _kit?.InnerTriggerEnter(other);
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            _kit?.InnerTriggerExit(other);
+        }
 
         private void OnDestroy()
         {

@@ -10,29 +10,45 @@ using UObject = UnityEngine.Object;
 
 namespace Unicorn.Kit
 {
-    public class KitBase : IIsDisposed
+    public partial class KitBase : IIsDisposed
     {
         /// <summary>
         /// 对标MonoBehaviour的Awake()方法。设计成protected是为了防止client自己主动调用这些方法
         /// </summary>
-        protected virtual void Awake()
-        {
-        }
+        protected virtual void Awake() { }
 
         /// <summary>
         /// gameObject销毁事件, 对标MonoBehaviour的OnDestroy()
         /// </summary>
-        protected virtual void OnDestroy()
-        {
-        }
+        protected virtual void OnDestroy() { }
+
+        /// <summary>
+        /// 在 gameObject.SetActive(true) 或 script.enabled=true 时都会触发OnEnable()事件
+        /// </summary>
+        protected virtual void OnEnable() { }
+        
+        /// <summary>
+        /// 在 gameObject.SetActive(false) 或 script.enabled=false 时都会触发OnDisable()事件
+        /// </summary>
+        protected virtual void OnDisable() { }
+
+        /// <summary>
+        /// 被触碰的商店需要设置isTrigger=true
+        /// </summary>
+        /// <param name="other">如果是player进入触碰商店的collider，则other就是player</param>
+        protected virtual void OnTriggerEnter(Collider other) { }
+        
+        /// <summary>
+        /// 只所以把这些事件都设置为virtual方法，而不是昨天挂接MbKitOnTriggerEnterExit脚本的方式，原因是这些方法的调用频率并不高，预计这种设计带来的额外开销不会很大，但使用方便性上比如实现IOnTriggerExit接口的方式要简单不少
+        /// </summary>
+        /// <param name="other"></param>
+        protected virtual void OnTriggerExit(Collider other) { }
 
         /// <summary>
         /// 慢速帧，大概10fps；如果感觉频率不够，可考虑实现IExpensiveUpdater接口
         /// </summary>
         /// <param name="deltaTime">两帧之间的时间间隔，远大于Time.deltaTime</param>
-        protected virtual void SlowUpdate(float deltaTime)
-        {
-        }
+        protected virtual void SlowUpdate(float deltaTime) { }
 
         // /// <summary>
         // /// AddListener()这个方法是送的, 子类可以用, 也可以不用
@@ -64,34 +80,11 @@ namespace Unicorn.Kit
             return _assets;
         }
 
-        internal void InnerInit(Transform transform, UObject[] assets)
-        {
-            _transform = transform;
-            _assets = assets;
-
-            KitManager.Instance.Add(this);
-            CallbackTools.Handle(Awake, "[Awake()]");
-        }
-
-        internal void InnerDispose()
-        {
-            CallbackTools.Handle(OnDestroy, "[OnDestroy()]");
-            // _listener.RemoveAllListeners();
-            _isDisposed = true;
-        }
-
-        internal void InnerSlowUpdate(float deltaTime)
-        {
-            if (isActiveAndEnabled)
-            {
-                SlowUpdate(deltaTime);
-            }
-        }
-
+        
         /// <summary>
         /// 与MbKitOnEnable的同名属性同步
         /// </summary>
-        public bool isActiveAndEnabled { get; internal set; }
+        public bool isActiveAndEnabled { get; private set; }
 
         /// <summary>
         /// Kit对象的Update()顺序, 相同class的kit对象同一批调用Update().
