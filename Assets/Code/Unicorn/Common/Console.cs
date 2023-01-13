@@ -97,34 +97,36 @@ public static class Console
 		}
 	}
 
-	private static void _WriteLine(System.Action<object> output, object message)
+	private static void _WriteLine(Action<object> output, object message)
 	{
-		var isMainThread = Thread.CurrentThread.ManagedThreadId == _idMainThread;
+		// var isMainThread = Thread.CurrentThread.ManagedThreadId == _idMainThread;
 
 		if (_HasFlags(ConsoleFlags.DetailedMessage))
 		{
-			int frameCount;
-			string time;
-			
-			if (isMainThread)
-			{
-				// 以下两行代码不能在MonoBehaviour的构造方法中调用
-				frameCount = UnityEngine.Time.frameCount;
-				time = UnityEngine.Time.realtimeSinceStartup.ToString("F3");
-			}
-			else
-			{
-				frameCount = os.frameCount;
-				time = _time.ToString("F3");
-			}
+			// int frameCount;
+			// string time;
+			//
+			// if (isMainThread)
+			// {
+			// 	// 以下两行代码不能在MonoBehaviour的构造方法中调用
+			//  // 发现AndroidLogcatInternalLog插件，会在非主线程中调用到下面这行代码，所以只能先注释掉了
+			// 	frameCount = UnityEngine.Time.frameCount;
+			// 	time = UnityEngine.Time.realtimeSinceStartup.ToString("F3");
+			// }
+			// else
+			// {
+			// 	frameCount = os.frameCount;
+			// 	time = _time.ToString("F3");
+			// }
 
+			var frameCount = os.frameCount;
 			if (_lastFrameCount != frameCount)
 			{
 				_lastFrameCount = frameCount;
 				_messageFormat[1] = frameCount.ToString();
 			}
 
-			_messageFormat[3] = time;
+			_messageFormat[3] = _time.ToString("F3");
 			_messageFormat[5] = null != message ? message.ToString() : "null message (-_-)";
 			message = string.Concat(_messageFormat);
 		}
@@ -133,51 +135,11 @@ public static class Console
 		{
 			// 现在Debug.Log()方法可以在非主线程中调用了，不再需要迂回的手段了
 			output(message);
-			
-			// // main thread or in editor and isPlaying= false.
-			// if (isMainThread || _idMainThread == 0)
-			// {
-			// 	output(message);
-			// }
-			// else
-			// {
-			// 	if (os.isEditor)
-			// 	{
-			// 		var sbText = new StringBuilder(message.ToString());
-			// 		sbText.AppendLine();
-			//
-			// 		var text = _AppendStackTrace(sbText);
-			// 		Loom.RunDelayed(() => output(text));
-			// 	}
-			// 	else
-			// 	{
-			// 		Loom.RunDelayed(() => output(message));
-			// 	}
-			// }
 		}
 		catch (MissingMethodException)
 		{
 			System.Console.WriteLine(message);
 		}
-	}
-
-	private static string _AppendStackTrace(StringBuilder sbText)
-	{
-		var trace = new System.Diagnostics.StackTrace(2, true);
-		var frames = trace.GetFrames();
-		if (frames != null)
-		{
-			foreach (var frame in frames)
-			{
-				sbText.AppendFormat("{0} (at {1}:{2})\n"
-					, frame.GetMethod()
-					, frame.GetFileName()
-					, frame.GetFileLineNumber().ToString());
-			}
-		}
-		
-		var result = sbText.ToString();
-		return result;
 	}
 
 	private static string _FormatMessage(string format, params object[] args)
