@@ -87,15 +87,25 @@ namespace Unicorn.UI
         internal void _InitWidgetsWindow()
         {
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            var fields = GetType().GetFields(flags);
-            foreach (var field in fields)
+
+            var topType = typeof(UIWindowBase);
+            var type = GetType();
+
+            // UISuit竟然继承的UIBag，这样循环调用一把就无法初始化UIBag中的成员变量了
+            while (type != null && type != topType)
             {
-                var fieldType = field.FieldType;
-                if (fieldType.IsSubclassOf(typeof(UIWidgetBase)))
+                var fields = type.GetFields(flags);
+                foreach (var field in fields)
                 {
-                    var widget = field.GetValue(this) as UIWidgetBase;
-                    widget?._SetWindow(this);
+                    var fieldType = field.FieldType;
+                    if (fieldType.IsSubclassOf(typeof(UIWidgetBase)))
+                    {
+                        var widget = field.GetValue(this) as UIWidgetBase;
+                        widget?._SetWindow(this);
+                    }
                 }
+
+                type = type.BaseType;
             }
         }
 
