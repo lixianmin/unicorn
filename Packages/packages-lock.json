@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.unity.collab-proxy": {
-      "version": "1.17.2",
+      "version": "1.17.7",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -38,8 +38,8 @@
       }
     },
     "com.unity.ide.rider": {
-      "version": "3.0.18",
-      "depth": 1,
+      "version": "3.0.21",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.ext.nunit": "1.0.6"
@@ -47,8 +47,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.17",
-      "depth": 1,
+      "version": "2.0.18",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.9"
@@ -95,7 +95,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.31",
+      "version": "1.1.33",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -146,7 +146,7 @@
       }
     },
     "com.unity.visualscripting": {
-      "version": "1.7.8",
+      "version": "1.8.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
