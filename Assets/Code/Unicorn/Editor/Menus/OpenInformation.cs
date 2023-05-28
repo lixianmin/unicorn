@@ -15,10 +15,10 @@ namespace Unicorn.Menus
         [MenuItem("*Metadata/Open Information ^i", false, 600)]
         private static void _Execute ()
         {
-            new OpenInformation()._Run();
+            _Run();
         }
 
-        private void _Run ()
+        private static void _Run ()
         {
 			var platform = Application.platform;
 			if (platform == RuntimePlatform.OSXEditor)
@@ -55,12 +55,11 @@ namespace Unicorn.Menus
 
 		private static void _OSX_OnSelectAsset (string assetPath)
 		{
-			var fullpath  = os.path.join(PathTools.ProjectPath, assetPath);
+			var fullPath  = os.path.join(PathTools.ProjectPath, assetPath);
 			
-			var scriptCode = string.Format("-e 'tell application \"Finder\" '" +
-			                               "\n-e 'open information window of (POSIX file \"{0}\" as alias)'" +
-			                               "\n-e 'activate'" +
-			                               "\n-e 'end tell'", fullpath);
+			var scriptCode = "-e 'tell application \"Finder\" '" +
+			                 $"\n-e 'open information window of (POSIX file \"{fullPath}\" as alias)'" +
+			                 "\n-e 'activate'" + "\n-e 'end tell'";
 			
 			os.startfile("osascript", scriptCode, true);
 		}
