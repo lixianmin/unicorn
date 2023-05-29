@@ -1,10 +1,11 @@
-
 /********************************************************************
 created:    2014-09-03
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 
@@ -13,22 +14,22 @@ namespace Unicorn.Menus
     internal class OpenInformation
     {
         [MenuItem("*Metadata/Open Information ^i", false, 600)]
-        private static void _Execute ()
+        private static void _Execute()
         {
             _Run();
         }
 
-        private static void _Run ()
+        private static void _Run()
         {
-			var platform = Application.platform;
-			if (platform == RuntimePlatform.OSXEditor)
-			{
-				_OSX_Select ();
-			}
-			else
-			{
-				Console.Warning.WriteLine("To be implemented.");
-			}
+            var platform = Application.platform;
+            if (platform == RuntimePlatform.OSXEditor)
+            {
+                _OSX_Select();
+            }
+            else
+            {
+                Console.Warning.WriteLine("To be implemented.");
+            }
         }
 
 //		private void _OnSelectSceneGameObject (GameObject go)
@@ -44,24 +45,28 @@ namespace Unicorn.Menus
 //			                          , buttons.Length.ToString());
 //		}
 
-		private static void _OSX_Select ()
-		{
-			foreach (var guid in Selection.assetGUIDs)
-			{
-				string assetPath = AssetDatabase.GUIDToAssetPath (guid);
-				_OSX_OnSelectAsset(assetPath);
-			}
-		}
+        private static void _OSX_Select()
+        {
+            foreach (var guid in Selection.assetGUIDs)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                _OSX_OnSelectAsset(assetPath);
+            }
+        }
 
-		private static void _OSX_OnSelectAsset (string assetPath)
-		{
-			var fullPath  = os.path.join(PathTools.ProjectPath, assetPath);
-			
-			var scriptCode = "-e 'tell application \"Finder\" '" +
-			                 $"\n-e 'open information window of (POSIX file \"{fullPath}\" as alias)'" +
-			                 "\n-e 'activate'" + "\n-e 'end tell'";
-			
-			os.startfile("osascript", scriptCode, true);
-		}
+        private static void _OSX_OnSelectAsset(string assetPath)
+        {
+            var fullPath = os.path.join(PathTools.ProjectPath, assetPath);
+            var scriptPath = os.path.join(Path.GetTempPath(), "info.script");
+            // Console.WriteLine(scriptPath);
+
+            var scriptCode = "tell application \"Finder\"\n" +
+                             $"open information window of (POSIX file \"{fullPath}\" as alias)\n" +
+                             "activate\n" +
+                             $"delete POSIX file \"{scriptPath}\"\n" +
+                             "end tell";
+            File.WriteAllText(scriptPath, scriptCode);
+            os.startfile("osascript", scriptPath, true);
+        }
     }
 }
