@@ -32,7 +32,7 @@ namespace Metadata.Build
 
         public int GetMetadataVersion ()
         {
-            return _metadataVerison;
+            return _metadataVersion;
         }
 
 		public void Clear ()
@@ -81,7 +81,8 @@ namespace Metadata.Build
 			}
 
             var metadataRoot = _GetMetadataRoot();
-            _metadataVerison = SVNTools.GetRevision(metadataRoot);
+			// todo 这个现在基本上都是在报错, 所以先注释掉
+            // _metadataVersion = SVNTools.GetRevision(metadataRoot);
 
             var xmlFiles = Kernel.walk(metadataRoot, "*.xml");
 
@@ -510,7 +511,7 @@ namespace Metadata.Build
 		private readonly HashSet<string> _lastEntryXmlPaths = new HashSet<string>();
 		private readonly StringBuilder _sbBuiltXmlPaths = new StringBuilder();
 		private bool _xmlFileChanged;
-        private int _metadataVerison;
+        private int _metadataVersion;
 
         private readonly LocaleTable _localeTable = new LocaleTable();
     }
