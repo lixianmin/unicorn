@@ -225,9 +225,9 @@ namespace Unicorn
         private static readonly StringBuilder _sbFormatter = new();
         private static float _nextFlushLogTime;
 
-        private static Action<object> _lpfnLogInfo = _LogInfo;
-        private static Action<object> _lpfnLogWarn = _LogWarn;
-        private static Action<object> _lpfnLogError = _LogError;
+        private static readonly Action<object> _lpfnLogInfo = _LogInfo;
+        private static readonly Action<object> _lpfnLogWarn = _LogWarn;
+        private static readonly Action<object> _lpfnLogError = _LogError;
 
         private static readonly string[] _messageFormat =
         {

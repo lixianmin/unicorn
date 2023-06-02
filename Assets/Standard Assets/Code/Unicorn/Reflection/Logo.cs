@@ -14,11 +14,11 @@ namespace Unicorn
             // 这个地方一定会找到Unicorn.dll中的Logo，而不是找到Unicorn.Core.dll中的自己
             // 无论是叫Assembly-CSharp.dll vs Assembly-CSharp-firstpass.dll，还是叫
             // Unicorn.dll vs. Unicorn.Core.dll，它们的排序之后顺序都不影响这个结果
-            var type = TypeTools.SearchType("Logo");
+            var type = TypeTools.SearchType("Unicorn.Logo");
             if (null != type && type != typeof(Logo))
             {
                 TypeTools.CreateDelegate(type, "_WriteLine", out _lpfnWriteLine);
-                TypeTools.CreateDelegate(type, "_Log", out _lpfnLogInfo);
+                TypeTools.CreateDelegate(type, "_LogInfo", out _lpfnLogInfo);
                 TypeTools.CreateDelegate(type, "_LogError", out _lpfnLogError);
                 TypeTools.CreateDelegate(type, "_FormatMessage", out _lpfnFormat);
             }

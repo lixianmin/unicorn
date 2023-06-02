@@ -38,7 +38,7 @@ namespace Unicorn.Menus
 //			var sprites = go.GetComponentsInChildren(NGUITypes.UISprite, true);
 //			var buttons = go.GetComponentsInChildren(NGUITypes.UIButton, true);
 //
-//			Console.Warning.WriteLine("name={0} labels={1} sprites={2} buttons={3}"
+//			Logo.Warn("name={0} labels={1} sprites={2} buttons={3}"
 //			                          , go.name
 //			                          , labels.Length.ToString()
 //			                          , sprites.Length.ToString()
