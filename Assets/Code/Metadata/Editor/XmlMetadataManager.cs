@@ -118,7 +118,7 @@ namespace Metadata
 				}
 			}
 
-            Console.WriteLine(StringBuilderPool.GetStringAndRecycle(sbText));
+            Logo.Info(StringBuilderPool.GetStringAndRecycle(sbText));
 		}
 
         public bool IsEmpty ()

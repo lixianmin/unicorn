@@ -29,43 +29,43 @@
 //                 UIManager.Instance.CloseWindow(typeof(UIBag));
 //             });
 //
-//             // Console.WriteLine(_btnCloseBagObject.UI.localPosition);
-//             Console.WriteLine("main is OnLoaded");
+//             // Logo.Info(_btnCloseBagObject.UI.localPosition);
+//             Logo.Info("main is OnLoaded");
 //             // UIManager.Instance.OpenWindow(GetType());
 //             // UIManager.Instance.CloseWindow(GetType());
 //         }
 //
 //         protected override void OnOpened()
 //         {
-//             Console.WriteLine("main is OnOpened");
+//             Logo.Info("main is OnOpened");
 //             // UIManager.Instance.OpenWindow(GetType());
 //             // UIManager.Instance.CloseWindow(GetType());
 //         }
 //
 //         protected override void OnActivated()
 //         {
-//             Console.WriteLine("main is OnActivated");
+//             Logo.Info("main is OnActivated");
 //             // UIManager.Instance.OpenWindow(GetType());
 //             // UIManager.Instance.CloseWindow(GetType());
 //         }
 //
 //         protected override void OnDeactivating()
 //         {
-//             Console.WriteLine("main is OnDeactivating, state={0}, foreground={1}", GetFetus().GetState(), UIManager.Instance.GetForegroundWindow(GetRenderQueue()));
+//             Logo.Info("main is OnDeactivating, state={0}, foreground={1}", GetFetus().GetState(), UIManager.Instance.GetForegroundWindow(GetRenderQueue()));
 //             // UIManager.Instance.OpenWindow(GetType());
 //             // UIManager.Instance.CloseWindow(GetType());
 //         }
 //
 //         protected override void OnClosing()
 //         {
-//             Console.WriteLine("main is OnClosing");
+//             Logo.Info("main is OnClosing");
 //             // UIManager.Instance.OpenWindow(GetType());
 //             // UIManager.Instance.CloseWindow(GetType());
 //         }
 //
 //         protected override void OnUnloading()
 //         {
-//             Console.WriteLine("main is OnUnloading");
+//             Logo.Info("main is OnUnloading");
 //             UIManager.Instance.OpenWindow(GetType());
 //             // UIManager.Instance.CloseWindow(GetType());
 //         }

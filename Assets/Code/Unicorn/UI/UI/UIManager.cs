@@ -298,7 +298,7 @@ namespace Unicorn.UI
             // 但是, 只在这里sort也许是不够的, 原因是如果存在加载动画, 我们会看到新窗口的动画是在background执行的
             _windowsZOrder.InsertSortEx((a, b) => a._sortingOrder - b._sortingOrder);
 
-            // Console.WriteLine($"targetWindow={targetWindow.GetType()}, windowsZOrder={",".JoinEx(_windowsZOrder, item => item._GetSortingOrder().ToString())}, targetOrder={targetWindow._GetSortingOrder()}");
+            // Logo.Info($"targetWindow={targetWindow.GetType()}, windowsZOrder={",".JoinEx(_windowsZOrder, item => item._GetSortingOrder().ToString())}, targetOrder={targetWindow._GetSortingOrder()}");
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace Unicorn.UI
                 }
 
                 _maxZOrder = count;
-                // Console.WriteLine($"windowsZOrder={",".JoinEx(_windowsZOrder, item => item.sortingOrder.ToString())}, _maxZOrder={_maxZOrder}");
+                // Logo.Info($"windowsZOrder={",".JoinEx(_windowsZOrder, item => item.sortingOrder.ToString())}, _maxZOrder={_maxZOrder}");
             }
         }
 

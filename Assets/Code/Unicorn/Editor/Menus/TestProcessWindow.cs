@@ -6,6 +6,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 using System.Diagnostics;
+using Unicorn;
 using UnityEngine;
 using UnityEditor;
 
@@ -51,10 +52,10 @@ namespace Unique.Menus
 				psi.UseShellExecute = true;
 				
 				var title = "Test Process";
-				Console.WriteLine("[{0}] process start: {1} {2}", title, psi.FileName, psi.Arguments);
+				Logo.Info("[{0}] process start: {1} {2}", title, psi.FileName, psi.Arguments);
 				process.Start ();
 				process.WaitForExit();
-				Console.WriteLine("[{0}] process exit: {1} {2}", title, psi.FileName, psi.Arguments);
+				Logo.Info("[{0}] process exit: {1} {2}", title, psi.FileName, psi.Arguments);
 			}
         }
 

@@ -53,7 +53,7 @@ namespace Unicorn.Web
         {
             var allowDestroyingAssets = Application.isEditor;
             UnityEngine.Object.DestroyImmediate(_aidScript, allowDestroyingAssets);
-            // Console.WriteLine("[_DoDispose()] {0}", this.ToString());
+            // Logo.Info("[_DoDispose()] {0}", this.ToString());
         }
 
         // public override string ToString()

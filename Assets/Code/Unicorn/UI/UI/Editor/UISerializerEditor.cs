@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2017-11-27
 author:     lixianmin
 
@@ -17,7 +16,7 @@ namespace Unicorn.UI
     [CustomEditor(typeof(UISerializer), true)]
     internal class UISerializerEditor : Editor
     {
-        protected void OnEnable ()
+        protected void OnEnable()
         {
             _target = serializedObject.targetObject as UISerializer;
         }
@@ -29,13 +28,13 @@ namespace Unicorn.UI
             {
                 SerializePrefab(_target);
             }
-            
+
             base.OnInspectorGUI();
         }
 
-        private static UISerializer.WidgetData _FillWidgetData (Transform root, string key, string name, string type)
+        private static UISerializer.WidgetData _FillWidgetData(Transform root, string key, string name, string type)
         {
-            var trans = _DeepFindWidget (root, name);
+            var trans = _DeepFindWidget(root, name);
             if (null == trans)
             {
                 return null;
@@ -47,7 +46,7 @@ namespace Unicorn.UI
                 type = type
             };
 
-            var target = _GetWidgetTarget (trans, type);
+            var target = _GetWidgetTarget(trans, type);
             item.target = target;
             if (null != target)
             {
@@ -61,13 +60,14 @@ namespace Unicorn.UI
             }
             else
             {
-                Console.Error.WriteLine("[_FillWidgetData()] Can not find a component with name={0}, type={1}", name, type);
+                Console.Error.WriteLine("[_FillWidgetData()] Can not find a component with name={0}, type={1}", name,
+                    type);
             }
 
             return item;
         }
 
-        private static Component _GetWidgetTarget (Transform trans, string type)
+        private static Component _GetWidgetTarget(Transform trans, string type)
         {
             var target = trans.GetComponent(type);
             if (null == target && type.StartsWith("UI."))
@@ -82,7 +82,7 @@ namespace Unicorn.UI
             return target;
         }
 
-        private static Transform _DeepFindWidget (Transform father, string name)
+        private static Transform _DeepFindWidget(Transform father, string name)
         {
             if (null != father && null != name)
             {
@@ -98,7 +98,8 @@ namespace Unicorn.UI
             return null;
         }
 
-        private static UISerializer.WidgetData _GetWidgetData (IList<UISerializer.WidgetData> dataList, string name, string type)
+        private static UISerializer.WidgetData _GetWidgetData(IList<UISerializer.WidgetData> dataList, string name,
+            string type)
         {
             if (null != dataList)
             {
@@ -116,7 +117,7 @@ namespace Unicorn.UI
             return null;
         }
 
-        private static void _SavePrefab (Transform root)
+        private static void _SavePrefab(Transform root)
         {
             EditorUtility.SetDirty(root.gameObject);
             AssetDatabase.SaveAssets();
@@ -134,7 +135,7 @@ namespace Unicorn.UI
                     {
                         continue;
                     }
-                
+
                     foreach (var type in assembly.GetExportedTypes())
                     {
                         if (type.IsSubclassOf(typeof(UIWindowBase)))
@@ -147,8 +148,8 @@ namespace Unicorn.UI
 
             return _allWindowTypes;
         }
-        
-        private static UIWindowBase _SearchWindow (string prefabName)
+
+        private static UIWindowBase _SearchWindow(string prefabName)
         {
             var windowTypes = _FetchAllWindowTypes();
             var count = windowTypes.Count;
@@ -161,15 +162,16 @@ namespace Unicorn.UI
                 {
                     return window;
                 }
-                
-                // Console.WriteLine("assetPath={0}", assetPath);
+
+                // Logo.Info("assetPath={0}", assetPath);
             }
-            
-            Console.Error.WriteLine($"Can not find assetPath ends with prefabName={prefabName}， windowTypes.Count={windowTypes.Count}");
+
+            Console.Error.WriteLine(
+                $"Can not find assetPath ends with prefabName={prefabName}， windowTypes.Count={windowTypes.Count}");
             return null;
         }
 
-        private static void _CollectWidgetFromCode (Transform root, IList<UISerializer.WidgetData> dataList)
+        private static void _CollectWidgetFromCode(Transform root, IList<UISerializer.WidgetData> dataList)
         {
             var window = _SearchWindow(root.name);
             var layouts = _GetLayouts(window);
@@ -177,7 +179,7 @@ namespace Unicorn.UI
             {
                 return;
             }
-            
+
             foreach (var layout in layouts)
             {
                 var name = layout.name;
@@ -185,14 +187,17 @@ namespace Unicorn.UI
                 var lastData = _GetWidgetData(dataList, name, type);
                 if (null != lastData)
                 {
-                    Console.Error.WriteLine("[_CollectWidgetFromCode()] Found an old widgetData with the same name={0}, type={1}", name, type);
+                    Console.Error.WriteLine(
+                        "[_CollectWidgetFromCode()] Found an old widgetData with the same name={0}, type={1}", name,
+                        type);
                     continue;
                 }
 
-                var currentData = _FillWidgetData (root, string.Empty, name, type);
+                var currentData = _FillWidgetData(root, string.Empty, name, type);
                 if (null == currentData)
                 {
-                    Console.Error.WriteLine("[_CollectWidgetFromCode()] Can not find a widgetData with name = {0} ", name);
+                    Console.Error.WriteLine("[_CollectWidgetFromCode()] Can not find a widgetData with name = {0} ",
+                        name);
                     return;
                 }
 
@@ -217,20 +222,21 @@ namespace Unicorn.UI
                 {
                     var argType1 = fieldType.GetGenericArguments()[0];
                     var widget = field.GetValue(window) as UIWidgetBase;
-                    list.Add(new Layout {name = widget?.GetName(), type = argType1});
+                    list.Add(new Layout { name = widget?.GetName(), type = argType1 });
                 }
             }
-            
+
             return list;
         }
-        
-        private static void _AddUniqueWidgetData (IList<UISerializer.WidgetData> dataList, UISerializer.WidgetData current)
+
+        private static void _AddUniqueWidgetData(IList<UISerializer.WidgetData> dataList,
+            UISerializer.WidgetData current)
         {
             if (null == dataList)
             {
                 return;
             }
-            
+
             var count = dataList.Count;
             for (var i = 0; i < count; i++)
             {
@@ -244,7 +250,7 @@ namespace Unicorn.UI
             dataList.Add(current);
         }
 
-        private static void _FetchLabels (UISerializer script)
+        private static void _FetchLabels(UISerializer script)
         {
             var labelList = ListPool<Text>.Spawn();
 
@@ -277,16 +283,16 @@ namespace Unicorn.UI
 //                sbText.AppendLine(trans.name);
 //            }
 //
-//            Console.WriteLine(sbText);
+//            Logo.Info(sbText);
 //        }
 
-        private static IEnumerable<Transform> _ForEachNode (Transform father)
+        private static IEnumerable<Transform> _ForEachNode(Transform father)
         {
             if (null == father) yield break;
             yield return father;
 
             var childCount = father.childCount;
-            for (var i= 0; i< childCount; ++i)
+            for (var i = 0; i < childCount; ++i)
             {
                 var child = father.GetChild(i);
                 var isNotControl = null == child.GetComponent(typeof(UISerializer));
@@ -304,7 +310,7 @@ namespace Unicorn.UI
             }
         }
 
-        private static void _CollectUITextWithGUID (UISerializer script, List<UISerializer.WidgetData> dataList)
+        private static void _CollectUITextWithGUID(UISerializer script, List<UISerializer.WidgetData> dataList)
         {
             var transform = script.transform;
 
@@ -332,7 +338,7 @@ namespace Unicorn.UI
             }
         }
 
-        private static void _CheckNameDuplication (Transform root)
+        private static void _CheckNameDuplication(Transform root)
         {
             var traversedTable = new Dictionary<string, Transform>();
 
@@ -342,7 +348,8 @@ namespace Unicorn.UI
                 if (name.Contains("(") || name.Contains(")"))
                 {
                     var currentPath = child.GetFindPathEx();
-                    Console.Error.WriteLine("\"()\" is not allowed in gameObject names, path={0}/{1}", root.name, currentPath);
+                    Console.Error.WriteLine("\"()\" is not allowed in gameObject names, path={0}/{1}", root.name,
+                        currentPath);
                 }
 
                 var transLast = traversedTable.GetEx(name);
@@ -350,7 +357,8 @@ namespace Unicorn.UI
                 {
                     string lastPath = transLast.GetFindPathEx();
                     string currentPath = child.GetFindPathEx();
-                    Console.Error.WriteLine("Duplication name found: lastPath={0}/{1}\n, currentPath={0}/{2}", root.name, lastPath, currentPath);
+                    Console.Error.WriteLine("Duplication name found: lastPath={0}/{1}\n, currentPath={0}/{2}",
+                        root.name, lastPath, currentPath);
                 }
                 else
                 {
@@ -359,25 +367,25 @@ namespace Unicorn.UI
             }
         }
 
-        private static void _CheckEventSystemExistence (Transform transform)
+        private static void _CheckEventSystemExistence(Transform transform)
         {
             var script = transform.GetComponentInChildren<UnityEngine.EventSystems.EventSystem>(true);
             if (null != script)
             {
                 var path = script.transform.GetFindPathEx();
-                Console.Warning.WriteLine("Caution: detect an EventSystem script ({0})", path);
+                Logo.Warn("Caution: detect an EventSystem script ({0})", path);
             }
         }
 
-        public static void SerializePrefab (UISerializer rootScript)
+        public static void SerializePrefab(UISerializer rootScript)
         {
             if (rootScript is null)
             {
-                Console.Error.WriteLine("rootScript is null");    
+                Logo.Error("rootScript is null");
                 return;
             }
-            
-            Console.WriteLine ("Begin serializing **********************");
+
+            Logo.Info("Begin serializing **********************");
 
             var root = rootScript.transform;
 
@@ -396,11 +404,11 @@ namespace Unicorn.UI
 
             _SavePrefab(root);
 
-            Console.WriteLine ("End serializing **********************");
+            Logo.Info("End serializing **********************");
         }
-        
+
         private static List<Type> _allWindowTypes;
-        
+
         private UISerializer _target;
     }
 }

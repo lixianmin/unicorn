@@ -150,7 +150,7 @@ namespace Metadata
 			}
 
 			var text = sbText.ToString();
-			Console.WriteLine(text);
+			Logo.Info(text);
 		}
 
         private static SortedTable<string, TemplateTable> _GetSortedTemplateTables (TemplateManager templateManager)

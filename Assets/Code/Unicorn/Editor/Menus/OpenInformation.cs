@@ -28,7 +28,7 @@ namespace Unicorn.Menus
             }
             else
             {
-                Console.Warning.WriteLine("To be implemented.");
+                Logo.Warn("To be implemented.");
             }
         }
 
@@ -58,7 +58,7 @@ namespace Unicorn.Menus
         {
             var fullPath = os.path.join(PathTools.ProjectPath, assetPath);
             var scriptPath = os.path.join(Path.GetTempPath(), "info.script");
-            // Console.WriteLine(scriptPath);
+            // Logo.Info(scriptPath);
 
             var scriptCode = "tell application \"Finder\"\n" +
                              $"open information window of (POSIX file \"{fullPath}\" as alias)\n" +

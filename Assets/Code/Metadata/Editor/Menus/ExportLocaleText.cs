@@ -37,7 +37,7 @@ namespace Metadata.Menus
             var localeCount = 0;
             var localeTable = new LocaleTable();
             var filePaths = os.walk(folderPath, "*.xml");
-            Console.WriteLine($"Scan *.xml in foldPath={folderPath}, filePaths.Length={filePaths.Length}");
+            Logo.Info($"Scan *.xml in foldPath={folderPath}, filePaths.Length={filePaths.Length}");
 
             foreach (var filepath in filePaths)
             {
@@ -70,7 +70,7 @@ namespace Metadata.Menus
 			var costTime = Time.realtimeSinceStartup - startTime;
             var totalCount = LocaleTextManager.Instance.GetCount();
 
-            Console.WriteLine($"Dispatch locale texts (I18N), filename={name}, localeRatio={localeCount}/{totalCount}, costTime={costTime:F3}");
+            Logo.Info($"Dispatch locale texts (I18N), filename={name}, localeRatio={localeCount}/{totalCount}, costTime={costTime:F3}");
 		}
     }
 }

@@ -44,7 +44,7 @@
 //                     if (node.Asset is T asset)
 //                     {
 //                         _assetItems[address] = new AssetItem{Node = node, Asset = asset};
-//                         Console.WriteLine("asset={0} is loaded successfully", address);
+//                         Logo.Info("asset={0} is loaded successfully", address);
 //                         handler?.Invoke(asset);
 //                         return;
 //                     }

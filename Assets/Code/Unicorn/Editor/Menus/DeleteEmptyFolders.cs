@@ -27,7 +27,7 @@ namespace Unicorn.Menus
             }
 
             var log = sbLog.ToString();
-            Console.WriteLine(log);
+            Logo.Info(log);
         }
 
         private static bool _CheckDeleteEmptyFolders (string dirpath, StringBuilder sbLog)

@@ -1,260 +1,47 @@
-
 /********************************************************************
 created:    2022-08-11
 author:     lixianmin
 
-purpose:    extended debug
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Text;
 using Unicorn;
 
 // this class should not be placed into Unicorn namespace, because it will cause compile error 
 // when using 'System' and 'Unicorn' simutaniously.
 
-[Flags]
-public enum ConsoleFlags : ushort
-{
-	None = 0x00,
-	DetailedMessage = 0x01,
-	OpenStandardOutput = 0x02,
-	FlushOnWrite = 0x04,
-	FlushAtIntervals = 0x08,
-}
-
 public static class Console
 {
-	// We use static ctor, because in editor mode there is no Way to call Init().
-	static Console()
-	{
-		_idMainThread = Thread.CurrentThread.ManagedThreadId;
-		Flags = ConsoleFlags.DetailedMessage | ConsoleFlags.FlushOnWrite;
-	}
+    public static void WriteLine(string format, params object[] args)
+    {
+        Logo.Info(format, args);
+    }
 
-	internal static void Update()
-	{
-		_time = UnityEngine.Time.realtimeSinceStartup;
+    public static void WriteLine(string message)
+    {
+        Logo.Info(message);
+    }
 
-		if (null != _sbLogText && _time >= _nextFlushLogTime && _HasFlags(ConsoleFlags.FlushAtIntervals))
-		{
-			_CheckFlushLogText();
-			_nextFlushLogTime = _time + 3.0f;
-		}
-	}
+    public static void WriteLine(object message)
+    {
+        Logo.Info(message);
+    }
 
-	public static void WriteLine(string format, params object[] args)
-	{
-		_WriteLine(_lpfnLog, _FormatMessage(format, args));
-	}
+    public static class Error
+    {
+        public static void WriteLine(string format, params object[] args)
+        {
+            Logo.Error(format, args);
+        }
 
-	public static void WriteLine(string message)
-	{
-		_WriteLine(_lpfnLog, message);
-	}
+        public static void WriteLine(string message)
+        {
+            Logo.Error(message);
+        }
 
-	public static void WriteLine(object message)
-	{
-		_WriteLine(_lpfnLog, message);
-	}
-
-	public static class Warning
-	{
-		public static void WriteLine(string format, params object[] args)
-		{
-			_WriteLine(_lpfnLogWarning, _FormatMessage(format, args));
-		}
-
-		public static void WriteLine(string message)
-		{
-			_WriteLine(_lpfnLogWarning, message);
-		}
-
-		public static void WriteLine(object message)
-		{
-			_WriteLine(_lpfnLogWarning, message);
-		}
-	}
-
-	public static class Error
-	{
-		public static void WriteLine(string format, params object[] args)
-		{
-			_WriteLine(_lpfnLogError, _FormatMessage(format, args));
-		}
-
-		public static void WriteLine(string message)
-		{
-			_WriteLine(_lpfnLogError, message);
-		}
-
-		public static void WriteLine(object message)
-		{
-			_WriteLine(_lpfnLogError, message);
-		}
-	}
-
-	private static void _WriteLine(Action<object> output, object message)
-	{
-		// var isMainThread = Thread.CurrentThread.ManagedThreadId == _idMainThread;
-
-		if (_HasFlags(ConsoleFlags.DetailedMessage))
-		{
-			// int frameCount;
-			// string time;
-			//
-			// if (isMainThread)
-			// {
-			// 	// 以下两行代码不能在MonoBehaviour的构造方法中调用
-			//  // 发现AndroidLogcatInternalLog插件，会在非主线程中调用到下面这行代码，所以只能先注释掉了
-			// 	frameCount = UnityEngine.Time.frameCount;
-			// 	time = UnityEngine.Time.realtimeSinceStartup.ToString("F3");
-			// }
-			// else
-			// {
-			// 	frameCount = os.frameCount;
-			// 	time = _time.ToString("F3");
-			// }
-
-			var frameCount = os.frameCount;
-			if (_lastFrameCount != frameCount)
-			{
-				_lastFrameCount = frameCount;
-				_messageFormat[1] = frameCount.ToString();
-			}
-
-			_messageFormat[3] = _time.ToString("F3");
-			_messageFormat[5] = null != message ? message.ToString() : "null message (-_-)";
-			message = string.Concat(_messageFormat);
-		}
-
-		try
-		{
-			// 现在Debug.Log()方法可以在非主线程中调用了，不再需要迂回的手段了
-			output(message);
-		}
-		catch (MissingMethodException)
-		{
-			System.Console.WriteLine(message);
-		}
-	}
-
-	private static string _FormatMessage(string format, params object[] args)
-	{
-		var message = "null format (-__-)";
-		if (null != format)
-		{
-			_sbFormatter.AppendFormat(null, format, args);
-			message = _sbFormatter.ToString();
-			_sbFormatter.Length = 0;
-		}
-
-		return message;
-	}
-
-	private static void _Log(object message)
-	{
-		if (_HasFlags(ConsoleFlags.FlushOnWrite))
-		{
-			UnityEngine.Debug.Log(message);
-		}
-		else
-		{
-			_sbLogText.AppendLine(message.ToString());
-		}
-
-		if (_HasFlags(ConsoleFlags.OpenStandardOutput))
-		{
-			System.Console.WriteLine(message);
-		}
-	}
-
-	private static void _LogWarning(object message)
-	{
-		_CheckFlushLogText();
-		UnityEngine.Debug.LogWarning(message);
-
-		if (_HasFlags(ConsoleFlags.OpenStandardOutput))
-		{
-			System.Console.WriteLine(message);
-		}
-	}
-
-	private static void _LogError(object message)
-	{
-		_CheckFlushLogText();
-		UnityEngine.Debug.LogError(message);
-
-		if (_HasFlags(ConsoleFlags.OpenStandardOutput))
-		{
-			System.Console.Error.WriteLine(message);
-		}
-	}
-
-	private static void _CheckFlushLogText()
-	{
-		if (_sbLogText is { Length: > 0 })
-		{
-			UnityEngine.Debug.Log(_sbLogText);
-			_sbLogText.Length = 0;
-		}
-	}
-
-	private static bool _HasFlags(ConsoleFlags flags)
-	{
-		return (_flags & flags) != 0;
-	}
-
-	public static ConsoleFlags Flags
-	{
-		get => _flags;
-		set
-		{
-			if (_flags == value)
-			{
-				return;
-			}
-
-			_flags = value;
-
-			if (_HasFlags(ConsoleFlags.FlushOnWrite))
-			{
-				_CheckFlushLogText();
-				_sbLogText = null;
-			}
-			// 只要不是FlushOnWrite，都要加入_sbLogText，否则日志会丢失.
-			// else if (_HasFlags(ConsoleFlags.FlushAtIntervals))
-			else if (null == _sbLogText)
-			{
-				_sbLogText = new StringBuilder(1024);
-			}
-		}
-	}
-
-	private static ConsoleFlags _flags;
-
-	private static readonly int _idMainThread;
-	private static float _time;
-
-	private static int _lastFrameCount;
-	private static StringBuilder _sbLogText;
-	private static readonly StringBuilder _sbFormatter = new();
-	private static float _nextFlushLogTime;
-
-	private static Action<object> _lpfnLog = _Log;
-	private static Action<object> _lpfnLogWarning = _LogWarning;
-	private static Action<object> _lpfnLogError = _LogError;
-
-	private static readonly string[] _messageFormat =
-	{
-		"[@@frame=",	// 加两个@号, 方便使用 adb logcat | grep @@ 过滤日志
-		"(-_-)",
-		", time=",
-		null,
-		"] ",
-		null
-	};
+        public static void WriteLine(object message)
+        {
+            Logo.Error(message);
+        }
+    }
 }

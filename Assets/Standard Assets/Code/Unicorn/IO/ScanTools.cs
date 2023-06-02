@@ -64,7 +64,7 @@ namespace Unicorn.IO
             }
 
 			var timeSpan = System.DateTime.Now - startTime;
-			Console.WriteLine("[ScanTools.ScanAll()] {0}, costTime={1}s", title, timeSpan.TotalSeconds.ToString("F2"));
+			Logo.Info("[ScanTools.ScanAll()] {0}, costTime={1}s", title, timeSpan.TotalSeconds.ToString("F2"));
             return true;
         }
 

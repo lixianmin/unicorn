@@ -27,7 +27,7 @@ namespace Metadata.Menus
 
             var metadataVersion = manager.GetMetadataVersion();
             var costTime = Time.realtimeSinceStartup - startTime;
-            Console.WriteLine($"Export metadata, metadataVersion={metadataVersion.ToString()}, costTime={costTime:F3}");
+            Logo.Info($"Export metadata, metadataVersion={metadataVersion.ToString()}, costTime={costTime:F3}");
         }
 
         [MenuItem(EditorMetaTools.MenuRoot + "Dispatch Increment Metadata", false, 202)]

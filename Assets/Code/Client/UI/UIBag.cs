@@ -25,36 +25,36 @@
 //         {
 //             _btnClickBag.UI.onClick.AddListener(() =>
 //             {
-//                 Console.WriteLine("bag button is clicked");
+//                 Logo.Info("bag button is clicked");
 //                 UIManager.Instance.CloseWindow(typeof(UIMain));
 //             });
 //             
-//             Console.WriteLine("bag is OnLoaded");
+//             Logo.Info("bag is OnLoaded");
 //         }
 //         
 //         protected override void OnOpened()
 //         {
-//             Console.WriteLine("bag is OnOpened");
+//             Logo.Info("bag is OnOpened");
 //         }
 //
 //         protected override void OnActivated()
 //         {
-//             Console.WriteLine("bag is OnActivated");
+//             Logo.Info("bag is OnActivated");
 //         }
 //
 //         protected override void OnDeactivating()
 //         {
-//             Console.WriteLine("bag is OnDeactivating");
+//             Logo.Info("bag is OnDeactivating");
 //         }
 //
 //         protected override void OnClosing()
 //         {
-//             Console.WriteLine("bag is OnClosing");
+//             Logo.Info("bag is OnClosing");
 //         }
 //
 //         protected override void OnUnloading()
 //         {
-//             Console.WriteLine("bag is OnUnloading");
+//             Logo.Info("bag is OnUnloading");
 //         }
 //
 //         private readonly UIWidget<UIButton> _btnClickBag = new("btn_click_bag");

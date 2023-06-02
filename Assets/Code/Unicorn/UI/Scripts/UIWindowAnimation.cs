@@ -31,7 +31,7 @@ namespace Unicorn.UI
 
         private void _OnAnimationDone()
         {
-            // Console.WriteLine($"threadId={Thread.CurrentThread.ManagedThreadId}, _isHandled={_isHandled}");
+            // Logo.Info($"threadId={Thread.CurrentThread.ManagedThreadId}, _isHandled={_isHandled}");
             if (!_isHandled)
             {
                 _isHandled = true;

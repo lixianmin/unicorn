@@ -79,11 +79,11 @@ namespace Unicorn
 				string hint = $"Unicorn.EditorTools.ExecuteMenuItem({menuItemPath})";
 				if (suc)
 				{
-					Console.WriteLine(hint + " Success!");
+					Logo.Info(hint + " Success!");
 				}
 				else
 				{
-					Console.WriteLine(hint + " Fail!");
+					Logo.Info(hint + " Fail!");
 				}
 			}
 			else

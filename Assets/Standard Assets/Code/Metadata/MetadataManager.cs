@@ -31,6 +31,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.Collections;
 using Metadata.Build;
+using Unicorn;
 
 namespace Metadata
 {
@@ -221,21 +222,21 @@ namespace Metadata
 						break;
 				}
 			}
-            Console.WriteLine("--> add metadata to _templateManager & _configManager done");
+            Logo.Info("--> add metadata to _templateManager & _configManager done");
 
             foreach (var pair in _templateManager.EnumerateTemplateTables())
             {
                 var table = pair.Value;
                 table._Sort();
             }
-            Console.WriteLine("--> sort template tables done");
+            Logo.Info("--> sort template tables done");
 
 			var reader = MetaFactory.CreateChunkReader(this, true);
-            Console.WriteLine("--> CreateChunkReader() done");
+            Logo.Info("--> CreateChunkReader() done");
 
 			var aid = GetLoadAid();
 			aid.Load(reader, false, out _metadataVersion);
-            Console.WriteLine("--> aid.Load() done");
+            Logo.Info("--> aid.Load() done");
 		}
 
         private void _SetMetadataVersion (int version)

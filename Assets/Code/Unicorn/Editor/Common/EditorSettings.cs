@@ -60,7 +60,7 @@ namespace Unicorn
             if (PlayerSettings.colorSpace != colorSpace)
             {
                 PlayerSettings.colorSpace = colorSpace;
-                Console.WriteLine($"(manifest.editorSettings.colorSpace={name}) => (PlayerSettings.colorSpace={name})");
+                Logo.Info($"(manifest.editorSettings.colorSpace={name}) => (PlayerSettings.colorSpace={name})");
                 return true;
             }
 
@@ -73,7 +73,7 @@ namespace Unicorn
             if ( PlayerSettings.bakeCollisionMeshes != bakeCollisionMeshes)
             {
                 PlayerSettings.bakeCollisionMeshes = bakeCollisionMeshes;
-                Console.WriteLine($"(manifest.editorSettings.bakeCollisionMeshes={bakeCollisionMeshes}) => (PlayerSettings.bakeCollisionMeshes={bakeCollisionMeshes})");
+                Logo.Info($"(manifest.editorSettings.bakeCollisionMeshes={bakeCollisionMeshes}) => (PlayerSettings.bakeCollisionMeshes={bakeCollisionMeshes})");
                 return true;
             }
 
@@ -106,7 +106,7 @@ namespace Unicorn
             if (lastLevel != nextLevel)
             {
                 PlayerSettings.SetManagedStrippingLevel(targetGroup, nextLevel);
-                Console.WriteLine($"(manifest.editorSettings.managedStrippingLevel={name}) => ({lastLevel} → {nextLevel})");
+                Logo.Info($"(manifest.editorSettings.managedStrippingLevel={name}) => ({lastLevel} → {nextLevel})");
                 return true;
             }
 

@@ -31,7 +31,7 @@ namespace Unicorn
                 {
                     importer.sRGBTexture = false;
                     isChanged = true;
-                    Console.WriteLine($"assetPath={assetPath}, (colorSpace=Linear) => (sRGBTexture=false)");
+                    Logo.Info($"assetPath={assetPath}, (colorSpace=Linear) => (sRGBTexture=false)");
                 }
             }
             
@@ -42,7 +42,7 @@ namespace Unicorn
             {
                 importer.sRGBTexture = true;
                 isChanged = true;
-                Console.WriteLine($"assetPath={assetPath}, (textureType={importer.textureType}) => (sRGBTexture=true)");  
+                Logo.Info($"assetPath={assetPath}, (textureType={importer.textureType}) => (sRGBTexture=true)");  
             }
 
             if (isChanged)

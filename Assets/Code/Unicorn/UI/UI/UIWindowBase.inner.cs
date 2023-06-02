@@ -102,7 +102,7 @@ namespace Unicorn.UI
                 {
                     // canvas.overrideSorting = true; // 这个在资源加载完成的时候设置
                     _canvas.sortingOrder = order;
-                    // Console.WriteLine($"sortingOrder={canvas.sortingOrder}, queue={targetWindow.GetRenderQueue()}, activateVersion={_version}");
+                    // Logo.Info($"sortingOrder={canvas.sortingOrder}, queue={targetWindow.GetRenderQueue()}, activateVersion={_version}");
                 }
             }
         }

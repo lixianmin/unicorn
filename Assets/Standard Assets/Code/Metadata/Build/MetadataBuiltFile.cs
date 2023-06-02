@@ -69,7 +69,7 @@ namespace Metadata.Build
 		public void Build ()
 		{
 			var filepath = _GetBuiltFilePath();
-			Console.WriteLine("[Build()] builtFilePath={0}", filepath);
+			Logo.Info("[Build()] builtFilePath={0}", filepath);
 
             _localeTable.Clear();
             LocaleText.OnDeserialize += _OnDeserializeLocaleText;
@@ -90,11 +90,11 @@ namespace Metadata.Build
             ScanTools.ScanAll(title, xmlFiles, _OnBuildOneXmlFile);
             LocaleText.OnDeserialize -= _OnDeserializeLocaleText;
             LocaleTextManager.Instance.AddLocaleTable(_localeTable);
-            Console.WriteLine("--> AddLocaleTable() done");
+            Logo.Info("--> AddLocaleTable() done");
 
             if (_sbBuiltXmlPaths.Length > 0)
 			{
-				Console.WriteLine("--> build *.xml metadata, builtXmlPaths={0}", _sbBuiltXmlPaths);
+				Logo.Info("--> build *.xml metadata, builtXmlPaths={0}", _sbBuiltXmlPaths);
 			}
 
 			var hasDeleted = _RemoveDeletedEntries();
@@ -104,7 +104,7 @@ namespace Metadata.Build
 				_SaveAll(filepath, _entries, _dataItems);
 			}
 
-			Console.WriteLine("--> build *.xml metadata done, filepath={0}, _entries.Count={1}, _dataItems.Count={2}"
+			Logo.Info("--> build *.xml metadata done, filepath={0}, _entries.Count={1}, _dataItems.Count={2}"
 			                  , filepath, _entries.Count, _dataItems.Count);
 		}
 

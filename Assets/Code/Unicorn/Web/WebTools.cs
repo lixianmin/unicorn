@@ -52,7 +52,7 @@ namespace Unicorn.Web
         {
             if (material == null)
             {
-                Console.WriteLine("material is null");
+                Logo.Info("material is null");
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace Unicorn.Web
 
             var shaderName = shader.name;
             material.shader = Shader.Find(shaderName);
-            // Console.WriteLine($"material.name={material.name}, shader.name={shaderName}");
+            // Logo.Info($"material.name={material.name}, shader.name={shaderName}");
         }
 
         internal static int GetNextId()

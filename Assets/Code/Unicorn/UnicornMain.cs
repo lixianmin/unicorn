@@ -50,13 +50,13 @@ namespace Unicorn
 //			ThreadPool.SetMaxThreads(maxWorkerThreads, maxCompletionPortThreads);
 
             // force call static ctor of Console class
-            Console.Update();
+            Logo.Update();
             _InitLogInfo();
             os.Init();
 
             var persistentDataPath = Application.persistentDataPath;
             var now = DateTime.Now.ToString("yyyy-M-d HH:mm ddd");
-            Console.WriteLine(
+            Logo.Info(
                 "[UnicornMain.Init()]\n{0}\nplatform={1}\nos={2}\ndeviceModel={3}\nprocessorCount={4}\nsystemMemorySize={5}\ngraphicsDevice={6}\ngraphicsMemorySize={7}\n" +
                 "logPath={8}\ndataPath={9}\nstreamingAssetsPath={10}\npersistentDataPath={11}\nresolution={12}x{13}\nScreen.dpi={14}"
                 , now
@@ -78,8 +78,7 @@ namespace Unicorn
 
             if (string.IsNullOrEmpty(persistentDataPath))
             {
-                Console.Error.WriteLine(
-                    "Android Error: persistentDataPath is empty, please restart the Android System.");
+                Logo.Error("Android Error: persistentDataPath is empty, please restart the Android System.");
             }
 
             //ParticleRenderQueueRemapper.Enable = true;
@@ -130,7 +129,7 @@ namespace Unicorn
                 os.frameCount = Time.frameCount;
                 os.time = Time.time;
 
-                Console.Update();
+                Logo.Update();
                 UpdateTools.ExpensiveUpdate(deltaTime);
                 _UpdateLogs();
 
@@ -164,12 +163,12 @@ namespace Unicorn
                 OnDisposing?.Invoke();
                 _logWriter?.Close();
 
-                //				WebPrefab._GetLruCache().Clear();
+                // WebPrefab._GetLruCache().Clear();
                 _coroutineManager.Clear();
-                //WebManager.Dispose();
+                // WebManager.Dispose();
                 _isInited = false;
 
-                Console.WriteLine("[UnicornMain.Dispose()]");
+                Logo.Info("[UnicornMain.Dispose()]");
             }
         }
 

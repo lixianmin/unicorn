@@ -123,7 +123,7 @@ namespace Unicorn.UI
                 }
                 else
                 {
-                    Console.Warning.WriteLine("nextFont=null, label={0}, label.font={1}, cachedFonts=[{2}]"
+                    Logo.Warn("nextFont=null, label={0}, label.font={1}, cachedFonts=[{2}]"
                         , label.text, label.font, ", ".JoinEx(cachedFonts));
                     
                 }
