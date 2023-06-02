@@ -88,7 +88,7 @@ namespace Unicorn
 			}
 			else
 			{
-				Console.Error.WriteLine("Unicorn.EditorApplication.ExecuteMenuItem(arg), arg is null or empty!");
+				Logo.Error("Unicorn.EditorApplication.ExecuteMenuItem(arg), arg is null or empty!");
 			}
 		}
 

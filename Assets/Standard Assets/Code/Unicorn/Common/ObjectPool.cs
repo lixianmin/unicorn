@@ -50,7 +50,7 @@ namespace Unicorn
 
             if (_cache.Count > 0 && ReferenceEquals(_cache.Back(), item))
             {
-                Console.Error.WriteLine("Internal error. Trying to destroy object that is already released to pool.");
+                Logo.Error("Internal error. Trying to destroy object that is already released to pool.");
                 return;
             }
 

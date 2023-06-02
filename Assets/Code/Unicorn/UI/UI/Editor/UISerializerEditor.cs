@@ -60,7 +60,7 @@ namespace Unicorn.UI
             }
             else
             {
-                Console.Error.WriteLine("[_FillWidgetData()] Can not find a component with name={0}, type={1}", name,
+                Logo.Error("[_FillWidgetData()] Can not find a component with name={0}, type={1}", name,
                     type);
             }
 
@@ -166,7 +166,7 @@ namespace Unicorn.UI
                 // Logo.Info("assetPath={0}", assetPath);
             }
 
-            Console.Error.WriteLine(
+            Logo.Error(
                 $"Can not find assetPath ends with prefabName={prefabName}， windowTypes.Count={windowTypes.Count}");
             return null;
         }
@@ -187,7 +187,7 @@ namespace Unicorn.UI
                 var lastData = _GetWidgetData(dataList, name, type);
                 if (null != lastData)
                 {
-                    Console.Error.WriteLine(
+                    Logo.Error(
                         "[_CollectWidgetFromCode()] Found an old widgetData with the same name={0}, type={1}", name,
                         type);
                     continue;
@@ -196,7 +196,7 @@ namespace Unicorn.UI
                 var currentData = _FillWidgetData(root, string.Empty, name, type);
                 if (null == currentData)
                 {
-                    Console.Error.WriteLine("[_CollectWidgetFromCode()] Can not find a widgetData with name = {0} ",
+                    Logo.Error("[_CollectWidgetFromCode()] Can not find a widgetData with name = {0} ",
                         name);
                     return;
                 }
@@ -348,7 +348,7 @@ namespace Unicorn.UI
                 if (name.Contains("(") || name.Contains(")"))
                 {
                     var currentPath = child.GetFindPathEx();
-                    Console.Error.WriteLine("\"()\" is not allowed in gameObject names, path={0}/{1}", root.name,
+                    Logo.Error("\"()\" is not allowed in gameObject names, path={0}/{1}", root.name,
                         currentPath);
                 }
 
@@ -357,7 +357,7 @@ namespace Unicorn.UI
                 {
                     string lastPath = transLast.GetFindPathEx();
                     string currentPath = child.GetFindPathEx();
-                    Console.Error.WriteLine("Duplication name found: lastPath={0}/{1}\n, currentPath={0}/{2}",
+                    Logo.Error("Duplication name found: lastPath={0}/{1}\n, currentPath={0}/{2}",
                         root.name, lastPath, currentPath);
                 }
                 else

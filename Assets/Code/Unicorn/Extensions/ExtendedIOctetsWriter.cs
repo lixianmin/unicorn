@@ -41,7 +41,7 @@ namespace Unicorn.IO
             {
                 if (!_IsColorRangeValid(color))
                 {
-                    Console.Error.WriteLine("Invalid color range, color=[{0}]", color.ToString());
+                    Logo.Error("Invalid color range, color=[{0}]", color.ToString());
                 }
 
                 writer.Write(ColorTools.ToInt32(color));

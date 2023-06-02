@@ -7,6 +7,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 using System;
 using System.Collections;
+using Unicorn;
 
 namespace Metadata
 {
@@ -28,7 +29,7 @@ namespace Metadata
                 }
                 else if (last != text)
                 {
-                    Console.Error.WriteLine("Duplicated localeTexts with the same guid='{0}', lastText='{1}', newText='{2}'", guid, last, text);
+                    Logo.Error("Duplicated localeTexts with the same guid='{0}', lastText='{1}', newText='{2}'", guid, last, text);
                 }
             }
             else

@@ -58,7 +58,7 @@ namespace Metadata
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("[Load()] metadataType={0}, metadata={1}, ex={2}", typeName.ToString(), metadata, ex);
+                    Logo.Error("[Load()] metadataType={0}, metadata={1}, ex={2}", typeName.ToString(), metadata, ex);
                 }
 			}
 

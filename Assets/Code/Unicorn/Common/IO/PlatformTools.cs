@@ -40,7 +40,7 @@ namespace Unicorn
 			}
 			catch (System.Exception ex)
 			{
-				Console.Error.WriteLine(ex);
+				Logo.Error(ex);
 			}
 		}
     }

@@ -111,7 +111,7 @@
 ////                }
 ////                else
 ////                {
-////                    Console.Error.WriteLine("Indices duplication, rectify manually or regenerate all indices: index={0}, last={1}, current={2}"
+////                    Logo.Error("Indices duplication, rectify manually or regenerate all indices: index={0}, last={1}, current={2}"
 ////                        , type.MetaIndex.ToString(), last.RawType.FullName, type.RawType.FullName);
 ////                }
 ////            }

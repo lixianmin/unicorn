@@ -27,7 +27,7 @@ namespace Unicorn.Kit
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"ex= {ex}");
+                Logo.Error($"ex= {ex}");
             }
         }
 
@@ -40,7 +40,7 @@ namespace Unicorn.Kit
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"ex= {ex}");
+                Logo.Error($"ex= {ex}");
             }
         }
 
@@ -53,7 +53,7 @@ namespace Unicorn.Kit
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"ex= {ex}");
+                Logo.Error($"ex= {ex}");
             }
         }
 
@@ -65,7 +65,7 @@ namespace Unicorn.Kit
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"ex= {ex}");
+                Logo.Error($"ex= {ex}");
             }
         }
 
@@ -77,7 +77,7 @@ namespace Unicorn.Kit
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"ex= {ex}");
+                Logo.Error($"ex= {ex}");
             }
         }
 

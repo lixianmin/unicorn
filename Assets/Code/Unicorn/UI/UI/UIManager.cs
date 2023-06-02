@@ -358,7 +358,7 @@ namespace Unicorn.UI
                 var gameObject = GameObject.Find("UICamera");
                 if (null == gameObject)
                 {
-                    Console.Error.WriteLine("Can not find UICamera");
+                    Logo.Error("Can not find UICamera");
                     return null;
                 }
                 

@@ -74,7 +74,7 @@ namespace Unicorn
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(ex);
+                Logo.Error(ex);
             }
         }
 

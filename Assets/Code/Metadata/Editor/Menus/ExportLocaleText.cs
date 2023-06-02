@@ -25,7 +25,7 @@ namespace Metadata.Menus
             
             if (string.IsNullOrEmpty(folderPath)|| !Directory.Exists(folderPath))
             {
-                Console.Error.WriteLine($"invalid folderPath={folderPath}, just ignore.");
+                Logo.Error($"invalid folderPath={folderPath}, just ignore.");
                 return;    
             }
 

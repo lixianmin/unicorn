@@ -11,6 +11,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
+using Unicorn;
 
 namespace Metadata
 {
@@ -38,7 +39,7 @@ namespace Metadata
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("{0}. text = [{1}], arg0 = [{2}]", e.Message, text, arg0);
+                Logo.Error("{0}. text = [{1}], arg0 = [{2}]", e.Message, text, arg0);
             }
 
             return ret;
@@ -53,7 +54,7 @@ namespace Metadata
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("{0}. text = [{1}], arg0 = [{2}], arg1 = [{3}]", e.Message, text, arg0, arg1);
+                Logo.Error("{0}. text = [{1}], arg0 = [{2}], arg1 = [{3}]", e.Message, text, arg0, arg1);
             }
 
             return ret;
@@ -68,7 +69,7 @@ namespace Metadata
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("{0}. text = [{1}], arg0 = [{2}], arg1 = [{3}], arg2 = [{4}]", e.Message, text, arg0, arg1, arg2);
+                Logo.Error("{0}. text = [{1}], arg0 = [{2}], arg1 = [{3}], arg2 = [{4}]", e.Message, text, arg0, arg1, arg2);
             }
 
             return ret;
@@ -96,7 +97,7 @@ namespace Metadata
                     argsDebugText += args[i].ToString();
                 }
 
-                Console.Error.WriteLine("{0}. text = [{1}], argLength = {2}, args = [{3}], arg2 = [{4}]", e.Message, text, args.Length, argsDebugText);
+                Logo.Error("{0}. text = [{1}], argLength = {2}, args = [{3}], arg2 = [{4}]", e.Message, text, args.Length, argsDebugText);
             }
 
             return ret;

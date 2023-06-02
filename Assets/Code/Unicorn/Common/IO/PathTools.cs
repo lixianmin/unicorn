@@ -328,7 +328,7 @@ namespace Unicorn
                     }
                     else
                     {
-                        Console.Error.WriteLine("Call EditorResourceRoot on mobile device");
+                        Logo.Error("Call EditorResourceRoot on mobile device");
                     }
                 }
 

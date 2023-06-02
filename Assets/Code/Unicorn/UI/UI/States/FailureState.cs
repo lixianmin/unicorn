@@ -13,7 +13,7 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object failureText)
         {
-            Console.Error.WriteLine("Enter FailureState, failureText={0}", failureText);
+            Logo.Error("Enter FailureState, failureText={0}", failureText);
             fetus.ChangeState(StateKind.None);
             fetus.master.Dispose();
         }

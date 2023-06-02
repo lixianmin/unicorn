@@ -48,7 +48,7 @@ namespace Metadata.Build
             var filepath = _GetBuiltFilePath();
             if (string.IsNullOrEmpty(filepath) || !File.Exists(filepath))
             {
-	            Console.Error.WriteLine($"invalid filepath={filepath}, maybe you need to Dispatch Metadata firstly.");
+	            Logo.Error($"invalid filepath={filepath}, maybe you need to Dispatch Metadata firstly.");
                 return false;
             }
 
@@ -58,7 +58,7 @@ namespace Metadata.Build
             var version = reader.ReadInt32();
             if (version != _currentVersion)
             {
-	            Console.Error.WriteLine($"version does not match, version={version}, _currentVersion={_currentVersion}");
+	            Logo.Error($"version does not match, version={version}, _currentVersion={_currentVersion}");
 	            return false;
             }
 
@@ -119,7 +119,7 @@ namespace Metadata.Build
             var type = TypeTools.SearchType("Unicorn.UnicornManifest");
             if (null == type)
             {
-                Console.Error.WriteLine("type of Unicorn.UnicornManifest is null");
+                Logo.Error("type of Unicorn.UnicornManifest is null");
                 return string.Empty;
             }
 
@@ -127,7 +127,7 @@ namespace Metadata.Build
             TypeTools.CreateDelegate(type, "GetXmlMetadataRoot", out lpfnGetXmlMetadataRoot);
             if (null == lpfnGetXmlMetadataRoot)
             {
-                Console.Error.WriteLine("lpfnGetXmlMetadataRoot is null");
+                Logo.Error("lpfnGetXmlMetadataRoot is null");
                 return string.Empty;
             }
 
@@ -140,7 +140,7 @@ namespace Metadata.Build
 			var newEntry = EntryItem.Create(xmlPath);
 			if (null == newEntry)
 			{
-				Console.Error.WriteLine("newEntry=null, xmlPath={0}", xmlPath);
+				Logo.Error("newEntry=null, xmlPath={0}", xmlPath);
 				return;
 			}
 			
@@ -167,7 +167,7 @@ namespace Metadata.Build
 				{
                     if (null == template)
                     {
-                        Console.Error.WriteLine("Invalid file format for template=null, xmlPath={0}", xmlPath);
+                        Logo.Error("Invalid file format for template=null, xmlPath={0}", xmlPath);
                         continue;
                     }
 
@@ -184,7 +184,7 @@ namespace Metadata.Build
 				{
                     if (null == config)
                     {
-                        Console.Error.WriteLine("Invalid file format for config=null, xmlPath={0}", xmlPath);
+                        Logo.Error("Invalid file format for config=null, xmlPath={0}", xmlPath);
                         continue;
                     }
 
@@ -205,7 +205,7 @@ namespace Metadata.Build
 			}
 			else
 			{
-                Console.Error.WriteLine("rawMetdata=null, this xml file may not be used any more, xmlPath={0}", xmlPath);
+                Logo.Error("rawMetdata=null, this xml file may not be used any more, xmlPath={0}", xmlPath);
 			}
 		}
 
@@ -330,7 +330,7 @@ namespace Metadata.Build
 
 			if (sbText.Length > 0)
 			{
-                Console.Error.WriteLine(sbText);
+                Logo.Error(sbText);
 			}
 
 			var isEntriesRemoved = false;

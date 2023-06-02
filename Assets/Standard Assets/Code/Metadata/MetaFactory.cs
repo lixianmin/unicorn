@@ -24,7 +24,7 @@ namespace Metadata
             var creator = lookupTable[typeName] as MetaCreator;
             if (creator == null)
             {
-                Console.Error.WriteLine("creator=null, typeName={0}, lookupTable.Count={1}", typeName, lookupTable.Count);
+                Logo.Error("creator=null, typeName={0}, lookupTable.Count={1}", typeName, lookupTable.Count);
             }
 
             return creator;
@@ -101,7 +101,7 @@ namespace Metadata
 
                 if (null == _lookupTableByName)
                 {
-                    Console.Error.WriteLine("[_GetLookupTableByName()] _lookupTableByName is null, outerFactoryTypeName={0}, outerFactoryGetLookupTableByType={1}"
+                    Logo.Error("[_GetLookupTableByName()] _lookupTableByName is null, outerFactoryTypeName={0}, outerFactoryGetLookupTableByType={1}"
                         , outerFactoryTypeName, outerFactoryGetLookupTableByName);
 
                     _lookupTableByName = new Hashtable();

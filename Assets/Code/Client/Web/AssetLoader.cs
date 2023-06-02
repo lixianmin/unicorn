@@ -51,7 +51,7 @@
 //                 }
 //                 
 //                 _assetItems.Remove(address);
-//                 Console.Error.WriteLine("failed to load asset={0}", address);
+//                 Logo.Error("failed to load asset={0}", address);
 //             });
 //
 //             return true;

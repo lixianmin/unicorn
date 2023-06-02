@@ -65,7 +65,7 @@
 ////				var flags = type.GetExportFlags();
 ////				if (flags == ExportFlags.ExportLua && codeAssembly != CodeAssembly.EditorAssembly)
 ////				{
-////					Console.Error.WriteLine("{0} --- with [Export(ExportFlags.ExportLua)] should be under Editor folder", type.FullName);
+////					Logo.Error("{0} --- with [Export(ExportFlags.ExportLua)] should be under Editor folder", type.FullName);
 ////					continue;
 ////				}
 ////

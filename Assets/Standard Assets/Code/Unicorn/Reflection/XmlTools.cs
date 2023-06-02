@@ -46,7 +46,7 @@ namespace Unicorn
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("path={0}, ex={1}", path, ex);
+                Logo.Error("path={0}, ex={1}", path, ex);
             }
             finally
             {

@@ -89,7 +89,7 @@
 //            else
 //            {
 //                var text = string.Format("Invalid type found: typeof({0}) = {1}", name, type);
-//                Console.Error.WriteLine(text);
+//                Logo.Error(text);
 //            }
 //
 //            return member;

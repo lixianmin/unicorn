@@ -18,7 +18,7 @@
 //         {
 //             if (canvasGroup == null)
 //             {
-//                 Console.Error.WriteLine("canvasGroup is null");
+//                 Logo.Error("canvasGroup is null");
 //             }
 //             
 //             canvasGroup.DOFade(targetAlpha, duration).OnComplete(() =>

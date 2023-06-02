@@ -114,7 +114,7 @@ namespace Unicorn
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("[UnicornMain._InitLogInfo()] ex={0}", ex);
+                Logo.Error("[UnicornMain._InitLogInfo()] ex={0}", ex);
             }
         }
 

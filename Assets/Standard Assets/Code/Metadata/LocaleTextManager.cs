@@ -69,7 +69,7 @@ namespace Metadata
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine(ex);
+                    Logo.Error(ex);
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace Metadata
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine(ex);
+                    Logo.Error(ex);
                 }
             }
         }
@@ -231,7 +231,7 @@ namespace Metadata
             {
                 if (!localeIndices.TryGetValue(guid, out index))
                 {
-                    Console.Error.WriteLine("Invalid guid={0}, _localeIndices.Count={1}"
+                    Logo.Error("Invalid guid={0}, _localeIndices.Count={1}"
                         , guid, localeIndices.Count.ToString());
                 }
             }

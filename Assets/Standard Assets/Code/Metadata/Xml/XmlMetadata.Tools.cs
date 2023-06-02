@@ -51,7 +51,7 @@ namespace Metadata
 			var lpfnSerialize = _GetSerializeFunc ();
 			if (null == lpfnSerialize)
 			{
-				Console.Error.WriteLine("lpfnSerialize is null.");
+				Logo.Error("lpfnSerialize is null.");
 				return;
 			}
 
@@ -64,7 +64,7 @@ namespace Metadata
 			}
 			catch (Exception ex)
 			{
-				Console.Error.WriteLine("xmlFile={0}, ex={1}", xmlFile, ex);
+				Logo.Error("xmlFile={0}, ex={1}", xmlFile, ex);
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace Metadata
 			var lpfnDeserialize = _GetDeserializeFunc ();
 			if (null == lpfnDeserialize)
 			{
-				Console.Error.WriteLine("lpfnDeserialize is null.");
+				Logo.Error("lpfnDeserialize is null.");
 				return null;
 			}
 
@@ -84,7 +84,7 @@ namespace Metadata
 			}
 			catch (Exception ex)
 			{
-				Console.Error.WriteLine("xmlFile={0}, ex={1}", xmlFile, ex);
+				Logo.Error("xmlFile={0}, ex={1}", xmlFile, ex);
 				if (reader != null)
 				{
 					reader.Dispose();
@@ -102,11 +102,11 @@ namespace Metadata
 				if (null == innerException
 				    || !innerException.Message.StartsWithEx("The specified type was not recognized", CompareOptions.Ordinal))
 				{
-					Console.Error.WriteLine("xmlFile={0}, ex={1}", xmlFile, ex);
+					Logo.Error("xmlFile={0}, ex={1}", xmlFile, ex);
 				}
                 else
                 {
-                    Console.Error.WriteLine("InvalidOperationException : xmlFile={0}, ex={1}", xmlFile, ex);
+                    Logo.Error("InvalidOperationException : xmlFile={0}, ex={1}", xmlFile, ex);
                 }
 
 				if (reader != null)
@@ -117,7 +117,7 @@ namespace Metadata
 			catch (Exception ex)
 			{
 				string bufferText = reader.GetDecodedBufferEx();
-				Console.Error.WriteLine("xmlFile={0}, ex=\n{1}\n, bufferText=\n{2}\n", xmlFile, ex, bufferText);
+				Logo.Error("xmlFile={0}, ex=\n{1}\n, bufferText=\n{2}\n", xmlFile, ex, bufferText);
                 if (reader != null)
                 {
                     reader.Dispose();

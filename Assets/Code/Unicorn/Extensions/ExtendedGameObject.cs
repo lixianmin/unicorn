@@ -125,7 +125,7 @@ namespace Unicorn
 //            }
 //            else
 //            {
-//                Console.Error.WriteLine("[GameObject:GetActiveInHierarchyEx()] go is null");
+//                Logo.Error("[GameObject:GetActiveInHierarchyEx()] go is null");
 //                return false;
 //            }
 //        }
@@ -138,7 +138,7 @@ namespace Unicorn
 //            }
 //            else
 //            {
-//                Console.Error.WriteLine("[GameObject:GetActiveSelfEx()] go is null");
+//                Logo.Error("[GameObject:GetActiveSelfEx()] go is null");
 //                return false;
 //            }
 //        }

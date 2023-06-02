@@ -8,6 +8,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Unicorn;
 using UnityEngine;
 
 namespace Metadata
@@ -37,7 +38,7 @@ namespace Metadata
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("assembly={0}, ex={1}", assembly.FullName, ex);
+                    Logo.Error("assembly={0}, ex={1}", assembly.FullName, ex);
                 }
             }
 

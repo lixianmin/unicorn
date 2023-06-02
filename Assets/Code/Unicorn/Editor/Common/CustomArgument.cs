@@ -38,7 +38,7 @@ namespace Unicorn
 					}
 					else
 					{
-						Console.Error.WriteLine(string.Format("-CustomArgs[{0}]: {1} format is wrong!", i.ToString(), args2[i]));
+						Logo.Error(string.Format("-CustomArgs[{0}]: {1} format is wrong!", i.ToString(), args2[i]));
 					}
 				}
 			}

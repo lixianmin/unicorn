@@ -22,7 +22,7 @@
 //                 }
 //                 catch (Exception ex)
 //                 {
-//                     Console.Error.WriteLine($"[OnTriggerEnter()] ex= {ex},\n\n StackTrace={ex.StackTrace}");
+//                     Logo.Error($"[OnTriggerEnter()] ex= {ex},\n\n StackTrace={ex.StackTrace}");
 //                 }
 //             }
 //         }
@@ -37,7 +37,7 @@
 //                 }
 //                 catch (Exception ex)
 //                 {
-//                     Console.Error.WriteLine($"[OnTriggerEnter()] ex= {ex},\n\n StackTrace={ex.StackTrace}");
+//                     Logo.Error($"[OnTriggerEnter()] ex= {ex},\n\n StackTrace={ex.StackTrace}");
 //                 }
 //             }
 //         }

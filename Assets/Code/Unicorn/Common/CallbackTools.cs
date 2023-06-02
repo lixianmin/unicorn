@@ -23,7 +23,7 @@ namespace Unicorn
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("[CallbackTools.Handle()] {0}, ex= {1},\n\n StackTrace={2}"
+                    Logo.Error("[CallbackTools.Handle()] {0}, ex= {1},\n\n StackTrace={2}"
                         , title, ex, ex.StackTrace);
                 }
             }
@@ -41,7 +41,7 @@ namespace Unicorn
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("[CallbackTools.Handle()] {0}, ex= {1},\n\n StackTrace={2}"
+                    Logo.Error("[CallbackTools.Handle()] {0}, ex= {1},\n\n StackTrace={2}"
                                             , title, ex, ex.StackTrace);
                 }
                 finally
@@ -68,7 +68,7 @@ namespace Unicorn
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("[CallbackTools.Handle()] {0} {1}, ex= {2},\n\n StackTrace={3},\n\n this= {4}"
+                    Logo.Error("[CallbackTools.Handle()] {0} {1}, ex= {2},\n\n StackTrace={3},\n\n this= {4}"
                                             , title, text.ToString(), ex.ToString(), ex.StackTrace, self);
                 }
                 finally

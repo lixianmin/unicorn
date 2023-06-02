@@ -71,7 +71,7 @@
 //            }
 //            catch (Exception ex)
 //            {
-//                Console.Error.WriteLine("[CoroutineManager.StartCoroutine()] ex={0}", ex.ToStringEx());
+//                Logo.Error("[CoroutineManager.StartCoroutine()] ex={0}", ex.ToStringEx());
 //            }
 //
 //			return routine;
@@ -100,7 +100,7 @@
 //			}
 //			catch (Exception ex)
 //			{
-//				Console.Error.WriteLine("[CoroutineManager.StartCoroutineTimeout()] ex={0}, StackTrace={1}", ex, ex.StackTrace);
+//				Logo.Error("[CoroutineManager.StartCoroutineTimeout()] ex={0}, StackTrace={1}", ex, ex.StackTrace);
 //			}
 //
 //			return routine;
@@ -173,7 +173,7 @@
 //                        catch (Exception ex)
 //                        {
 //                            item.isDone = true;
-//                            Console.Error.WriteLine("[CoroutineManager.Tick()] ex={0}, StackTrace={1}", ex, ex.StackTrace);
+//                            Logo.Error("[CoroutineManager.Tick()] ex={0}, StackTrace={1}", ex, ex.StackTrace);
 //                        }
 //
 //                        if (item.isDone)

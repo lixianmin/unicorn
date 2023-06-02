@@ -186,7 +186,7 @@ namespace Unicorn
 			var path = AssetDatabase.GetAssetPath(asset);
 			if (string.IsNullOrEmpty(path))
 			{
-				Console.Error.WriteLine("[GetAssetPath()] GetAssetPath() returns null, asset={0}", asset);
+				Logo.Error("[GetAssetPath()] GetAssetPath() returns null, asset={0}", asset);
 				return string.Empty;
 			}
 

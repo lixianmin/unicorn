@@ -33,7 +33,7 @@ namespace Metadata
             var oldTemplate = table.GetEx(template.id);
             if (null != oldTemplate)
             {
-                Console.Error.WriteLine("Duplicate template.id ={0}, oldTemplate={1}, newTemplate={2}"
+                Logo.Error("Duplicate template.id ={0}, oldTemplate={1}, newTemplate={2}"
                                         , template.id, oldTemplate, template);
                 return false;
             }

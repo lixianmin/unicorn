@@ -38,7 +38,7 @@ namespace Unicorn.UI
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("[_Handle()] {0}, ex= {1},\n\n StackTrace={2}", title, ex, ex.StackTrace);
+                    Logo.Error("[_Handle()] {0}, ex= {1},\n\n StackTrace={2}", title, ex, ex.StackTrace);
                 }
 
                 _ongoings &= (byte)~(1 << index);

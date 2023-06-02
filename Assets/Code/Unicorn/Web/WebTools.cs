@@ -59,7 +59,7 @@ namespace Unicorn.Web
             var shader = material.shader;
             if (shader == null)
             {
-                Console.Error.WriteLine($"material.name={material.name}, shader is null");
+                Logo.Error($"material.name={material.name}, shader is null");
                 return;
             }
 

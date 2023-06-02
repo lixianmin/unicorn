@@ -25,7 +25,7 @@ namespace Unicorn
         {
             if (!condition)
             {
-                Console.Error.WriteLine(message);
+                Logo.Error(message);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Unicorn
             if (!expected.Equals(actual))
             {
                 var message = $"expected = {expected.ToString()}, actual={actual.ToString()}";
-                Console.Error.WriteLine(message);
+                Logo.Error(message);
             }
         }
 
@@ -45,7 +45,7 @@ namespace Unicorn
             if (null == obj)
             {
                 var message = $"obj is null, type = {typeof(T)}";
-                Console.Error.WriteLine(message);
+                Logo.Error(message);
             }
         }
 
@@ -55,7 +55,7 @@ namespace Unicorn
         //            if (null == obj)
         //            {
         //                var message = string.Format(null, format, args);
-        //				Console.Error.WriteLine("obj is null, type = {0}, message={1}", typeof(T), message);
+        //				Logo.Error("obj is null, type = {0}, message={1}", typeof(T), message);
         //            }
         //        }
 
@@ -64,7 +64,7 @@ namespace Unicorn
         {
             if (null != obj)
             {
-                Console.Error.WriteLine("obj should be null, type = {0}", typeof(T));
+                Logo.Error("obj should be null, type = {0}", typeof(T));
             }
         }
 
@@ -74,7 +74,7 @@ namespace Unicorn
         //            if (null != obj)
         //            {
         //                var message = string.Format(null, format, args);
-        //				Console.Error.WriteLine("obj should be null, type = {0}, message={1}", typeof(T), message);
+        //				Logo.Error("obj should be null, type = {0}, message={1}", typeof(T), message);
         //            }
         //        }
 
@@ -83,7 +83,7 @@ namespace Unicorn
         {
             if (a <= b)
             {
-                Console.Error.WriteLine("Expected: a > b, given: {0} <= {1}", a.ToString(), b.ToString());
+                Logo.Error("Expected: a > b, given: {0} <= {1}", a.ToString(), b.ToString());
             }
         }
 
@@ -120,7 +120,7 @@ namespace Unicorn
 
             if (handleTime > timeout)
             {
-                Console.Error.WriteLine($"cost={handleTime:F3} s, expected={timeout:F3} s, message={message}");
+                Logo.Error($"cost={handleTime:F3} s, expected={timeout:F3} s, message={message}");
             }
 
             BeginTimeout();

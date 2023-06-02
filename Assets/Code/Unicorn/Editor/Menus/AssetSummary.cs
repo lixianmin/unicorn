@@ -20,7 +20,7 @@ namespace Unicorn.Menus
             var asset = Selection.activeObject;
             if (null == asset)
             {
-                Console.Error.WriteLine("Please select one asset.");
+                Logo.Error("Please select one asset.");
                 return;
             }
 
@@ -31,7 +31,7 @@ namespace Unicorn.Menus
 		{
 			if (null == asset)
 			{
-				Console.Error.WriteLine("[OpenAssetSummary()] asset is null.");
+				Logo.Error("[OpenAssetSummary()] asset is null.");
 				return;
 			}
 

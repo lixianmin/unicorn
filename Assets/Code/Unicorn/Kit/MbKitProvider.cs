@@ -23,7 +23,7 @@ namespace Unicorn.Kit
             }
             else
             {
-                Console.Error.WriteLine("invalid fullKitName={0}, or need to make auto code", fullKitName);
+                Logo.Error("invalid fullKitName={0}, or need to make auto code", fullKitName);
             }
         }
 

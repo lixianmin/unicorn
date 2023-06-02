@@ -95,7 +95,7 @@ namespace Unicorn
 
             if (name == string.Empty)
             {
-                Console.Error.WriteLine($"using unsupported buildTarget={buildTarget}");
+                Logo.Error($"using unsupported buildTarget={buildTarget}");
                 return false;
             }
             

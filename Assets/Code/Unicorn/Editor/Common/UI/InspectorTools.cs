@@ -378,7 +378,7 @@ namespace Unicorn
                     var elementType = filedType.GetElementType();
                     if (elementType == null)
                     {
-                        Console.Error.WriteLine("elementType is null, fieldType={0}", filedType);
+                        Logo.Error("elementType is null, fieldType={0}", filedType);
                         return false;
                     }
 

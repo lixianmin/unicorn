@@ -20,7 +20,7 @@ namespace Unicorn.UI.States
             var assetPath = fetus.master.GetAssetPath();
             if (string.IsNullOrEmpty(assetPath))
             {
-                Console.Error.WriteLine("assetPath is empty.");
+                Logo.Error("assetPath is empty.");
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace Unicorn.UI.States
                 }
                 else
                 {
-                    Console.Error.WriteLine("invalid state={0}", fetus.GetState());
+                    Logo.Error("invalid state={0}", fetus.GetState());
                 }
 
                 prefab.Dispose();

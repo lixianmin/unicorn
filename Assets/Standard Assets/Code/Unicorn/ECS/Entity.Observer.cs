@@ -26,7 +26,7 @@ namespace Unicorn
                     }
                     catch (Exception ex)
                     {
-                        Console.Error.WriteLine("[SendMessage()] message=[{0}], ex={1}", message.ToString(), ex);
+                        Logo.Error("[SendMessage()] message=[{0}], ex={1}", message.ToString(), ex);
                     }
                 }
             }

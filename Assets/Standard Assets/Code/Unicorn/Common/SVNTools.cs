@@ -38,7 +38,7 @@ namespace Unicorn
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(ex);
+                Logo.Error(ex);
             }
 
             return 0;
@@ -93,7 +93,7 @@ namespace Unicorn
                 }
             }
 
-            Console.Error.WriteLine($"can not find command in $PATH={environmentPath}");
+            Logo.Error($"can not find command in $PATH={environmentPath}");
             return name;
         }
 

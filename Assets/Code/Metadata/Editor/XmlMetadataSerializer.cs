@@ -56,7 +56,7 @@ namespace Metadata
 					var memberName = member.Name;
 					if (elementName.GetEditDistanceEx(memberName) < minReportDistance)
 					{
-						Console.Error.WriteLine("unknown={0}, maybe={1}, LineNumber={2} \n\n ObjectBeingDeserialized={3} \n\n clipText={4}"
+						Logo.Error("unknown={0}, maybe={1}, LineNumber={2} \n\n ObjectBeingDeserialized={3} \n\n clipText={4}"
 							, elementName
 							, memberName
 							, e.LineNumber.ToString()
@@ -68,7 +68,7 @@ namespace Metadata
 			}
 			else
 			{
-				Console.Error.WriteLine("unknown={0}, LineNumber={1}, ObjectBeingDeserialized=null \n\n clipText={2}"
+				Logo.Error("unknown={0}, LineNumber={1}, ObjectBeingDeserialized=null \n\n clipText={2}"
 					, elementName
 					, e.LineNumber.ToString()
 					, _currentReader.GetDecodedBufferEx());

@@ -41,7 +41,7 @@ namespace Unicorn.UI.States
                     state = new FailureState();
                     break;
                 default:
-                    Console.Error.WriteLine("invalid state kind={0}", kind);
+                    Logo.Error("invalid state kind={0}", kind);
                     break;
             }
 

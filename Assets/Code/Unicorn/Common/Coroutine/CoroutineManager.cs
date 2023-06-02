@@ -52,7 +52,7 @@ namespace Unicorn
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("[CoroutineManager.StartCoroutine()] ex={0}", ex);
+                    Logo.Error("[CoroutineManager.StartCoroutine()] ex={0}", ex);
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace Unicorn
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine("[CoroutineManager.StartCoroutine()] ex={0}", ex);
+                    Logo.Error("[CoroutineManager.StartCoroutine()] ex={0}", ex);
                 }
             }
         }
@@ -145,7 +145,7 @@ namespace Unicorn
                         catch (Exception ex)
                         {
                             item.isDone = true;
-                            Console.Error.WriteLine("[CoroutineManager.Update()] ex={0}, StackTrace={1}", ex,
+                            Logo.Error("[CoroutineManager.Update()] ex={0}, StackTrace={1}", ex,
                                 ex.StackTrace);
                         }
                     }

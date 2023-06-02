@@ -62,7 +62,7 @@ namespace Metadata
                 }
                 else
                 {
-                    Console.Error.WriteLine("Create() should not create null metadata");
+                    Logo.Error("Create() should not create null metadata");
                 }
 
                 SetLayout(layout);

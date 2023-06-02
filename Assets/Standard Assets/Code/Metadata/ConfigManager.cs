@@ -32,7 +32,7 @@ namespace Metadata
 
             if (null != oldConfig)
             {
-                Console.Error.WriteLine("Duplicate config: oldConfig={0}, newConfig={1}", oldConfig, config);
+                Logo.Error("Duplicate config: oldConfig={0}, newConfig={1}", oldConfig, config);
                 return false;
             }
 
