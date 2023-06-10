@@ -14,13 +14,7 @@ namespace Unicorn.IO
 {
 	public class OctetsReader : BinaryReader, IOctetsReader
     {
-		public OctetsReader (Stream stream)
-			: this(stream, OctetsMode.UseFilter)
-		{
-
-		}
-
-        public OctetsReader (Stream stream, OctetsMode mode)
+	    public OctetsReader (Stream stream, OctetsMode mode = OctetsMode.UseFilter)
             : base(stream, Kernel.UTF8)
         {
             _stream  = stream;

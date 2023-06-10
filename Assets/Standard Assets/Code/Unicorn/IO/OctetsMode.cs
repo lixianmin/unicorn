@@ -6,8 +6,11 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
+
 namespace Unicorn.IO
 {
+    [Flags]
     public enum OctetsMode: ushort
     {
         None        = 0,
