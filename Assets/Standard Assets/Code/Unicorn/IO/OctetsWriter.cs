@@ -13,12 +13,7 @@ namespace Unicorn.IO
 {
 	public class OctetsWriter : BinaryWriter, IOctetsWriter
     {
-		public OctetsWriter (Stream stream): this (stream, OctetsMode.None)
-		{
-
-		}
-
-        public OctetsWriter (Stream stream, OctetsMode mode): base(stream, Kernel.UTF8)
+	    public OctetsWriter (Stream stream, OctetsMode mode = OctetsMode.None): base(stream, Kernel.UTF8)
         {
 //			_mode = mode;
 			_dontCompress = (mode & OctetsMode.Compress) == 0;
@@ -97,6 +92,11 @@ namespace Unicorn.IO
 			{
 				_Pack(val);
 			}
+		}
+
+		public new void Write7BitEncodedInt(int d)
+		{
+			base.Write7BitEncodedInt(d);
 		}
 
 		private void _Pack (int val)

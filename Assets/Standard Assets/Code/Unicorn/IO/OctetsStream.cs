@@ -7,7 +7,7 @@ namespace Unicorn.IO
     {
         public virtual int Capacity
         {
-            get => _capacity - _initialIndex;
+            get => _capacity;
             set
             {
                 if (value != _capacity)
@@ -41,7 +41,7 @@ namespace Unicorn.IO
 
         public override long Position
         {
-            get => _position - _initialIndex;
+            get => _position - 0;
             set
             {
                 if (value < 0)
@@ -49,17 +49,17 @@ namespace Unicorn.IO
                     throw new ArgumentOutOfRangeException("value", "Position cannot be negative");
                 }
 
-                if (value > 2147483647)
+                if (value > int.MaxValue)
                 {
                     throw new ArgumentOutOfRangeException("value",
                         "Position must be non-negative and less than 2^31 - 1 - origin");
                 }
 
-                _position = _initialIndex + (int)value;
+                _position = (int)value;
             }
         }
 
-        public override long Length => _length - _initialIndex;
+        public override long Length => _length;
 
         public override bool CanRead => true;
 
@@ -104,12 +104,11 @@ namespace Unicorn.IO
             _capacity = count + index;
             _length = _capacity;
             _position = index;
-            _initialIndex = index;
         }
 
         public override long Seek(long offset, SeekOrigin loc)
         {
-            if (offset > 2147483647)
+            if (offset > int.MaxValue)
             {
                 throw new ArgumentOutOfRangeException("Offset out of range. " + offset);
             }
@@ -123,7 +122,7 @@ namespace Unicorn.IO
                         throw new IOException("Attempted to seek before start of OctetsStream.");
                     }
 
-                    num = _initialIndex;
+                    num = 0;
                     break;
                 case SeekOrigin.Current:
                     num = _position;
@@ -136,7 +135,7 @@ namespace Unicorn.IO
             }
 
             num += (int)offset;
-            if (num < _initialIndex)
+            if (num < 0)
             {
                 throw new IOException("Attempted to seek before start of OctetsStream.");
             }
@@ -152,12 +151,12 @@ namespace Unicorn.IO
                 throw new NotSupportedException("Expanding this OctetsStream is not supported");
             }
 
-            if (value < 0 || value + _initialIndex > 2147483647)
+            if (value < 0 || value > int.MaxValue)
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-            int num = (int)value + _initialIndex;
+            int num = (int)value;
             if (num > _length)
             {
                 _Expand(num);
@@ -279,13 +278,13 @@ namespace Unicorn.IO
                 _length = _position;
             }
         }
-        
+
         public void Tidy()
         {
-            var count = _length -  _position;
-            Buffer.BlockCopy(_buffer, _position, _buffer, _initialIndex, count);
+            var count = _length - _position;
+            Buffer.BlockCopy(_buffer, _position, _buffer, 0, count);
 
-            _position = _initialIndex;
+            _position = 0;
             SetLength(count);
         }
 
@@ -296,7 +295,7 @@ namespace Unicorn.IO
                 throw new ArgumentNullException("stream");
             }
 
-            stream.Write(_buffer, _initialIndex, _length - _initialIndex);
+            stream.Write(_buffer, 0, _length);
         }
 
         public byte[] GetBuffer()
@@ -306,11 +305,11 @@ namespace Unicorn.IO
 
         public byte[] ToArray()
         {
-            int num = _length - _initialIndex;
+            int num = _length;
             byte[] array = new byte[num];
             if (_buffer != null)
             {
-                Buffer.BlockCopy(_buffer, _initialIndex, array, 0, num);
+                Buffer.BlockCopy(_buffer, 0, array, 0, num);
             }
 
             return array;
@@ -319,8 +318,12 @@ namespace Unicorn.IO
         public override void Flush()
         {
         }
-        
-        private readonly int _initialIndex;
+
+        public void Reset()
+        {
+            _position = 0;
+            _length = 0;
+        }
 
         private int _dirtyBytes;
 
