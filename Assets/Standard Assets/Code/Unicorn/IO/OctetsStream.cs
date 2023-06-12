@@ -18,7 +18,7 @@ namespace Unicorn.IO
                         throw new ArgumentOutOfRangeException(nameof(value),
                             "New capacity cant be negative or less than the data length" + value + " " + _length);
                     }
-                    
+
                     var array = Array.Empty<byte>();
                     if (value != 0)
                     {
@@ -129,7 +129,7 @@ namespace Unicorn.IO
             {
                 _Expand(num);
             }
-            
+
             _length = num;
             if (_position > _length)
             {
@@ -213,7 +213,7 @@ namespace Unicorn.IO
         {
             if (buffer == null)
             {
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             }
 
             if (offset < 0 || count < 0)
@@ -221,12 +221,18 @@ namespace Unicorn.IO
                 throw new ArgumentOutOfRangeException();
             }
 
-            if (buffer.Length - offset < count)
+            if (buffer.Length < offset + count)
             {
                 throw new ArgumentException("offset+count", "The size of the buffer is less than offset + count.");
             }
 
-            if (_position > _length - count)
+            if (count == 0)
+            {
+                return;
+            }
+
+            var newSize = _position + count;
+            if (newSize > _length)
             {
                 _Expand(_position + count);
             }
@@ -242,10 +248,13 @@ namespace Unicorn.IO
         public void Tidy()
         {
             var count = _length - _position;
-            Buffer.BlockCopy(_buffer, _position, _buffer, 0, count);
+            if (count > 0)
+            {
+                Buffer.BlockCopy(_buffer, _position, _buffer, 0, count);
+            }
 
             _position = 0;
-            SetLength(count);
+            _length = count;
         }
 
         public void WriteTo(Stream stream)
@@ -265,7 +274,7 @@ namespace Unicorn.IO
 
         public byte[] ToArray()
         {
-            int num = _length;
+            var num = _length;
             var array = new byte[num];
             Buffer.BlockCopy(_buffer, 0, array, 0, num);
 
@@ -281,11 +290,9 @@ namespace Unicorn.IO
             _position = 0;
             _length = 0;
         }
-        
-        private int _position;
 
         private byte[] _buffer;
-
+        private int _position;
         private int _length;
     }
 }
