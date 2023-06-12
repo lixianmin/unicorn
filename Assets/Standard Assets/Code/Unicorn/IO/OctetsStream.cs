@@ -7,34 +7,28 @@ namespace Unicorn.IO
     {
         public virtual int Capacity
         {
-            get => _capacity;
+            get => _buffer.Length;
             set
             {
-                if (value != _capacity)
+                var lastCapacity = _buffer.Length;
+                if (value != lastCapacity)
                 {
                     if (value < 0 || value < _length)
                     {
-                        throw new ArgumentOutOfRangeException("value",
-                            "New capacity cannot be negative or less than the current capacity " + value + " " +
-                            _capacity);
+                        throw new ArgumentOutOfRangeException(nameof(value),
+                            "New capacity cant be negative or less than the data length" + value + " " + _length);
                     }
 
-                    if (_buffer == null || value != _buffer.Length)
+
+                    byte[] array = Array.Empty<byte>();
+                    if (value != 0)
                     {
-                        byte[] array = null;
-                        if (value != 0)
-                        {
-                            array = new byte[value];
-                            if (_buffer != null)
-                            {
-                                Buffer.BlockCopy(_buffer, 0, array, 0, _length);
-                            }
-                        }
-
-                        _dirtyBytes = 0;
-                        _buffer = array;
-                        _capacity = value;
+                        array = new byte[value];
+                        Buffer.BlockCopy(_buffer, 0, array, 0, _length);
                     }
+
+                    _dirtyBytes = 0;
+                    _buffer = array;
                 }
             }
         }
@@ -76,34 +70,10 @@ namespace Unicorn.IO
         {
             if (capacity < 0)
             {
-                throw new ArgumentOutOfRangeException("capacity");
+                throw new ArgumentOutOfRangeException(nameof(capacity));
             }
 
-            _capacity = capacity;
             _buffer = new byte[capacity];
-        }
-
-        public OctetsStream(byte[] buffer, int index, int count)
-        {
-            if (buffer == null)
-            {
-                throw new ArgumentNullException("buffer");
-            }
-
-            if (index < 0 || count < 0)
-            {
-                throw new ArgumentOutOfRangeException("index or count is less than 0.");
-            }
-
-            if (buffer.Length - index < count)
-            {
-                throw new ArgumentException("index+count", "The size of the buffer is less than index + count.");
-            }
-
-            _buffer = buffer;
-            _capacity = count + index;
-            _length = _capacity;
-            _position = index;
         }
 
         public override long Seek(long offset, SeekOrigin loc)
@@ -146,12 +116,12 @@ namespace Unicorn.IO
 
         public override void SetLength(long value)
         {
-            if (value > _capacity)
+            if (value > _buffer.Length)
             {
                 throw new NotSupportedException("Expanding this OctetsStream is not supported");
             }
 
-            if (value < 0 || value > int.MaxValue)
+            if (value < 0)
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -175,16 +145,17 @@ namespace Unicorn.IO
 
         private void _Expand(int newSize)
         {
-            if (newSize > _capacity)
+            var capacity = _buffer.Length;
+            if (newSize > capacity)
             {
                 int num = newSize;
                 if (num < 32)
                 {
                     num = 32;
                 }
-                else if (num < _capacity << 1)
+                else if (num < capacity << 1)
                 {
-                    num = _capacity << 1;
+                    num = capacity << 1;
                 }
 
                 Capacity = num;
@@ -292,25 +263,22 @@ namespace Unicorn.IO
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             stream.Write(_buffer, 0, _length);
         }
 
-        public byte[] GetBuffer()
-        {
-            return _buffer;
-        }
+        // public byte[] GetBuffer()
+        // {
+        //     return _buffer;
+        // }
 
         public byte[] ToArray()
         {
             int num = _length;
-            byte[] array = new byte[num];
-            if (_buffer != null)
-            {
-                Buffer.BlockCopy(_buffer, 0, array, 0, num);
-            }
+            var array = new byte[num];
+            Buffer.BlockCopy(_buffer, 0, array, 0, num);
 
             return array;
         }
@@ -328,8 +296,6 @@ namespace Unicorn.IO
         private int _dirtyBytes;
 
         private int _position;
-
-        private int _capacity;
 
         private byte[] _buffer;
 
