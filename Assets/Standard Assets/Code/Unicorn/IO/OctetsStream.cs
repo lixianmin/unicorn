@@ -18,16 +18,14 @@ namespace Unicorn.IO
                         throw new ArgumentOutOfRangeException(nameof(value),
                             "New capacity cant be negative or less than the data length" + value + " " + _length);
                     }
-
-
-                    byte[] array = Array.Empty<byte>();
+                    
+                    var array = Array.Empty<byte>();
                     if (value != 0)
                     {
                         array = new byte[value];
                         Buffer.BlockCopy(_buffer, 0, array, 0, _length);
                     }
 
-                    _dirtyBytes = 0;
                     _buffer = array;
                 }
             }
@@ -131,11 +129,7 @@ namespace Unicorn.IO
             {
                 _Expand(num);
             }
-            else if (num < _length)
-            {
-                _dirtyBytes += _length - num;
-            }
-
+            
             _length = num;
             if (_position > _length)
             {
@@ -159,11 +153,6 @@ namespace Unicorn.IO
                 }
 
                 Capacity = num;
-            }
-            else if (_dirtyBytes > 0)
-            {
-                Array.Clear(_buffer, _length, _dirtyBytes);
-                _dirtyBytes = 0;
             }
         }
 
@@ -292,9 +281,7 @@ namespace Unicorn.IO
             _position = 0;
             _length = 0;
         }
-
-        private int _dirtyBytes;
-
+        
         private int _position;
 
         private byte[] _buffer;
