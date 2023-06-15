@@ -8,7 +8,7 @@ Copyright (C) - All Rights Reserved
 
 namespace Unicorn.Web
 {
-    internal class EmptyWebNode:IWebNode
+    public class EmptyWebNode:IWebNode
     {
         /// <summary>
         /// 下载过程是否已结束：成功/失败/取消

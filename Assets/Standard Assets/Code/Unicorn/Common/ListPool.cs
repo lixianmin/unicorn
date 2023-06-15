@@ -22,7 +22,7 @@ namespace Unicorn
             _pool.Recycle(list);
         }
 
-        private static readonly ObjectPool<List<T>> _pool = new ObjectPool<List<T>>(null, list => list.Clear());
+        private static readonly ObjectPool<List<T>> _pool = new(null, list => list.Clear());
     }
 
     public static class ListPool
@@ -31,12 +31,12 @@ namespace Unicorn
         {
             return _pool.Spawn();
         }
-
+    
         public static void Recycle (List<object> list)
         {
             _pool.Recycle(list);
         }
-
+    
         private static readonly ObjectPool<List<object>> _pool = new ObjectPool<List<object>>(null, list => list.Clear());
     }
 }

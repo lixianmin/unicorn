@@ -50,7 +50,7 @@ namespace Unicorn.IO
                 _position = (int)value;
             }
         }
-
+        
         public override long Length => _length;
 
         public override bool CanRead => true;
@@ -267,10 +267,12 @@ namespace Unicorn.IO
             stream.Write(_buffer, 0, _length);
         }
 
-        // public byte[] GetBuffer()
-        // {
-        //     return _buffer;
-        // }
+        // 我们需要Bytes()类的方法, 但这需要clone一份没有必要的数据出来, GetBuffer()可能是一个更好的选择.
+        // 不能使用Buffer属性, 原因是Buffer.BlockCopy()我们用到了
+        public byte[] GetBuffer()
+        {
+            return _buffer;
+        }
 
         public byte[] ToArray()
         {
