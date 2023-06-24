@@ -20,19 +20,19 @@ namespace Unicorn.Menus
 {
 	internal class HotKeyMenus
 	{
-		[MenuItem("Window/Asset Management/Addressables/Groups2 ^a", false, 0)]
+		[MenuItem("Window/Asset Management/Addressables/Groups2 %&a", false, 0)]
 		public static void OpenAddressables()
 		{
 			EditorApplication.ExecuteMenuItem("Window/Asset Management/Addressables/Groups");
 		}
 		
-		[MenuItem("Window/Package Manager2 ^p", false, 1500)]
+		[MenuItem("Window/Package Manager2 &%[", false, 1500)]
 		public static void OpenPackageManager ()
 		{
 			EditorApplication.ExecuteMenuItem("Window/Package Manager");
 		}
 		
-		[MenuItem("Edit/Project Settings2... ^s", false, 250)]
+		[MenuItem("Edit/Project Settings2... %&s", false, 250)]
 		public static void OpenSettings ()
 		{
 			EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
