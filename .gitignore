@@ -60,3 +60,4 @@ crashlytics-build.properties
 *.dwlt
 .idea/
 .DS_Store
+*.cs.meta

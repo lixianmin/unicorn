@@ -38,7 +38,7 @@ namespace Unicorn
 
         public static bool StartsWithEx(this string text, string[] candidates, CompareOptions options)
         {
-            if (null != text && null != candidates && candidates.Length > 0)
+            if (null != text && candidates is { Length: > 0 })
             {
                 foreach (var item in candidates)
                 {
@@ -64,7 +64,7 @@ namespace Unicorn
 
         public static bool EndsWithEx(this string text, string[] candidates, CompareOptions options)
         {
-            if (null != text && null != candidates && candidates.Length > 0)
+            if (null != text && candidates is { Length: > 0 })
             {
                 foreach (var item in candidates)
                 {

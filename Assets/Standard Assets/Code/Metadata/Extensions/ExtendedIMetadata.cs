@@ -38,7 +38,7 @@ namespace Metadata
 				}
 				catch (Exception)
 				{
-					return "Exception occurred for metatata.GetType()= " + metadata.GetType().ToString();
+					return "Exception occurred for metadata.GetType()= " + metadata.GetType();
 				}
 			}
 
