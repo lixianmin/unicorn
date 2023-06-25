@@ -10,7 +10,7 @@ using UObject = UnityEngine.Object;
 
 namespace Unicorn.Kit
 {
-    public partial class KitBase : IIsDisposed
+    public partial class KitBase : IHaveTransform, IIsDisposed
     {
         /// <summary>
         /// 对标MonoBehaviour的Awake()方法。设计成protected是为了防止client自己主动调用这些方法

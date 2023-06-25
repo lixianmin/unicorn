@@ -10,12 +10,12 @@ using System;
 
 namespace Unicorn
 {
-    public abstract class Part : IDisposable, IHaveEntity, IInitPart, IPart, IIsDisposed
+    public class Part : IDisposable, IHaveEntity, IInitPart, IPart, IIsDisposed
     {
         void IInitPart.InitPart(Entity entity)
 		{
 			_entity = entity;
-			_DoInitPart();
+			Awake();
 		}
 
         void IDisposable.Dispose()
@@ -26,7 +26,7 @@ namespace Unicorn
             }
 
             _isDisposed = true;
-            _DoDispose();
+            OnDestroy();
         }
 
         public Entity GetEntity()
@@ -39,8 +39,8 @@ namespace Unicorn
             return _isDisposed;
         }
 
-        protected virtual void _DoInitPart() { }
-        protected virtual void _DoDispose() { }
+        protected virtual void Awake() { }
+        protected virtual void OnDestroy() { }
 
         private Entity _entity;
         private bool _isDisposed;
