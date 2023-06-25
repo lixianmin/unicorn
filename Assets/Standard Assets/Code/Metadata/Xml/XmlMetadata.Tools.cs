@@ -100,7 +100,7 @@ namespace Metadata
 			{
 				var innerException = ex.InnerException;
 				if (null == innerException
-				    || !innerException.Message.StartsWithEx("The specified type was not recognized", CompareOptions.Ordinal))
+				    || !innerException.Message.StartsWith("The specified type was not recognized", CompareOptions.Ordinal))
 				{
 					Logo.Error("xmlFile={0}, ex={1}", xmlFile, ex);
 				}

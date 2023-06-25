@@ -46,7 +46,7 @@ namespace Metadata.Menus
                 for (int j= 0; j< files.Length; ++j)
                 {
                     var filename = files[j];
-                    if (!filename.EndsWithEx(".meta", CompareOptions.Ordinal))
+                    if (!filename.EndsWith(".meta", CompareOptions.Ordinal))
                     {
                         using var fout = File.Create(filename);
                     }

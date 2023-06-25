@@ -256,7 +256,7 @@ namespace Unicorn.Collections
 			                , Count, _capacity, _head, _tail);
 			
 			sb.Append("\n     items=[");
-			sb.Append(", ".JoinEx(this));
+			sb.Append(", ".Join(this));
 			sb.Append("]");
 			
 			var text = sb.ToString();

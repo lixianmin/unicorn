@@ -11,7 +11,7 @@ namespace Unicorn
     //[Obfuscators.ObfuscatorIgnore]
     public static class ExtendedBytes
     {
-        public static string ToUtf8Ex (this byte[] bytes)
+        public static string ToUtf8 (this byte[] bytes)
         {
             if (null != bytes)
             {

@@ -32,7 +32,7 @@ namespace Metadata
 			if (_codeAssembly == CodeAssembly.None)
 			{
 				var fullname = _rawType.Assembly.FullName;
-				if (fullname.StartsWithEx("Assembly-CSharp-firstpass", CompareOptions.Ordinal))
+				if (fullname.StartsWith("Assembly-CSharp-firstpass", CompareOptions.Ordinal))
 				{
 					_codeAssembly = CodeAssembly.StandardAssembly;
 				}

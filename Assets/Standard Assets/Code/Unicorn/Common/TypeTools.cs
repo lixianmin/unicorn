@@ -29,8 +29,8 @@ namespace Unicorn
 
                 foreach (var header in _nameHeaders)
                 {
-                    var lhsStartOk = lhsFullName.StartsWithEx(header, CompareOptions.Ordinal);
-                    var rhsStartOk = rhsFullName.StartsWithEx(header, CompareOptions.Ordinal);
+                    var lhsStartOk = lhsFullName.StartsWith(header, CompareOptions.Ordinal);
+                    var rhsStartOk = rhsFullName.StartsWith(header, CompareOptions.Ordinal);
 
                     if (lhsStartOk && !rhsStartOk)
                     {
@@ -146,7 +146,7 @@ namespace Unicorn
                 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
                     var fullname = assembly.FullName;
-                    if (fullname.StartsWithEx(validPrefixes, CompareOptions.Ordinal))
+                    if (fullname.StartsWith(validPrefixes, CompareOptions.Ordinal))
                     {
                         results.Add(assembly);
                     }
@@ -165,7 +165,7 @@ namespace Unicorn
                 foreach (var assembly in GetCustomAssemblies())
                 {
                     var fullname = assembly.FullName;
-                    if (fullname.StartsWithEx("Assembly-CSharp-Editor,", CompareOptions.Ordinal))
+                    if (fullname.StartsWith("Assembly-CSharp-Editor,", CompareOptions.Ordinal))
                     {
                         _editorAssembly = assembly;
                         break;

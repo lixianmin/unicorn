@@ -62,7 +62,7 @@ namespace Unicorn
 
         private string _CheckChooseFullPath(ref string targetRelativePath, string title)
         {
-            if (targetRelativePath.IsNullOrEmptyEx() || !Directory.Exists(targetRelativePath))
+            if (targetRelativePath.IsNullOrEmpty() || !Directory.Exists(targetRelativePath))
             {
                 targetRelativePath = _ChooseRelativePath(title);
 

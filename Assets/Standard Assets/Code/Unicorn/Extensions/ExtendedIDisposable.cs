@@ -11,12 +11,9 @@ namespace Unicorn
 {
     public static class ExtendedIDisposable
     { 
-        public static void DisposeEx (this IDisposable disposable)
+        public static void Dispose (this IDisposable disposable)
         {
-            if (null != disposable)
-			{
-				disposable.Dispose();
-			}
+            disposable?.Dispose();
         }
     }
 }

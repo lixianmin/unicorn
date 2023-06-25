@@ -127,11 +127,11 @@ namespace Unicorn.AutoCode
 
 		private string _GetLineComment (string path)
 		{
-			if (path.EndsWithEx(".cs", CompareOptions.OrdinalIgnoreCase))
+			if (path.EndsWith(".cs", CompareOptions.OrdinalIgnoreCase))
 			{
 				return "// ";
 			}
-			else if (path.EndsWithEx(".lua", CompareOptions.OrdinalIgnoreCase))
+			else if (path.EndsWith(".lua", CompareOptions.OrdinalIgnoreCase))
 			{
 				return "-- ";
 			}

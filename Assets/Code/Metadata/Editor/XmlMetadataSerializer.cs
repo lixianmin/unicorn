@@ -54,7 +54,7 @@ namespace Metadata
 				foreach (var member in typeMembers)
 				{
 					var memberName = member.Name;
-					if (elementName.GetEditDistanceEx(memberName) < minReportDistance)
+					if (elementName.GetEditDistance(memberName) < minReportDistance)
 					{
 						Logo.Error("unknown={0}, maybe={1}, LineNumber={2} \n\n ObjectBeingDeserialized={3} \n\n clipText={4}"
 							, elementName

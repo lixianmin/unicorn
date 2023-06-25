@@ -9,7 +9,7 @@ namespace Unicorn
 {
     public static class ExtendedFloat
     {
-        public static bool IsZeroEx(this float my, float eps = 0.000001f)
+        public static bool IsZero(this float my, float eps = 0.000001f)
         {
             return my < eps && my > -eps;
         }

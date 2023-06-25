@@ -22,7 +22,7 @@ namespace Unicorn
 
         public int Compare(string a, string b)
         {
-            return a.ReversedCompareToEx(b);
+            return a.ReversedCompareTo(b);
         }
 
         public static readonly ReversedStringComparer Instance = new ReversedStringComparer();

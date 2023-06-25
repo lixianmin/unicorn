@@ -15,18 +15,18 @@ namespace Unicorn
 {
     public static class ExtendedString
     {
-        public static TEnum ToEnumEx<TEnum>(this string name) where TEnum : struct
+        public static TEnum ToEnum<TEnum>(this string name) where TEnum : struct
         {
             Enum.TryParse<TEnum>(name, out var result);
             return result;
         }
 
-        public static bool IsNullOrEmptyEx(this string text)
+        public static bool IsNullOrEmpty(this string text)
         {
             return string.IsNullOrEmpty(text);
         }
 
-        public static bool StartsWithEx(this string text, string candidate, CompareOptions options)
+        public static bool StartsWith(this string text, string candidate, CompareOptions options)
         {
             if (null != text && null != candidate)
             {
@@ -36,13 +36,13 @@ namespace Unicorn
             return false;
         }
 
-        public static bool StartsWithEx(this string text, string[] candidates, CompareOptions options)
+        public static bool StartsWith(this string text, string[] candidates, CompareOptions options)
         {
             if (null != text && candidates is { Length: > 0 })
             {
                 foreach (var item in candidates)
                 {
-                    if (text.StartsWithEx(item, options))
+                    if (text.StartsWith(item, options))
                     {
                         return true;
                     }
@@ -52,7 +52,7 @@ namespace Unicorn
             return false;
         }
 
-        public static bool EndsWithEx(this string text, string candidate, CompareOptions options)
+        public static bool EndsWith(this string text, string candidate, CompareOptions options)
         {
             if (null != text && null != candidate)
             {
@@ -62,13 +62,13 @@ namespace Unicorn
             return false;
         }
 
-        public static bool EndsWithEx(this string text, string[] candidates, CompareOptions options)
+        public static bool EndsWith(this string text, string[] candidates, CompareOptions options)
         {
             if (null != text && candidates is { Length: > 0 })
             {
                 foreach (var item in candidates)
                 {
-                    if (text.EndsWithEx(item, options))
+                    if (text.EndsWith(item, options))
                     {
                         return true;
                     }
@@ -78,7 +78,7 @@ namespace Unicorn
             return false;
         }
 
-        public static string JoinEx(this string separator, IEnumerable collection)
+        public static string Join(this string separator, IEnumerable collection)
         {
             if (null == separator || null == collection)
             {
@@ -112,7 +112,7 @@ namespace Unicorn
             return null != sbText ? sbText.ToString() : string.Empty;
         }
 
-        public static string JoinEx<T>(this string separator
+        public static string Join<T>(this string separator
             , IEnumerable<T> collection
             , Func<T, string> processor)
         {
@@ -150,7 +150,7 @@ namespace Unicorn
             return null != sbText ? sbText.ToString() : string.Empty;
         }
 
-        public static int ReversedCompareToEx(this string lhs, string rhs, int deltaIndex = 0)
+        public static int ReversedCompareTo(this string lhs, string rhs, int deltaIndex = 0)
         {
             if (object.ReferenceEquals(lhs, rhs))
             {
@@ -198,7 +198,7 @@ namespace Unicorn
         /// <returns>The edit distance ex.</returns>
         /// <param name="s">S.</param>
         /// <param name="t">T.</param>
-        public static int GetEditDistanceEx(this string s, string t)
+        public static int GetEditDistance(this string s, string t)
         {
             // degenerate cases
             if (s == t)
@@ -206,8 +206,8 @@ namespace Unicorn
                 return 0;
             }
 
-            var sLength = null != s ? s.Length : 0;
-            var tLength = null != t ? t.Length : 0;
+            var sLength = s?.Length ?? 0;
+            var tLength = t?.Length ?? 0;
 
             if (sLength == 0)
             {

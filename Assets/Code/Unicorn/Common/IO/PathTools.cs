@@ -26,7 +26,7 @@ namespace Unicorn
             {
                 var head = EditorResourceRoot;
 
-                if (exportPath.StartsWithEx(head, CompareOptions.Ordinal))
+                if (exportPath.StartsWith(head, CompareOptions.Ordinal))
                 {
                     var totalLength = exportPath.Length;
                     for (int i = head.Length + 1; i < totalLength; ++i)
@@ -60,7 +60,7 @@ namespace Unicorn
 
         internal static string TranslateToLotPath(string path)
         {
-            if (null != path && path.EndsWithEx(Constants.BundleExtension, CompareOptions.Ordinal))
+            if (null != path && path.EndsWith(Constants.BundleExtension, CompareOptions.Ordinal))
             {
                 var dirname = Path.GetDirectoryName(path);
                 var basename = path.Substring(dirname.Length + 1);
@@ -221,7 +221,7 @@ namespace Unicorn
 
         internal static bool IsLotBundle(string path)
         {
-            if (string.IsNullOrEmpty(path) || path.EndsWithEx(Constants.BundleExtension, CompareOptions.Ordinal))
+            if (string.IsNullOrEmpty(path) || path.EndsWith(Constants.BundleExtension, CompareOptions.Ordinal))
             {
                 return false;
             }
@@ -237,7 +237,7 @@ namespace Unicorn
 
         public static bool IsIncrementBundle(string path)
         {
-            return null != path && path.EndsWithEx(Constants.LotAsset.IncreamentBundleTail, CompareOptions.Ordinal);
+            return null != path && path.EndsWith(Constants.LotAsset.IncreamentBundleTail, CompareOptions.Ordinal);
         }
 
         internal static bool IsDigestEquals(string path1, string path2)

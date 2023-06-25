@@ -56,7 +56,7 @@ namespace Metadata.Menus
 
             foreach (var filename in Directory.GetFiles(directory))
             {
-                if (filename.EndsWithEx(".cs", CompareOptions.Ordinal))
+                if (filename.EndsWith(".cs", CompareOptions.Ordinal))
                 {
                     var info = new FileInfo(filename);
                     if(info.Length == 0)

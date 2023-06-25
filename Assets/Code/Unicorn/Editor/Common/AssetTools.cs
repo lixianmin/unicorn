@@ -128,7 +128,7 @@ namespace Unicorn
 
 		private static bool _IsValidAssetPath (string assetPath)
 		{
-			if (assetPath.EndsWithEx(_notAssetExtensions, CompareOptions.Ordinal))
+			if (assetPath.EndsWith(_notAssetExtensions, CompareOptions.Ordinal))
 			{
 				return false;
 			}
