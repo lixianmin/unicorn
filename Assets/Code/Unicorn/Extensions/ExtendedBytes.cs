@@ -1,5 +1,4 @@
-﻿
-/*********************************************************************
+﻿/*********************************************************************
 created:    2014-12-29
 author:     lixianmin
 
@@ -8,10 +7,9 @@ Copyright (C) - All Rights Reserved
 
 namespace Unicorn
 {
-    //[Obfuscators.ObfuscatorIgnore]
     public static class ExtendedBytes
     {
-        public static string ToUtf8 (this byte[] bytes)
+        public static string ToUTF8(this byte[] bytes)
         {
             if (null != bytes)
             {

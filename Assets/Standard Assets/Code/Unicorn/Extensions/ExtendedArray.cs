@@ -12,7 +12,7 @@ namespace Unicorn
 {
     public static class ExtendedArray
     {
-        internal static T[] BlockCloneEx<T> (this T[] array) where T : struct
+        internal static T[] BlockClone<T> (this T[] array) where T : struct
         {
             if (null != array)
             {
@@ -25,7 +25,7 @@ namespace Unicorn
             return null;
         }
 
-        public static void ClearEx<T> (this T[] array)
+        public static void Clear<T> (this T[] array)
         {
             if (null != array)
             {
@@ -33,7 +33,7 @@ namespace Unicorn
             }
         }
 
-		public static T[] AppendEx<T> (this T[] array, T a)
+		public static T[] Append<T> (this T[] array, T a)
 		{
 			var oldSize = null == array ? 0 : array.Length;
             Array.Resize(ref array, oldSize + 1);
@@ -42,7 +42,7 @@ namespace Unicorn
             return array;
 		}
 
-        public static T[] AppendEx<T> (this T[] array, IEnumerable<T> list)
+        public static T[] Append<T> (this T[] array, IEnumerable<T> list)
         {
             if(null != list)
             {
@@ -71,12 +71,12 @@ namespace Unicorn
             return array;
         }
 
-        public static bool IsNullOrEmptyEx<T> (this T[] array)
+        public static bool IsNullOrEmpty<T> (this T[] array)
         {
             return null == array || array.Length == 0;
         }
 
-		public static int GetTotalLengthEx (this Array array)
+		public static int GetTotalLength (this Array array)
 		{
 			if (null == array)
 			{

@@ -15,7 +15,7 @@ namespace Unicorn.IO
     {
         public static bool ScanAll (string title, string[] paths, Action<string> handler)
         {
-            if (paths.IsNullOrEmptyEx() || null == handler)
+            if (paths.IsNullOrEmpty() || null == handler)
             {
                 return false;
             }
