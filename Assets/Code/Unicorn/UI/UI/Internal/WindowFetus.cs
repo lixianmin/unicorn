@@ -102,7 +102,7 @@ namespace Unicorn.UI.Internal
                 var layer = LayerMask.NameToLayer(layerName);
                 if (gameObject.layer != layer)
                 {
-                    gameObject.SetLayerRecursivelyEx(layer);
+                    gameObject.SetLayerRecursively(layer);
                 }
             }
             else
@@ -131,7 +131,11 @@ namespace Unicorn.UI.Internal
         {
             if (_transform is not null)
             {
-                _transform.gameObject.SetActiveEx(isActive);
+                var go = _transform.gameObject;
+                if(null != go && go.activeSelf != isActive)
+                {
+                    go.SetActive(isActive);
+                }
             }
         }
 
