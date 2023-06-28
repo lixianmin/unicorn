@@ -347,7 +347,7 @@ namespace Unicorn.UI
                 var name = child.name;
                 if (name.Contains("(") || name.Contains(")"))
                 {
-                    var currentPath = child.GetFindPathEx();
+                    var currentPath = child.GetFindPath();
                     Logo.Error("\"()\" is not allowed in gameObject names, path={0}/{1}", root.name,
                         currentPath);
                 }
@@ -355,8 +355,8 @@ namespace Unicorn.UI
                 var transLast = traversedTable.GetEx(name);
                 if (null != transLast)
                 {
-                    string lastPath = transLast.GetFindPathEx();
-                    string currentPath = child.GetFindPathEx();
+                    string lastPath = transLast.GetFindPath();
+                    string currentPath = child.GetFindPath();
                     Logo.Error("Duplication name found: lastPath={0}/{1}\n, currentPath={0}/{2}",
                         root.name, lastPath, currentPath);
                 }
@@ -372,7 +372,7 @@ namespace Unicorn.UI
             var script = transform.GetComponentInChildren<UnityEngine.EventSystems.EventSystem>(true);
             if (null != script)
             {
-                var path = script.transform.GetFindPathEx();
+                var path = script.transform.GetFindPath();
                 Logo.Warn("Caution: detect an EventSystem script ({0})", path);
             }
         }

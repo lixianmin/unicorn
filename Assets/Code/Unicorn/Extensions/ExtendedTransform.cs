@@ -13,11 +13,19 @@ namespace Unicorn
 {
     public static partial class ExtendedTransform
     {
-        public static Component DeepFindComponentEx (this Transform father, string name, Type type)
+	    public static void Destroy(this Transform my)
+	    {
+		    if (my != null)
+		    {
+			    UnityEngine.Object.Destroy(my.gameObject);
+		    }
+	    }
+	    
+        public static Component DeepFindComponent (this Transform father, string name, Type type)
         {
             if (null != type)
             {
-                var trans = father.DeepFindEx(name);
+                var trans = father.DeepFind(name);
                 if (null != trans && type != typeof(Transform))
                 {
                     var component = trans.GetComponent(type);
@@ -67,7 +75,7 @@ namespace Unicorn
 //			return null;
 //        }
 
-        public static Transform DeepFindEx (this Transform father, string name)
+        public static Transform DeepFind (this Transform father, string name)
         {
             if (null == father || null == name)
             {
@@ -105,7 +113,7 @@ namespace Unicorn
 			return null;
 		}
 
-        public static string GetFindPathEx (this Transform transform)
+        public static string GetFindPath (this Transform transform)
         {
 			if (null != transform)
 			{
@@ -134,7 +142,7 @@ namespace Unicorn
 			sbPath.Append(transform.name);
 		}
 
-        internal static IEnumerable<Transform> EnumerateChildrenEx (this Transform father)
+        internal static IEnumerable<Transform> EnumerateChildren (this Transform father)
         {
             if (null != father)
             {
@@ -144,7 +152,7 @@ namespace Unicorn
                 for (int i= 0; i< childCount; ++i)
                 {
                     var child = father.GetChild(i);
-                    foreach (var node in EnumerateChildrenEx(child))
+                    foreach (var node in EnumerateChildren(child))
                     {
                         yield return node;
                     }

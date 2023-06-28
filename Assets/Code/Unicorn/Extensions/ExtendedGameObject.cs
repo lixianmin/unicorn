@@ -13,6 +13,14 @@ namespace Unicorn
 {
     public static class ExtendedGameObject
     {
+        public static void Destroy(this GameObject my)
+        {
+            if (my != null)
+            {
+                UnityEngine.Object.Destroy(my);
+            }
+        }
+        
         public static void GetComponentsInChildren(this GameObject go, string type, bool includeInactive, List<Component> results)
         {
             if (null != go && !string.IsNullOrEmpty(type) && null != results)
