@@ -37,6 +37,7 @@ namespace Unicorn.Web
                 }
             }
 
+            // UI相关, 一定是界面上的, 而不是3D场景里的
             var graphics = goAsset.GetComponentsInChildren<Graphic>(true);
             if (graphics != null)
             {
