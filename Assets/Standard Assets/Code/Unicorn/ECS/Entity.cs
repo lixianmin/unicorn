@@ -12,11 +12,11 @@ using System.Reflection;
 
 namespace Unicorn
 {
-    public partial class Entity : IDisposable, IRemoveListener
+    public partial class Entity : IRemoveListener
     {
         public IPart AddPart(Type type)
         {
-            if (!IsDisposed() && type != null)
+            if (type != null)
             {
                 _parts ??= new EntityTable();
                 return _AddPart(type, true);
@@ -27,7 +27,7 @@ namespace Unicorn
 
         private IPart _AddPart(Type type, bool checkDuplicated)
         {
-            var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             var constructor = type.GetConstructor(flags, null, CallingConventions.Any, Array.Empty<Type>(), null);
             var part = constructor?.Invoke(Array.Empty<object>()) as IPart;
             if (part != null)
@@ -63,7 +63,7 @@ namespace Unicorn
 
         public IPart SetDefaultPart(Type type)
 		{
-			if (!IsDisposed() && type != null)
+			if (type != null)
 			{
 				_parts ??= new EntityTable();
 				var part = _parts.GetPart(type) ?? _AddPart(type, false);
@@ -86,7 +86,7 @@ namespace Unicorn
 
         public ListenerData AddListener(int message, Action listener)
         {
-            if (null != listener && !IsDisposed())
+            if (null != listener)
             {
                 _observer ??= _cacheObservers.Spawn();
                 _observer.AddListener(message, listener);
@@ -117,41 +117,49 @@ namespace Unicorn
             _observer?.SendMessage(message);
         }
 
-        public void Dispose()
+        /// <summary>
+        /// 清理Entity状态.
+        /// Entity原本实现了Dispose()方法, 但目前评估加一个Clear()方法可能更有效. 原因是:
+        /// 1. Dispose()方法是销毁对象, 对象就无法复用了, 而Clear()方法代表对象还可以接着使用
+        /// 2. Entity本身没有让GC自动回收的动机, 如果子类有这样的需求, 则直接在子类中Dispose()相关逻辑即可
+        /// </summary>
+        public void Clear()
         {
-            if (_isDisposed)
-            {
-                return;
-            }
-
-            _isDisposed = true;
-
-            // 将observer的回收放在_DoDispose前面，这样如果_DoDispose()中有调用RemoveListener()时，开销会变低
-            var observer = _observer;
-            if (null != observer)
-            {
-                _cacheObservers.Recycle(observer);
-                _observer = null;
-            }
-
-            _DoDispose();
-
-            if (_parts != null)
-			{
-				_parts.Dispose();
-				_parts = null;
-			}
+            _cacheObservers.Recycle(_observer);
+            _observer = null;
+            
+            _parts?.Dispose();
+            _parts = null;
         }
-
-        public bool IsDisposed()
-        {
-            return _isDisposed;
-        }
-
-        protected virtual void _DoDispose() { }
+        
+        // public void Dispose()
+        // {
+        //     if (_isDisposed)
+        //     {
+        //         return;
+        //     }
+        //
+        //     _isDisposed = true;
+        //
+        //     // 将observer的回收放在_DoDispose前面，这样如果_DoDispose()中有调用RemoveListener()时，开销会变低
+        //     _cacheObservers.Recycle(_observer);
+        //     _observer = null;
+        //
+        //     _DoDispose();
+        //
+        //     _parts?.Dispose();
+        //     _parts = null;
+        // }
+        //
+        // public bool IsDisposed()
+        // {
+        //     return _isDisposed;
+        // }
+        //
+        // protected virtual void _DoDispose() { }
 
         private EntityTable _parts;
-        private bool _isDisposed;
+        // private bool _isDisposed;
         private Observer _observer;
 
         // global variables
