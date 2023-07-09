@@ -9,9 +9,17 @@ namespace Unicorn
 {
     public static class ExtendedFloat
     {
-        public static bool IsZero(this float my, float eps = 0.000001f)
+        public static bool IsZero(this float my, float eps = Eps)
         {
             return my < eps && my > -eps;
         }
+
+        public static bool IsEqual(this float my, float other, float eps = Eps)
+        {
+            var delta = my - other;
+            return IsZero(delta, eps);
+        }
+
+        private const float Eps = 0.000001f;
     }
 }
