@@ -149,6 +149,11 @@ namespace Unicorn.UI
             return _allWindowTypes;
         }
 
+        /// <summary>
+        /// 这个还真不能直接分析client工程的cs文件, 因为美术根本没有client工程的源代码
+        /// </summary>
+        /// <param name="prefabName"></param>
+        /// <returns></returns>
         private static UIWindowBase _SearchWindow(string prefabName)
         {
             var windowTypes = _FetchAllWindowTypes();
