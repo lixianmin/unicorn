@@ -132,6 +132,11 @@ namespace Unicorn
 
         private static string _FormatMessage(string format, params object[] args)
         {
+            if (args.IsNullOrEmpty())
+            {
+                return format;
+            }
+            
             var message = "null format (-__-)";
             if (null != format)
             {

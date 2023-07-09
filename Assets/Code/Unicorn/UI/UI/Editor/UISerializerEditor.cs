@@ -348,17 +348,15 @@ namespace Unicorn.UI
                 if (name.Contains("(") || name.Contains(")"))
                 {
                     var currentPath = child.GetFindPath();
-                    Logo.Error("\"()\" is not allowed in gameObject names, path={0}/{1}", root.name,
-                        currentPath);
+                    Logo.Warn($"\"()\" is not allowed in gameObject names, path={root.name}/{currentPath}");
                 }
 
                 var transLast = traversedTable.GetEx(name);
                 if (null != transLast)
                 {
-                    string lastPath = transLast.GetFindPath();
-                    string currentPath = child.GetFindPath();
-                    Logo.Error("Duplication name found: lastPath={0}/{1}\n, currentPath={0}/{2}",
-                        root.name, lastPath, currentPath);
+                    var lastPath = transLast.GetFindPath();
+                    var currentPath = child.GetFindPath();
+                    Logo.Error($"Duplication name found: lastPath={root.name}/{lastPath}\n, currentPath={root.name}/{currentPath}");
                 }
                 else
                 {
