@@ -123,7 +123,7 @@ namespace Unicorn
         /// 1. Dispose()方法是销毁对象, 对象就无法复用了, 而Clear()方法代表对象还可以接着使用
         /// 2. Entity本身没有让GC自动回收的动机, 如果子类有这样的需求, 则直接在子类中Dispose()相关逻辑即可
         /// </summary>
-        public void Clear()
+        public virtual void Clear()
         {
             _cacheObservers.Recycle(_observer);
             _observer = null;
