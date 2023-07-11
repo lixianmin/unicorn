@@ -16,23 +16,24 @@ namespace Unicorn
 {
     public class EventListener : Disposable
     {
-        public void AddListener(Action evt, Action handler)
-        {
-            if (evt != null && handler != null)
-            {
-                evt += handler;
-                _removeList.Add(() => { evt -= handler; });
-            }
-        }
-
-        public void AddListener<T>(Action<T> evt, Action<T> handler)
-        {
-            if (evt != null && handler != null)
-            {
-                evt += handler;
-                _removeList.Add(() => { evt -= handler; });
-            }
-        }
+        // Action不行, 因为它初始很可能是null, 因此必须使用ref; 然后使用ref后又无法用于lambda表达式中. 放弃, 直接使用UnityEvent吧
+        // public void AddListener(Action evt, Action handler)
+        // {
+        //     if (evt != null && handler != null)
+        //     {
+        //         evt += handler;
+        //         _removeList.Add(() => { evt -= handler; });
+        //     }
+        // }
+        //
+        // public void AddListener<T>(Action<T> evt, Action<T> handler)
+        // {
+        //     if (evt != null && handler != null)
+        //     {
+        //         evt += handler;
+        //         _removeList.Add(() => { evt -= handler; });
+        //     }
+        // }
 
         public void AddListener(UnityEvent evt, UnityAction handler)
         {
