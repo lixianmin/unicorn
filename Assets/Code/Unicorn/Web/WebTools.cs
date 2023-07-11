@@ -65,8 +65,11 @@ namespace Unicorn.Web
             }
 
             var shaderName = shader.name;
+            var lastRenderQueue = material.renderQueue;
             material.shader = Shader.Find(shaderName);
-            // Logo.Info($"material.name={material.name}, shader.name={shaderName}");
+            material.renderQueue = lastRenderQueue; // renderQueue is changed when manually setting shader, and must be restored
+            // var nextRenderQueue = material.renderQueue;
+            // Logo.Info($"material.name={material.name}, shader.name={shaderName}, lastRenderQueue={lastRenderQueue}, nextRenderQueue={nextRenderQueue}");
         }
 
         internal static int GetNextId()
