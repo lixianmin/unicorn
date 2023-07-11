@@ -361,7 +361,7 @@ namespace Unicorn.UI
                 {
                     var lastPath = transLast.GetFindPath();
                     var currentPath = child.GetFindPath();
-                    Logo.Error($"Duplication name found: lastPath={root.name}/{lastPath}\n, currentPath={root.name}/{currentPath}");
+                    Logo.Warn($"Duplication name found: lastPath={root.name}/{lastPath}, currentPath={root.name}/{currentPath}\n");
                 }
                 else
                 {

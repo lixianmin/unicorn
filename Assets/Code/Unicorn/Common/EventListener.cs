@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-08-26
 author:     lixianmin
@@ -17,27 +16,39 @@ namespace Unicorn
 {
     public class EventListener : Disposable
     {
+        public void AddListener(Action evt, Action handler)
+        {
+            if (evt != null && handler != null)
+            {
+                evt += handler;
+                _removeList.Add(() => { evt -= handler; });
+            }
+        }
+
+        public void AddListener<T>(Action<T> evt, Action<T> handler)
+        {
+            if (evt != null && handler != null)
+            {
+                evt += handler;
+                _removeList.Add(() => { evt -= handler; });
+            }
+        }
+
         public void AddListener(UnityEvent evt, UnityAction handler)
         {
             if (evt != null && handler != null)
             {
                 evt.AddListener(handler);
-                _removeList.Add(() =>
-                {
-                    evt.RemoveListener(handler);
-                });
+                _removeList.Add(() => { evt.RemoveListener(handler); });
             }
         }
-        
+
         public void AddListener<T>(UnityEvent<T> evt, UnityAction<T> handler)
         {
             if (evt != null && handler != null)
             {
                 evt.AddListener(handler);
-                _removeList.Add(() =>
-                {
-                    evt.RemoveListener(handler);
-                });
+                _removeList.Add(() => { evt.RemoveListener(handler); });
             }
         }
 
