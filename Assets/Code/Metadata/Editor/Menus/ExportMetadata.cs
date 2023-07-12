@@ -119,7 +119,7 @@ namespace Metadata.Menus
             using (var stream = new FileStream(localeTextPath, FileMode.CreateNew))
             {
                 const bool isFullMode = false;
-                LocaleTextManager.Instance.Save(stream, isFullMode);
+                LocaleTextManager.It.Save(stream, isFullMode);
             }
         }
 

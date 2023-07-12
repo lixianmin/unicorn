@@ -40,7 +40,7 @@ namespace Unicorn
         private void _NormalInit()
         {
             _texts = _emptyKeys;
-            _comparer = ReversedStringComparer.Instance;
+            _comparer = ReversedStringComparer.It;
         }
 
         public string Intern(string text)

@@ -383,7 +383,7 @@ namespace Unicorn.UI
         /// <summary>
         /// 设计为singleton而不是static类，是为了给未来的自己一个机会：万一client端需要重写一些方法呢？
         /// </summary>
-        public static readonly UIManager Instance = new();
+        public static readonly UIManager It = new();
 
         private readonly List<UIWindowBase> _windowsZOrder = new(4);
         private float _nextResetZOrderTime;

@@ -24,7 +24,7 @@ namespace Unicorn.UI.States
                 return;
             }
 
-            var uiRoot = UIManager.Instance.GetUIRoot();
+            var uiRoot = UIManager.It.GetUIRoot();
             var child = uiRoot.Find(assetPath);
             
             // 如果在UIRoot下找到名为assetPath的节点，则直接使用该节点；否则当作UI资源的路径从addressable加载
@@ -59,7 +59,7 @@ namespace Unicorn.UI.States
         private void _LoadAsset(WindowFetus fetus, string assetPath)
         {
             var argument = new WebArgument { key = assetPath };
-            WebManager.Instance.LoadPrefab(argument, prefab =>
+            WebManager.It.LoadPrefab(argument, prefab =>
             {
                 var node = fetus.GetWebNode();
                 node.CopyProperty(prefab);

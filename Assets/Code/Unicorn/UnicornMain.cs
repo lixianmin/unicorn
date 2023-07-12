@@ -236,13 +236,13 @@ namespace Unicorn
         public event Action OnInited;
         public event Action OnDisposing;
 
-        public static readonly UnicornMain Instance = new();
+        public static readonly UnicornMain It = new();
 
         private readonly ArrayList _logs = new();
         private readonly PartUpdateSystem _partUpdateSystem = new();
-        private readonly CoroutineManager _coroutineManager = CoroutineManager.Instance;
-        private readonly KitManager _kitManager = KitManager.Instance;
-        private readonly UIManager _uiManager = UIManager.Instance;
+        private readonly CoroutineManager _coroutineManager = CoroutineManager.It;
+        private readonly KitManager _kitManager = KitManager.It;
+        private readonly UIManager _uiManager = UIManager.It;
 
         private bool _isInited;
         private StreamWriter _logWriter;

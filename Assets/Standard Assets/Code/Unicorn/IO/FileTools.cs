@@ -88,7 +88,7 @@ namespace Unicorn.IO
 				{
 					if (!checkFileExistence || File.Exists(path))
 					{
-						var md5 = Md5sum.Instance.GetHexDigest16(File.ReadAllBytes(path));
+						var md5 = Md5sum.It.GetHexDigest16(File.ReadAllBytes(path));
 						return md5;
 					}
 				}

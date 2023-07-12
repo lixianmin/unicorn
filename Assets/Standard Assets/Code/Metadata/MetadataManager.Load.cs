@@ -56,7 +56,7 @@ namespace Metadata
         public void LoadIncrementStream(Stream stream)
         {
             var aid = GetLoadAid();
-            if (null != stream && stream.CanRead && stream.Length > 0 && null != aid)
+            if (stream is { CanRead: true, Length: > 0 } && null != aid)
             {
                 var reader = MetaFactory.CreateChunkReader(stream);
                 const bool isIncrement = true;
@@ -66,7 +66,7 @@ namespace Metadata
 
         public void LoadLocaleTextStream(Stream stream)
         {
-            LocaleTextManager.Instance.Load(stream);
+            LocaleTextManager.It.Load(stream);
         }
 
         internal void AddMetadata(XmlMetadata metadata)
@@ -80,7 +80,7 @@ namespace Metadata
             var templateCount = templates.Count;
             if (templateCount > 0)
             {
-                for (int i = 0; i < templateCount; ++i)
+                for (var i = 0; i < templateCount; ++i)
                 {
                     _templateManager.AddTemplate(templates[i]);
                 }
@@ -90,7 +90,7 @@ namespace Metadata
             var configCount = configs.Count;
             if (configCount > 0)
             {
-                for (int i = 0; i < configCount; ++i)
+                for (var i = 0; i < configCount; ++i)
                 {
                     _configManager.AddConfig(configs[i]);
                 }
@@ -104,15 +104,13 @@ namespace Metadata
                 return false;
             }
 
-            var template = metadata as Template;
-            if (null != template)
+            if (metadata is Template template)
             {
                 _templateManager.AddTemplate(template);
                 return true;
             }
 
-            var config = metadata as Config;
-            if (null != config)
+            if (metadata is Config config)
             {
                 _configManager.AddConfig(config);
                 return true;

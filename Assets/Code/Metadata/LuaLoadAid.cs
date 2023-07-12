@@ -18,7 +18,7 @@ namespace Metadata
         static LuaLoadAid ()
         {
             InnerUnityTypeAid.Init();
-            _aid = MetadataManager.Instance.GetLoadAid();
+            _aid = MetadataManager.It.GetLoadAid();
         }
 
         public static bool Seek (string metadataType, int metadataId)
@@ -40,7 +40,7 @@ namespace Metadata
             return result;
         }
 
-        public static string    ReadLocaleText ()   { return LocaleTextManager.Instance.ReadLocaleText(_aid); }
+        public static string    ReadLocaleText ()   { return LocaleTextManager.It.ReadLocaleText(_aid); }
 
         public static string    ReadString ()   { return _aid.ReadString(); }
 

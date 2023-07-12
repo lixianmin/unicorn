@@ -16,7 +16,7 @@ namespace Unicorn.UI.States
             var master = fetus.master;
 
             master.InnerOnOpened("[OnEnter()]");
-            UIManager.Instance._SetForegroundWindow(master, master.GetRenderQueue());
+            UIManager.It._SetForegroundWindow(master, master.GetRenderQueue());
             fetus.isOpened = true;
 
             // 如果在OnOpened()或OnActivated()中收到了CloseWindow()
@@ -33,7 +33,7 @@ namespace Unicorn.UI.States
             // isOpened is used to judge whether the window can be activated, thus it must be set to be false as soon as OnExit() is called.
             fetus.isOpened = false;
 
-            UIManager.Instance._OnClosingWindow(master);
+            UIManager.It._OnClosingWindow(master);
             master.InnerOnClosing("[OnExit()]");
 
             if (_isDelayedOpening)
@@ -53,7 +53,7 @@ namespace Unicorn.UI.States
             if (fetus.isOpened)
             {
                 var master = fetus.master;
-                UIManager.Instance._SetForegroundWindow(master, master.GetRenderQueue());
+                UIManager.It._SetForegroundWindow(master, master.GetRenderQueue());
             }
         }
 

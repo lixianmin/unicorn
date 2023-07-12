@@ -25,6 +25,6 @@ namespace Unicorn
             return a.ReversedCompareTo(b);
         }
 
-        public static readonly ReversedStringComparer Instance = new ReversedStringComparer();
+        public static readonly ReversedStringComparer It = new ReversedStringComparer();
     }
 }

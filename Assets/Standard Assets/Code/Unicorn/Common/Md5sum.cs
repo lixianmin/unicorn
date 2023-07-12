@@ -89,7 +89,7 @@ namespace Unicorn
             return GetHexDigest16(inputBuffer, 0, AssetDigestLength);
         }
 
-        public static readonly Md5sum Instance = new Md5sum();
+        public static readonly Md5sum It = new Md5sum();
         public const int AssetDigestLength = 4;
 
         private char[] _outputBuffer16;

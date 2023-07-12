@@ -46,7 +46,7 @@ namespace Metadata.Menus
                 {
                     var guid = item.GetGUID();
 
-                    if (LocaleTextManager.Instance.Contains(guid))
+                    if (LocaleTextManager.It.Contains(guid))
                     {
                         localeTable.Add(guid, item.text, false);
                         ++localeCount;
@@ -54,7 +54,7 @@ namespace Metadata.Menus
                 }
             }
 
-            LocaleTextManager.Instance.AddLocaleTable(localeTable);
+            LocaleTextManager.It.AddLocaleTable(localeTable);
             
             // folderPath就是导出的本地化文件的名字
             var name = Path.GetFileName(folderPath) + ".bytes";
@@ -62,13 +62,13 @@ namespace Metadata.Menus
             FileTools.DeleteSafely(localeTextPath);
             using (var stream = new FileStream(localeTextPath, FileMode.CreateNew))
             {
-                LocaleTextManager.Instance.Save(stream, false);
+                LocaleTextManager.It.Save(stream, false);
             }
 
             // PlatformTools.DispatchFile(localeTextPath);
 
 			var costTime = Time.realtimeSinceStartup - startTime;
-            var totalCount = LocaleTextManager.Instance.GetCount();
+            var totalCount = LocaleTextManager.It.GetCount();
 
             Logo.Info($"Dispatch locale texts (I18N), filename={name}, localeRatio={localeCount}/{totalCount}, costTime={costTime:F3}");
 		}

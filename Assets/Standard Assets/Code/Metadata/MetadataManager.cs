@@ -39,7 +39,7 @@ namespace Metadata
     {
 	    protected MetadataManager ()
         {
-	        Instance = this;
+	        It = this;
         }
 
 		public virtual Template GetTemplate (Type templateType, int idTemplate)
@@ -257,7 +257,7 @@ namespace Metadata
 		///     3. 设计中，这就是一个singleton，不应该同时存在多个instance
 		///     4. 但是，Instance对象是lazy load的，如果基类的Instance先于子类的调用了，会报NullReferenceException
 		/// </summary>
-		public static MetadataManager Instance { get; private set; }
+		public static MetadataManager It { get; private set; }
 		public bool IsXmlMetadata => _isXmlMetadata;
 
 		private readonly LoadAid _loadAid = new ();

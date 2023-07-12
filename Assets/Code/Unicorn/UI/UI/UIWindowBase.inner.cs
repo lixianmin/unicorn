@@ -54,7 +54,7 @@ namespace Unicorn.UI
             }
 
             _isReleased = true;
-            UIManager.Instance._RemoveWindow(GetType());
+            UIManager.It._RemoveWindow(GetType());
             
             _fetus.Dispose();
             _fetus = null;

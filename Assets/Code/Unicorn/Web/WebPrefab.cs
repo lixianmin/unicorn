@@ -16,7 +16,7 @@ namespace Unicorn.Web
         internal WebPrefab(WebArgument argument, Action<WebPrefab> handler)
         {
             // _webItem这里也需要同步赋值, 因为回调handler有可能是一个小时之后的事, 中间万一使用到了_webItem就可能是null了. 你永远也不知道构造方法和handler谁先到来
-            var node = WebManager.Instance.LoadAsset(argument, webItem =>
+            var node = WebManager.It.LoadAsset(argument, webItem =>
             {
                 if (webItem.Asset is GameObject mainAsset)
                 {
@@ -39,7 +39,7 @@ namespace Unicorn.Web
                 }
                 else
                 {
-                    _webItem = EmptyWebNode.Instance;
+                    _webItem = EmptyWebNode.It;
                 }
 
                 CallbackTools.Handle(ref handler, this, "[WebPrefab()]");

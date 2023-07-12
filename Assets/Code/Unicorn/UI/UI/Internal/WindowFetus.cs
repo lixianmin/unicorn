@@ -90,7 +90,7 @@ namespace Unicorn.UI.Internal
                 if (is2D)
                 {
                     canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                    canvas.worldCamera = UIManager.Instance.GetUICamera();
+                    canvas.worldCamera = UIManager.It.GetUICamera();
                 }
                 else
                 {
@@ -114,7 +114,7 @@ namespace Unicorn.UI.Internal
             master._InitComponents(_transform, canvas);
             master._InitWidgetsWindow();
             master._FillWidgets(serializer);
-            UIManager.Instance._ActivateWindow(master);
+            UIManager.It._ActivateWindow(master);
         }
 
         public void OpenWindow()
@@ -166,7 +166,7 @@ namespace Unicorn.UI.Internal
         private object _nextArg1;
 
         private Transform _transform;
-        private Transform _parent = UIManager.Instance.GetUIRoot();
+        private Transform _parent = UIManager.It.GetUIRoot();
         private UISerializer _serializer;
         private readonly WebNode _webNode = new();
         

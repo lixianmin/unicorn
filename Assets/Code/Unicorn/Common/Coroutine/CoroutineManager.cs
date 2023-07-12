@@ -168,7 +168,7 @@ namespace Unicorn
             _pool.Clear();
         }
 
-        public static readonly CoroutineManager Instance = new();
+        public static readonly CoroutineManager It = new();
         private readonly CoroutinePool _pool = new CoroutinePool();
     }
 }

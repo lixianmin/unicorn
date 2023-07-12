@@ -24,7 +24,7 @@ namespace Unicorn.UI.States
             // 如果在关闭的过程中遇到了打开本window的请示，则在关闭后重新打开自己
             if (isDelayedOpening)
             {
-                UIManager.Instance.OpenWindow(master.GetType());
+                UIManager.It.OpenWindow(master.GetType());
             }
             
             AssertTools.IsTrue(!_isDelayedOpening);

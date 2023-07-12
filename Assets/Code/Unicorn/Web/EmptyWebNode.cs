@@ -25,6 +25,6 @@ namespace Unicorn.Web
         /// </summary>
         UnityEngine.Object IWebNode.Asset => null;
 
-        public static readonly EmptyWebNode Instance = new();
+        public static readonly EmptyWebNode It = new();
     }
 }

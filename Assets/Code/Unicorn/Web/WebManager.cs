@@ -15,7 +15,7 @@ namespace Unicorn.Web
     {
         protected WebManager()
         {
-            Instance = this;
+            It = this;
         }
         
         /// <summary>
@@ -46,6 +46,6 @@ namespace Unicorn.Web
         ///     3. 设计中，这就是一个singleton，不应该同时存在多个instance
         ///     4. 但是，Instance对象是lazy load的，如果基类的Instance先于子类的调用了，会报NullReferenceException
         /// </summary>
-        public static WebManager Instance { get; private set; }
+        public static WebManager It { get; private set; }
     }
 }

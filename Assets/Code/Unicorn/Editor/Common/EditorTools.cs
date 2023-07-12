@@ -110,7 +110,7 @@ namespace Unicorn
 
 		private static void _OnUpdateCallback()
 		{
-			if (!UnicornMain.Instance.IsInited)
+			if (!UnicornMain.It.IsInited)
 			{
 				var count = _updates.Count;
 				if (count > 0)

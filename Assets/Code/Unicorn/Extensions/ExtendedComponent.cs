@@ -33,7 +33,7 @@ namespace Unicorn
 //			return null;
 //		}
 
-        public static void SetActiveEx (this Component component, bool isActive)
+        public static void SetActive (this Component component, bool isActive)
         {
             if (null != component)
             {

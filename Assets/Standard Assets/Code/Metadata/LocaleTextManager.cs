@@ -186,7 +186,7 @@ namespace Metadata
                 ++index;
             }
 
-            Array.Sort(guidArray, textArray, ReversedStringComparer.Instance);
+            Array.Sort(guidArray, textArray, ReversedStringComparer.It);
             _SetLocaleTexts(textArray);
 
             var localeIndices = new Dictionary<string, uint>(count);
@@ -256,7 +256,7 @@ namespace Metadata
             return _localeTexts.Length;
         }
 
-        public static readonly LocaleTextManager Instance = new();
+        public static readonly LocaleTextManager It = new();
 
         private string[] _localeTexts = Array.Empty<string>();
         private Dictionary<string, uint> _localeIndices;

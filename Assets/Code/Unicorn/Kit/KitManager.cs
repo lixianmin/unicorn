@@ -176,6 +176,6 @@ namespace Unicorn.Kit
         private KitBase[] _kits = new KitBase[4];
         private readonly KitComparer _comparer = new();
 
-        public static readonly KitManager Instance = new ();
+        public static readonly KitManager It = new ();
     }
 }

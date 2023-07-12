@@ -18,7 +18,7 @@ namespace Unicorn.Kit
             _transform = transform;
             _assets = assets;
 
-            KitManager.Instance.Add(this);
+            KitManager.It.Add(this);
 
             // 调用Awake()方法
             try

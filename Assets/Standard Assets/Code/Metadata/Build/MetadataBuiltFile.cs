@@ -62,7 +62,7 @@ namespace Metadata.Build
 	            return false;
             }
 
-            LocaleTextManager.Instance.Load(stream);
+            LocaleTextManager.It.Load(stream);
             return true;
         }
 
@@ -89,7 +89,7 @@ namespace Metadata.Build
             var title = "Building *.xml metadata";
             ScanTools.ScanAll(title, xmlFiles, _OnBuildOneXmlFile);
             LocaleText.OnDeserialize -= _OnDeserializeLocaleText;
-            LocaleTextManager.Instance.AddLocaleTable(_localeTable);
+            LocaleTextManager.It.AddLocaleTable(_localeTable);
             Logo.Info("--> AddLocaleTable() done");
 
             if (_sbBuiltXmlPaths.Length > 0)
@@ -275,7 +275,7 @@ namespace Metadata.Build
 					return true;
 				}
 
-                LocaleTextManager.Instance.Load(stream);
+                LocaleTextManager.It.Load(stream);
 				_LoadEntries (reader, entries);
 				var invalidTypeNames = _LoadDataItems (reader, dataItems);
 
@@ -365,7 +365,7 @@ namespace Metadata.Build
 				writer = new BinaryWriter(stream);
 
 				writer.Write(_currentVersion);
-                LocaleTextManager.Instance.Save(stream, true);
+                LocaleTextManager.It.Save(stream, true);
 				_SaveEntries(writer, entries);
 				_SaveDataItems(writer, dataItems);
 

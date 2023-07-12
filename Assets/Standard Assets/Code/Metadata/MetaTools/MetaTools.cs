@@ -108,7 +108,7 @@ namespace Metadata
 			case BasicType.List:
 				return ListUtil.Load(reader, fieldType);
 			case BasicType.LocaleText:
-                return LocaleTextManager.Instance.ReadLocaleText(reader);
+                return LocaleTextManager.It.ReadLocaleText(reader);
             case BasicType.VInt3:
                 {
                     int x = reader.ReadInt32();
@@ -208,7 +208,7 @@ namespace Metadata
 			else if (targetType == typeof (LocaleText))
 			{
 				var text = (LocaleText) target;
-                LocaleTextManager.Instance.WriteLocaleText(writer, text, isFullMode);
+                LocaleTextManager.It.WriteLocaleText(writer, text, isFullMode);
 			}
             else if (targetType == typeof (VInt3))
             {
