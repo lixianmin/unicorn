@@ -71,7 +71,7 @@ namespace Unicorn.Web
 
             // we can not change the renderQueue of font manually, because InputField.text may disappear.
             // renderQueue is changed when manually setting shader, and should be restored
-            if (lastRenderQueue != nextRenderQueue && shaderName != "TextMeshPro/Distance Field")
+            if (lastRenderQueue != nextRenderQueue && !shaderName.StartsWith("TextMeshPro/"))
             {
                 material.renderQueue = lastRenderQueue;
                 // Logo.Info($"material.name={material.name}, shader.name={shaderName}, last={lastRenderQueue}, next={nextRenderQueue}");
