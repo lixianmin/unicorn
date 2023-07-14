@@ -268,7 +268,7 @@ namespace Unicorn.IO
         }
 
         // 我们需要Bytes()类的方法, 但这需要clone一份没有必要的数据出来, GetBuffer()可能是一个更好的选择.
-        // 不能使用Buffer属性, 原因是Buffer.BlockCopy()我们用到了
+        // 不能使用Buffer属性, 原因是Buffer.BlockCopy()用作了类的名字
         public byte[] GetBuffer()
         {
             return _buffer;
@@ -276,9 +276,9 @@ namespace Unicorn.IO
 
         public byte[] ToArray()
         {
-            var num = _length;
+            var num = _length - _position;
             var array = new byte[num];
-            Buffer.BlockCopy(_buffer, 0, array, 0, num);
+            Buffer.BlockCopy(_buffer, _position, array, 0, num);
 
             return array;
         }
