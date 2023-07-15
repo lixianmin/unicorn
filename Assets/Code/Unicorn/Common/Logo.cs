@@ -18,7 +18,6 @@ namespace Unicorn
         DetailedMessage = 0x01,
         OpenStandardOutput = 0x02,
         FlushOnWrite = 0x04,
-        FlushAtIntervals = 0x08,
     }
 
     public static class Logo
@@ -26,18 +25,18 @@ namespace Unicorn
         static Logo()
         {
             _idMainThread = Thread.CurrentThread.ManagedThreadId;
-            Flags = LogoFlags.DetailedMessage | LogoFlags.FlushOnWrite;
+            Flags = LogoFlags.DetailedMessage;
+
+            // if (Application.isEditor)
+            // {
+            //     Flags |= LogoFlags.FlushOnWrite;
+            // }
         }
 
         internal static void Update()
         {
             _time = UnityEngine.Time.realtimeSinceStartup;
-
-            if (_time >= _nextFlushLogTime && _HasFlags(LogoFlags.FlushAtIntervals))
-            {
-                _CheckFlushLogText();
-                _nextFlushLogTime = _time + 1.0f;
-            }
+            _CheckFlushLogText();
         }
 
         public static void Info(string format, params object[] args)
@@ -136,7 +135,7 @@ namespace Unicorn
             {
                 return format;
             }
-            
+
             var message = "null format (-__-)";
             if (null != format)
             {
@@ -228,7 +227,6 @@ namespace Unicorn
         private static int _lastFrameCount;
         private static readonly StringBuilder _sbLogText = new(512);
         private static readonly StringBuilder _sbFormatter = new();
-        private static float _nextFlushLogTime;
 
         private static readonly Action<object> _lpfnLogInfo = _LogInfo;
         private static readonly Action<object> _lpfnLogWarn = _LogWarn;
