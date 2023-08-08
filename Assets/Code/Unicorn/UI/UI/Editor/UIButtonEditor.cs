@@ -21,10 +21,10 @@ namespace Unicorn.UI
         {
             base.OnEnable();
 
-            _target = serializedObject.targetObject as UIButton;
+            // _target = serializedObject.targetObject as UIButton;
 
             _onClickProperty = serializedObject.FindProperty("m_OnClick");
-            _onLongClickProperty = serializedObject.FindProperty("onLongClick");
+            // _onLongClickProperty = serializedObject.FindProperty("onLongClick");
         }
 
         public override void OnInspectorGUI ()
@@ -35,25 +35,25 @@ namespace Unicorn.UI
             serializedObject.Update();
             EditorGUILayout.PropertyField(_onClickProperty);
 
-            GUILayout.BeginHorizontal();
-            {
-                _target.hasOnLongClick = EditorGUILayout.Toggle(new GUIContent("OnLongClick", "Event called after a long click"), _target.hasOnLongClick);
-            }
-            GUILayout.EndHorizontal();
+            // GUILayout.BeginHorizontal();
+            // {
+            //     _target.hasOnLongClick = EditorGUILayout.Toggle(new GUIContent("OnLongClick", "Event called after a long click"), _target.hasOnLongClick);
+            // }
+            // GUILayout.EndHorizontal();
 
-            if (_target.hasOnLongClick)
-            {
-                _target.onLongClick.holdTime = EditorGUILayout.FloatField("hold Time", _target.onLongClick.holdTime);
-                EditorGUILayout.PropertyField(_onLongClickProperty);
-            }
+            // if (_target.hasOnLongClick)
+            // {
+            //     _target.onLongClick.holdTime = EditorGUILayout.FloatField("hold Time", _target.onLongClick.holdTime);
+            //     EditorGUILayout.PropertyField(_onLongClickProperty);
+            // }
 
             EditorGUILayout.Space();
             serializedObject.ApplyModifiedProperties();
         }
 
         private SerializedProperty _onClickProperty;
-        private SerializedProperty _onLongClickProperty;
+        // private SerializedProperty _onLongClickProperty;
 
-        private UIButton _target;
+        // private UIButton _target;
     }
 }

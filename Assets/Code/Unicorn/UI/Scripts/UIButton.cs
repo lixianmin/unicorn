@@ -6,72 +6,23 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using PointerEvent = UnityEngine.Events.UnityEvent<UnityEngine.EventSystems.PointerEventData>;
 
 namespace Unicorn.UI
 {
     public class UIButton : Button, IRemoveAllListeners
     {
-        [Serializable]
-        public class ButtonLongClickedEvent : UnityEvent
-        {
-            internal bool IsPressing ()
-            {
-                return null != _routine;
-            }
-
-            internal void StartCoroutine (UIButton button)
-            {
-                _routine = _CoLongClick();
-                button.StartCoroutine(_routine);
-            }
-
-            internal void KillCoroutine (UIButton button)
-            {
-                if (null != _routine)
-                {
-                    button.StopCoroutine(_routine);
-                    _routine = null;
-                }
-            }
-
-            private IEnumerator _CoLongClick ()
-            {
-                var dueTime = Time.unscaledTime + holdTime;
-                while (Time.unscaledTime < dueTime)
-                {
-                    yield return null;
-                }
-
-                if (IsPressing())
-                {
-                    _routine = null;
-                    Invoke();
-                }
-            }
-
-            [Tooltip("How long must pointer be down on this object to trigger a long click")]
-            public float holdTime = 0.5f;
-
-            private IEnumerator _routine;
-        }
-
-        protected override void Awake ()
-        {
-            base.Awake();
-
-            _SetHasLongClick(hasOnLongClick);
-        }
-
         void IRemoveAllListeners.RemoveAllListeners()
         {
             onClick.RemoveAllListeners();
-            onLongClick?.RemoveAllListeners();
+            
+            _onPointerDown?.RemoveAllListeners();
+            _onPointerUp?.RemoveAllListeners();
+            _onPointerExit?.RemoveAllListeners();
         }
 
         private void _Press ()
@@ -126,62 +77,38 @@ namespace Unicorn.UI
         public override void OnPointerDown (PointerEventData eventData)
         {
             base.OnPointerDown(eventData);
-
-            if (null != onLongClick && IsPressed())
-            {
-                onLongClick.StartCoroutine(this);
-            }
+            _onPointerDown?.Invoke(eventData);
         }
 
         public override void OnPointerUp (PointerEventData eventData)
         {
             base.OnPointerUp(eventData);
-
-            if (null != onLongClick && onLongClick.IsPressing())
-            {
-                onLongClick.KillCoroutine(this);
-            }
+            _onPointerUp?.Invoke(eventData);
         }
 
         public override void OnPointerExit (PointerEventData eventData)
         {
             base.OnPointerExit(eventData);
-
-            if (null != onLongClick && onLongClick.IsPressing())
-            {
-                onLongClick.KillCoroutine(this);
-            }
+            _onPointerExit?.Invoke(eventData);
         }
 
-        private void _SetHasLongClick (bool val)
+        public PointerEvent onPointerDown
         {
-            _hasLongClick = val;
-
-            if (_hasLongClick)
-            {
-                onLongClick = onLongClick ?? new ButtonLongClickedEvent();
-            }
-            else
-            {
-                onLongClick = null;
-            }
+            get { return _onPointerDown ??= new PointerEvent(); }
         }
-
-        public bool hasOnLongClick
+        
+        public PointerEvent onPointerUp
         {
-            get { return _hasLongClick; }
-            set
-            {
-                if (_hasLongClick != value)
-                {
-                    _SetHasLongClick(value);
-                }
-            }
+            get { return _onPointerUp ??= new PointerEvent(); }
+        }
+        
+        public PointerEvent onPointerExit
+        {
+            get { return _onPointerExit ??= new PointerEvent(); }
         }
 
-        public ButtonLongClickedEvent onLongClick;
-       
-        [SerializeField]
-        private bool _hasLongClick;
+        private PointerEvent _onPointerDown;
+        private PointerEvent _onPointerUp;
+        private PointerEvent _onPointerExit;
     }
 }
