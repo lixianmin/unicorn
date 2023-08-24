@@ -1,10 +1,10 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2014-02-20
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Collections;
@@ -14,27 +14,27 @@ using Unicorn.Collections;
 
 namespace Metadata
 {
-	public class TemplateManager: IDisposable
+    public class TemplateManager : IDisposable
     {
-        public void Dispose ()
+        public void Dispose()
         {
             Clear();
         }
 
-        public bool AddTemplate (Template template)
+        public bool AddTemplate(Template template)
         {
             if (null == template)
             {
                 return false;
             }
 
-			var table = FetchTemplateTable(template.GetType());
+            var table = FetchTemplateTable(template.GetType());
 
             var oldTemplate = table.GetEx(template.id);
             if (null != oldTemplate)
             {
                 Logo.Error("Duplicate template.id ={0}, oldTemplate={1}, newTemplate={2}"
-                                        , template.id, oldTemplate, template);
+                    , template.id, oldTemplate, template);
                 return false;
             }
 
@@ -42,101 +42,89 @@ namespace Metadata
             return true;
         }
 
-		public bool RemoveTemplate (Type templateType, int idTemplate)
-		{
-			if (null != templateType)
-			{
-                var table = _mTemplateTables[templateType] as TemplateTable;
-				
-				if (null != table)
-				{
-					var removed = table.Remove(idTemplate);
-					if (removed && table.Count == 0)
-					{
-                        _mTemplateTables.Remove(templateType);
-					}
+        public bool RemoveTemplate(Type templateType, int idTemplate)
+        {
+            if (null != templateType && _mTemplateTables[templateType] is TemplateTable table)
+            {
+                var removed = table.Remove(idTemplate);
+                if (removed && table.Count == 0)
+                {
+                    _mTemplateTables.Remove(templateType);
+                }
 
-					return removed;
-				}
-			}
-			
-			return false;
-		}
+                return removed;
+            }
 
-		public Template GetTemplate (Type templateType, int idTemplate)
-		{
-			if (null != templateType)
-			{
-                var table = _mTemplateTables[templateType] as TemplateTable;
-				
-				if (null != table)
-				{
-					Template template;
-					table.TryGetValue(idTemplate, out template);
-					return template;
-				}
-			}
+            return false;
+        }
 
-			return null;
-		}
+        public Template GetTemplate(Type templateType, int idTemplate)
+        {
+            if (null != templateType && _mTemplateTables[templateType] is TemplateTable table)
+            {
+                table.TryGetValue(idTemplate, out var template);
+                return template;
+            }
 
-		internal TemplateTable FetchTemplateTable (Type templateType)
-		{
-			if (null != templateType)
-			{
-                var table = _mTemplateTables[templateType] as TemplateTable;
-                if (null == table)
+            return null;
+        }
+
+        internal TemplateTable FetchTemplateTable(Type templateType)
+        {
+            if (null != templateType)
+            {
+                if (_mTemplateTables[templateType] is not TemplateTable table)
                 {
                     table = new TemplateTable();
                     _mTemplateTables.Add(templateType, table);
                 }
 
-				return table;
-			}
+                return table;
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public TemplateTable GetTemplateTable (Type templateType)
-		{
-			if (null != templateType)
-			{
+        public TemplateTable GetTemplateTable(Type templateType)
+        {
+            if (null != templateType)
+            {
                 var table = _mTemplateTables[templateType] as TemplateTable;
-				return table;
-			}
+                return table;
+            }
 
-			return null;
-		}
-        
-        public int GetTemplateCount ()
+            return null;
+        }
+
+        public int GetTemplateCount()
         {
             var count = 0;
             var iter = _mTemplateTables.GetEnumerator();
             while (iter.MoveNext())
             {
                 var table = iter.Value as TemplateTable;
-                count += table.Count;
+                count += table!.Count;
             }
-            
+
             return count;
         }
 
-        public void Clear ()
+        public void Clear()
         {
             _mTemplateTables.Clear();
         }
 
-		internal void TrimExcess ()
+        internal void TrimExcess()
         {
             var iter = _mTemplateTables.GetEnumerator();
             while (iter.MoveNext())
             {
                 var table = iter.Value as TemplateTable;
-                table.TrimExcess();
+                table!.TrimExcess();
             }
         }
 
-        public IEnumerable<KeyValuePair<Type, TemplateTable>> EnumerateTemplateTables ()
+        public IEnumerable<KeyValuePair<Type, TemplateTable>> EnumerateTemplateTables()
         {
             var it = _mTemplateTables.GetEnumerator();
             while (it.MoveNext())
@@ -149,8 +137,8 @@ namespace Metadata
             }
         }
 
-		public IEnumerable<Template> GetAllTemplates ()
-		{
+        public IEnumerable<Template> GetAllTemplates()
+        {
             foreach (var pair in EnumerateTemplateTables())
             {
                 var table = pair.Value;
@@ -159,27 +147,27 @@ namespace Metadata
                     yield return template;
                 }
             }
-		}
+        }
 
-		public override string ToString ()
-		{
-			var sbText = new System.Text.StringBuilder();
+        public override string ToString()
+        {
+            var sbText = new System.Text.StringBuilder();
 
             var iter = _mTemplateTables.GetEnumerator();
             while (iter.MoveNext())
-			{
+            {
                 var type = iter.Key as Type;
-                sbText.Append(type.FullName);
-				sbText.Append("---");
+                sbText.Append(type!.FullName);
+                sbText.Append("---");
 
                 var table = iter.Value as TemplateTable;
-				sbText.Append(table.Count.ToString());
-				sbText.AppendLine();
-			}
+                sbText.Append(table!.Count.ToString());
+                sbText.AppendLine();
+            }
 
-			var text = sbText.ToString();
-			return text;
-		}
+            var text = sbText.ToString();
+            return text;
+        }
 
         private readonly Hashtable _mTemplateTables = new();
     }

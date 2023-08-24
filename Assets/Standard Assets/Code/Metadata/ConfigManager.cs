@@ -109,6 +109,6 @@ namespace Metadata
 			return text;
 		}
 
-        private readonly SortedTable<string, Config> _mConfigs = new SortedTable<string, Config>();
+        private readonly SortedTable<string, Config> _mConfigs = new();
     }
 }
