@@ -143,7 +143,7 @@ namespace Metadata
             }
         }
 
-        private static void _LoadAndRemoveData (OctetsReader headReader, Hashtable catalog)
+        private static void _LoadAndRemoveData (IOctetsReader headReader, IDictionary catalog)
 		{
 			var removedCount = headReader.ReadInt32();
 
@@ -152,8 +152,7 @@ namespace Metadata
                 string typeName = headReader.ReadString();
 				int id = headReader.ReadInt32();
 
-                var section = catalog[typeName] as SortedTable<int, NodeValue>;
-                if (null != section)
+				if (catalog[typeName] is SortedTable<int, NodeValue> section)
                 {
                     section.Remove(id);
                 }

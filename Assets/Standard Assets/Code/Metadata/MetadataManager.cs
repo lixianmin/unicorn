@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2014-03-29
 author:     lixianmin
 
@@ -35,64 +34,64 @@ using Unicorn;
 
 namespace Metadata
 {
-    public partial class MetadataManager: IDisposable
+    public partial class MetadataManager : IDisposable
     {
-	    protected MetadataManager ()
+        protected MetadataManager()
         {
-	        It = this;
+            It = this;
         }
 
-		public virtual Template GetTemplate (Type templateType, int idTemplate)
-		{
-			var aid = GetLoadAid();
-			if (null == templateType || null == aid)
-			{
-				return null;
-			}
+        public virtual Template GetTemplate(Type templateType, int idTemplate)
+        {
+            var aid = GetLoadAid();
+            if (null == templateType || null == aid)
+            {
+                return null;
+            }
 
-			var templateManager = GetTemplateManager();
-			var table = templateManager.FetchTemplateTable(templateType);
+            var templateManager = GetTemplateManager();
+            var table = templateManager.FetchTemplateTable(templateType);
 
             var templateIndex = table.TryIndexValue(idTemplate, out var template);
             if (templateIndex >= 0)
-			{
-				return template;
-			}
+            {
+                return template;
+            }
 
             if (!table.IsCompleted)
             {
-	            var typeName = templateType.FullName;
-	            var creator = MetaFactory.GetMetaCreator(typeName);
-	            if (null != creator)
-	            {
-		            if (aid.Seek(typeName, idTemplate))
-		            {
-			            var metadata = creator.Create();
-			            MetaTools.Load(aid, metadata);
-			            template = metadata as Template;
-		            }
+                var typeName = templateType.FullName;
+                var creator = MetaFactory.GetMetaCreator(typeName);
+                if (null != creator)
+                {
+                    if (aid.Seek(typeName, idTemplate))
+                    {
+                        var metadata = creator.Create();
+                        MetaTools.Load(aid, metadata);
+                        template = metadata as Template;
+                    }
 
-		            table.InsertByIndex(~templateIndex, idTemplate, template);
-		            return template;
-	            }
+                    table.InsertByIndex(~templateIndex, idTemplate, template);
+                    return template;
+                }
             }
 
             return null;
-		}
-		
-		public virtual TemplateTable GetTemplateTable (Type templateType)
-		{
+        }
+
+        public virtual TemplateTable GetTemplateTable(Type templateType, bool mergeSubclass = false)
+        {
             if (null == templateType)
-			{
-				return null;
-			}
-			
-			var templateManager = GetTemplateManager();
+            {
+                return null;
+            }
+
+            var templateManager = GetTemplateManager();
             var table = templateManager.FetchTemplateTable(templateType);
-			if (table.IsCompleted)
-			{
-				return table;
-			}
+            if (table.IsCompleted)
+            {
+                return table;
+            }
 
             var aid = GetLoadAid();
             if (null != aid)
@@ -100,23 +99,37 @@ namespace Metadata
                 var typeName = templateType.FullName;
                 aid.LoadTemplates(typeName, table);
             }
-			
-			return table;
-		}
 
-		public virtual Config GetConfig (Type configType)
-		{
-			if (null == configType)
-			{
-				return null;
-			}
-			
-			var aid = GetLoadAid();
-			var configManager = GetConfigManager();
-			var config = configManager.GetConfig(configType);
-			
-			if (null == config && null != aid)
-			{
+            if (mergeSubclass)
+            {
+                foreach (var (type, _) in _templateManager.EnumerateTemplateTables())
+                {
+                    if (type.IsSubclassOf(templateType))
+                    {
+                        var subTable = GetTemplateTable(type, true);
+                        table.Merge(subTable);
+                    }
+                }
+
+                table.IsCompleted = true;
+            }
+
+            return table;
+        }
+
+        public virtual Config GetConfig(Type configType)
+        {
+            if (null == configType)
+            {
+                return null;
+            }
+
+            var aid = GetLoadAid();
+            var configManager = GetConfigManager();
+            var config = configManager.GetConfig(configType);
+
+            if (null == config && null != aid)
+            {
                 var typeName = configType.FullName;
                 var creator = MetaFactory.GetMetaCreator(typeName);
                 if (null != creator && aid.Seek(typeName, 0))
@@ -128,100 +141,101 @@ namespace Metadata
                     configManager.AddConfig(config);
                     return config;
                 }
-			}
-			
-			return config;
-		}
+            }
 
-        public virtual void Dispose ()
+            return config;
+        }
+
+        public virtual void Dispose()
         {
             _templateManager.Dispose();
             _configManager.Dispose();
 
-			_loadAid.Dispose();
+            _loadAid.Dispose();
         }
 
-        public virtual void Clear ()
+        public virtual void Clear()
         {
             _templateManager.Clear();
             _configManager.Clear();
         }
 
-		public void Deserialize (string xmlPath)
-		{
-			var metadata = XmlMetadata.Deserialize(xmlPath);
-			if (null != metadata)
-			{
-				AddMetadata(metadata);
-			}
-		}
+        public void Deserialize(string xmlPath)
+        {
+            var metadata = XmlMetadata.Deserialize(xmlPath);
+            if (null != metadata)
+            {
+                AddMetadata(metadata);
+            }
+        }
 
-		public override string ToString ()
-		{
-			var sbText = new System.Text.StringBuilder();
-			sbText.AppendLine("------------templates----------");
-			sbText.Append(_templateManager);
-			sbText.AppendLine("------------configs----------");
-			sbText.Append(_configManager);
+        public override string ToString()
+        {
+            var sbText = new System.Text.StringBuilder();
+            sbText.AppendLine("------------templates----------");
+            sbText.Append(_templateManager);
+            sbText.AppendLine("------------configs----------");
+            sbText.Append(_configManager);
 
-			var text = sbText.ToString();
-			return text;
-		}
+            var text = sbText.ToString();
+            return text;
+        }
 
-        public LoadAid GetLoadAid ()
-		{
-			return _loadAid;
-		}
+        public LoadAid GetLoadAid()
+        {
+            return _loadAid;
+        }
 
-		internal TemplateManager GetTemplateManager ()
-		{
-			return _templateManager;
-		}
-		
-		internal ConfigManager GetConfigManager ()
-		{
-			return _configManager;
-		}
+        internal TemplateManager GetTemplateManager()
+        {
+            return _templateManager;
+        }
 
-		public void EnableXmlMetadata ()
-		{
-			if (!_isXmlMetadata)
-			{
-				_isXmlMetadata = true;
-				_LoadBuiltFile();
-			}
-		}
+        internal ConfigManager GetConfigManager()
+        {
+            return _configManager;
+        }
 
-		private void _LoadBuiltFile ()
-		{
-			var builtFile = new MetadataBuiltFile();
-			builtFile.Build();
+        public void EnableXmlMetadata()
+        {
+            if (!_isXmlMetadata)
+            {
+                _isXmlMetadata = true;
+                _LoadBuiltFile();
+            }
+        }
+
+        private void _LoadBuiltFile()
+        {
+            var builtFile = new MetadataBuiltFile();
+            builtFile.Build();
 
             var version = builtFile.GetMetadataVersion();
             _SetMetadataVersion(version);
 
-			var tableCache = new Hashtable();
-			foreach (var metadata in builtFile.EnumerateMetadata())
-			{
-				switch (metadata)
-				{
-					case Template template:
-					{
-						var templateType = template.GetType();
-						if (tableCache[templateType] is not TemplateTable table)
-						{
-							table = _templateManager.FetchTemplateTable(templateType);
-							tableCache[templateType] = table;
-						}
+            var tableCache = new Hashtable();
+            foreach (var metadata in builtFile.EnumerateMetadata())
+            {
+                switch (metadata)
+                {
+                    case Template template:
+                    {
+                        var templateType = template.GetType();
+                        if (tableCache[templateType] is not TemplateTable table)
+                        {
+                            table = _templateManager.FetchTemplateTable(templateType);
+                            tableCache[templateType] = table;
+                        }
 
-						table._Append(template.id, template);
-						continue;
-					}
-					case Config config:
-						_configManager.AddConfig(config);
-						break;
-				}
-			}
+                        table._Append(template.id, template);
+                        continue;
+                    }
+                    case Config config:
+                        _configManager.AddConfig(config);
+                        break;
+                }
+            }
+
             Logo.Info("--> add metadata to _templateManager & _configManager done");
 
             foreach (var pair in _templateManager.EnumerateTemplateTables())
@@ -229,43 +243,45 @@ namespace Metadata
                 var table = pair.Value;
                 table._Sort();
             }
+
             Logo.Info("--> sort template tables done");
 
-			var reader = MetaFactory.CreateChunkReader(this, true);
+            var reader = MetaFactory.CreateChunkReader(this, true);
             Logo.Info("--> CreateChunkReader() done");
 
-			var aid = GetLoadAid();
-			aid.Load(reader, false, out _metadataVersion);
+            var aid = GetLoadAid();
+            aid.Load(reader, false, out _metadataVersion);
             Logo.Info("--> aid.Load() done");
-		}
+        }
 
-        private void _SetMetadataVersion (int version)
+        private void _SetMetadataVersion(int version)
         {
             _metadataVersion = version;
         }
 
-		public int GetMetadataVersion ()
-		{
-			return _metadataVersion;
-		}
+        public int GetMetadataVersion()
+        {
+            return _metadataVersion;
+        }
 
-		/// <summary>
-		/// 设计为singleton而不是static类，是为了给未来的自己一个机会：万一client端需要重写一些方法呢？
-		/// 2022-10-22 原本Instance是由子类负责设置的，综合考虑后决定由基类自己做这件事，理由包括：
-		///     1. 把权利收回来，并且避免子类忘记
-		///     2. 因为子类需提供更多的方法，方便起见会添加：public new static readonly GameWebManager Instance = new(); 性能也会比基类中Property版的更好一些
-		///     3. 设计中，这就是一个singleton，不应该同时存在多个instance
-		///     4. 但是，Instance对象是lazy load的，如果基类的Instance先于子类的调用了，会报NullReferenceException
-		/// </summary>
-		public static MetadataManager It { get; private set; }
-		public bool IsXmlMetadata => _isXmlMetadata;
+        /// <summary>
+        /// 设计为singleton而不是static类，是为了给未来的自己一个机会：万一client端需要重写一些方法呢？
+        /// 2022-10-22 原本Instance是由子类负责设置的，综合考虑后决定由基类自己做这件事，理由包括：
+        ///     1. 把权利收回来，并且避免子类忘记
+        ///     2. 因为子类需提供更多的方法，方便起见会添加：public new static readonly GameWebManager Instance = new(); 性能也会比基类中Property版的更好一些
+        ///     3. 设计中，这就是一个singleton，不应该同时存在多个instance
+        ///     4. 但是，Instance对象是lazy load的，如果基类的Instance先于子类的调用了，会报NullReferenceException
+        /// </summary>
+        public static MetadataManager It { get; private set; }
 
-		private readonly LoadAid _loadAid = new ();
+        public bool IsXmlMetadata => _isXmlMetadata;
 
-		private bool  _isXmlMetadata;
-		private int _metadataVersion;
-		
-		protected readonly TemplateManager _templateManager = new ();
-        protected readonly ConfigManager   _configManager = new ();
+        private readonly LoadAid _loadAid = new();
+
+        private bool _isXmlMetadata;
+        private int _metadataVersion;
+
+        protected readonly TemplateManager _templateManager = new();
+        protected readonly ConfigManager _configManager = new();
     }
 }

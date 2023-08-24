@@ -8,7 +8,6 @@ Copyright (C) - All Rights Reserved
 
 // #define Unicorn_TEST
 
-using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -263,7 +262,7 @@ namespace Metadata
 		
 		private IEnumerable<KeyValuePair<string, int>> _EnumerateSavableTexts ()
 		{
-			var iter = _textTable.GetEnumerator();
+			using var iter = _textTable.GetEnumerator();
 			while (iter.MoveNext())
 			{
 				var pair = iter.Current;
@@ -311,14 +310,11 @@ namespace Metadata
 			var arrayLength = _textTable.Count;
 			writer.Write(arrayLength);
 
-			var itemCount = System.Linq.Enumerable.Count(_EnumerateSavableTexts());
+			var itemCount = _EnumerateSavableTexts().Count();
 			writer.Write(itemCount);
 
-			foreach (var pair in _EnumerateSavableTexts())
+			foreach (var (text, index) in _EnumerateSavableTexts())
 			{
-				var text = pair.Key;
-				var index= pair.Value;
-
 				writer.Write(text);
 				writer.Write(index);
 			}
@@ -326,8 +322,8 @@ namespace Metadata
 
 		private void _SaveRemovedMetadata (BinaryWriter writer)
 		{
-			var removedData = null != _incrementData ? _incrementData.GetRemovedMetadatas() : null;
-			var removedCount = null != removedData ? removedData.Count : 0;
+			var removedData = _incrementData?.GetRemovedMetadatas();
+			var removedCount = removedData?.Count ?? 0;
 
 			writer.Write(removedCount);
 			if (null != removedData)
@@ -335,7 +331,7 @@ namespace Metadata
 				for (int i=0; i< removedCount; ++i)
 				{
                     var key = removedData[i] as RemovedData;
-                    writer.Write(key.typeName);
+                    writer.Write(key!.typeName);
 					writer.Write(key.id);
 				}
 			}
@@ -352,8 +348,7 @@ namespace Metadata
         {
             text = text ?? string.Empty;
 
-            int index;
-            if (!_textTable.TryGetValue(text, out index))
+            if (!_textTable.TryGetValue(text, out var index))
             {
                 index = _indexGenerator++;
                 _textTable.Add(text, index);
@@ -420,7 +415,7 @@ namespace Metadata
 		private OctetsWriter _bodyWriter;
 		private int[] _counter;
 
-        private readonly Dictionary<string, int> _textTable = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> _textTable = new();
         private int _indexGenerator;
 		private int _baseIndex;	// for increment export.
 		private IncrementData _incrementData;

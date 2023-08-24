@@ -111,8 +111,7 @@ namespace Metadata
                     var bindingFlags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static;
                     var method = outerFactoryType.GetMethod(outerFactoryGetLookupTableByName, bindingFlags);
 
-                    Func<Hashtable> functor;
-                    TypeTools.CreateDelegate(method, out functor);
+                    TypeTools.CreateDelegate(method, out Func<Hashtable> functor);
 
                     if (null != functor)
                     {
@@ -147,7 +146,7 @@ namespace Metadata
                 return;
             }
 
-            var isEditorOnlyCreator = true;
+            const bool isEditorOnlyCreator = true;
             foreach (var type in assembly.GetTypes())
             {
                 if (type.IsAbstract)
@@ -157,9 +156,9 @@ namespace Metadata
 
                 if (MetaTools.IsMetadata(type))
                 {
-                    var key = type.FullName;
-                    var contructorInfo = type.GetConstructor(Type.EmptyTypes);
-                    var val = new MetaCreator(() => (IMetadata)contructorInfo.Invoke(null), isEditorOnlyCreator);
+                    var key = type.FullName!;
+                    var info = type.GetConstructor(Type.EmptyTypes);
+                    var val = new MetaCreator(() => (IMetadata)info!.Invoke(null), isEditorOnlyCreator);
                     lookupTableByName.Add(key, val);
                 }
             }

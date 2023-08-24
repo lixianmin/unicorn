@@ -112,15 +112,12 @@ namespace Metadata
                 return;
             }
 
-            foreach (var pair in section)
+            foreach (var (id, node) in section)
             {
-                var id = pair.Key;
-                var val= pair.Value;
-
-                var templateIndex = table.IndexOfKey(id);
+	            var templateIndex = table.IndexOfKey(id);
                 if (templateIndex < 0)
                 {
-                    Seek(val);
+                    Seek(node);
                     var metadata = MetaTools.Load(this, null);
 
                     var template = metadata as Template;
