@@ -8,9 +8,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.IO;
 using Unicorn;
-using Unicorn.Collections;
 
 namespace Metadata
 {
@@ -28,13 +26,13 @@ namespace Metadata
                 return false;
             }
 
-            var table = FetchTemplateTable(template.GetType());
+            var type = template.GetType();
+            var id = template.id;
 
-            var oldTemplate = table.GetEx(template.id);
-            if (null != oldTemplate)
+            var table = FetchTemplateTable(type);
+            if (table.TryGetValue(id, out var oldTemplate))
             {
-                Logo.Error("Duplicate template.id ={0}, oldTemplate={1}, newTemplate={2}"
-                    , template.id, oldTemplate, template);
+                Logo.Error($"Duplicate template.id={id}, oldTemplate={oldTemplate}, newTemplate={template}");
                 return false;
             }
 

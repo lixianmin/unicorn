@@ -53,7 +53,7 @@ namespace Metadata
 			var templateManager = GetTemplateManager();
 			var table = templateManager.FetchTemplateTable(templateType);
 
-            var templateIndex = table.TryIndexValue(idTemplate, out Template template);
+            var templateIndex = table.TryIndexValue(idTemplate, out var template);
             if (templateIndex >= 0)
 			{
 				return template;

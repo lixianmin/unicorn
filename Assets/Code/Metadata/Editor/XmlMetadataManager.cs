@@ -33,11 +33,9 @@ namespace Metadata
 
         public void Serialize (string path)
         {
-            using (var writer = new StreamWriter(path))
-            {
-                writer.NewLine = os.linesep;
-                Serialize(writer);
-            }
+	        using var writer = new StreamWriter(path);
+	        writer.NewLine = os.linesep;
+	        Serialize(writer);
         }
 
 		public void ExceptWith (XmlMetadataManager other, ref SaveAid.IncrementData incrementData)
