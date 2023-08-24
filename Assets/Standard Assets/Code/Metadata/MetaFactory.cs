@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2014-03-29
 author:     lixianmin
 
@@ -17,9 +16,9 @@ using Unicorn.Security;
 namespace Metadata
 {
     public static class MetaFactory
-    {        
-		internal static MetaCreator GetMetaCreator (string typeName)
-		{
+    {
+        internal static MetaCreator GetMetaCreator(string typeName)
+        {
             var lookupTable = _GetLookupTableByName();
             var creator = lookupTable[typeName] as MetaCreator;
             if (creator == null)
@@ -28,46 +27,68 @@ namespace Metadata
             }
 
             return creator;
-		}
+        }
 
-		public static XTEACrypto CreateCrypto ()
-		{
-			var round = 8;
-			var key = new uint[] { 0xA1, 0xDD, 0xB5, 0x56};
-			var crypto = new XTEACrypto (round, key);
-			return crypto;
-		}
+        public static XTEACrypto CreateCrypto()
+        {
+            var round = 8;
+            var key = new uint[] { 0xA1, 0xDD, 0xB5, 0x56 };
+            var crypto = new XTEACrypto(round, key);
+            return crypto;
+        }
 
-		internal static OctetsReader CreateChunkReader (Stream stream)
-		{
-			if (null == stream || !stream.CanRead)
-			{
-				return null;
-			}
+        internal static OctetsReader CreateChunkReader(Stream stream)
+        {
+            if (null == stream || !stream.CanRead)
+            {
+                return null;
+            }
 
-			var mode = OctetsMode.UseFilter | OctetsMode.Compress;
-			var reader = new OctetsReader(stream, mode);
+            var mode = OctetsMode.UseFilter | OctetsMode.Compress;
+            var reader = new OctetsReader(stream, mode);
 
-			return reader;
-		}
-		
-        internal static OctetsReader CreateChunkReader (MetadataManager manager, bool isFullMode)
-		{
-			if (null == manager)
-			{
-				return null;
-			}
+            return reader;
+        }
 
-			var stream = new MemoryStream(8192);
-			var aid = new SaveAid(null);
-            aid.Save (stream, manager, isFullMode);
+        internal static OctetsReader CreateChunkReader(MetadataManager manager, bool isFullMode)
+        {
+            if (null == manager)
+            {
+                return null;
+            }
 
-			stream.Position = 0;
-			var reader = CreateChunkReader(stream);
-			return reader;
-		}
+            var stream = new MemoryStream(8192);
+            var aid = new SaveAid(null);
+            aid.Save(stream, manager, isFullMode);
 
-        internal static IEnumerable<MetaCreator> EnumerateMetaCreators ()
+            stream.Position = 0;
+            var reader = CreateChunkReader(stream);
+            return reader;
+        }
+
+        /// <summary>
+        /// 枚举某个type的所有子类, 目前用于查找Goods的所有子类型
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <returns></returns>
+        public static IEnumerable<Type> EnumerateSubclassOf(Type baseType)
+        {
+            if (baseType != null)
+            {
+                var lookupTable = _GetLookupTableByName();
+                foreach (MetaCreator creator in lookupTable.Values)
+                {
+                    var item = creator.Create();
+                    var type = item?.GetType();
+                    if (type != null && type.IsSubclassOf(baseType))
+                    {
+                        yield return type;
+                    }
+                }
+            }
+        }
+
+        internal static IEnumerable<MetaCreator> EnumerateMetaCreators()
         {
             var lookupTableByName = _GetLookupTableByName();
             var iter = lookupTableByName.GetEnumerator();
@@ -78,7 +99,7 @@ namespace Metadata
             }
         }
 
-        private static Hashtable _GetLookupTableByName ()
+        private static Hashtable _GetLookupTableByName()
         {
             if (null == _lookupTableByName)
             {
@@ -101,7 +122,8 @@ namespace Metadata
 
                 if (null == _lookupTableByName)
                 {
-                    Logo.Error("[_GetLookupTableByName()] _lookupTableByName is null, outerFactoryTypeName={0}, outerFactoryGetLookupTableByType={1}"
+                    Logo.Error(
+                        "[_GetLookupTableByName()] _lookupTableByName is null, outerFactoryTypeName={0}, outerFactoryGetLookupTableByType={1}"
                         , outerFactoryTypeName, outerFactoryGetLookupTableByName);
 
                     _lookupTableByName = new Hashtable();
@@ -117,7 +139,7 @@ namespace Metadata
 
         // 特定于lua的metadata定义写在Assembly-CSharp-Editor.dll中，这些在自动生成代码时
         // 可以不生成到_MetaFactory.cs中
-        private static void _CollectEditorOnlyMetadataTypes (Hashtable lookupTableByName)
+        private static void _CollectEditorOnlyMetadataTypes(Hashtable lookupTableByName)
         {
             var assembly = TypeTools.GetEditorAssembly();
             if (null == assembly)
@@ -137,14 +159,14 @@ namespace Metadata
                 {
                     var key = type.FullName;
                     var contructorInfo = type.GetConstructor(Type.EmptyTypes);
-                    var val = new MetaCreator(()=> (IMetadata) contructorInfo.Invoke(null), isEditorOnlyCreator);
+                    var val = new MetaCreator(() => (IMetadata)contructorInfo.Invoke(null), isEditorOnlyCreator);
                     lookupTableByName.Add(key, val);
                 }
             }
         }
 
         public static readonly string outerFactoryName = "OuterMetaFactory";
-        public static readonly string outerFactoryGetLookupTableByName  = "_GetLookupTableByName";
+        public static readonly string outerFactoryGetLookupTableByName = "_GetLookupTableByName";
 
         private static Hashtable _lookupTableByName;
     }
