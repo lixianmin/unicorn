@@ -136,13 +136,13 @@ namespace Metadata
             }
         }
 
-        internal IEnumerable<KeyValuePair<Type, TemplateTable>> EnumerateTemplateTables ()
+        public IEnumerable<KeyValuePair<Type, TemplateTable>> EnumerateTemplateTables ()
         {
-            var iter = _mTemplateTables.GetEnumerator();
-            while (iter.MoveNext())
+            var it = _mTemplateTables.GetEnumerator();
+            while (it.MoveNext())
             {
-                var type = iter.Key as Type;
-                var table = iter.Value as TemplateTable;
+                var type = it.Key as Type;
+                var table = it.Value as TemplateTable;
                 var pair = new KeyValuePair<Type, TemplateTable>(type, table);
 
                 yield return pair;
@@ -181,6 +181,6 @@ namespace Metadata
 			return text;
 		}
 
-        private readonly Hashtable _mTemplateTables = new Hashtable();
+        private readonly Hashtable _mTemplateTables = new();
     }
 }

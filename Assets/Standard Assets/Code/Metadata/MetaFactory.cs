@@ -66,35 +66,35 @@ namespace Metadata
             return reader;
         }
 
-        /// <summary>
-        /// 枚举某个type的所有子类, 目前用于查找Goods的所有子类型
-        /// </summary>
-        /// <param name="baseType"></param>
-        /// <returns></returns>
-        public static IEnumerable<Type> EnumerateSubclassOf(Type baseType)
-        {
-            if (baseType != null)
-            {
-                var lookupTable = _GetLookupTableByName();
-                foreach (MetaCreator creator in lookupTable.Values)
-                {
-                    var item = creator.Create();
-                    var type = item?.GetType();
-                    if (type != null && type.IsSubclassOf(baseType))
-                    {
-                        yield return type;
-                    }
-                }
-            }
-        }
+        // /// <summary>
+        // /// 枚举某个type的所有子类, 目前用于查找Goods的所有子类型. 后续发现这个方法可以由TemplateManager中的EnumerateTemplateTables代替
+        // /// </summary>
+        // /// <param name="baseType"></param>
+        // /// <returns></returns>
+        // public static IEnumerable<Type> EnumerateSubclassOf(Type baseType)
+        // {
+        //     if (baseType != null)
+        //     {
+        //         var lookupTable = _GetLookupTableByName();
+        //         foreach (MetaCreator creator in lookupTable.Values)
+        //         {
+        //             var item = creator.Create();
+        //             var type = item?.GetType();
+        //             if (type != null && type.IsSubclassOf(baseType))
+        //             {
+        //                 yield return type;
+        //             }
+        //         }
+        //     }
+        // }
 
         internal static IEnumerable<MetaCreator> EnumerateMetaCreators()
         {
             var lookupTableByName = _GetLookupTableByName();
-            var iter = lookupTableByName.GetEnumerator();
-            while (iter.MoveNext())
+            var it = lookupTableByName.GetEnumerator();
+            while (it.MoveNext())
             {
-                var creator = iter.Value as MetaCreator;
+                var creator = it.Value as MetaCreator;
                 yield return creator;
             }
         }
