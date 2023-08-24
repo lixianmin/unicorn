@@ -44,12 +44,12 @@ namespace Metadata
 
         public bool RemoveTemplate(Type templateType, int idTemplate)
         {
-            if (null != templateType && _mTemplateTables[templateType] is TemplateTable table)
+            if (null != templateType && _templateTables[templateType] is TemplateTable table)
             {
                 var removed = table.Remove(idTemplate);
                 if (removed && table.Count == 0)
                 {
-                    _mTemplateTables.Remove(templateType);
+                    _templateTables.Remove(templateType);
                 }
 
                 return removed;
@@ -60,7 +60,7 @@ namespace Metadata
 
         public Template GetTemplate(Type templateType, int idTemplate)
         {
-            if (null != templateType && _mTemplateTables[templateType] is TemplateTable table)
+            if (null != templateType && _templateTables[templateType] is TemplateTable table)
             {
                 table.TryGetValue(idTemplate, out var template);
                 return template;
@@ -73,10 +73,10 @@ namespace Metadata
         {
             if (null != templateType)
             {
-                if (_mTemplateTables[templateType] is not TemplateTable table)
+                if (_templateTables[templateType] is not TemplateTable table)
                 {
                     table = new TemplateTable();
-                    _mTemplateTables.Add(templateType, table);
+                    _templateTables.Add(templateType, table);
                 }
 
                 return table;
@@ -89,7 +89,7 @@ namespace Metadata
         {
             if (null != templateType)
             {
-                var table = _mTemplateTables[templateType] as TemplateTable;
+                var table = _templateTables[templateType] as TemplateTable;
                 return table;
             }
 
@@ -99,7 +99,7 @@ namespace Metadata
         public int GetTemplateCount()
         {
             var count = 0;
-            var iter = _mTemplateTables.GetEnumerator();
+            var iter = _templateTables.GetEnumerator();
             while (iter.MoveNext())
             {
                 var table = iter.Value as TemplateTable;
@@ -111,12 +111,12 @@ namespace Metadata
 
         public void Clear()
         {
-            _mTemplateTables.Clear();
+            _templateTables.Clear();
         }
 
         internal void TrimExcess()
         {
-            var iter = _mTemplateTables.GetEnumerator();
+            var iter = _templateTables.GetEnumerator();
             while (iter.MoveNext())
             {
                 var table = iter.Value as TemplateTable;
@@ -126,7 +126,7 @@ namespace Metadata
 
         public IEnumerable<KeyValuePair<Type, TemplateTable>> EnumerateTemplateTables()
         {
-            var it = _mTemplateTables.GetEnumerator();
+            var it = _templateTables.GetEnumerator();
             while (it.MoveNext())
             {
                 var type = it.Key as Type;
@@ -153,7 +153,7 @@ namespace Metadata
         {
             var sbText = new System.Text.StringBuilder();
 
-            var iter = _mTemplateTables.GetEnumerator();
+            var iter = _templateTables.GetEnumerator();
             while (iter.MoveNext())
             {
                 var type = iter.Key as Type;
@@ -169,6 +169,6 @@ namespace Metadata
             return text;
         }
 
-        private readonly Hashtable _mTemplateTables = new();
+        private readonly Hashtable _templateTables = new();
     }
 }
