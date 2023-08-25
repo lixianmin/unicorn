@@ -258,11 +258,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
-  onLongClick:
-    m_PersistentCalls:
-      m_Calls: []
-    holdTime: 0.5
-  _hasLongClick: 0
 --- !u!1 &3343500228376385003
 GameObject:
   m_ObjectHideFlags: 0
@@ -622,11 +617,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
-  onLongClick:
-    m_PersistentCalls:
-      m_Calls: []
-    holdTime: 0.5
-  _hasLongClick: 0
 --- !u!1 &9010496940945705309
 GameObject:
   m_ObjectHideFlags: 0
