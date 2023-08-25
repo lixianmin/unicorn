@@ -101,12 +101,7 @@ namespace Metadata
 
         internal void LoadTemplates (string typeName, TemplateTable table)
 		{
-            if (table.IsCompleted)
-            {
-                return;
-            }
-
-            var section = _GetSection(typeName);
+			var section = _GetSection(typeName);
             if (null == section)
             {
                 return;
@@ -126,7 +121,6 @@ namespace Metadata
             }
 
             table._Sort();
-            table.IsCompleted = true;
 		}
 
         private SortedTable<int, NodeValue> _GetSection (string typeName)

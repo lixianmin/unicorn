@@ -79,7 +79,7 @@ namespace Metadata
             return null;
         }
 
-        public virtual TemplateTable GetTemplateTable(Type templateType, bool mergeSubclass = false)
+        public virtual TemplateTable GetTemplateTable(Type templateType)
         {
             if (null == templateType)
             {
@@ -98,17 +98,12 @@ namespace Metadata
             {
                 var typeName = templateType.FullName;
                 aid.LoadTemplates(typeName, table);
-            }
 
-            if (mergeSubclass)
-            {
-                foreach (var (type, _) in _templateManager.EnumerateTemplateTables())
+                // 合并子类的数据
+                foreach (var type in MetaFactory.GetSubTypeList(templateType))
                 {
-                    if (type.IsSubclassOf(templateType))
-                    {
-                        var subTable = GetTemplateTable(type, true);
-                        table.Merge(subTable);
-                    }
+                    var subTable = GetTemplateTable(type);
+                    table.Merge(subTable);
                 }
 
                 table.IsCompleted = true;

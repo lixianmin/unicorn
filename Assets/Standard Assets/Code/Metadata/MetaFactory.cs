@@ -66,28 +66,6 @@ namespace Metadata
             return reader;
         }
 
-        // /// <summary>
-        // /// 枚举某个type的所有子类, 目前用于查找Goods的所有子类型. 后续发现这个方法可以由TemplateManager中的EnumerateTemplateTables代替
-        // /// </summary>
-        // /// <param name="baseType"></param>
-        // /// <returns></returns>
-        // public static IEnumerable<Type> EnumerateSubclassOf(Type baseType)
-        // {
-        //     if (baseType != null)
-        //     {
-        //         var lookupTable = _GetLookupTableByName();
-        //         foreach (MetaCreator creator in lookupTable.Values)
-        //         {
-        //             var item = creator.Create();
-        //             var type = item?.GetType();
-        //             if (type != null && type.IsSubclassOf(baseType))
-        //             {
-        //                 yield return type;
-        //             }
-        //         }
-        //     }
-        // }
-
         internal static IEnumerable<MetaCreator> EnumerateMetaCreators()
         {
             var lookupTableByName = _GetLookupTableByName();
@@ -164,9 +142,65 @@ namespace Metadata
             }
         }
 
+        private static List<Type> _FetchMetaTypes()
+        {
+            var list = new List<Type>();
+            var lookupTable = _GetLookupTableByName();
+            foreach (MetaCreator creator in lookupTable.Values)
+            {
+                var item = creator.Create();
+                var type = item?.GetType();
+                list.Add(type);
+            }
+
+            return list;
+        }
+
+        internal static IList<Type> GetSubTypeList(Type type)
+        {
+            if (type != null)
+            {
+                if (_subTypes == null)
+                {
+                    _subTypes = new();
+                    var metaTypes = _FetchMetaTypes();
+                    foreach (var item in metaTypes)
+                    {
+                        var t = item;
+                        while (true)
+                        {
+                            var baseType = t.BaseType!;
+                            var isTopType = baseType == typeof(Template) || baseType == typeof(Config) || baseType == typeof(object);
+                            if (isTopType)
+                            {
+                                break;
+                            }
+                            
+                            if (!_subTypes.TryGetValue(baseType, out var list))
+                            {
+                                list = new List<Type>();
+                                _subTypes.Add(baseType, list);
+                            }
+                            
+                            list.Add(t);
+                            t = baseType;
+                        }
+                    }
+                }
+
+                if (_subTypes.TryGetValue(type, out var result))
+                {
+                    return result;
+                }
+            }
+
+            return Array.Empty<Type>();
+        }
+
         public static readonly string outerFactoryName = "OuterMetaFactory";
         public static readonly string outerFactoryGetLookupTableByName = "_GetLookupTableByName";
 
         private static Hashtable _lookupTableByName;
+        private static Dictionary<Type, List<Type>> _subTypes = null;
     }
 }
