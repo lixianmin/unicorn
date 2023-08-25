@@ -41,7 +41,7 @@ namespace Metadata
             It = this;
         }
 
-        public virtual Template GetTemplate(Type templateType, int idTemplate)
+        public virtual Template GetTemplate(Type templateType, int templateId)
         {
             var aid = GetLoadAid();
             if (null == templateType || null == aid)
@@ -52,7 +52,7 @@ namespace Metadata
             var templateManager = GetTemplateManager();
             var table = templateManager.FetchTemplateTable(templateType);
 
-            var templateIndex = table.TryIndexValue(idTemplate, out var template);
+            var templateIndex = table.TryIndexValue(templateId, out var template);
             if (templateIndex >= 0)
             {
                 return template;
@@ -60,19 +60,39 @@ namespace Metadata
 
             if (!table.IsCompleted)
             {
-                var typeName = templateType.FullName;
-                var creator = MetaFactory.GetMetaCreator(typeName);
-                if (null != creator)
+                var subType = _SeekSubclassType(templateType, templateId);
+                if (subType != null)
                 {
-                    if (aid.Seek(typeName, idTemplate))
+                    var creator = MetaFactory.GetMetaCreator(subType.FullName);
+                    if (null != creator)
                     {
                         var metadata = creator.Create();
                         MetaTools.Load(aid, metadata);
                         template = metadata as Template;
                     }
+                }
 
-                    table.InsertByIndex(~templateIndex, idTemplate, template);
-                    return template;
+                // 防止缓存穿透
+                table.InsertByIndex(~templateIndex, templateId, template);
+                return template;
+            }
+
+            return null;
+        }
+
+        private Type _SeekSubclassType(Type type, int metadataId)
+        {
+            var aid = GetLoadAid();
+            if (aid.Seek(type.FullName, metadataId))
+            {
+                return type;
+            }
+
+            foreach (var subType in MetaFactory.GetSubTypeList(type))
+            {
+                if (aid.Seek(subType.FullName, metadataId))
+                {
+                    return subType;
                 }
             }
 

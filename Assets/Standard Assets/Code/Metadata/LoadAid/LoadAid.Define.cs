@@ -1,23 +1,22 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2015-10-23
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 using System;
-using System.Collections.Generic;
-using Unicorn.Collections;
 
 namespace Metadata
 {
-	partial class LoadAid
-	{
-		internal enum NodeFlags : byte
-		{
-			None		= 0,
-			Increament	= 1,
-		}
+    partial class LoadAid
+    {
+        [Flags]
+        internal enum NodeFlags : byte
+        {
+            None = 0,
+            Increment = 1,
+        }
 
 //		public struct NodeKey
 //		{
@@ -36,11 +35,11 @@ namespace Metadata
 //			public int id;			// template id
 //		}
 
-		public struct NodeValue
-		{
-			internal int offset;
-			internal NodeFlags flags;
-		}
+        public struct NodeValue
+        {
+            internal int offset;
+            internal NodeFlags flags;
+        }
 
 //		private class NodeKeyComparer : IComparer<NodeKey>
 //		{
@@ -155,5 +154,5 @@ namespace Metadata
 //				++_version;
 //			}
 //		}
-	}
+    }
 }
