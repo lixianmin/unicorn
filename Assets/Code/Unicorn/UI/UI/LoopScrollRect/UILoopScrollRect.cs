@@ -4,10 +4,10 @@ author:     lixianmin
 
 策划指南:
 1. 新建一个ScrollView, 然后将本script加到ScrollView组件节点上. script只使用ScrollRect, 与Scrollbar无关, 可以把其下的2个Scrollbar删除且并不影响功能
-2. ScrollView/ScrollRect的大小为viewport的大小, 因为ScrollView的大小在Scene窗口中是可见的, 方便策划编辑
+2. Viewport实现了遮罩关系, 因此UILoopScrollRect使用Viewport大小计算cell的排版; 初始化时也会将Viewport大小copy到Content节点上, 然后会自动计算滑动方向上Content的实际长度
 
 程序细节:
-1. Content节点初始化时会copy其ScrollRect节点的的Width与Height, 然后自动计算滑动方向上的实际长度
+1. Content的对齐方式会在初始化自动设置为左上角对齐
 2. 代码启动时会自动设置Content与cellTransform节点的anchor类型为"左上", 代码以这个为基础计算显隐关系
 3. 这个script目前不适用于运行时AddComponent<>到UI上, 因为Awake()方法会使用cellTransform
 
@@ -32,9 +32,8 @@ namespace Unicorn.UI
             _direction = DirBase.Create(direction);
 
             _InitCellTransform();
-            _InitContentTransform();
+            _InitViewportAndContent();
             _InitRank();
-            _InitViewport();
             _ResetContentArea();
         }
 
@@ -48,18 +47,31 @@ namespace Unicorn.UI
             trans.anchorMax = Vector2.up;
         }
 
-        private void _InitContentTransform()
+        private void _InitViewportAndContent()
         {
-            var trans = _scrollRect.content;
-            _contentTransform = trans;
+            var rectContent = _scrollRect.content;
+            _contentTransform = rectContent;
 
-            // 设置对齐方式为左上角
-            trans.anchorMin = Vector2.up;
-            trans.anchorMax = Vector2.up;
+            // 设置Content对齐方式为左上角
+            rectContent.anchorMin = Vector2.up;
+            rectContent.anchorMax = Vector2.up;
 
-            // copy其scrollRect根节点的sizeDelta
-            var ancestor = _scrollRect.transform as RectTransform;
-            trans.sizeDelta = ancestor!.sizeDelta;
+            var rectAncestor = rectContent.parent as RectTransform;
+            // 如果是stretch mode, 就取其父节点
+            while (rectAncestor != null && rectAncestor.anchorMin != rectAncestor.anchorMax)
+            {
+                rectAncestor = rectAncestor.parent as RectTransform;
+            }
+
+            if (rectAncestor != null)
+            {
+                // copy其viewport的sizeDelta到content
+                var size = rectAncestor.sizeDelta;
+                rectContent.sizeDelta = size;
+            
+                // 初始化_viewportArea
+                _viewportArea = new Rect(0, -size.y, size.x, size.y);    
+            }
         }
 
         private void _InitRank()
@@ -81,13 +93,6 @@ namespace Unicorn.UI
             }
 
             _rank = rank;
-        }
-
-        private void _InitViewport()
-        {
-            var rect = transform as RectTransform;
-            var size = rect!.sizeDelta;
-            _viewportArea = new Rect(0, -size.y, size.x, size.y);
         }
 
         private Rect _GetRelativeViewportArea()
