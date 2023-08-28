@@ -30,6 +30,16 @@ namespace Client.UI
             {
                 UIManager.It.CloseWindow(typeof(UIBag));
             });
+            
+            _btnOpenShop.UI.onClick.AddListener(() =>
+            {
+                UIManager.It.OpenWindow(typeof(UIShop));
+            });
+            
+            _btnCloseShop.UI.onClick.AddListener(() =>
+            {
+                UIManager.It.CloseWindow(typeof(UIShop));
+            });
 
             // Logo.Info(_btnCloseBagObject.UI.localPosition);
             Logo.Info("main is OnLoaded");
@@ -74,7 +84,8 @@ namespace Client.UI
 
         private readonly UIWidget<UIButton> _btnOpenBag = new( "btn_open_bag");
         private readonly UIWidget<UIButton> _btnCloseBag = new( "btn_close_bag");
-        private readonly UIWidget<Transform> _btnCloseBagObject = new("btn_close_bag");
+        private readonly UIWidget<UIButton> _btnOpenShop = new("btn_open_shop");
+        private readonly UIWidget<UIButton> _btnCloseShop = new("btn_close_shop");
     }
 }
 
