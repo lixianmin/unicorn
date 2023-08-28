@@ -201,8 +201,32 @@ namespace Unicorn.UI
                 _cells.RemoveAt(index);
 
                 var trans = lastCell!.GetTransform();
-                trans.Destroy();
+                if (trans != null)
+                {
+                    _RecycleCellGameObject(trans.gameObject);    
+                }
+                
+                _SetDirty();
+            }
+        }
 
+        public void RemoveAllCells()
+        {
+            var size = _cells.Count;
+            if (size > 0)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    var cell = _cells[i] as Cell;
+                    var trans = cell!.GetTransform();
+                    if (trans != null)
+                    {
+                        // todo 不知道这里, 会不会有可能 gameObject被destroy掉的问题, 需要测试. RemoveCell()有相同的风险
+                        _RecycleCellGameObject(trans.gameObject);    
+                    }
+                }
+                
+                _cells.Clear();
                 _SetDirty();
             }
         }
@@ -266,6 +290,17 @@ namespace Unicorn.UI
                 go.SetActive(false);
                 _goPool.PushBack(go);
             }
+        }
+
+        public Cell GetCell(int index)
+        {
+            if (index >= 0 && index < _cells.Count)
+            {
+                var cell = _cells[index] as Cell;
+                return cell;
+            }
+
+            return null;
         }
 
         public RectTransform cellTransform;

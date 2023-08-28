@@ -51,7 +51,12 @@ namespace Unicorn.UI
                 _transform = trans;
             }
 
-            public Transform GetTransform()
+            Transform IHaveTransform.GetTransform()
+            {
+                return _transform;
+            }
+
+            public RectTransform GetTransform()
             {
                 return _transform;
             }

@@ -20,22 +20,33 @@ namespace Client.UI
 
         protected override void OnLoaded()
         {
-            _dog.AddListener(_btnClose.UI.onClick, _OnClickButtonClose);
+            _loopScrollRect.UI.OnVisibleChanged += _OnCellVisibleChanged;
+            for (int i = 0; i < 5; i++)
+            {
+                _loopScrollRect.UI.AddCell(i);
+                Logo.Info(i.ToString());
+            }
         }
-        
+
+        private void _OnCellVisibleChanged(UILoopScrollRect.Cell cell)
+        {
+            if (cell.IsVisible())
+            {
+                var data = (int)cell.GetData();
+                var trans = cell.GetTransform();
+                var title = trans.GetComponentInChildren<UIText>();
+                title.text = "item: "+data.ToString();
+            }
+        }
 
         protected override void OnUnloading()
         {
             _dog.RemoveAllListeners();
-        }
-
-        private void _OnClickButtonClose()
-        {
-            
+            _loopScrollRect.UI.RemoveAllCells();
         }
 
         private readonly EventDog _dog = new();
-        private readonly UIWidget<UIButton> _btnClose = new("btn_close");
+        private readonly UIWidget<UILoopScrollRect> _loopScrollRect = new("shop_view");
     }
 }
 
