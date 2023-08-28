@@ -5,6 +5,7 @@ author:     lixianmin
 策划指南:
 1. 新建一个ScrollView, 然后将本script加到ScrollView组件节点上. script只使用ScrollRect, 与Scrollbar无关, 可以把其下的2个Scrollbar删除且并不影响功能
 2. Viewport实现了遮罩关系, 因此UILoopScrollRect使用Viewport大小计算cell的排版; 初始化时也会将Viewport大小copy到Content节点上, 然后会自动计算滑动方向上Content的实际长度
+   可以设置Viewport为stretch mode, 这样就是使用ScrollRect节点的sizeDelta计算cell排版了
 
 程序细节:
 1. Content的对齐方式会在初始化自动设置为左上角对齐
