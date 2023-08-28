@@ -15,7 +15,7 @@ namespace Client.UI
     {
         public override string GetAssetPath()
         {
-            return "uishop";
+            return "Assets/res/prefabs/ui/uishop.prefab";
         }
 
         protected override void OnLoaded()
