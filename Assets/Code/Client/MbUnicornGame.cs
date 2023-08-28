@@ -2,6 +2,8 @@
 created:    2022-08-12
 author:     lixianmin
 
+1. UNICORN_EDITOR 这个宏定义在 mcs.rsp 文件中
+
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
