@@ -4,6 +4,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+#if UNICORN_EDITOR
 
 using System;
 using DG.Tweening;
@@ -36,3 +37,5 @@ namespace Scripts
         public override event Action OnAnimationComplete;
     }
 }
+
+#endif

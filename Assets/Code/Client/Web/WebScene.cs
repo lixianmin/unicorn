@@ -4,6 +4,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+#if UNICORN_EDITOR
 
 using System;
 using System.Collections;
@@ -82,3 +83,5 @@ namespace Client.Web
         private AsyncOperationHandle<SceneInstance> _loadHandle;
     }
 }
+
+#endif

@@ -4,6 +4,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+#if UNICORN_EDITOR
 
 using Unicorn;
 using Unicorn.UI;
@@ -61,3 +62,5 @@ namespace Client.UI
         private readonly UIWidget<UIButton> _btnClickBag = new("btn_click_bag");
     }
 }
+
+#endif

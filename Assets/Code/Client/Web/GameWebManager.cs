@@ -4,6 +4,8 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+#if UNICORN_EDITOR
+
 using System;
 using Unicorn.Web;
 
@@ -55,3 +57,5 @@ namespace Client.Web
         public new static readonly GameWebManager It = new();
     }
 }
+
+#endif
