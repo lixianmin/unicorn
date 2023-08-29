@@ -755,7 +755,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 140, y: -312}
+  m_AnchoredPosition: {x: 181, y: -279}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6364532676778531515
@@ -771,8 +771,6 @@ GameObject:
   - component: {fileID: 3498626957208858154}
   - component: {fileID: 3498626957208858155}
   - component: {fileID: 3498626957208858152}
-  - component: {fileID: 3498626957208858153}
-  - component: {fileID: 3498626957208858150}
   - component: {fileID: 3498626957208858151}
   m_Layer: 0
   m_Name: uishop
@@ -877,38 +875,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &3498626957208858153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6364532676778531515}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4970562599e134f90ada068eb4c469d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _timeout: 3
-  canvasGroup: {fileID: 3498626957208858152}
-  duration: 1
-  targetAlpha: 1
---- !u!114 &3498626957208858150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6364532676778531515}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4970562599e134f90ada068eb4c469d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _timeout: 3
-  canvasGroup: {fileID: 3498626957208858152}
-  duration: 1
-  targetAlpha: 0
 --- !u!114 &3498626957208858151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,7 +887,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 131cec401e4c04a0dabccaf2eb925423, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  widgets: []
-  openWindowAnimation: {fileID: 3498626957208858153}
-  closeWindowAnimation: {fileID: 3498626957208858150}
+  widgets:
+  - name: shop_view
+    type: UILoopScrollRect
+    target: {fileID: 3498626957271230318}
+    userdata: 
+  openWindowAnimation: {fileID: 0}
+  closeWindowAnimation: {fileID: 0}
   labels: []
