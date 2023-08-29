@@ -70,11 +70,11 @@ namespace Metadata
                         MetaTools.Load(aid, metadata);
                         template = metadata as Template;
                     }
+                    
+                    // 防止缓存穿透. 必须有subType才能加一个默认值, 否则无论type是啥都加进来了, 会导致插入一些非法值
+                    table.InsertByIndex(~templateIndex, templateId, template);
+                    return template;
                 }
-
-                // 防止缓存穿透
-                table.InsertByIndex(~templateIndex, templateId, template);
-                return template;
             }
 
             return null;

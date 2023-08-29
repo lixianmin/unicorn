@@ -8,7 +8,6 @@ Copyright (C) - All Rights Reserved
 
 using Unicorn;
 using Unicorn.UI;
-using UnityEngine;
 
 namespace Client.UI
 {
