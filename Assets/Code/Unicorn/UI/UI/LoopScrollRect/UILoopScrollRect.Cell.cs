@@ -11,6 +11,11 @@ namespace Unicorn.UI
 {
     partial class UILoopScrollRect
     {
+        public interface ICellData
+        {
+            void OnCellVisibleChanged(Cell cell);
+        }
+
         public class Cell : IHaveTransform
         {
             /// <summary>
@@ -19,7 +24,7 @@ namespace Unicorn.UI
             /// <param name="index">索引</param>
             /// <param name="area">相对于viewport判定可见性</param>
             /// <param name="data">Cell的附加数据</param>
-            public Cell(int index, Rect area, object data)
+            public Cell(int index, Rect area, ICellData data)
             {
                 _index = index;
                 _area = area;
@@ -61,14 +66,14 @@ namespace Unicorn.UI
                 return _transform;
             }
 
-            public object GetData()
+            public ICellData GetData()
             {
                 return _data;
             }
 
             private readonly int _index;
             private readonly Rect _area; // 相对于viewport判定可见性
-            private readonly object _data;
+            private readonly ICellData _data;
 
             private bool _isVisible;
             private RectTransform _transform;

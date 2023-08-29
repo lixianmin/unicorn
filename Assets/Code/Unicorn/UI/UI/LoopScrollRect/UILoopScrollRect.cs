@@ -69,9 +69,9 @@ namespace Unicorn.UI
                 // copy其viewport的sizeDelta到content
                 var size = rectAncestor.sizeDelta;
                 rectContent.sizeDelta = size;
-            
+
                 // 初始化_viewportArea
-                _viewportArea = new Rect(0, -size.y, size.x, size.y);    
+                _viewportArea = new Rect(0, -size.y, size.x, size.y);
             }
         }
 
@@ -108,7 +108,6 @@ namespace Unicorn.UI
 
         private void OnDestroy()
         {
-            onCellVisibleChanged.RemoveAllListeners();
             RemoveAllCells();
         }
 
@@ -140,12 +139,12 @@ namespace Unicorn.UI
                     {
                         var go = _SpawnCellGameObject(cell);
                         cell.SetTransform(go.transform as RectTransform);
-                        onCellVisibleChanged.Invoke(cell);
+                        _OnCellVisibleChanged(cell);
                     }
                     else
                     {
                         // 这样可确保所有的OnVisibleChanged事件中, Transform都是可用的, 方便client设置一些东西
-                        onCellVisibleChanged.Invoke(cell);
+                        _OnCellVisibleChanged(cell);
                         var trans = cell.GetTransform();
                         cell.SetTransform(null);
                         _RecycleCellGameObject(trans.gameObject);
@@ -172,7 +171,7 @@ namespace Unicorn.UI
             }
         }
 
-        public void AddCell(object data)
+        public void AddCell(ICellData data)
         {
             if (cellTransform == null)
             {
@@ -193,7 +192,7 @@ namespace Unicorn.UI
                 var go = _SpawnCellGameObject(cell);
                 cell.SetTransform(go.transform as RectTransform);
                 cell.SetVisible(true);
-                onCellVisibleChanged.Invoke(cell);
+                _OnCellVisibleChanged(cell);
             }
 
             _cells.PushBack(cell);
@@ -210,9 +209,9 @@ namespace Unicorn.UI
                 var trans = lastCell!.GetTransform();
                 if (trans != null)
                 {
-                    _RecycleCellGameObject(trans.gameObject);    
+                    _RecycleCellGameObject(trans.gameObject);
                 }
-                
+
                 _SetDirty();
             }
         }
@@ -222,17 +221,17 @@ namespace Unicorn.UI
             var size = _cells.Count;
             if (size > 0)
             {
-                for (int i = 0; i < size; i++)
+                for (var i = 0; i < size; i++)
                 {
                     var cell = _cells[i] as Cell;
                     var trans = cell!.GetTransform();
                     if (trans != null)
                     {
                         // todo 不知道这里, 会不会有可能 gameObject被destroy掉的问题, 需要测试. RemoveCell()有相同的风险
-                        _RecycleCellGameObject(trans.gameObject);    
+                        _RecycleCellGameObject(trans.gameObject);
                     }
                 }
-                
+
                 _cells.Clear();
                 _SetDirty();
             }
@@ -263,7 +262,7 @@ namespace Unicorn.UI
                     break;
             }
         }
-        
+
         private void _SetDirty()
         {
             _isDirty = true;
@@ -310,10 +309,14 @@ namespace Unicorn.UI
             return null;
         }
 
+        private void _OnCellVisibleChanged(Cell cell)
+        {
+            var data = cell.GetData();
+            data?.OnCellVisibleChanged(cell);
+        }
+
         public RectTransform cellTransform;
         public Direction direction = Direction.BottomToTop;
-
-        public readonly UnityEvent<Cell> onCellVisibleChanged = new ();
 
         private ScrollRect _scrollRect;
         private RectTransform _contentTransform;
