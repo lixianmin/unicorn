@@ -15,9 +15,9 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using System;
 using Unicorn.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Direction = UnityEngine.UI.Scrollbar.Direction;
 
@@ -108,7 +108,8 @@ namespace Unicorn.UI
 
         private void OnDestroy()
         {
-            OnVisibleChanged = null;
+            onCellVisibleChanged.RemoveAllListeners();
+            RemoveAllCells();
         }
 
         private void Update()
@@ -139,12 +140,12 @@ namespace Unicorn.UI
                     {
                         var go = _SpawnCellGameObject(cell);
                         cell.SetTransform(go.transform as RectTransform);
-                        OnVisibleChanged?.Invoke(cell);
+                        onCellVisibleChanged.Invoke(cell);
                     }
                     else
                     {
                         // 这样可确保所有的OnVisibleChanged事件中, Transform都是可用的, 方便client设置一些东西
-                        OnVisibleChanged?.Invoke(cell);
+                        onCellVisibleChanged.Invoke(cell);
                         var trans = cell.GetTransform();
                         cell.SetTransform(null);
                         _RecycleCellGameObject(trans.gameObject);
@@ -183,19 +184,19 @@ namespace Unicorn.UI
             var areaPos = _direction.GetCellAreaPos(index, _rank, sizeDelta);
 
             var area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
-            var item = new Cell(index, area, data);
+            var cell = new Cell(index, area, data);
 
             var relativeArea = _GetRelativeViewportArea();
             var isVisible = relativeArea.Overlaps(area);
             if (isVisible)
             {
-                var go = _SpawnCellGameObject(item);
-                item.SetTransform(go.transform as RectTransform);
-                item.SetVisible(true);
-                OnVisibleChanged?.Invoke(item);
+                var go = _SpawnCellGameObject(cell);
+                cell.SetTransform(go.transform as RectTransform);
+                cell.SetVisible(true);
+                onCellVisibleChanged.Invoke(cell);
             }
 
-            _cells.PushBack(item);
+            _cells.PushBack(cell);
             _SetDirty();
         }
 
@@ -268,24 +269,24 @@ namespace Unicorn.UI
             _isDirty = true;
         }
 
-        private GameObject _SpawnCellGameObject(Cell item)
+        private GameObject _SpawnCellGameObject(Cell cell)
         {
             if (_goPool.Count > 0)
             {
                 var last = _goPool.PopBack() as GameObject;
-                _OnSpawnCellGameObject(last, item);
+                _OnSpawnCellGameObject(last, cell);
                 return last;
             }
 
             var go = Instantiate(cellTransform.gameObject, _contentTransform);
-            _OnSpawnCellGameObject(go, item);
+            _OnSpawnCellGameObject(go, cell);
             return go;
         }
 
-        private void _OnSpawnCellGameObject(GameObject go, Cell item)
+        private void _OnSpawnCellGameObject(GameObject go, Cell cell)
         {
             var trans = go.transform as RectTransform;
-            trans!.anchoredPosition = _direction.GetTransformAnchoredPos(item);
+            trans!.anchoredPosition = _direction.GetTransformAnchoredPos(cell);
             go.SetActive(true);
         }
 
@@ -312,7 +313,7 @@ namespace Unicorn.UI
         public RectTransform cellTransform;
         public Direction direction = Direction.BottomToTop;
 
-        public event Action<Cell> OnVisibleChanged;
+        public readonly UnityEvent<Cell> onCellVisibleChanged = new ();
 
         private ScrollRect _scrollRect;
         private RectTransform _contentTransform;
