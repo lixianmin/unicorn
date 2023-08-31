@@ -312,7 +312,7 @@ namespace Unicorn.UI
         private void _OnCellVisibleChanged(Cell cell)
         {
             var data = cell.GetData();
-            data?.OnCellVisibleChanged(cell);
+            data?.OnVisibleChanged(cell);
         }
 
         public RectTransform cellTransform;

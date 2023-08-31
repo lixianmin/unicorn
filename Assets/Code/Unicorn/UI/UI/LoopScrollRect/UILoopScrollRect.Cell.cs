@@ -13,7 +13,7 @@ namespace Unicorn.UI
     {
         public interface ICellData
         {
-            void OnCellVisibleChanged(Cell cell);
+            void OnVisibleChanged(Cell cell);
         }
 
         public class Cell : IHaveTransform

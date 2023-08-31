@@ -20,25 +20,13 @@ namespace Client.UI
 
         protected override void OnLoaded()
         {
-            _loopScrollRect.UI.OnVisibleChanged += _OnCellVisibleChanged;
             for (int i = 0; i < 5; i++)
             {
-                _loopScrollRect.UI.AddCell(i);
+                _loopScrollRect.UI.AddCell(new UIShopCell(i));
                 Logo.Info(i.ToString());
             }
         }
-
-        private void _OnCellVisibleChanged(UILoopScrollRect.Cell cell)
-        {
-            if (cell.IsVisible())
-            {
-                var data = (int)cell.GetData();
-                var trans = cell.GetTransform();
-                var title = trans.GetComponentInChildren<UIText>();
-                title.text = "item: "+data.ToString();
-            }
-        }
-
+        
         protected override void OnUnloading()
         {
             _dog.RemoveAllListeners();
