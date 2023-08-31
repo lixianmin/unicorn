@@ -11,7 +11,7 @@ namespace Unicorn.UI
 {
     partial class UILoopScrollRect
     {
-        public interface ICellData
+        public interface IWidget
         {
             void OnVisibleChanged(Cell cell);
         }
@@ -23,12 +23,12 @@ namespace Unicorn.UI
             /// </summary>
             /// <param name="index">索引</param>
             /// <param name="area">相对于viewport判定可见性</param>
-            /// <param name="data">Cell的附加数据</param>
-            public Cell(int index, Rect area, ICellData data)
+            /// <param name="widget">Cell的附加数据</param>
+            public Cell(int index, Rect area, IWidget widget)
             {
                 _index = index;
                 _area = area;
-                _data = data;
+                _widget = widget;
             }
 
             public int GetIndex()
@@ -66,14 +66,14 @@ namespace Unicorn.UI
                 return _transform;
             }
 
-            public ICellData GetData()
+            internal IWidget GetWidget()
             {
-                return _data;
+                return _widget;
             }
 
             private readonly int _index;
             private readonly Rect _area; // 相对于viewport判定可见性
-            private readonly ICellData _data;
+            private readonly IWidget _widget;
 
             private bool _isVisible;
             private RectTransform _transform;

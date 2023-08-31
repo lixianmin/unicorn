@@ -22,7 +22,7 @@ namespace Client.UI
         {
             for (int i = 0; i < 5; i++)
             {
-                _loopScrollRect.UI.AddCell(new UIShopCell(i));
+                _loopScrollRect.UI.AddCell(new UIShopWidget(i));
                 Logo.Info(i.ToString());
             }
         }
@@ -30,7 +30,7 @@ namespace Client.UI
         protected override void OnUnloading()
         {
             _dog.RemoveAllListeners();
-            _loopScrollRect.UI.RemoveAllCells();
+            Logo.Info("uishop is unloading");
         }
 
         private readonly EventDog _dog = new();

@@ -108,7 +108,8 @@ namespace Unicorn.UI
 
         private void OnDestroy()
         {
-            RemoveAllCells();
+            _RemoveAllCells();
+            Logo.Info("loop scroll rect is destroying");
         }
 
         private void Update()
@@ -171,7 +172,7 @@ namespace Unicorn.UI
             }
         }
 
-        public void AddCell(ICellData data)
+        public void AddCell(IWidget widget)
         {
             if (cellTransform == null)
             {
@@ -183,7 +184,7 @@ namespace Unicorn.UI
             var areaPos = _direction.GetCellAreaPos(index, _rank, sizeDelta);
 
             var area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
-            var cell = new Cell(index, area, data);
+            var cell = new Cell(index, area, widget);
 
             var relativeArea = _GetRelativeViewportArea();
             var isVisible = relativeArea.Overlaps(area);
@@ -216,7 +217,7 @@ namespace Unicorn.UI
             }
         }
 
-        public void RemoveAllCells()
+        private void _RemoveAllCells()
         {
             var size = _cells.Count;
             if (size > 0)
@@ -311,8 +312,8 @@ namespace Unicorn.UI
 
         private void _OnCellVisibleChanged(Cell cell)
         {
-            var data = cell.GetData();
-            data?.OnVisibleChanged(cell);
+            var widget = cell.GetWidget();
+            widget?.OnVisibleChanged(cell);
         }
 
         public RectTransform cellTransform;

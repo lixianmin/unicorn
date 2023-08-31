@@ -11,9 +11,9 @@ using Unicorn.UI;
 
 namespace Client.UI
 {
-    public class UIShopCell : UILoopScrollRect.ICellData
+    public class UIShopWidget : UILoopScrollRect.IWidget
     {
-        public UIShopCell(int index)
+        public UIShopWidget(int index)
         {
             _index = index;
         }
@@ -22,10 +22,9 @@ namespace Client.UI
         {
             if (cell.IsVisible())
             {
-                var data = (UIShopCell)cell.GetData();
                 var trans = cell.GetTransform();
                 var title = trans.GetComponentInChildren<UIText>();
-                title.text = "item: " + data._index.ToString();
+                title.text = "item: " + _index.ToString();
             }
         }
 
