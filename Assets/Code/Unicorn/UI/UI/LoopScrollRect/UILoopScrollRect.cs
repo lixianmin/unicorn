@@ -108,7 +108,7 @@ namespace Unicorn.UI
 
         private void OnDestroy()
         {
-            _RemoveAllCells();
+            RemoveAllCells();
             Logo.Info("loop scroll rect is destroying");
         }
 
@@ -217,7 +217,7 @@ namespace Unicorn.UI
             }
         }
 
-        private void _RemoveAllCells()
+        public void RemoveAllCells()
         {
             var size = _cells.Count;
             if (size > 0)
