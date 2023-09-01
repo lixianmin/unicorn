@@ -208,15 +208,13 @@ namespace Unicorn.UI
                 return;
             }
 
+            var lastIndex = count - 1;
             // 所有cell的transform均匀向前移动一格
-            for (var i = count - 1; i > index; i--)
+            for (var i = lastIndex; i > index; i--)
             {
-                var backTrans = (_cells[i] as Cell)?.GetTransform();
-                var frontTrans = (_cells[i - 1] as Cell)?.GetTransform();
-                if (backTrans is not null && frontTrans is not null)
-                {
-                    backTrans.anchoredPosition = frontTrans.anchoredPosition;
-                }
+                var back = _cells[i] as Cell;
+                var front = _cells[i - 1] as Cell;
+                back!.CopyFrom(front);
             }
 
             var firstCell = _cells[index] as Cell;
@@ -230,7 +228,6 @@ namespace Unicorn.UI
                 firstCell.SetTransform(null);
             }
 
-            AssertTools.IsNull(firstCell.GetTransform());
             _cells.RemoveAt(index);
             _SetDirty();
         }
