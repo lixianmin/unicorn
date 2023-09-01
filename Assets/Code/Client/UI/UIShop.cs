@@ -40,18 +40,22 @@ namespace Client.UI
 
         private void _OnInsertGoods(ShopGoods goods)
         {
+            var tid = goods.GetTemplateId();
+            var widget = new UIShopWidget(tid);
+            _loopScrollRect.UI.AddCell(widget);
         }
 
         private void _OnDeleteGoods(ShopGoods goods)
         {
-            var count = _loopScrollRect.UI.GetCellCount();
+            var ui = _loopScrollRect.UI;
+            var count = ui.GetCellCount();
             for (int i = 0; i < count; i++)
             {
-                var cell = _loopScrollRect.UI.GetCell(i);
+                var cell = ui.GetCell(i);
                 var widget = cell.GetWidget() as UIShopWidget;
                 if (widget!.GetTemplateId() == goods.GetTemplateId())
                 {
-                    _loopScrollRect.UI.RemoveCell(i);
+                    ui.RemoveCell(i);
                     break;
                 }
             }

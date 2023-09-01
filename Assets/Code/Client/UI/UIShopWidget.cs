@@ -40,9 +40,12 @@ namespace Client.UI
 
         private void _OnClickButton()
         {
-            // var nextId = ShopManager.It.GetNextId();
-            // ShopManager.It.UpdateGoods(_tid, nextId.ToString());
-            ShopManager.It.DeleteGoods(_tid);
+            var nextId = ShopManager.It.GetNextId();
+            ShopManager.It.UpdateGoods(_tid, nextId.ToString());
+            
+            // ShopManager.It.DeleteGoods(_tid);
+            
+            // ShopManager.It.InsertGoods(nextId);
         }
 
         private void _OnUpdateGoods(ShopGoods goods)
