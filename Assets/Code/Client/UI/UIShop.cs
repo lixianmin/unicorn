@@ -32,16 +32,14 @@ namespace Client.UI
             _loopScrollRect.UI.RemoveAllCells();
             foreach (var goods in ShopManager.It.GetEnumerator())
             {
-                var tid = goods.GetTemplateId();
-                var widget = new UIShopWidget(tid);
+                var widget = new UIShopWidget(goods);
                 _loopScrollRect.UI.AddCell(widget);
             }
         }
 
         private void _OnInsertGoods(ShopGoods goods)
         {
-            var tid = goods.GetTemplateId();
-            var widget = new UIShopWidget(tid);
+            var widget = new UIShopWidget(goods);
             _loopScrollRect.UI.AddCell(widget);
         }
 

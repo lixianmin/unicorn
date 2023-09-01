@@ -15,9 +15,9 @@ namespace Client.UI
 {
     public class UIShopWidget : UILoopScrollRect.IWidget
     {
-        public UIShopWidget(int tid)
+        public UIShopWidget(ShopGoods goods)
         {
-            _tid = tid;
+            _goods = goods;
         }
 
         public void OnVisibleChanged(UILoopScrollRect.Cell cell)
@@ -26,11 +26,11 @@ namespace Client.UI
             {
                 _rect = cell.GetTransform();
                 var title = _rect.GetComponentInChildren<UIText>();
-                title.text = "item: " + _tid;
+                title.text = "item: " + _goods.GetTemplateId();
 
                 var btn = _rect.GetComponentInChildren<UIButton>();
                 _dog.AddListener(btn.onClick, _OnClickButton);
-                _dog.AddListener(ShopManager.It.OnUpdateGoods, _OnUpdateGoods);
+                _dog.AddListener(_goods.OnUpdateGoods, _OnUpdateGoods);
             }
             else
             {
@@ -41,28 +41,25 @@ namespace Client.UI
         private void _OnClickButton()
         {
             var nextId = ShopManager.It.GetNextId();
-            ShopManager.It.UpdateGoods(_tid, nextId.ToString());
+            _goods.SetName(nextId.ToString());
             
             // ShopManager.It.DeleteGoods(_tid);
-            
             // ShopManager.It.InsertGoods(nextId);
         }
 
         private void _OnUpdateGoods(ShopGoods goods)
         {
-            if (goods.GetTemplateId() == _tid)
-            {
-                var image = _rect.GetComponentInChildren<UIImage>();
-                image.color = image.color == Color.white ? Color.red : Color.white;
-            }
+            var image = _rect.GetComponentInChildren<UIImage>();
+            // 如果一个cell隐藏又显示了, 因为有transform的交换, 可能会导致变色
+            image.color = image.color == Color.white ? Color.red : Color.white;
         }
 
         public int GetTemplateId()
         {
-            return _tid;
+            return _goods.GetTemplateId();
         }
-
-        private int _tid;
+        
+        private readonly ShopGoods _goods;
         private RectTransform _rect;
 
         private readonly EventDog _dog = new();

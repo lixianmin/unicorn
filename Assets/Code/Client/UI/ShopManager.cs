@@ -31,15 +31,6 @@ namespace Client.UI
             OnInsertGoods.Invoke(goods);
         }
 
-        public void UpdateGoods(int tid, string name)
-        {
-            if (_goods.TryGetValue(tid, out var goods))
-            {
-                goods.SetName(name);
-                OnUpdateGoods.Invoke(goods);
-            }
-        }
-
         public bool DeleteGoods(int tid)
         {
             var index = _goods.TryIndexValue(tid, out var goods);
@@ -68,7 +59,6 @@ namespace Client.UI
 
         public readonly UnityEvent OnInited = new();
         public readonly UnityEvent<ShopGoods> OnInsertGoods = new();
-        public readonly UnityEvent<ShopGoods> OnUpdateGoods = new();
         public readonly UnityEvent<ShopGoods> OnDeleteGoods = new();
 
         private readonly SortedTable<int, ShopGoods> _goods = new();
