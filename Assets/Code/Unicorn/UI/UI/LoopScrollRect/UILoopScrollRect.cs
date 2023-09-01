@@ -184,7 +184,7 @@ namespace Unicorn.UI
             var areaPos = _direction.GetCellAreaPos(index, _rank, sizeDelta);
 
             var area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
-            var cell = new Cell(index, area, widget);
+            var cell = new Cell(area, widget);
 
             var relativeArea = _GetRelativeViewportArea();
             var isVisible = relativeArea.Overlaps(area);
@@ -241,7 +241,7 @@ namespace Unicorn.UI
         /// <summary>
         /// 重置anchoredPosition到初始化的位置
         /// </summary>
-        public void ResetAnchoredPosition()
+        private void _ResetAnchoredPosition()
         {
             _ResetContentArea();
             var dir = _direction.GetDirection();
@@ -308,6 +308,11 @@ namespace Unicorn.UI
             }
 
             return null;
+        }
+
+        public int GetCellCount()
+        {
+            return _cells.Count;
         }
 
         private void _OnCellVisibleChanged(Cell cell)

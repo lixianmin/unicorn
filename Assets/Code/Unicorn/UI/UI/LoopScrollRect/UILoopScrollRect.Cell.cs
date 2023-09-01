@@ -24,16 +24,10 @@ namespace Unicorn.UI
             /// <param name="index">索引</param>
             /// <param name="area">相对于viewport判定可见性</param>
             /// <param name="widget">Cell的附加数据</param>
-            public Cell(int index, Rect area, IWidget widget)
+            public Cell(Rect area, IWidget widget)
             {
-                _index = index;
                 _area = area;
                 _widget = widget;
-            }
-
-            public int GetIndex()
-            {
-                return _index;
             }
 
             internal Rect GetArea()
@@ -66,12 +60,15 @@ namespace Unicorn.UI
                 return _transform;
             }
 
-            internal IWidget GetWidget()
+            /// <summary>
+            /// 如果widget一开始传进来的就是null, 那么它就只能是null了
+            /// </summary>
+            /// <returns></returns>
+            public IWidget GetWidget()
             {
                 return _widget;
             }
 
-            private readonly int _index;
             private readonly Rect _area; // 相对于viewport判定可见性
             private readonly IWidget _widget;
 
