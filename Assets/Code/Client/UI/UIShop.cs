@@ -4,6 +4,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 #if UNICORN_EDITOR
 
 using Unicorn;
@@ -11,7 +12,7 @@ using Unicorn.UI;
 
 namespace Client.UI
 {
-    public class UIShop: UIWindowBase
+    public class UIShop : UIWindowBase
     {
         public override string GetAssetPath()
         {
@@ -20,13 +21,42 @@ namespace Client.UI
 
         protected override void OnLoaded()
         {
-            for (int i = 0; i < 5; i++)
+            _ReloadWidgets();
+
+            _dog.AddListener(ShopManager.It.OnInsertGoods, _OnInsertGoods);
+            _dog.AddListener(ShopManager.It.OnDeleteGoods, _OnDeleteGoods);
+        }
+
+        private void _ReloadWidgets()
+        {
+            _loopScrollRect.UI.RemoveAllCells();
+            foreach (var goods in ShopManager.It.GetEnumerator())
             {
-                _loopScrollRect.UI.AddCell(new UIShopWidget(i));
-                Logo.Info(i.ToString());
+                var tid = goods.GetTemplateId();
+                var widget = new UIShopWidget(tid);
+                _loopScrollRect.UI.AddCell(widget);
             }
         }
-        
+
+        private void _OnInsertGoods(ShopGoods goods)
+        {
+        }
+
+        private void _OnDeleteGoods(ShopGoods goods)
+        {
+            var count = _loopScrollRect.UI.GetCellCount();
+            for (int i = 0; i < count; i++)
+            {
+                var cell = _loopScrollRect.UI.GetCell(i);
+                var widget = cell.GetWidget() as UIShopWidget;
+                if (widget!.GetTemplateId() == goods.GetTemplateId())
+                {
+                    _loopScrollRect.UI.RemoveCell(i);
+                    break;
+                }
+            }
+        }
+
         protected override void OnUnloading()
         {
             _dog.RemoveAllListeners();

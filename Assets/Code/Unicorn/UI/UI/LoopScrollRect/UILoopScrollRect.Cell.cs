@@ -18,12 +18,6 @@ namespace Unicorn.UI
 
         public class Cell : IHaveTransform
         {
-            /// <summary>
-            /// 纯数值的cell单元格
-            /// </summary>
-            /// <param name="index">索引</param>
-            /// <param name="area">相对于viewport判定可见性</param>
-            /// <param name="widget">Cell的附加数据</param>
             public Cell(Rect area, IWidget widget)
             {
                 _area = area;

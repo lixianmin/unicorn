@@ -200,7 +200,7 @@ namespace Unicorn.Collections
 			++_version;
 			_size--;
 			_tail = q;
-            _items[q] = default(T);
+            _items[q] = default;
 		}
 		
 		public void Clear ()

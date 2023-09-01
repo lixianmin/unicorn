@@ -148,7 +148,7 @@ namespace Unicorn.UI
                         _OnCellVisibleChanged(cell);
                         var trans = cell.GetTransform();
                         cell.SetTransform(null);
-                        _RecycleCellGameObject(trans.gameObject);
+                        _RecycleCellTransform(trans);
                     }
                 }
             }
@@ -202,19 +202,37 @@ namespace Unicorn.UI
 
         public void RemoveCell(int index)
         {
-            if (index >= 0 && index < _cells.Count)
+            var count = _cells.Count;
+            if (index < 0 || index >= count)
             {
-                var lastCell = _cells[index] as Cell;
-                _cells.RemoveAt(index);
-
-                var trans = lastCell!.GetTransform();
-                if (trans != null)
-                {
-                    _RecycleCellGameObject(trans.gameObject);
-                }
-
-                _SetDirty();
+                return;
             }
+
+            // 所有cell的transform均匀向前移动一格
+            for (var i = count - 1; i > index; i--)
+            {
+                var backTrans = (_cells[i] as Cell)?.GetTransform();
+                var frontTrans = (_cells[i - 1] as Cell)?.GetTransform();
+                if (backTrans is not null && frontTrans is not null)
+                {
+                    backTrans.anchoredPosition = frontTrans.anchoredPosition;
+                }
+            }
+
+            var firstCell = _cells[index] as Cell;
+            if (firstCell!.IsVisible())
+            {
+                firstCell.SetVisible(false);
+                _OnCellVisibleChanged(firstCell);
+
+                // 逻辑可保证只有visible的cell才有transform, 才需要回收
+                _RecycleCellTransform(firstCell.GetTransform());
+                firstCell.SetTransform(null);
+            }
+
+            AssertTools.IsNull(firstCell.GetTransform());
+            _cells.RemoveAt(index);
+            _SetDirty();
         }
 
         public void RemoveAllCells()
@@ -226,11 +244,8 @@ namespace Unicorn.UI
                 {
                     var cell = _cells[i] as Cell;
                     var trans = cell!.GetTransform();
-                    if (trans != null)
-                    {
-                        // todo 不知道这里, 会不会有可能 gameObject被destroy掉的问题, 需要测试. RemoveCell()有相同的风险
-                        _RecycleCellGameObject(trans.gameObject);
-                    }
+                    // todo 不知道这里, 会不会有可能gameObject被scene切换而destroy掉的问题, 需要测试. RemoveCell()有相同的风险
+                    _RecycleCellTransform(trans);
                 }
 
                 _cells.Clear();
@@ -287,13 +302,15 @@ namespace Unicorn.UI
         {
             var trans = go.transform as RectTransform;
             trans!.anchoredPosition = _direction.GetTransformAnchoredPos(cell);
+            // Logo.Info($"anchoredPosition={trans.anchoredPosition}");
             go.SetActive(true);
         }
 
-        private void _RecycleCellGameObject(GameObject go)
+        private void _RecycleCellTransform(Transform trans)
         {
-            if (null != go)
+            if (trans is not null)
             {
+                var go = trans.gameObject;
                 go.SetActive(false);
                 _goPool.PushBack(go);
             }
