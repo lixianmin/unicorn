@@ -17,7 +17,6 @@ Copyright (C) - All Rights Reserved
 
 using Unicorn.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using Direction = UnityEngine.UI.Scrollbar.Direction;
 
@@ -109,7 +108,8 @@ namespace Unicorn.UI
         private void OnDestroy()
         {
             RemoveAllCells();
-            Logo.Info("loop scroll rect is destroying");
+            _goPool.Clear();
+            // Logo.Info("loop scroll rect is destroying");
         }
 
         private void Update()
@@ -132,23 +132,16 @@ namespace Unicorn.UI
             foreach (Cell cell in _cells)
             {
                 var lastVisible = cell!.IsVisible();
-                var currentVisible = relativeArea.Overlaps(cell.GetArea());
-                if (lastVisible != currentVisible)
+                var nextVisible = relativeArea.Overlaps(cell.GetArea());
+                if (lastVisible != nextVisible)
                 {
-                    cell.SetVisible(currentVisible);
-                    if (currentVisible)
+                    if (nextVisible)
                     {
-                        var go = _SpawnCellGameObject(cell);
-                        cell.SetTransform(go.transform as RectTransform);
-                        _OnCellVisibleChanged(cell);
+                        _ShowCell(cell);
                     }
                     else
                     {
-                        // 这样可确保所有的OnVisibleChanged事件中, Transform都是可用的, 方便client设置一些东西
-                        _OnCellVisibleChanged(cell);
-                        var trans = cell.GetTransform();
-                        cell.SetTransform(null);
-                        _RecycleCellTransform(trans);
+                        _HideCell(cell);
                     }
                 }
             }
@@ -190,10 +183,7 @@ namespace Unicorn.UI
             var isVisible = relativeArea.Overlaps(area);
             if (isVisible)
             {
-                var go = _SpawnCellGameObject(cell);
-                cell.SetTransform(go.transform as RectTransform);
-                cell.SetVisible(true);
-                _OnCellVisibleChanged(cell);
+                _ShowCell(cell);
             }
 
             _cells.PushBack(cell);
@@ -218,15 +208,7 @@ namespace Unicorn.UI
             }
 
             var firstCell = _cells[index] as Cell;
-            if (firstCell!.IsVisible())
-            {
-                firstCell.SetVisible(false);
-                _OnCellVisibleChanged(firstCell);
-
-                // 逻辑可保证只有visible的cell才有transform, 才需要回收
-                _RecycleCellTransform(firstCell.GetTransform());
-                firstCell.SetTransform(null);
-            }
+            _HideCell(firstCell);
 
             _cells.RemoveAt(index);
             _SetDirty();
@@ -240,13 +222,40 @@ namespace Unicorn.UI
                 for (var i = 0; i < size; i++)
                 {
                     var cell = _cells[i] as Cell;
-                    var trans = cell!.GetTransform();
-                    // todo 不知道这里, 会不会有可能gameObject被scene切换而destroy掉的问题, 需要测试. RemoveCell()有相同的风险
-                    _RecycleCellTransform(trans);
+                    _HideCell(cell);
                 }
 
                 _cells.Clear();
                 _SetDirty();
+            }
+        }
+
+        private void _ShowCell(Cell cell)
+        {
+            if (cell != null && !cell.IsVisible())
+            {
+                cell.SetVisible(true);
+                var rect = _SpawnCellTransform(cell);
+                cell.SetTransform(rect);
+                
+                var widget = cell.GetWidget();
+                widget?.OnVisibleChanged(cell);
+            }
+        }
+        
+        private void _HideCell(Cell cell)
+        {
+            if (cell != null && cell.IsVisible())
+            {
+                cell.SetVisible(false);
+                // 确保所有的OnVisibleChanged事件中, Transform都是可用的, 方便client设置一些东西
+                var widget = cell.GetWidget();
+                widget?.OnVisibleChanged(cell);
+
+                // 逻辑可保证只有visible的cell才有transform, 才需要回收
+                var rect = cell.GetTransform();
+                cell.SetTransform(null);
+                _RecycleCellTransform(rect);
             }
         }
 
@@ -281,29 +290,29 @@ namespace Unicorn.UI
             _isDirty = true;
         }
 
-        private GameObject _SpawnCellGameObject(Cell cell)
+        private RectTransform _SpawnCellTransform(Cell cell)
         {
             if (_goPool.Count > 0)
             {
-                var last = _goPool.PopBack() as GameObject;
-                _OnSpawnCellGameObject(last, cell);
+                var last = _goPool.PopBack() as RectTransform;
+                _OnSpawnCellTransform(last, cell);
                 return last;
             }
 
             var go = Instantiate(cellTransform.gameObject, _contentTransform);
-            _OnSpawnCellGameObject(go, cell);
-            return go;
+            var rect = go.transform as RectTransform;
+            _OnSpawnCellTransform(rect, cell);
+            return rect;
         }
 
-        private void _OnSpawnCellGameObject(GameObject go, Cell cell)
+        private void _OnSpawnCellTransform(RectTransform rect, Cell cell)
         {
-            var trans = go.transform as RectTransform;
-            trans!.anchoredPosition = _direction.GetTransformAnchoredPos(cell);
+            rect!.anchoredPosition = _direction.GetTransformAnchoredPos(cell);
             // Logo.Info($"anchoredPosition={trans.anchoredPosition}");
-            go.SetActive(true);
+            rect.gameObject.SetActive(true);
         }
 
-        private void _RecycleCellTransform(Transform trans)
+        private void _RecycleCellTransform(RectTransform trans)
         {
             if (trans is not null)
             {
@@ -327,12 +336,6 @@ namespace Unicorn.UI
         public int GetCellCount()
         {
             return _cells.Count;
-        }
-
-        private void _OnCellVisibleChanged(Cell cell)
-        {
-            var widget = cell.GetWidget();
-            widget?.OnVisibleChanged(cell);
         }
 
         public RectTransform cellTransform;
