@@ -326,13 +326,13 @@ namespace Unicorn.UI
             rect.gameObject.SetActive(true);
         }
 
-        private void _RecycleCellTransform(RectTransform trans)
+        private void _RecycleCellTransform(RectTransform rect)
         {
-            if (trans is not null)
+            if (rect is not null)
             {
-                var go = trans.gameObject;
+                var go = rect.gameObject;
                 go.SetActive(false);
-                _goPool.PushBack(go);
+                _goPool.PushBack(rect);
             }
         }
 

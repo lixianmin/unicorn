@@ -17,7 +17,7 @@ namespace Client.UI
     {
         private ShopManager()
         {
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < 14; i++)
             {
                 var tid = GetNextId();
                 InsertGoods(tid);
