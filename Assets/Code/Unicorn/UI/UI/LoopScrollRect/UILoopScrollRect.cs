@@ -108,7 +108,7 @@ namespace Unicorn.UI
         private void OnDestroy()
         {
             RemoveAllCells();
-            _goPool.Clear();
+            _ClearPool();
             // Logo.Info("loop scroll rect is destroying");
         }
 
@@ -227,6 +227,20 @@ namespace Unicorn.UI
 
                 _cells.Clear();
                 _SetDirty();
+            }
+        }
+
+        private void _ClearPool()
+        {
+            var size = _goPool.Count;
+            if (size > 0)
+            {
+                foreach (RectTransform rect in _goPool)
+                {
+                    Destroy(rect);
+                }
+                
+                _goPool.Clear();
             }
         }
 
