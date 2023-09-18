@@ -25,10 +25,10 @@ namespace Unicorn.Web
                     {
                         script = mainAsset.AddComponent<MbPrefabAid>();
                         script.key = argument.key;
-// 实践证明这个注释没有意义，因为这个项目会编译成dll，编译时UNITY_EDITOR是有的                
-#if UNITY_EDITOR
+// 实践证明这个注释没有意义，因为这个项目会编译成dll，编译时UNITY_EDITOR是有的 --> 因为引入三方库, 编译时需移除UNITY_EDITOR
+// #if UNITY_EDITOR
                         WebTools.ReloadShaders(mainAsset);
-#endif
+// #endif
                     }
 
                     _aidScript = script;
