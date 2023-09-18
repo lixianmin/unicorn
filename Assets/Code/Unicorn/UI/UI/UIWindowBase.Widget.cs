@@ -12,9 +12,9 @@ using UnityEngine;
 
 namespace Unicorn.UI
 {
-    public partial class  UIWindowBase
+    public partial class UIWindowBase
     {
-        private struct WidgetKey :IEquatable<WidgetKey>
+        private struct WidgetKey : IEquatable<WidgetKey>
         {
             public string name;
             public Type type;
@@ -28,18 +28,18 @@ namespace Unicorn.UI
             {
                 return name == right.name && type == right.type;
             }
-            
+
             public override bool Equals(object right)
             {
                 return null != right && Equals((WidgetKey)right);
             }
-            
-            public static bool operator == (WidgetKey left, WidgetKey right)
+
+            public static bool operator ==(WidgetKey left, WidgetKey right)
             {
                 return left.Equals(right);
             }
 
-            public static bool operator != (WidgetKey left, WidgetKey right)
+            public static bool operator !=(WidgetKey left, WidgetKey right)
             {
                 return !(left == right);
             }
@@ -49,20 +49,20 @@ namespace Unicorn.UI
         {
             return GetWidget(name, typeof(T)) as T;
         }
-        
+
         public Component GetWidget(string name, Type type)
         {
             if (string.IsNullOrEmpty(name) || type == null)
             {
                 return null;
             }
-            
+
             var key = new WidgetKey { name = name, type = type };
             if (_widgets.TryGetValue(key, out var widget))
             {
                 return widget;
             }
-            
+
             widget = _transform.DeepFindComponent(name, type);
             _widgets.Add(key, widget);
             return widget;
@@ -77,10 +77,16 @@ namespace Unicorn.UI
                 {
                     foreach (var data in dataList)
                     {
+                        // 在手机测试的时候, 这一部分有报NullReferenceException
+                        if (data == null || data.name.IsNullOrEmpty() || data.target == null)
+                        {
+                            continue;
+                        }
+
                         var key = new WidgetKey { name = data.name, type = data.target.GetType() };
                         _widgets.Add(key, data.target);
                     }
-                }    
+                }
             }
         }
 
