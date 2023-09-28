@@ -28,6 +28,8 @@ public class MbUnicornGame : MonoBehaviour
         GameObject.DontDestroyOnLoad(gameObject);
 
         UnicornMain.It.Init();
+        // 启用每次输出log, 方便开发过程中调试
+        Logo.Flags |= LogoFlags.FlushOnWrite;
 
         UIManager.It.OpenWindow(typeof(Client.UI.UIMain));
     }

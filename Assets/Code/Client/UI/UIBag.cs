@@ -30,7 +30,7 @@ namespace Client.UI
                 Logo.Info("bag button is clicked");
                 UIManager.It.CloseWindow(typeof(UIMain));
             });
-            
+
             Logo.Info("bag is OnLoaded");
         }
         

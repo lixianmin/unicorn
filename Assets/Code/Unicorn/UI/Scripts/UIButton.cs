@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2017-07-28
 author:     lixianmin
 
@@ -19,23 +18,23 @@ namespace Unicorn.UI
         void IRemoveAllListeners.RemoveAllListeners()
         {
             onClick.RemoveAllListeners();
-            
+
             _onPointerDown?.RemoveAllListeners();
             _onPointerUp?.RemoveAllListeners();
-            _onPointerExit?.RemoveAllListeners();
         }
 
-        private void _Press ()
+        private void _Press()
         {
             if (!IsActive() || !IsInteractable())
             {
                 return;
             }
 
+            UISystemProfilerApi.AddMarker("UIButton.onClick", this);
             onClick.Invoke();
         }
 
-        public override void OnPointerClick (PointerEventData eventData)
+        public override void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
             {
@@ -45,7 +44,7 @@ namespace Unicorn.UI
             _Press();
         }
 
-        public override void OnSubmit (BaseEventData eventData)
+        public override void OnSubmit(BaseEventData eventData)
         {
             _Press();
 
@@ -60,7 +59,7 @@ namespace Unicorn.UI
             StartCoroutine(_OnFinishSubmit());
         }
 
-        private IEnumerator _OnFinishSubmit ()
+        private IEnumerator _OnFinishSubmit()
         {
             var fadeTime = colors.fadeDuration;
             var elapsedTime = 0f;
@@ -74,41 +73,39 @@ namespace Unicorn.UI
             DoStateTransition(currentSelectionState, false);
         }
 
-        public override void OnPointerDown (PointerEventData eventData)
+        public override void OnPointerDown(PointerEventData eventData)
         {
-            base.OnPointerDown(eventData);
-            _onPointerDown?.Invoke(eventData);
+            if (!_isButtonDown)
+            {
+                _isButtonDown = true;
+                base.OnPointerDown(eventData);
+                _onPointerDown?.Invoke(eventData);
+            }
         }
 
-        public override void OnPointerUp (PointerEventData eventData)
+        public override void OnPointerUp(PointerEventData eventData)
         {
-            base.OnPointerUp(eventData);
-            _onPointerUp?.Invoke(eventData);
-        }
-
-        public override void OnPointerExit (PointerEventData eventData)
-        {
-            base.OnPointerExit(eventData);
-            _onPointerExit?.Invoke(eventData);
+            if (_isButtonDown)
+            {
+                _isButtonDown = false;
+                base.OnPointerUp(eventData);
+                _onPointerUp?.Invoke(eventData);
+            }
         }
 
         public PointerEvent onPointerDown
         {
             get { return _onPointerDown ??= new PointerEvent(); }
         }
-        
+
         public PointerEvent onPointerUp
         {
             get { return _onPointerUp ??= new PointerEvent(); }
         }
-        
-        public PointerEvent onPointerExit
-        {
-            get { return _onPointerExit ??= new PointerEvent(); }
-        }
 
         private PointerEvent _onPointerDown;
         private PointerEvent _onPointerUp;
-        private PointerEvent _onPointerExit;
+
+        private bool _isButtonDown;
     }
 }
