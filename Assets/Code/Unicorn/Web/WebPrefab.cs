@@ -25,11 +25,13 @@ namespace Unicorn.Web
                     {
                         script = mainAsset.AddComponent<MbPrefabAid>();
                         script.key = argument.key;
+                    }
+
+                    // 只要是在editor中, 无论script是否为null, 都需要赋值shader
 // 实践证明这个注释没有意义，因为这个项目会编译成dll，编译时UNITY_EDITOR是有的 --> 因为引入三方库, 编译时需移除UNITY_EDITOR
 // #if UNITY_EDITOR
-                        WebTools.ReloadShaders(mainAsset);
+                    WebTools.ReloadShaders(mainAsset);
 // #endif
-                    }
 
                     _aidScript = script;
                     PrefabRecycler.TryAddPrefab(argument.key, this);
@@ -39,6 +41,7 @@ namespace Unicorn.Web
                 }
                 else
                 {
+                    Logo.Warn($"webItem.Asset is not gameObject, webItem.Asset={webItem.Asset}");
                     _webItem = EmptyWebNode.It;
                 }
 
