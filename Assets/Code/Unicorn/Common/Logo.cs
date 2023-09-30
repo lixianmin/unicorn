@@ -33,7 +33,7 @@ namespace Unicorn
             // }
         }
 
-        internal static void Update()
+        internal static void ExpensiveUpdate()
         {
             _time = UnityEngine.Time.realtimeSinceStartup;
             _CheckFlushLogText();

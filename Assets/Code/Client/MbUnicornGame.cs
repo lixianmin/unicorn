@@ -27,7 +27,7 @@ public class MbUnicornGame : MonoBehaviour
         // 避免Game对象在场景切换的时候被干掉
         GameObject.DontDestroyOnLoad(gameObject);
 
-        UnicornMain.It.Init();
+        // UnicornMain.It.Init();
         // 启用每次输出log, 方便开发过程中调试
         Logo.Flags |= LogoFlags.FlushOnWrite;
 
@@ -37,8 +37,7 @@ public class MbUnicornGame : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        UnicornMain.It.ExpensiveUpdate(Time.deltaTime);
-        UnicornMain.It.SlowUpdate(Time.deltaTime);
+        
     }
 
     private readonly GameWebManager _webManager = GameWebManager.It; // 初始化基类中的Instance引用

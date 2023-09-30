@@ -19,29 +19,16 @@ using UnityEngine;
 using Unicorn.IO;
 using Unicorn.Kit;
 using Unicorn.UI;
+using UnityEngine.LowLevel;
 
 
 namespace Unicorn
 {
-    public sealed class UnicornMain
+    internal static class UnicornMain
     {
-        static UnicornMain()
+        [RuntimeInitializeOnLoadMethod]
+        private static void _OnInit()
         {
-        }
-
-        private UnicornMain()
-        {
-        }
-
-        public void Init()
-        {
-            if (_isInited)
-            {
-                return;
-            }
-
-            _isInited = true;
-
             // Default value on Android:
             // Max workerThreads :60  completionPortThreads:30
             // Min workerThreads:4  completionPortThreads:4
@@ -49,8 +36,11 @@ namespace Unicorn
 //			const int maxCompletionPortThreads = 8;
 //			ThreadPool.SetMaxThreads(maxWorkerThreads, maxCompletionPortThreads);
 
+            _lastSlowUpdateTime = Time.time;
+            _nextSlowUpdateTime = Time.time;
+
             // force call static ctor of Console class
-            Logo.Update();
+            Logo.ExpensiveUpdate();
             _InitLogInfo();
             os.Init();
 
@@ -81,21 +71,32 @@ namespace Unicorn
                 Logo.Error("Android Error: persistentDataPath is empty, please restart the Android System.");
             }
 
-            //ParticleRenderQueueRemapper.Enable = true;
             System.Net.ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
 
-            OnInited?.Invoke();
+            _InitPlayerLoop();
         }
 
-//        private bool _AcceptAllCertifications (object sender
-//			, System.Security.Cryptography.X509Certificates.X509Certificate certification
-//			, System.Security.Cryptography.X509Certificates.X509Chain chain
-//			, System.Net.Security.SslPolicyErrors sslPolicyErrors)
-//        {
-//            return true;
-//        }
+        private static void _InitPlayerLoop()
+        {
+            var defaultSystems = PlayerLoop.GetDefaultPlayerLoop();
+            var systemRoot = new PlayerLoopSystem
+            {
+                subSystemList = new[]
+                {
+                    new()
+                    {
+                        updateDelegate = _ExpensiveUpdate,
+                        type = typeof(UnicornMain)
+                    },
 
-        private void _InitLogInfo()
+                    defaultSystems,
+                }
+            };
+
+            PlayerLoop.SetPlayerLoop(systemRoot);
+        }
+
+        private static void _InitLogInfo()
         {
             try
             {
@@ -119,27 +120,35 @@ namespace Unicorn
         }
 
         /// <summary>
-        /// 实际上就是Update()，只所以起名ExpensiveUpdate()，是为了让使用者郑重考虑是否启用这个可能会比较费的更新逻辑
+        /// 实际上就是Update()，之所以起名ExpensiveUpdate()，是为了让使用者郑重考虑是否启用这个可能会比较费的更新逻辑
         /// </summary>
-        /// <param name="deltaTime"></param>
-        public void ExpensiveUpdate(float deltaTime)
+        private static void _ExpensiveUpdate()
         {
-            if (_isInited)
+            var time = Time.time;
+            var deltaTime = Time.deltaTime;
+
+            os.time = time;
+            os.frameCount = Time.frameCount;
+
+            Logo.ExpensiveUpdate();
+            UpdateTools.ExpensiveUpdate(deltaTime);
+            _UpdateLogs();
+
+            _coroutineManager.ExpensiveUpdate();
+            _partUpdateSystem.ExpensiveUpdate(deltaTime);
+            _kitManager.ExpensiveUpdate(deltaTime);
+            _uiManager.ExpensiveUpdate(deltaTime);
+
+            DisposableRecycler.Update();
+
+            // 慢速帧
+            if (time >= _nextSlowUpdateTime)
             {
-                os.frameCount = Time.frameCount;
-                os.time = Time.time;
+                var slowDeltaTime = time - _lastSlowUpdateTime;
+                _lastSlowUpdateTime = _nextSlowUpdateTime;
+                _nextSlowUpdateTime = time + 0.1f;
 
-                Logo.Update();
-                UpdateTools.ExpensiveUpdate(deltaTime);
-                _UpdateLogs();
-
-                _coroutineManager.Update();
-                _partUpdateSystem.Update(deltaTime);
-                _kitManager.ExpensiveUpdate(deltaTime);
-                _uiManager.ExpensiveUpdate(deltaTime);
-                // Loom.Update();
-
-                DisposableRecycler.Update();
+                _SlowUpdate(slowDeltaTime);
             }
         }
 
@@ -147,32 +156,13 @@ namespace Unicorn
         /// 慢速帧，约10fps，可以节约CPU
         /// </summary>
         /// <param name="deltaTime">两帧之间的时间间隔，远大于Time.deltaTime</param>
-        public void SlowUpdate(float deltaTime)
+        private static void _SlowUpdate(float deltaTime)
         {
-            if (_isInited)
-            {
-                _kitManager.SlowUpdate(deltaTime);
-                _uiManager.SlowUpdate(deltaTime);
-            }
+            _kitManager.SlowUpdate(deltaTime);
+            _uiManager.SlowUpdate(deltaTime);
         }
 
-        public void Dispose()
-        {
-            if (_isInited)
-            {
-                OnDisposing?.Invoke();
-                _logWriter?.Close();
-
-                // WebPrefab._GetLruCache().Clear();
-                _coroutineManager.Clear();
-                // WebManager.Dispose();
-                _isInited = false;
-
-                Logo.Info("[UnicornMain.Dispose()]");
-            }
-        }
-
-        private void _HandlerLogCallBack(string logString, string stackTrace, LogType type)
+        private static void _HandlerLogCallBack(string logString, string stackTrace, LogType type)
         {
             // the same log should not be write twice.
             if (_lastLogString != logString)
@@ -205,15 +195,10 @@ namespace Unicorn
                 }
 
                 _logs.Add(os.linesep);
-
-//				if (null != OnLogCallBack)
-//				{
-//					OnLogCallBack(logString, stackTrace, type);
-//				}
             }
         }
 
-        private void _UpdateLogs()
+        private static void _UpdateLogs()
         {
             var count = _logs.Count;
             if (count > 0 && null != _logWriter)
@@ -229,23 +214,16 @@ namespace Unicorn
             }
         }
 
-        public bool IsInited => _isInited;
+        private static readonly ArrayList _logs = new();
+        private static readonly PartUpdateSystem _partUpdateSystem = new();
+        private static readonly CoroutineManager _coroutineManager = CoroutineManager.It;
+        private static readonly KitManager _kitManager = KitManager.It;
+        private static readonly UIManager _uiManager = UIManager.It;
 
-        //		[System.Obsolete("Application.logMessageReceived")]
-//		public event Application.LogCallback OnLogCallBack;
-        public event Action OnInited;
-        public event Action OnDisposing;
+        private static StreamWriter _logWriter;
+        private static string _lastLogString;
 
-        public static readonly UnicornMain It = new();
-
-        private readonly ArrayList _logs = new();
-        private readonly PartUpdateSystem _partUpdateSystem = new();
-        private readonly CoroutineManager _coroutineManager = CoroutineManager.It;
-        private readonly KitManager _kitManager = KitManager.It;
-        private readonly UIManager _uiManager = UIManager.It;
-
-        private bool _isInited;
-        private StreamWriter _logWriter;
-        private string _lastLogString;
+        private static float _lastSlowUpdateTime;
+        private static float _nextSlowUpdateTime;
     }
 }

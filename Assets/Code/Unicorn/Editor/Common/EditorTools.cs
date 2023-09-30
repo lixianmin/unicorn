@@ -110,16 +110,13 @@ namespace Unicorn
 
 		private static void _OnUpdateCallback()
 		{
-			if (!UnicornMain.It.IsInited)
+			var count = _updates.Count;
+			if (count > 0)
 			{
-				var count = _updates.Count;
-				if (count > 0)
+				for (int i = 0; i < count; ++i)
 				{
-					for (int i = 0; i < count; ++i)
-					{
-						var callback = _updates[i] as Action;
-						callback?.Invoke();
-					}
+					var callback = _updates[i] as Action;
+					callback?.Invoke();
 				}
 			}
 		}

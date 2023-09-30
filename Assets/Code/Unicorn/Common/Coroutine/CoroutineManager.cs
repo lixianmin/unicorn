@@ -31,7 +31,7 @@ namespace Unicorn
 
         private CoroutineManager()
         {
-            EditorCallback.AttachToUpdate(Update);
+            EditorCallback.AttachToUpdate(ExpensiveUpdate);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Unicorn
             }
         }
 
-        internal void Update()
+        internal void ExpensiveUpdate()
         {
             if (_pool.Count > 0)
             {

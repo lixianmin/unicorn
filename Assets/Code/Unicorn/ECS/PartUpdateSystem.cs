@@ -33,7 +33,7 @@ namespace Unicorn
             }
         }
 
-        internal void Update(float deltaTime)
+        internal void ExpensiveUpdate(float deltaTime)
         {
             if (_hasNewPart)
             {
