@@ -41,7 +41,7 @@ namespace Unicorn.Web
                 }
                 else
                 {
-                    Logo.Warn($"webItem.Asset is not gameObject, webItem.Asset={webItem.Asset}");
+                    Logo.Warn($"webItem.Asset is not gameObject, argument.key={argument.key}, webItem.Asset={webItem.Asset}");
                     _webItem = EmptyWebNode.It;
                 }
 
