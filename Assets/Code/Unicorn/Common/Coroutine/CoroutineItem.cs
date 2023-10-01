@@ -27,7 +27,7 @@ namespace Unicorn
             Routine = null;
         }
 
-        internal bool IsDoneOrKilled()
+        internal bool IsOver()
         {
             return (_flag & Flag.Done) != 0 || (_flag & Flag.Killed) != 0;
         }

@@ -59,7 +59,7 @@ namespace Unicorn
             for (i = 0; i < count; i++)
             {
                 var item = _items[i];
-                if (item.IsDoneOrKilled())
+                if (item.IsOver())
                 {
                     _CheckResetItemAt(i);
                     break;
@@ -71,7 +71,7 @@ namespace Unicorn
                 for (int j = i + 1; j < count; j++)
                 {
                     var item = _items[j];
-                    if (item.IsDoneOrKilled())
+                    if (item.IsOver())
                     {
                         _CheckResetItemAt(j);
                     }

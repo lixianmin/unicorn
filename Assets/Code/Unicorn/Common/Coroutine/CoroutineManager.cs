@@ -130,7 +130,7 @@ namespace Unicorn
                     }
 
                     var item = _pool[index];
-                    if (!item.IsDoneOrKilled())
+                    if (!item.IsOver())
                     {
                         try
                         {
@@ -148,7 +148,7 @@ namespace Unicorn
                         }
                     }
 
-                    if (item.IsDoneOrKilled())
+                    if (item.IsOver())
                     {
                         someIsDone = true;
                     }
