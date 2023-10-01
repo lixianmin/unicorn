@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Unicorn.Web
 {
-    internal class WebData : IWebNode
+    public class WebData : IWebNode
     {
         public bool IsDone { get; set; }
         public bool IsSucceeded { get; set; }
