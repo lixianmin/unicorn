@@ -6,11 +6,11 @@ author:     lixianmin
 
 2. RoutineManger supports "yield return null" usage, and IIsYieldable implemented classes, while "yield return www" is not supported.
 
-3. We can not use TickAmortize to amorize coroutine time, because several coroutines may need to be
-excuted continuously for logic requirement.
+3. We can not use TickAmortize to amortize coroutine time, because several coroutines may need to be
+executed continuously for logic requirement.
 
 4. one gcalloc cost comparison:
-   my courine:                  32B = CoroutineItem (16B) + IEnumerator (16B)
+   my coroutine:                 32B = CoroutineItem (16B) + IEnumerator (16B)
    MonoBehaviour coroutine:     37B
    event combine delegate:      52B
 
@@ -62,7 +62,7 @@ namespace Unicorn
         /// </summary>
         public void StartCoroutine(IEnumerator routine, out CoroutineItem item)
         {
-            // StartCorountine() 不能返回IEnumerator，处理代码会有时序问题.
+            // StartCoroutine() 不能返回IEnumerator，处理代码会有时序问题.
             item = null;
 
             if (null != routine)
