@@ -7,6 +7,7 @@ Copyright (C) - All Rights Reserved
 
 
 using Unicorn.UI.States;
+using Unicorn.Web;
 using UnityEngine;
 
 namespace Unicorn.UI.Internal
@@ -132,7 +133,7 @@ namespace Unicorn.UI.Internal
             if (_transform is not null)
             {
                 var go = _transform.gameObject;
-                if(null != go && go.activeSelf != isActive)
+                if (null != go && go.activeSelf != isActive)
                 {
                     go.SetActive(isActive);
                 }
@@ -153,7 +154,7 @@ namespace Unicorn.UI.Internal
         /// 用于度量window的加载进度
         /// </summary>
         /// <returns></returns>
-        public WebNode GetWebNode()
+        public WebData GetWebNode()
         {
             return _webNode;
         }
@@ -168,8 +169,8 @@ namespace Unicorn.UI.Internal
         private Transform _transform;
         private Transform _parent = UIManager.It.GetUIRoot();
         private UISerializer _serializer;
-        private readonly WebNode _webNode = new();
-        
+        private readonly WebData _webNode = new();
+
         public bool isWindowCached;
         public bool isLoaded;
         public bool isOpened;

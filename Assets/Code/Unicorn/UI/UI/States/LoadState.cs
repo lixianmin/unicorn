@@ -62,7 +62,7 @@ namespace Unicorn.UI.States
             WebManager.It.LoadPrefab(argument, prefab =>
             {
                 var node = fetus.GetWebNode();
-                node.CopyProperty(prefab);
+                node.CopyFrom(prefab);
                 
                 var master = fetus.master;
                 var isLoading = this == fetus.GetState();

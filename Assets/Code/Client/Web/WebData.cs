@@ -5,27 +5,26 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using Unicorn.Web;
 using UnityEngine;
 
-namespace Unicorn.UI.Internal
+namespace Unicorn.Web
 {
-    internal class WebNode : IWebNode
+    internal class WebData : IWebNode
     {
-        public bool IsDone { get; private set; }
-        public bool IsSucceeded { get; private set; }
-        public Object Asset { get; private set; }
+        public bool IsDone { get; set; }
+        public bool IsSucceeded { get; set; }
+        public Object Asset { get; set; }
 
-        public void CopyProperty(IWebNode other)
+        public void CopyFrom(IWebNode other)
         {
             if (other != null)
             {
                 IsDone = other.IsDone;
                 IsSucceeded = other.IsSucceeded;
-                Asset = other.Asset;    
+                Asset = other.Asset;
             }
         }
-        
+
         public void Reset()
         {
             IsDone = false;
