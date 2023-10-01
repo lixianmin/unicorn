@@ -15,8 +15,8 @@ namespace Unicorn
         internal enum Flag : byte
         {
             None = 0x00,
-            Done = 0x01,
-            Killed = 0x02,
+            Done = 0x01,        // done normally.
+            Killed = 0x02,      // killed manually.
             Recyclable = 0x04,
         }
 

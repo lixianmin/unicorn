@@ -24,20 +24,26 @@ namespace Unicorn
         internal void Reset()
         {
             _flag = Flag.None;
-            routine = null;
+            Routine = null;
+        }
+
+        internal bool IsDoneOrKilled()
+        {
+            return (_flag & Flag.Done) != 0 || (_flag & Flag.Killed) != 0;
+        }
+
+        internal bool IsRecyclable()
+        {
+            return (_flag & Flag.Recyclable) != 0;
         }
 
         public override string ToString()
         {
-            return $"routine={routine}, isDone={isDone}, isKilled={isKilled}, isRecyclable={isRecyclable}";
+            return $"routine={Routine}, IsDone={_HasFlag(Flag.Done)}, IsKilled={_HasFlag(Flag.Killed)}, " +
+                   $"IsRecyclable={IsRecyclable()}";
         }
 
         private Flag _flag;
-        internal IEnumerator routine;
-
-        public bool isDone => _HasFlag(Flag.Done); // done normally.
-        public bool isKilled => _HasFlag(Flag.Killed); // killed manually.
-
-        internal bool isRecyclable => _HasFlag(Flag.Recyclable);
+        internal IEnumerator Routine;
     }
 }

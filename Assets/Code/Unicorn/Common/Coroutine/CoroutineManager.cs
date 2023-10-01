@@ -90,7 +90,7 @@ namespace Unicorn
                 for (int i = 0; i < count; i++)
                 {
                     var item = _pool[i];
-                    if (item.routine == routine)
+                    if (item.Routine == routine)
                     {
                         item.Kill();
                         return true;
@@ -130,11 +130,11 @@ namespace Unicorn
                     }
 
                     var item = _pool[index];
-                    if (!item.isDone && !item.isKilled)
+                    if (!item.IsDoneOrKilled())
                     {
                         try
                         {
-                            var routine = item.routine;
+                            var routine = item.Routine;
                             var isDone = !routine.MoveNext();
                             if (isDone)
                             {
@@ -148,7 +148,7 @@ namespace Unicorn
                         }
                     }
 
-                    if (item.isDone || item.isKilled)
+                    if (item.IsDoneOrKilled())
                     {
                         someIsDone = true;
                     }

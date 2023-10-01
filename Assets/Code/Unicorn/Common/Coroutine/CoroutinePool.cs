@@ -41,7 +41,7 @@ namespace Unicorn
             }
 
             ++_size;
-            item.routine = routine;
+            item.Routine = routine;
 
             if (isRecyclable)
             {
@@ -59,7 +59,7 @@ namespace Unicorn
             for (i = 0; i < count; i++)
             {
                 var item = _items[i];
-                if (item.isDone || item.isKilled)
+                if (item.IsDoneOrKilled())
                 {
                     _CheckResetItemAt(i);
                     break;
@@ -71,7 +71,7 @@ namespace Unicorn
                 for (int j = i + 1; j < count; j++)
                 {
                     var item = _items[j];
-                    if (item.isDone || item.isKilled)
+                    if (item.IsDoneOrKilled())
                     {
                         _CheckResetItemAt(j);
                     }
@@ -90,7 +90,7 @@ namespace Unicorn
         private void _CheckResetItemAt(int index)
         {
             var item = _items[index];
-            if (item.isRecyclable)
+            if (item.IsRecyclable())
             {
                 item.Reset();
             }
