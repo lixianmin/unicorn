@@ -26,7 +26,6 @@ namespace Unicorn
     {
         static CoroutineManager()
         {
-            
         }
 
         private CoroutineManager()
@@ -123,7 +122,7 @@ namespace Unicorn
                 var someIsDone = false;
                 var snapshotCount = _pool.Count;
 
-                for (int index = 0; index < snapshotCount; ++index)
+                for (var index = 0; index < snapshotCount; ++index)
                 {
                     if (UpdateTools.IsTimeout())
                     {
@@ -136,17 +135,16 @@ namespace Unicorn
                         try
                         {
                             var routine = item.routine;
-                            var checkDone = routine.Current as IIsYieldable;
-                            if (null == checkDone || checkDone.isYieldable)
+                            var isDone = !routine.MoveNext();
+                            if (isDone)
                             {
-                                item.isDone = !routine.MoveNext();
+                                item.AddFlag(CoroutineItem.Flag.Done);
                             }
                         }
                         catch (Exception ex)
                         {
-                            item.isDone = true;
-                            Logo.Error("[CoroutineManager.Update()] ex={0}, StackTrace={1}", ex,
-                                ex.StackTrace);
+                            item.AddFlag(CoroutineItem.Flag.Done);
+                            Logo.Error($"[CoroutineManager.Update()] ex={ex}, StackTrace={ex.StackTrace}");
                         }
                     }
 

@@ -5,11 +5,12 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
 using System.Collections;
 
 namespace Unicorn
 {
-    public class CoroutineItem : IIsYieldable
+    public partial class CoroutineItem
     {
         internal CoroutineItem()
         {
@@ -17,7 +18,7 @@ namespace Unicorn
 
         public void Kill()
         {
-            isKilled = true;
+            _flag |= Flag.Killed;
         }
 
         public override string ToString()
@@ -25,12 +26,12 @@ namespace Unicorn
             return $"routine={routine}, isDone={isDone}, isKilled={isKilled}, isRecyclable={isRecyclable}";
         }
 
-        bool IIsYieldable.isYieldable => isDone || isKilled;
-
+        private Flag _flag;
         internal IEnumerator routine;
-        internal bool isRecyclable;
 
-        public bool isDone { get; internal set; } // done normally.
-        public bool isKilled { get; internal set; } // killed manually.
+        public bool isDone => HasFlag(Flag.Done); // done normally.
+        public bool isKilled => HasFlag(Flag.Killed); // killed manually.
+
+        internal bool isRecyclable => HasFlag(Flag.Recyclable);
     }
 }
