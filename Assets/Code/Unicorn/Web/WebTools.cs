@@ -24,16 +24,7 @@ namespace Unicorn.Web
             {
                 foreach (var renderer in renderers)
                 {
-                    var sharedMaterials = renderer.sharedMaterials;
-                    if (sharedMaterials == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (var material in sharedMaterials)
-                    {
-                        _ReloadMaterialShader(material);
-                    }
+                    _ReloadRendererShader(renderer);
                 }
             }
 
@@ -46,6 +37,36 @@ namespace Unicorn.Web
                     _ReloadMaterialShader(graphic.material);
                     _ReloadMaterialShader(graphic.materialForRendering);
                 }
+            }
+
+            // Terrain
+            // todo terrainData中的grass目前还无法处理shader, 没找到获取到相关material的接口
+            var terrains = goAsset.GetComponentsInChildren<Terrain>(true);
+            if (terrains != null)
+            {
+                foreach (var terrain in terrains)
+                {
+                    _ReloadMaterialShader(terrain.materialTemplate);
+                }
+            }
+        }
+
+        private static void _ReloadRendererShader(Renderer renderer)
+        {
+            if (renderer == null)
+            {
+                return;
+            }
+            
+            var sharedMaterials = renderer.sharedMaterials;
+            if (sharedMaterials == null)
+            {
+                return;
+            }
+
+            foreach (var material in sharedMaterials)
+            {
+                _ReloadMaterialShader(material);
             }
         }
 
