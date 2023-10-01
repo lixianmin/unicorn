@@ -27,8 +27,6 @@ namespace Unicorn
             if (checkIndex < _capacity && null != _items[checkIndex])
             {
                 item = _items[checkIndex];
-                item.RemoveFlag(CoroutineItem.Flag.Done);
-                item.RemoveFlag(CoroutineItem.Flag.Killed);
             }
             else
             {
@@ -63,7 +61,7 @@ namespace Unicorn
                 var item = _items[i];
                 if (item.isDone || item.isKilled)
                 {
-                    item.routine = null;
+                    _CheckResetItemAt(i);
                     break;
                 }
             }
@@ -75,14 +73,7 @@ namespace Unicorn
                     var item = _items[j];
                     if (item.isDone || item.isKilled)
                     {
-                        if (item.isRecyclable)
-                        {
-                            item.routine = null;
-                        }
-                        else
-                        {
-                            _items[j] = null;
-                        }
+                        _CheckResetItemAt(j);
                     }
                     else
                     {
@@ -93,6 +84,19 @@ namespace Unicorn
                 }
 
                 _size = i;
+            }
+        }
+
+        private void _CheckResetItemAt(int index)
+        {
+            var item = _items[index];
+            if (item.isRecyclable)
+            {
+                item.Reset();
+            }
+            else
+            {
+                _items[index] = null;
             }
         }
 

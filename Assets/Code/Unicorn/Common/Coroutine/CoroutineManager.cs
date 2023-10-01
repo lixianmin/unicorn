@@ -115,9 +115,9 @@ namespace Unicorn
             if (_pool.Count > 0)
             {
                 // 1. _currents.Count may increase at item.coroutine.MoveNext() because StartCoroutine() may be called;
-                // 2. So we use snapshotCount to make sure we only call the snapshoted items;
+                // 2. So we use snapshotCount to make sure we only call the snapshot items;
                 // 3. StopCoroutine() just set item.isDone= true, and never decrease _currents.Count;
-                // 4. The Prediate<T> in List.RemoveAll(Predicate<T>) will be called several times, so it can not have any logic;
+                // 4. The Predicate<T> in List.RemoveAll(Predicate<T>) will be called several times, so it can not have any logic;
 
                 var someIsDone = false;
                 var snapshotCount = _pool.Count;
@@ -167,6 +167,6 @@ namespace Unicorn
         }
 
         public static readonly CoroutineManager It = new();
-        private readonly CoroutinePool _pool = new CoroutinePool();
+        private readonly CoroutinePool _pool = new();
     }
 }

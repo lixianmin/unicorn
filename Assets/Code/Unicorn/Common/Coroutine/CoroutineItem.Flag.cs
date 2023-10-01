@@ -30,7 +30,7 @@ namespace Unicorn
             _flag &= ~flag;
         }
 
-        internal bool HasFlag(Flag flag)
+        private bool _HasFlag(Flag flag)
         {
             return (_flag & flag) != 0;
         }
