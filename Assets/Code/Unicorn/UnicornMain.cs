@@ -21,7 +21,6 @@ using Unicorn.Kit;
 using Unicorn.UI;
 using UnityEngine.LowLevel;
 
-
 namespace Unicorn
 {
     internal static class UnicornMain
@@ -73,13 +72,13 @@ namespace Unicorn
 
             System.Net.ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
 
-            _InitPlayerLoop();
+            _InsertPlayerLoop();
         }
 
-        private static void _InitPlayerLoop()
+        private static void _InsertPlayerLoop()
         {
-            var defaultSystems = PlayerLoop.GetDefaultPlayerLoop();
-            var systemRoot = new PlayerLoopSystem
+            var lastSystem = PlayerLoop.GetCurrentPlayerLoop();
+            var nextSystem = new PlayerLoopSystem
             {
                 subSystemList = new[]
                 {
@@ -89,11 +88,11 @@ namespace Unicorn
                         type = typeof(UnicornMain)
                     },
 
-                    defaultSystems,
+                    lastSystem,
                 }
             };
 
-            PlayerLoop.SetPlayerLoop(systemRoot);
+            PlayerLoop.SetPlayerLoop(nextSystem);
         }
 
         private static void _InitLogInfo()
