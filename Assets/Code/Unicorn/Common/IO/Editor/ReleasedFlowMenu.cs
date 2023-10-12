@@ -1,22 +1,23 @@
 /********************************************************************
-created:    2023-06-01
+created:    2023-10-12
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using UnityEditor;
-using UnityEngine;
 
 namespace Unicorn.Menus
 {
-    internal static class GarbageCollect
+    internal static class ReleasedFlowMenu
     {
-        [MenuItem("*Tools/Garbage Collect", false, 608)]
+        [MenuItem(menuName, false, 208)]
         private static void _Execute()
         {
-            System.GC.Collect();
-            Resources.UnloadUnusedAssets();
+            os.isReleasedFlow = !os.isReleasedFlow;
+            Menu.SetChecked(menuName, os.isReleasedFlow);
         }
+
+        private const string menuName = "*Tools/Released Flow";
     }
 }

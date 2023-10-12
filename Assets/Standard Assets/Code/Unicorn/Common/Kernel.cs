@@ -1,4 +1,3 @@
-
 /*********************************************************************
 created:    2022-08-11
 author:     lixianmin
@@ -19,7 +18,7 @@ namespace Unicorn
             isEditor = null != TypeTools.GetEditorAssembly();
         }
 
-        public static string[] walk(string path, string searchPattern)
+        public static string[] Walk(string path, string searchPattern)
         {
             if (Directory.Exists(path))
             {
@@ -30,22 +29,22 @@ namespace Unicorn
             return Array.Empty<string>();
         }
 
-        public static void makedirs(string name)
+        public static void MakeDirs(string name)
         {
             if (!string.IsNullOrEmpty(name) && !Directory.Exists(name))
             {
                 var head = Path.GetDirectoryName(name);
-                makedirs(head);
+                MakeDirs(head);
                 Directory.CreateDirectory(name);
             }
         }
 
-        public static void startfile(string filename, string arguments = null, bool shell = false)
+        public static void StartFile(string filename, string arguments = null, bool shell = false)
         {
             var process = new System.Diagnostics.Process();
             var si = process.StartInfo;
             si.FileName = filename;
-            si.Arguments = arguments;
+            si.Arguments = arguments ?? string.Empty;
             si.UseShellExecute = shell;
             process.Start();
         }

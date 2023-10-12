@@ -20,59 +20,6 @@ namespace Unicorn
             return os.path.join(ExportResourceRoot, localPath);
         }
 
-        public static string GetLocalPath(string exportPath)
-        {
-            if (null != exportPath)
-            {
-                var head = EditorResourceRoot;
-
-                if (exportPath.StartsWith(head, CompareOptions.Ordinal))
-                {
-                    var totalLength = exportPath.Length;
-                    for (int i = head.Length + 1; i < totalLength; ++i)
-                    {
-                        var c = exportPath[i];
-
-                        if (c == '/' || c == '\\')
-                        {
-                            var startIndex = i + 1;
-                            if (startIndex < totalLength)
-                            {
-                                var localPath = exportPath.Substring(i + 1);
-                                if (os.isWindows)
-                                {
-                                    localPath = os.path.normpath(localPath);
-                                }
-
-                                return localPath;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return exportPath;
-        }
-
-        internal static string TranslateToLotPath(string path)
-        {
-            if (null != path && path.EndsWith(Constants.BundleExtension, CompareOptions.Ordinal))
-            {
-                var dirname = Path.GetDirectoryName(path);
-                var basename = path.Substring(dirname.Length + 1);
-
-                // 3 = ".ab".Length
-                basename = basename.Substring(0, basename.Length - 3);
-                path = dirname + ".ab/" + basename;
-            }
-
-            return path;
-        }
-
         /// <summary>
         /// Export resource root, platform specific. 
         /// Example: "/Users/xmli/echo_res/resource/android"

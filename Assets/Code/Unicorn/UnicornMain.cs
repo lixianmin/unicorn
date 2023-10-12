@@ -126,7 +126,6 @@ namespace Unicorn
             var time = Time.time;
             var deltaTime = Time.deltaTime;
 
-            os.time = time;
             os.frameCount = Time.frameCount;
 
             Logo.ExpensiveUpdate();

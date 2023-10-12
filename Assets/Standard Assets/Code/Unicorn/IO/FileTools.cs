@@ -39,7 +39,7 @@ namespace Unicorn.IO
 			if (!existence)
 			{
 				var dirPath = Path.GetDirectoryName(path);
-				Kernel.makedirs(dirPath);
+				Kernel.MakeDirs(dirPath);
 			}
 
 			var tempFileName = path + ".tmp.0506";
@@ -70,12 +70,12 @@ namespace Unicorn.IO
 			contents ??= string.Empty;
 
 			var directory = Path.GetTempPath() + "/temp-files";
-			Kernel.makedirs(directory);
+			Kernel.MakeDirs(directory);
 
 			var filepath = directory + "/" + fname;
 
 			File.WriteAllText(filepath, contents);
-			Kernel.startfile(filepath, null, true);
+			Kernel.StartFile(filepath, null, true);
 
 			return filepath;
 		}

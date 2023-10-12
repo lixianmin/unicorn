@@ -66,7 +66,7 @@ namespace Unicorn.Menus
                              $"delete POSIX file \"{scriptPath}\"\n" +
                              "end tell";
             File.WriteAllText(scriptPath, scriptCode);
-            os.startfile("osascript", scriptPath, true);
+            Kernel.StartFile("osascript", scriptPath, true);
         }
     }
 }

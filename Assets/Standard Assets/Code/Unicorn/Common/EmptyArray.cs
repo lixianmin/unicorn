@@ -9,9 +9,8 @@ using System;
 
 namespace Unicorn
 {
-    // public static class EmptyArray<T>
-    // {
-    //     // public static readonly T[] Instance = new T[0];
-    //     public static readonly T[] Instance = Array.Empty<T>();
-    // }
+    public static class EmptyArray<T>
+    {
+        public static readonly T[] It = Array.Empty<T>();
+    }
 }

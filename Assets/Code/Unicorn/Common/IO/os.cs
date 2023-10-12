@@ -20,17 +20,15 @@ namespace Unicorn
 		{
 			isEditor = Application.isEditor;
 
-			var platform = Application.platform;
-			if (platform == RuntimePlatform.IPhonePlayer)
-			{
-				isIPhonePlayer = true;
-			}
-			else if (platform == RuntimePlatform.Android)
-			{
-				isAndroid = true;
-			}
-			
-			isWindows = platform is RuntimePlatform.WindowsEditor or RuntimePlatform.WindowsPlayer;
+			// var platform = Application.platform;
+			// if (platform == RuntimePlatform.IPhonePlayer)
+			// {
+			// 	isIPhonePlayer = true;
+			// }
+			// else if (platform == RuntimePlatform.Android)
+			// {
+			// 	isAndroid = true;
+			// }
 		}
 
 		internal static void Init()
@@ -38,15 +36,9 @@ namespace Unicorn
 			// 这些代码不能在MbGame这个MonoBehaviour的构造方法中调用
 			isBigMemory = SystemInfo.systemMemorySize > 1024 + 512;
 			frameCount = Time.frameCount;
-			time = Time.realtimeSinceStartup;
 			
 			// init editor mode properties.
 			_InitModeTypes();
-		}
-
-		public static void startfile(string filename, string arguments = null, bool shell = false)
-		{
-			Kernel.startfile(filename, arguments, shell);
 		}
 
 		public static void mkdir(string path)
@@ -59,12 +51,12 @@ namespace Unicorn
 
 		public static void makedirs(string name)
 		{
-			Kernel.makedirs(name);
+			Kernel.MakeDirs(name);
 		}
 
 		public static string[] walk(string path, string searchPattern)
 		{
-			return Kernel.walk(path, searchPattern);
+			return Kernel.Walk(path, searchPattern);
 		}
 
 		public static void dispose<T>(ref T obj) where T : class, System.IDisposable
@@ -94,115 +86,39 @@ namespace Unicorn
 		// 	(lhs, rhs) = (rhs, lhs);
 		// }
 
-		public static void collectgarbage()
-		{
-			Unicorn.Collections.WeakTable.CollectGarbage();
-			//WeakCacheManager.Instance.Clear();
-			//PrefabPool.ClearPools();
+		// public static void collectgarbage()
+		// {
+		// 	Unicorn.Collections.WeakTable.CollectGarbage();
+		// 	//WeakCacheManager.Instance.Clear();
+		// 	//PrefabPool.ClearPools();
+		//
+		// 	//if (!isBigMemoryMode)
+		// 	//{
+		// 	//	var prefabCache = Unicorn.Web.WebPrefab.GetLruCache();
+		// 	//	prefabCache.TrimExcess();
+		//
+		// 	//	var webCache = Unicorn.Web.WebItem.GetLruCache();
+		// 	//	webCache.TrimExcess();
+		// 	//}
+		//
+		// 	// called in game client, for flexibility.
+		// 	//	Resources.UnloadUnusedAssets();
+		// 	//	GC.Collect();
+		// }
 
-			//if (!isBigMemoryMode)
-			//{
-			//	var prefabCache = Unicorn.Web.WebPrefab.GetLruCache();
-			//	prefabCache.TrimExcess();
-
-			//	var webCache = Unicorn.Web.WebItem.GetLruCache();
-			//	webCache.TrimExcess();
-			//}
-
-			// called in game client, for flexibility.
-			//	Resources.UnloadUnusedAssets();
-			//	GC.Collect();
-		}
-
-		public static AsyncOperation UnloadUnusedAssets()
-		{
-			isUnloadingUnusedAssets = true;
-			var ao = Resources.UnloadUnusedAssets();
-			CoroutineManager.It.StartCoroutine(_CoUnloadUnusedAssets(ao));
-
-			return ao;
-		}
-
-		private static IEnumerator _CoUnloadUnusedAssets(AsyncOperation ao)
-		{
-			while (!ao.isDone)
-			{
-				yield return null;
-			}
-
-			isUnloadingUnusedAssets = false;
-		}
-
-		private static Action<object, string> _lpfnWatchObject;
-		public static void WatchObject(object target, string title = null)
-		{
-			if (null == target)
-			{
-				return;
-			}
-
-			if (null == _lpfnWatchObject)
-			{
-				var type = TypeTools.SearchType("Unicorn.Diagnostics.HeapDumpManager");
-				var method = type.GetMethod("WatchObject", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-				TypeTools.CreateDelegate(method, out _lpfnWatchObject);
-			}
-
-			if (null != _lpfnWatchObject)
-			{
-				_lpfnWatchObject(target, title);
-			}
-		}
-
-		private static bool _isTargetPlatformChecked;
-		private static TargetPlatform _targetPlatform;
-
-		public static TargetPlatform targetPlatform
-		{
-			get
-			{
-				if (!_isTargetPlatformChecked)
-				{
-					_isTargetPlatformChecked = true;
-
-					if (Application.platform == RuntimePlatform.Android)
-					{
-						_targetPlatform = TargetPlatform.Android;
-					}
-					else if (Application.platform == RuntimePlatform.IPhonePlayer)
-					{
-						_targetPlatform = TargetPlatform.iOS;
-					}else if (Application.platform == RuntimePlatform.WindowsPlayer)
-					{
-						_targetPlatform = TargetPlatform.StandaloneWindows64;
-					}
-					// else if (Application.isWebPlayer)
-					// {
-					//     _targetPlatform = TargetPlatform.WebPlayer;
-					// }
-					else if (Application.isEditor)
-					{
-						_targetPlatform = EditorUserBuildSettings.activeBuildTarget;
-					}
-				}
-
-				return _targetPlatform;
-			}
-		}
-
+		/// <summary>
+		/// 在editor中, 有时候需要模拟在真机上的运行环境, 执行release版本后的代码流程
+		/// </summary>
+		public static bool isReleasedFlow;
+		
 		public static bool isEditor { get; }
-		public static bool isIPhonePlayer { get; }
-		public static bool isAndroid { get; }
 		public static bool isBigMemory { get; private set; }
-		public static bool isWindows { get; }
-		internal static bool isUnloadingUnusedAssets { get; private set; }
 
 		public static int frameCount { get; internal set; }
-		public static float time { get; internal set; }
 
 		public const string linesep = "\n";
 
-		public static readonly StringIntern intern = new();
-		public static readonly Encoding UTF8 = new UTF8Encoding(false, false);
+		// public static readonly StringIntern intern = new();
+		// public static readonly Encoding UTF8 = new UTF8Encoding(false, false);
 	}
 }

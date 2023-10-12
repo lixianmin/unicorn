@@ -36,7 +36,7 @@ namespace Metadata.Build
 
         public void Clear()
         {
-            foreach (var filepath in Kernel.walk(_GetDataFolder(), "*"))
+            foreach (var filepath in Kernel.Walk(_GetDataFolder(), "*"))
             {
                 FileTools.DeleteSafely(filepath);
             }
@@ -83,7 +83,7 @@ namespace Metadata.Build
             // todo 这个现在基本上都是在报错, 所以先注释掉
             // _metadataVersion = SVNTools.GetRevision(metadataRoot);
 
-            var xmlFiles = Kernel.walk(metadataRoot, "*.xml");
+            var xmlFiles = Kernel.Walk(metadataRoot, "*.xml");
 
             var title = "Building *.xml metadata";
             ScanTools.ScanAll(title, xmlFiles, _OnBuildOneXmlFile);
@@ -490,7 +490,7 @@ namespace Metadata.Build
             if (null == _dataFolder)
             {
                 _dataFolder = Path.GetTempPath() + "/metadata";
-                Kernel.makedirs(_dataFolder);
+                Kernel.MakeDirs(_dataFolder);
             }
 
             return _dataFolder;

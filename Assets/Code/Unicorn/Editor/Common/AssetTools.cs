@@ -22,7 +22,8 @@ namespace Unicorn
     {
 		static AssetTools ()
 		{
-			_svnFolder = os.isWindows ? "\\.svn\\" : "/.svn/";
+			var isWindows = Application.platform is RuntimePlatform.WindowsEditor;
+			_svnFolder = isWindows ? "\\.svn\\" : "/.svn/";
 		}
 
         internal static void ApplyPrefab (GameObject instance)

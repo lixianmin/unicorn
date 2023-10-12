@@ -279,7 +279,7 @@ namespace Metadata.Menus
                 serializer.Serialize(writer, xml);
             }
             
-            os.startfile(filepath, null, true);
+            Kernel.StartFile(filepath, null, true);
         }
 
         private static string GetDesktopFilePath (string name)
