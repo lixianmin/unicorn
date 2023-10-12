@@ -14,7 +14,7 @@ namespace Unicorn.Menus
 {
 	internal static class AssetSummary
 	{
-		[MenuItem("*Metadata/Print Asset Summary", false, 609)]
+		[MenuItem("*Tools/Print Asset Summary", false, 609)]
 		private static void _Execute ()
 		{
             var asset = Selection.activeObject;

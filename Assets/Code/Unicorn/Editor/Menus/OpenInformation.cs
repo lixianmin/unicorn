@@ -13,7 +13,7 @@ namespace Unicorn.Menus
 {
     internal class OpenInformation
     {
-        [MenuItem("*Metadata/Open Information ^i", false, 600)]
+        [MenuItem("*Tools/Open Information ^i", false, 600)]
         private static void _Execute()
         {
             _Run();

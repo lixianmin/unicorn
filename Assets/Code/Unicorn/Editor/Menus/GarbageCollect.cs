@@ -12,7 +12,7 @@ namespace Unicorn.Menus
 {
     internal class GarbageCollect
     {
-        [MenuItem("*Metadata/Garbage Collect", false, 608)]
+        [MenuItem("*Tools/Garbage Collect", false, 608)]
         private static void _Execute()
         {
             System.GC.Collect();

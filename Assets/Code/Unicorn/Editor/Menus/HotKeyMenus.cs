@@ -18,7 +18,7 @@ using UnityEditor;
 
 namespace Unicorn.Menus
 {
-	internal class HotKeyMenus
+	internal static class HotKeyMenus
 	{
 		[MenuItem("Window/Asset Management/Addressables/Groups2 %&a", false, 0)]
 		public static void OpenAddressables()

@@ -12,9 +12,9 @@ using System.Text;
 
 namespace Unicorn.Menus
 {
-    internal class DeleteEmptyFolders
+    internal static class DeleteEmptyFolders
     {
-        [MenuItem("*Metadata/Delete Empty Folders", false, 604)]
+        [MenuItem("*Tools/Delete Empty Folders", false, 604)]
         private static void _Execute ()
         {
             var sbLog = new StringBuilder("Deleted empty folders:\n");

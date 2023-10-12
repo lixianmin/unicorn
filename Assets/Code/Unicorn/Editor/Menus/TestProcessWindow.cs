@@ -14,7 +14,7 @@ namespace Unique.Menus
 {
     internal class TestProcessWindow: EditorWindow
     {
-        [MenuItem("*Metadata/Test Process", false, 602)]
+        [MenuItem("*Tools/Test Process", false, 602)]
         private static void _Execute()
         {
 			EditorWindow.GetWindow<TestProcessWindow>(false, "Test Process");
