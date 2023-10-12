@@ -27,7 +27,8 @@ namespace Unicorn.UI.Internal
             _serializer = null;
             _webNode.Reset();
 
-            if (_transform is not null)
+            // if (_transform is not null)
+            if (_transform != null)
             {
                 // 如果是3D界面，则不销毁
                 if (master._is2D)

@@ -98,7 +98,8 @@ namespace Unicorn.UI
                 
                 // canvas需要设置canvas.overrideSorting = true, 并且设置不一样的sortingOrder, 加载出来的按钮才不是灰化的
                 // order越大, 越显示在前面
-                if (_canvas is not null)
+                // if (_canvas is not null)
+                if (_canvas != null)
                 {
                     // canvas.overrideSorting = true; // 这个在资源加载完成的时候设置
                     _canvas.sortingOrder = order;
