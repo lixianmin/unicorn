@@ -16,7 +16,12 @@ namespace Unicorn
         {
             // 这些代码不能在MbGame这个MonoBehaviour的构造方法中调用
             // isBigMemory = SystemInfo.systemMemorySize > 1024 + 512;
+            
+            _InitIsReleaseMode();
+        }
 
+        private static void _InitIsReleaseMode()
+        {
             if (Application.isEditor)
             {
                 var enabled = PlayerPrefs.GetInt("release.mode.enabled", 0);
@@ -64,6 +69,11 @@ namespace Unicorn
             return delta is < eps and > -eps;
         }
 
+        public static void InternalSetIsReleaseMode(bool b)
+        {
+            isReleaseMode = b;
+        }
+
         // public static void swap<T>(ref T lhs, ref T rhs)
         // {
         // 	(lhs, rhs) = (rhs, lhs);
@@ -92,7 +102,7 @@ namespace Unicorn
         /// <summary>
         /// 在editor中, 有时候需要模拟在真机上的运行环境, 执行release版本后的代码流程
         /// </summary>
-        public static bool isReleaseMode;
+        public static bool isReleaseMode { get; private set; }
 
         // public static bool isBigMemory { get; private set; }
 

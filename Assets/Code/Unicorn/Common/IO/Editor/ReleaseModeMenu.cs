@@ -15,7 +15,7 @@ namespace Unicorn.Menus
         [MenuItem(menuName, false, 208)]
         private static void _Execute()
         {
-            os.isReleaseMode = !os.isReleaseMode;
+            os.InternalSetIsReleaseMode(!os.isReleaseMode);
             Menu.SetChecked(menuName, os.isReleaseMode);
 
             // isReleaseMode在游戏开始运行的时刻, 会被reset为false
