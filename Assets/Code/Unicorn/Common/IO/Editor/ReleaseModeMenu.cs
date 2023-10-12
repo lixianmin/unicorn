@@ -9,15 +9,15 @@ using UnityEditor;
 
 namespace Unicorn.Menus
 {
-    internal static class ReleasedFlowMenu
+    internal static class ReleaseModeMenu
     {
         [MenuItem(menuName, false, 208)]
         private static void _Execute()
         {
-            os.isReleasedFlow = !os.isReleasedFlow;
-            Menu.SetChecked(menuName, os.isReleasedFlow);
+            os.isReleaseMode = !os.isReleaseMode;
+            Menu.SetChecked(menuName, os.isReleaseMode);
         }
 
-        private const string menuName = "*Tools/Released Flow";
+        private const string menuName = "*Tools/Release Mode";
     }
 }

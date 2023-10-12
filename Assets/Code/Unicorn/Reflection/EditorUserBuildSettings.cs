@@ -7,6 +7,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
+using UnityEngine;
 
 namespace Unicorn.Reflection
 {
@@ -18,7 +19,7 @@ namespace Unicorn.Reflection
         {
             get
             {
-                if (os.isEditor)
+                if (Application.isEditor)
                 {
                     if (null == _activeBuildTarget)
                     {
@@ -38,7 +39,7 @@ namespace Unicorn.Reflection
         {
             get
             {
-                if (null == _myType && os.isEditor)
+                if (null == _myType && Application.isEditor)
                 {
                     _myType = System.Type.GetType("UnityEditor.EditorUserBuildSettings,UnityEditor");
                 }

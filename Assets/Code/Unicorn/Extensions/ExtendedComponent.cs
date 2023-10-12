@@ -64,7 +64,7 @@ namespace Unicorn
 //		{
 //			if (null != component && null != type)
 //			{
-//				if (!os.isEditor)
+//				if (!Application.isEditor)
 //				{
 //					var result = component.GetComponent(type);
 //					return result;

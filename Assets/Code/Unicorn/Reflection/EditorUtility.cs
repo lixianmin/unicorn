@@ -17,7 +17,7 @@ namespace Unicorn.Reflection
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public static void ClearProgressBar ()
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return;
 			}
@@ -28,7 +28,7 @@ namespace Unicorn.Reflection
 
 		public static Object[] CollectDeepHierarchy (Object[] roots)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return Array.Empty<Object>();
 			}
@@ -40,7 +40,7 @@ namespace Unicorn.Reflection
 
 		public static Object[] CollectDependencies (Object[] roots)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return Array.Empty<Object>();
 			}
@@ -53,7 +53,7 @@ namespace Unicorn.Reflection
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public static void CopySerialized (Object source, Object dest)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return;
 			}
@@ -64,7 +64,7 @@ namespace Unicorn.Reflection
 
 		public static GameObject CreateGameObjectWithHideFlags (string name, HideFlags flags, params Type[] components)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return null;
 			}
@@ -76,7 +76,7 @@ namespace Unicorn.Reflection
 
 		public static bool DisplayDialog (string title, string message, string ok, string cancel = "")
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return false;
 			}
@@ -94,7 +94,7 @@ namespace Unicorn.Reflection
 
 		public static bool DisplayCancelableProgressBar (string title, string info, float progress)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return false;
 			}
@@ -106,7 +106,7 @@ namespace Unicorn.Reflection
 
 		public static Object InstanceIDToObject (int instanceID)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return null;
 			}
@@ -118,7 +118,7 @@ namespace Unicorn.Reflection
 
 		public static bool IsPersistent (Object target)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return false;
 			}
@@ -130,7 +130,7 @@ namespace Unicorn.Reflection
 
 		public static string OpenFilePanel (string title, string directory, string extension)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return string.Empty;
 			}
@@ -142,7 +142,7 @@ namespace Unicorn.Reflection
 
 		public static string OpenFolderPanel (string title, string folder, string defaultName)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return string.Empty;
 			}
@@ -154,7 +154,7 @@ namespace Unicorn.Reflection
 
 		public static string SaveFilePanel (string title, string directory, string defaultName, string extension)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return string.Empty;
 			}
@@ -166,7 +166,7 @@ namespace Unicorn.Reflection
 
 		public static string SaveFilePanelInProject (string title, string defaultName, string extension, string message)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return string.Empty;
 			}
@@ -186,7 +186,7 @@ namespace Unicorn.Reflection
 		[System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public static void SetDirty (Object target)
 		{
-			if (!os.isEditor)
+			if (!Application.isEditor)
 			{
 				return;
 			}
@@ -210,7 +210,7 @@ namespace Unicorn.Reflection
 		{
 			get
 			{
-				if (null == _myType && os.isEditor)
+				if (null == _myType && Application.isEditor)
 				{
 					_myType = System.Type.GetType("UnityEditor.EditorUtility,UnityEditor");
 				}

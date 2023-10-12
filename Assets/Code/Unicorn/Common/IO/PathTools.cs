@@ -269,7 +269,7 @@ namespace Unicorn
             {
                 if (null == _editorResourceRoot)
                 {
-                    if (os.isEditor)
+                    if (Application.isEditor)
                     {
                         _editorResourceRoot = UnicornManifest._GetEditorResourceRoot();
                     }
