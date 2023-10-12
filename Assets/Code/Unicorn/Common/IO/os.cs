@@ -6,6 +6,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System.IO;
+using UnityEngine;
 
 namespace Unicorn
 {
@@ -15,6 +16,17 @@ namespace Unicorn
         {
             // 这些代码不能在MbGame这个MonoBehaviour的构造方法中调用
             // isBigMemory = SystemInfo.systemMemorySize > 1024 + 512;
+
+            if (Application.isEditor)
+            {
+                var enabled = PlayerPrefs.GetInt("release.mode.enabled", 0);
+                isReleaseMode = enabled == 1;
+            }
+            else
+            {
+                // 非编辑器状态, 强制为true
+                isReleaseMode = true;
+            }
         }
 
         public static void mkdir(string path)
@@ -83,7 +95,7 @@ namespace Unicorn
         public static bool isReleaseMode;
 
         // public static bool isBigMemory { get; private set; }
-        
+
         public const string linesep = "\n";
 
         // public static readonly StringIntern intern = new();

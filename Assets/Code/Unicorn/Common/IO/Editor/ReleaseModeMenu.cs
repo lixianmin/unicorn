@@ -6,6 +6,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using UnityEditor;
+using UnityEngine;
 
 namespace Unicorn.Menus
 {
@@ -16,6 +17,9 @@ namespace Unicorn.Menus
         {
             os.isReleaseMode = !os.isReleaseMode;
             Menu.SetChecked(menuName, os.isReleaseMode);
+
+            // isReleaseMode在游戏开始运行的时刻, 会被reset为false
+            PlayerPrefs.SetInt("release.mode.enabled", os.isReleaseMode ? 1 : 0);
         }
 
         private const string menuName = "*Tools/Release Mode";
