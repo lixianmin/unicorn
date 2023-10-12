@@ -5,7 +5,6 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using UnityEngine;
 using System.IO;
 
 namespace Unicorn
@@ -15,8 +14,7 @@ namespace Unicorn
         internal static void Init()
         {
             // 这些代码不能在MbGame这个MonoBehaviour的构造方法中调用
-            isBigMemory = SystemInfo.systemMemorySize > 1024 + 512;
-            frameCount = Time.frameCount;
+            // isBigMemory = SystemInfo.systemMemorySize > 1024 + 512;
         }
 
         public static void mkdir(string path)
@@ -84,10 +82,8 @@ namespace Unicorn
         /// </summary>
         public static bool isReleaseMode;
 
-        public static bool isBigMemory { get; private set; }
-
-        public static int frameCount { get; internal set; }
-
+        // public static bool isBigMemory { get; private set; }
+        
         public const string linesep = "\n";
 
         // public static readonly StringIntern intern = new();

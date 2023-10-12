@@ -36,6 +36,7 @@ namespace Unicorn
         internal static void ExpensiveUpdate()
         {
             _time = UnityEngine.Time.realtimeSinceStartup;
+            _frameCount = UnityEngine.Time.frameCount;
             _CheckFlushLogText();
         }
 
@@ -106,7 +107,7 @@ namespace Unicorn
                 // 	time = _time.ToString("F3");
                 // }
 
-                var frameCount = os.frameCount;
+                var frameCount = _frameCount;
                 if (_lastFrameCount != frameCount)
                 {
                     _lastFrameCount = frameCount;
@@ -223,8 +224,9 @@ namespace Unicorn
 
         private static readonly int _idMainThread;
         private static float _time;
-
+        private static int _frameCount;
         private static int _lastFrameCount;
+        
         private static readonly StringBuilder _sbLogText = new(512);
         private static readonly StringBuilder _sbFormatter = new();
 
