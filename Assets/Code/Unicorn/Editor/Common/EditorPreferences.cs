@@ -12,7 +12,10 @@ using UnityEngine;
 
 namespace Unicorn
 {
-    internal class EditorSettings
+    /// <summary>
+    /// 重命名, 因为已经存在UnityEditor.EditorSettings类了
+    /// </summary>
+    internal static class EditorPreferences
     {
         [DidReloadScripts]
         private static void Reload()
