@@ -23,6 +23,7 @@ namespace Unicorn
             var manifest = UnicornManifest.OpenOrCreate();
             var isChanged = _SetColorSpace(manifest);
             isChanged = _SetBakeCollisionMeshes(manifest) || isChanged;
+            isChanged = _SetEnterPlayModeOptionsEnabled(manifest) || isChanged;
             isChanged = _SetManagedStrippingLevel(manifest) || isChanged;
 
             if (isChanged)
@@ -77,6 +78,24 @@ namespace Unicorn
             {
                 PlayerSettings.bakeCollisionMeshes = bakeCollisionMeshes;
                 Logo.Info($"(manifest.editorSettings.bakeCollisionMeshes={bakeCollisionMeshes}) => (PlayerSettings.bakeCollisionMeshes={bakeCollisionMeshes})");
+                return true;
+            }
+
+            return false;
+        }
+        
+        /// <summary>
+        /// https://docs.unity3d.com/Manual/DomainReloading.html
+        /// </summary>
+        /// <param name="manifest"></param>
+        /// <returns></returns>
+        private static bool _SetEnterPlayModeOptionsEnabled(UnicornManifest manifest)
+        {
+            var enterPlayModeOptionsEnabled = manifest.editorSettings.enterPlayModeOptionsEnabled;
+            if ( EditorSettings.enterPlayModeOptionsEnabled != enterPlayModeOptionsEnabled)
+            {
+                EditorSettings.enterPlayModeOptionsEnabled = enterPlayModeOptionsEnabled;
+                Logo.Info($"(manifest.editorSettings.enterPlayModeOptionsEnabled={enterPlayModeOptionsEnabled}) => (EditorSettings.enterPlayModeOptionsEnabled={enterPlayModeOptionsEnabled})");
                 return true;
             }
 

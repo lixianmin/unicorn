@@ -3,6 +3,7 @@
   <editorSettings>
     <colorSpace>Linear</colorSpace>
     <bakeCollisionMeshes>true</bakeCollisionMeshes>
+    <enterPlayModeOptionsEnabled>true</enterPlayModeOptionsEnabled>
   </editorSettings>
   <relativePaths>
     <editorResourceRoot />
