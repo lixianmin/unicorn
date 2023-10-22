@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-09-29
 author:     lixianmin
@@ -60,7 +59,7 @@ namespace Unicorn
                     return false;
                 }
             }
-            
+
             if (PlayerSettings.colorSpace != colorSpace)
             {
                 PlayerSettings.colorSpace = colorSpace;
@@ -74,28 +73,31 @@ namespace Unicorn
         private static bool _SetBakeCollisionMeshes(UnicornManifest manifest)
         {
             var bakeCollisionMeshes = manifest.editorSettings.bakeCollisionMeshes;
-            if ( PlayerSettings.bakeCollisionMeshes != bakeCollisionMeshes)
+            if (PlayerSettings.bakeCollisionMeshes != bakeCollisionMeshes)
             {
                 PlayerSettings.bakeCollisionMeshes = bakeCollisionMeshes;
-                Logo.Info($"(manifest.editorSettings.bakeCollisionMeshes={bakeCollisionMeshes}) => (PlayerSettings.bakeCollisionMeshes={bakeCollisionMeshes})");
+                Logo.Info(
+                    $"(manifest.editorSettings.bakeCollisionMeshes={bakeCollisionMeshes}) => (PlayerSettings.bakeCollisionMeshes={bakeCollisionMeshes})");
                 return true;
             }
 
             return false;
         }
-        
+
         /// <summary>
-        /// https://docs.unity3d.com/Manual/DomainReloading.html
+        /// https://docs.unity3d.com/Manual/DomainReloading.html , 按文档, 这个字段似乎应该设置为true才能保证static变量在每次游戏
+        /// 初始化的时候自动reset为默认值, 但实际在editor中测试的结果好像是反着的, 这个变量必须为false才可以
         /// </summary>
         /// <param name="manifest"></param>
         /// <returns></returns>
         private static bool _SetEnterPlayModeOptionsEnabled(UnicornManifest manifest)
         {
             var enterPlayModeOptionsEnabled = manifest.editorSettings.enterPlayModeOptionsEnabled;
-            if ( EditorSettings.enterPlayModeOptionsEnabled != enterPlayModeOptionsEnabled)
+            if (EditorSettings.enterPlayModeOptionsEnabled != enterPlayModeOptionsEnabled)
             {
                 EditorSettings.enterPlayModeOptionsEnabled = enterPlayModeOptionsEnabled;
-                Logo.Info($"(manifest.editorSettings.enterPlayModeOptionsEnabled={enterPlayModeOptionsEnabled}) => (EditorSettings.enterPlayModeOptionsEnabled={enterPlayModeOptionsEnabled})");
+                Logo.Info(
+                    $"(manifest.editorSettings.enterPlayModeOptionsEnabled={enterPlayModeOptionsEnabled}) => (EditorSettings.enterPlayModeOptionsEnabled={enterPlayModeOptionsEnabled})");
                 return true;
             }
 
@@ -105,7 +107,7 @@ namespace Unicorn
         private static bool _SetManagedStrippingLevel(UnicornManifest manifest)
         {
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
-           
+
             var levels = manifest.managedStrippingLevels;
             var name = buildTarget switch
             {
@@ -120,7 +122,7 @@ namespace Unicorn
                 Logo.Error($"using unsupported buildTarget={buildTarget}");
                 return false;
             }
-            
+
             var targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget);
             var lastLevel = PlayerSettings.GetManagedStrippingLevel(targetGroup);
             var nextLevel = _GetManagedStrippingLevel(name);

@@ -17,7 +17,7 @@ namespace Unicorn
         {
             public string colorSpace = "Linear";
             public bool bakeCollisionMeshes = true;
-            public bool enterPlayModeOptionsEnabled = true;
+            public bool enterPlayModeOptionsEnabled = false;
         }
         
         public Settings editorSettings = new();
