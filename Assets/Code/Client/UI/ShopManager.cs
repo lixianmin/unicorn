@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using Unicorn.Collections;
 using UnityEngine.Events;
 
-namespace Client.UI
+namespace Clients.UI
 {
     public class ShopManager
     {

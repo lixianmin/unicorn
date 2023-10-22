@@ -61,3 +61,5 @@ crashlytics-build.properties
 .idea/
 .DS_Store
 *.cs.meta
+Bundles/
+Assets/StreamingAssets/yoo/

@@ -9,7 +9,8 @@ Copyright (C) - All Rights Reserved
 
 #if UNICORN_EDITOR
 
-using Client.Web;
+using System.Collections;
+using Clients.Web;
 using UnityEngine;
 using Unicorn;
 using Metadata;
@@ -22,16 +23,18 @@ public class MbUnicornGame : MonoBehaviour
         public new static readonly GameMetadataManager It = new();
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
         // 避免Game对象在场景切换的时候被干掉
-        GameObject.DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
 
         // UnicornMain.It.Init();
         // 启用每次输出log, 方便开发过程中调试
         Logo.Flags |= LogoFlags.FlushOnWrite;
+        
+        yield return _webManager.InitPackage();
 
-        UIManager.It.OpenWindow(typeof(Client.UI.UIMain));
+        UIManager.It.OpenWindow(typeof(Clients.UI.UIMain));
     }
 
     // Update is called once per frame

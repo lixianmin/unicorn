@@ -12,11 +12,9 @@ using System.Collections.Generic;
 using Unicorn;
 using Unicorn.Web;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceProviders;
+using YooAsset;
 
-namespace Client.Web
+namespace Clients.Web
 {
     using UObject = UnityEngine.Object;
 
@@ -31,7 +29,7 @@ namespace Client.Web
 
         private IEnumerator _CoLoad(WebArgument argument, Action<WebScene> handler)
         {
-            var loadHandle = Addressables.LoadSceneAsync(argument.key);
+            var loadHandle = YooAssets.LoadSceneAsync(argument.key);
             _loadHandle = loadHandle;
 
             // LoadAssetAsync发生InvalidKeyException异常时，只会打印一条日志，不会真正的抛出异常
@@ -42,13 +40,12 @@ namespace Client.Web
 
             // 无论加载是否成功，都需要回调到handler
             IsDone = true;
-            IsSucceeded = loadHandle.Status == AsyncOperationStatus.Succeeded;
+            IsSucceeded = loadHandle.Status == EOperationStatus.Succeed;
 
-// #if UNITY_EDITOR
             // 如果是editor，则处理root game objects，重新给shader赋值
             if (IsSucceeded && Application.isEditor)
             {
-                var scene = loadHandle.Result.Scene;
+                var scene = loadHandle.SceneObject;
                 var rootObjects = new List<GameObject>(scene.rootCount);
                 scene.GetRootGameObjects(rootObjects);
 
@@ -58,19 +55,23 @@ namespace Client.Web
                 }
 
                 var skybox = RenderSettings.skybox;
-                if(skybox is not null && skybox.shader != null)
+                if (skybox is not null && skybox.shader != null)
                 {
                     skybox.shader = Shader.Find(skybox.shader.name);
                 }
             }
-// #endif
+            
             CallbackTools.Handle(ref handler, this, string.Empty);
         }
 
         protected override void _DoDispose(bool isManualDisposing)
         {
-            Addressables.Release(_loadHandle);
-            // Logo.Info("[_DoDispose()] {0}", this.ToString());
+            Logo.Info($"[_DoDispose()] _loadHandle.IsValid()={_loadHandle.IsValid} , Key={Key}");
+            if (_loadHandle.IsValid)
+            {
+                _loadHandle.UnloadAsync();
+                // Addressables.UnloadSceneAsync(_loadHandle);
+            }
         }
 
         public bool IsDone { get; private set; }
@@ -80,7 +81,7 @@ namespace Client.Web
         UObject IWebNode.Asset => throw new InvalidOperationException("we do not need to implement this property");
 
         private readonly WebArgument _argument;
-        private AsyncOperationHandle<SceneInstance> _loadHandle;
+        private SceneHandle _loadHandle;
     }
 }
 

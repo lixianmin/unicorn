@@ -9,9 +9,9 @@ Copyright (C) - All Rights Reserved
 using System;
 using Unicorn.Web;
 
-namespace Client.Web
+namespace Clients.Web
 {
-    public class GameWebManager : WebManager
+    public partial class GameWebManager : WebManager
     {
         static GameWebManager()
         {

@@ -11,7 +11,7 @@ using Unicorn;
 using Unicorn.UI;
 using UnityEngine;
 
-namespace Client.UI
+namespace Clients.UI
 {
     public class UIShopWidget : UILoopScrollRect.IWidget
     {

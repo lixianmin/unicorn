@@ -9,7 +9,7 @@ Copyright (C) - All Rights Reserved
 using Unicorn;
 using Unicorn.UI;
 
-namespace Client.UI
+namespace Clients.UI
 {
     public class UIMain : UIWindowBase
     {

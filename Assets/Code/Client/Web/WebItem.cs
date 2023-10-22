@@ -11,10 +11,9 @@ using System;
 using System.Collections;
 using Unicorn;
 using Unicorn.Web;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
+using YooAsset;
 
-namespace Client.Web
+namespace Clients.Web
 {
     using UObject = UnityEngine.Object;
 
@@ -24,12 +23,12 @@ namespace Client.Web
         {
             argument.key ??= string.Empty;
             _argument = argument;
-            CoroutineManager.It.StartCoroutine(_CoLoad(argument, handler));
+            CoroutineManager.It.StartCoroutine(_CoLoad(argument, handler), out _coroutineItem);
         }
 
         private IEnumerator _CoLoad(WebArgument argument, Action<WebItem> handler)
         {
-            var loadHandle = Addressables.LoadAssetAsync<UObject>(argument.key);
+            var loadHandle = YooAssets.LoadAssetAsync<UObject>(argument.key);
             _loadHandle = loadHandle;
 
             // LoadAssetAsync发生InvalidKeyException异常时，只会打印一条日志，不会真正的抛出异常
@@ -37,25 +36,21 @@ namespace Client.Web
             {
                 yield return null;
             }
-            
+
             // 无论加载是否成功，都需要回调到handler
             IsDone = true;
-            IsSucceeded = loadHandle.Status == AsyncOperationStatus.Succeeded;
+            IsSucceeded = loadHandle.Status == EOperationStatus.Succeed;
             CallbackTools.Handle(ref handler, this, string.Empty);
         }
 
         protected override void _DoDispose(bool isManualDisposing)
         {
-            Addressables.Release(_loadHandle);
-            // Logo.Info("[_DoDispose()] {0}", this.ToString());
+            _loadHandle.Dispose();
+            _coroutineItem?.Kill();
+            // Logo.Info($"[_DoDispose()] assetPath = {_argument.key}");
         }
-        
-        // public override string ToString()
-        // {
-        //     return $"WebItem: id={_id.ToString()}, localPath={_argument.key}";
-        // }
 
-        public bool IsDone      { get; private set; }
+        public bool IsDone { get; private set; }
         public bool IsSucceeded { get; private set; }
         public string Key => _argument.key;
 
@@ -65,7 +60,7 @@ namespace Client.Web
             {
                 if (IsSucceeded)
                 {
-                    return _loadHandle.Result as UObject;
+                    return _loadHandle.AssetObject;
                 }
 
                 return null;
@@ -73,7 +68,8 @@ namespace Client.Web
         }
 
         private readonly WebArgument _argument;
-        private AsyncOperationHandle _loadHandle;
+        private AssetHandle _loadHandle;
+        private readonly CoroutineItem _coroutineItem;
     }
 }
 

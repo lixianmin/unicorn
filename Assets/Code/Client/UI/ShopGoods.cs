@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 #if UNICORN_EDITOR
 
-namespace Client.UI
+namespace Clients.UI
 {
     public class ShopGoods
     {

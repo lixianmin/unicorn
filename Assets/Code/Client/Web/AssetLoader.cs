@@ -11,7 +11,7 @@ using System.Collections;
 using Unicorn;
 using Unicorn.Web;
 
-namespace Client.Web
+namespace Clients.Web
 {
     public class AssetLoader<T> where T: UnityEngine.Object
     {
