@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-09-29
 author:     lixianmin
@@ -19,9 +18,9 @@ namespace Unicorn
             public bool bakeCollisionMeshes = true;
             public bool enterPlayModeOptionsEnabled = false;
         }
-        
+
         public Settings editorSettings = new();
-        
+
         [Serializable]
         public class Paths
         {
@@ -29,7 +28,7 @@ namespace Unicorn
             public string xmlMetadataRoot = string.Empty;
             public string exportMetadataRoot = string.Empty;
         }
-        
+
         public Paths relativePaths = new();
 
         // managed stripping level：以High最狠，但目前只能支持到Low，因为到了Medium级别UI库中的反射就不能用了
@@ -40,10 +39,11 @@ namespace Unicorn
             public string Android = "Low";
             public string iOS = "Low";
             public string WebGL = "Low";
+            public string StandaloneOSX = "Low";
         }
-        
+
         public StrippingLevels managedStrippingLevels = new();
-        
+
         /// <summary>
         /// 美术的项目不能执行MakeAutoCode, ClearAutoCode等自动生成代码的逻辑
         /// </summary>
