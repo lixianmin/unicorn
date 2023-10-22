@@ -1,6 +1,6 @@
 ﻿// Author: Daniele Giardini - http://www.demigiant.com
 // Created: 2018/07/13
-
+#if UNICORN_EDITOR
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -165,3 +165,5 @@ namespace DG.Tweening
         }
     }
 }
+
+#endif
