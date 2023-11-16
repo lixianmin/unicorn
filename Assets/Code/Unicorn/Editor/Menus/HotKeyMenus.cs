@@ -20,11 +20,11 @@ namespace Unicorn.Menus
 {
 	internal static class HotKeyMenus
 	{
-		[MenuItem("Window/Asset Management/Addressables/Groups2 %&a", false, 0)]
-		public static void OpenAddressables()
-		{
-			EditorApplication.ExecuteMenuItem("Window/Asset Management/Addressables/Groups");
-		}
+		// [MenuItem("Window/Asset Management/Addressables/Groups2 %&a", false, 0)]
+		// public static void OpenAddressables()
+		// {
+		// 	EditorApplication.ExecuteMenuItem("Window/Asset Management/Addressables/Groups");
+		// }
 		
 		[MenuItem("Window/Package Manager2 &%[", false, 1500)]
 		public static void OpenPackageManager ()
