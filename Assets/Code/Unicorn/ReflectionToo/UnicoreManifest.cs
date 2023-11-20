@@ -85,6 +85,14 @@ namespace Unicorn
             return fullPath;
         }
 
+        public static string GetExcelMetadataRoot()
+        {
+            var manifest = OpenOrCreate();
+            const string title = "Please choose metadata excel files root directory";
+            var fullPath = manifest._CheckChooseFullPath(ref manifest.relativePaths.excelMetadataRoot, title);
+            return fullPath;
+        }
+        
         public static string GetXmlMetadataRoot()
         {
             var manifest = OpenOrCreate();

@@ -25,6 +25,7 @@ namespace Unicorn
         public class Paths
         {
             public string editorResourceRoot = string.Empty;
+            public string excelMetadataRoot = string.Empty;
             public string xmlMetadataRoot = string.Empty;
             public string exportMetadataRoot = string.Empty;
         }
