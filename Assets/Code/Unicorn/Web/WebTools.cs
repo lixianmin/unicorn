@@ -74,7 +74,7 @@ namespace Unicorn.Web
         {
             if (material == null)
             {
-                Logo.Info("material is null");
+                // Logo.Info("material is null");
                 return;
             }
 

@@ -76,7 +76,7 @@ namespace Unicorn.Collections
 						return _table._keys[index];
 					}
 					
-					var message = string.Format("[KeyList.get_Item()] index={0}, count={1}", index.ToString(), count.ToString());
+					var message = $"[KeyList.get_Item()] index={index.ToString()}, count={count.ToString()}";
 					throw new IndexOutOfRangeException(message);
 				}
 

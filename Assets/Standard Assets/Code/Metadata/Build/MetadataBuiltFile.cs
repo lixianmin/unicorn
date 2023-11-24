@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unicorn;
 using Unicorn.IO;
+using UnityEngine;
 
 namespace Metadata.Build
 {
@@ -96,8 +97,10 @@ namespace Metadata.Build
                 Logo.Info("--> build *.xml metadata, builtXmlPaths={0}", _sbBuiltXmlPaths);
             }
 
+            // Debug.LogWarning($"6. dataItems.Count={_dataItems.Count}");
             var hasDeleted = _RemoveDeletedEntries();
 
+            // Debug.LogWarning($"7. dataItems.Count={_dataItems.Count}");
             if (hasInvalidTypes || _xmlFileChanged || hasDeleted)
             {
                 _SaveAll(filepath, _entries, _dataItems);
@@ -144,6 +147,16 @@ namespace Metadata.Build
             }
 
             var lastEntry = _entries[xmlPath] as EntryItem;
+
+            // var sb = new StringBuilder();
+            // foreach (var filename in _entries.Keys)
+            // {
+            //     sb.Append(filename);
+            //     sb.Append("\n");
+            // }
+            //
+            // Debug.LogWarning($"10. remove xmlPath ={xmlPath}, lastEntry={lastEntry}, _entries.Count={_entries.Count}, entries={sb.ToString()}");
+
             if (null != lastEntry)
             {
                 _lastEntryXmlPaths.Remove(xmlPath);
@@ -204,7 +217,7 @@ namespace Metadata.Build
             }
             else
             {
-                Logo.Error("rawMetdata=null, this xml file may not be used any more, xmlPath={0}", xmlPath);
+                Logo.Error("rawMetadata=null, this xml file may not be used any more, xmlPath={0}", xmlPath);
             }
         }
 
@@ -212,18 +225,23 @@ namespace Metadata.Build
         {
             var count = _lastEntryXmlPaths.Count;
             var hasDeleted = count > 0;
+            // Debug.LogWarning($"8. _lastEntryXmlPaths.Count={_lastEntryXmlPaths.Count}");
             if (hasDeleted)
             {
-                var iter = _lastEntryXmlPaths.GetEnumerator();
+                using var iter = _lastEntryXmlPaths.GetEnumerator();
                 while (iter.MoveNext())
                 {
-                    var deletedXmlPath = iter.Current;
+                    var deletedXmlPath = iter.Current ?? string.Empty;
                     var deletedEntry = _entries[deletedXmlPath] as EntryItem;
 
+                    // todo 看起来是这里清理了那些其实有效的数据
                     _RemoveDataItems(deletedEntry, _dataItems);
                 }
 
-                foreach (string xmlPath in new ArrayList(_entries.Keys))
+                // Debug.LogWarning($"9. _entries.Count={_entries.Count}");
+                // _entries will be changed in this cycle
+                var keys = new ArrayList(_entries.Keys);
+                foreach (string xmlPath in keys)
                 {
                     if (_lastEntryXmlPaths.Contains(xmlPath))
                     {
@@ -240,13 +258,8 @@ namespace Metadata.Build
         private static void _RemoveDataItems(EntryItem entry, DataItemTable dataItems)
         {
             // remove all old metadata.
-            if (null == entry)
-            {
-                return;
-            }
-
-            var itemNames = entry.GetDataItemNames();
-            if (null != itemNames)
+            var itemNames = entry?.GetDataItemNames();
+            if (itemNames != null)
             {
                 foreach (string itemName in new ArrayList(dataItems.Keys))
                 {
@@ -496,22 +509,40 @@ namespace Metadata.Build
             return _dataFolder;
         }
 
-        private string _GetBuiltFilePath()
+        private static string _GetBuiltFilePath()
         {
-            var fullPath = _GetDataFolder() + "/built-file.bf";
+            var fullPath = $"{_GetDataFolder()}/{_GetProjectName()}.built.file.bf";
             return fullPath;
+        }
+
+        private static string _GetProjectName()
+        {
+            var dataPath = Application.dataPath;
+            const string tail = "Assets";
+            var startIndex = dataPath.Length - tail.Length - 2;
+            for (var i = startIndex; i >= 0; i--)
+            {
+                var c = dataPath[i];
+                if (c is '/' or '\\')
+                {
+                    var projectName = dataPath.Substring(i + 1, startIndex - i);
+                    return projectName;
+                }
+            }
+
+            return string.Empty;
         }
 
         private static readonly int _currentVersion = 0x0318;
         private static string _dataFolder;
 
-        private readonly EntryTable _entries = new EntryTable(2048);
-        private readonly DataItemTable _dataItems = new DataItemTable(8192);
-        private readonly HashSet<string> _lastEntryXmlPaths = new HashSet<string>();
-        private readonly StringBuilder _sbBuiltXmlPaths = new StringBuilder();
+        private readonly EntryTable _entries = new(2048);
+        private readonly DataItemTable _dataItems = new(8192);
+        private readonly HashSet<string> _lastEntryXmlPaths = new();
+        private readonly StringBuilder _sbBuiltXmlPaths = new();
         private bool _xmlFileChanged;
         private int _metadataVersion;
 
-        private readonly LocaleTable _localeTable = new LocaleTable();
+        private readonly LocaleTable _localeTable = new();
     }
 }
