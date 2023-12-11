@@ -15,10 +15,7 @@ using UnityEngine;
 
 namespace Unicorn.Web.Internal
 {
-    /// <summary>
-    /// 这个script改为public可访问, 因为创建PrefabPool的时候, 需要通过这个脚本获取key
-    /// </summary>
-    public class MbPrefabAid : MonoBehaviour
+    internal class MbPrefabAid : MonoBehaviour
     {
         // Caution: Awake() will not be automatically called immediately 
         // when _mainAsset is not active.
