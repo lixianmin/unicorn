@@ -15,7 +15,8 @@ namespace Unicorn.Web
     {
         internal WebPrefab(WebArgument argument, Action<WebPrefab> handler)
         {
-            // _webItem这里也需要同步赋值, 因为回调handler有可能是一个小时之后的事, 中间万一使用到了_webItem就可能是null了. 你永远也不知道构造方法和handler谁先到来
+            // _webItem这里也需要同步赋值, 因为回调handler有可能是一个小时之后的事, 中间万一使用到了_webItem就可能是null了.
+            // 你永远也不知道构造方法和handler谁先到来
             var node = WebManager.It.LoadAsset(argument, webItem =>
             {
                 if (webItem.Asset is GameObject mainAsset)
@@ -27,9 +28,9 @@ namespace Unicorn.Web
                         script.key = argument.key;
                     }
 
-                    // 只要是在editor中, 无论script是否为null, 都需要赋值shader
 // 实践证明这个注释没有意义，因为这个项目会编译成dll，编译时UNITY_EDITOR是有的 --> 因为引入三方库, 编译时需移除UNITY_EDITOR
 // #if UNITY_EDITOR
+                    // 只要是在editor中, 无论script是否为null, 都需要赋值shader
                     WebTools.ReloadShaders(mainAsset);
 // #endif
 
