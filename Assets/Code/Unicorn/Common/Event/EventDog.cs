@@ -11,6 +11,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 namespace Unicorn
 {
@@ -68,6 +69,22 @@ namespace Unicorn
             {
                 evt.AddListener(handler);
                 _removeList.Add(() => { evt.RemoveListener(handler); });
+            }
+        }
+
+        public void AddListener(EventTrigger trigger, EventTriggerType eventId, UnityAction<BaseEventData> handler)
+        {
+            if (trigger != null && handler != null)
+            {
+                var entry = new EventTrigger.Entry
+                {
+                    eventID = eventId
+                };
+
+                entry.callback.AddListener(handler);
+                trigger.triggers.Add(entry);
+
+                _removeList.Add(() => { trigger.triggers.Remove(entry); });    
             }
         }
 
