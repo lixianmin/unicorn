@@ -13,7 +13,7 @@ namespace Unicorn
 {
     public static class ExtendedIList
     {
-        public static int GetCountEx (this IList list)
+        public static int GetCount (this IList list)
         {
             if (null != list)
             {
@@ -24,7 +24,7 @@ namespace Unicorn
             return 0;
         }
         
-        public static int MoveToEx (this IList srcList, IList destList)
+        public static int MoveTo (this IList srcList, IList destList)
         {
 			if (null != srcList && null != destList)
 			{
@@ -42,7 +42,7 @@ namespace Unicorn
 			return 0;
 		}
         
-        public static void ReserveEx<T> (this List<T> list, int minCapacity)
+        public static void Reserve<T> (this List<T> list, int minCapacity)
         {
 	        if (null != list)
 	        {
@@ -55,7 +55,7 @@ namespace Unicorn
 	        }
         }
 
-        //       public static int MoveToEx (this IList srcList, IList destList, object locker)
+        //       public static int MoveTo (this IList srcList, IList destList, object locker)
 		// {
 		// 	if (null != srcList && null != destList && null != locker)
 		// 	{
@@ -80,7 +80,7 @@ namespace Unicorn
 		// 	return 0;
 		// }
 
-		public static Type GetElementTypeEx (this IList list)
+		public static Type GetElementType (this IList list)
 		{
 			if (null != list)
 			{
@@ -106,7 +106,7 @@ namespace Unicorn
 			return null;
 		}
 
-        public static void EnsureSizeEx<T> (this IList<T> list, int size)
+        public static void EnsureSize<T> (this IList<T> list, int size)
         {
             if (null != list)
             {
@@ -118,7 +118,7 @@ namespace Unicorn
             }
         }
 
-        public static void ClearEx<T> (this IList<T> list)
+        public static void Clear<T> (this IList<T> list)
         {
             if (list is { Count: > 0 })
             {
@@ -126,12 +126,12 @@ namespace Unicorn
             }
         }
         
-        public static bool IsNullOrEmptyEx<T> (this List<T> list)
+        public static bool IsNullOrEmpty<T> (this List<T> list)
         {
 	        return list is { Count: 0 };
         }
 
-        public static bool AddIfNotNullEx<T> (this IList<T> list, T item)
+        public static bool AddIfNotNull<T> (this IList<T> list, T item)
         {
             if (null != list && null != item)
             {
@@ -142,7 +142,7 @@ namespace Unicorn
             return false;
         }
         
-        public static bool AddUniqueEx<T> (this List<T> list, T item)
+        public static bool AddUnique<T> (this List<T> list, T item)
         {
 	        if (null != list && list.IndexOf(item) < 0)
 	        {
@@ -153,7 +153,7 @@ namespace Unicorn
 	        return false;
         }
         
-        public static T PopBackEx<T> (this List<T> list)
+        public static T PopBack<T> (this List<T> list)
         {
 	        if (null != list)
 	        {
@@ -171,7 +171,7 @@ namespace Unicorn
 	        return default;
         }
         
-        public static T BackEx<T> (this List<T> list)
+        public static T Back<T> (this List<T> list)
         {
 	        if (null != list)
 	        {

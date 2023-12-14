@@ -119,7 +119,7 @@ namespace Metadata
 			{
                 var list = target as IList;
 
-                Type elementType = null != list ? list.GetElementTypeEx() : null;
+                Type elementType = null != list ? list.GetElementType() : null;
                 var basicType = null != elementType ? GetBasicType(elementType) : BasicType.Null;
                 writer.Write((byte) basicType);
 
@@ -138,8 +138,8 @@ namespace Metadata
                 var lhsList = lhsTarget as IList;
                 var rhsList = rhsTarget as IList;
 
-                var lhsCount = lhsList.GetCountEx();
-                var rhsCount = rhsList.GetCountEx();
+                var lhsCount = lhsList.GetCount();
+                var rhsCount = rhsList.GetCount();
                 if (lhsCount != rhsCount)
                 {
                     return false;
@@ -150,8 +150,8 @@ namespace Metadata
                     return true;
                 }
 
-                Type lhsElementType = lhsList.GetElementTypeEx();
-                Type rhsElementType = rhsList.GetElementTypeEx();
+                Type lhsElementType = lhsList.GetElementType();
+                Type rhsElementType = rhsList.GetElementType();
                 if (lhsElementType != rhsElementType)
                 {
                     return false;

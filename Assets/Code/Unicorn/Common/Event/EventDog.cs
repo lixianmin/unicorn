@@ -90,7 +90,7 @@ namespace Unicorn
 
         public void RemoveAllListeners()
         {
-            _removeList.InvokeAndClearEx();
+            _removeList.InvokeAndClear();
         }
 
         protected override void _DoDispose(bool isManualDisposing)

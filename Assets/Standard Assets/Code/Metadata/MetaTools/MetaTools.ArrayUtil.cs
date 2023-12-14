@@ -38,7 +38,7 @@ namespace Metadata
 			{
 				var array = target as Array;
 
-                Type elementType = null != array ? array.GetElementTypeEx() : null;
+                Type elementType = null != array ? array.GetElementType() : null;
                 var basicType = null != elementType ? GetBasicType(elementType) : BasicType.Null;
                 writer.Write((byte) basicType);
 
@@ -81,8 +81,8 @@ namespace Metadata
                     return true;
                 }
 
-                Type lhsElementType = lhsArray.GetElementTypeEx();
-                Type rhsElementType = rhsArray.GetElementTypeEx();
+                Type lhsElementType = lhsArray.GetElementType();
+                Type rhsElementType = rhsArray.GetElementType();
                 if (lhsElementType != rhsElementType)
                 {
                     return false;

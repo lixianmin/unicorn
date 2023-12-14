@@ -16,7 +16,7 @@ namespace Unicorn
 	    /// 用于实现RemoveAllListeners()的unregister事件回调函数的效果
 	    /// </summary>
 	    /// <param name="list"></param>
-        public static void InvokeAndClearEx (this IList<Action> list)
+        public static void InvokeAndClear (this IList<Action> list)
 		{
 			if (null != list)
 			{
