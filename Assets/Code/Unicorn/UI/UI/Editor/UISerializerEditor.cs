@@ -356,7 +356,7 @@ namespace Unicorn.UI
                     Logo.Warn($"\"()\" is not allowed in gameObject names, path={root.name}/{currentPath}");
                 }
 
-                var transLast = traversedTable.GetEx(name);
+                var transLast = traversedTable.Get(name);
                 if (null != transLast)
                 {
                     var lastPath = transLast.GetFindPath();

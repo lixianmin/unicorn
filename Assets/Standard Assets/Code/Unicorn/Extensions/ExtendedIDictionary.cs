@@ -13,15 +13,14 @@ namespace Unicorn
 {
     public static class ExtendedIDictionary
     {
-        public static Value GetEx<Key, Value>(this IDictionary<Key, Value> dict, Key key)
+        public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
         {
-            return dict.GetEx(key, default(Value));
+            return dict.Get(key, default);
         }
 
-        public static Value GetEx<Key, Value>(this IDictionary<Key, Value> dict, Key key, Value defaultValue)
+        public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
         {
-            Value v;
-            if (null != dict && dict.TryGetValue(key, out v))
+            if (null != dict && dict.TryGetValue(key, out var v))
             {
                 return v;
             }
@@ -29,17 +28,16 @@ namespace Unicorn
             return defaultValue;
         }
 
-        public static Value SetDefaultEx<Key, Value>(this IDictionary<Key, Value> dict, Key key)
+        public static TValue SetDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
         {
-            return dict.SetDefaultEx(key, default(Value));
+            return dict.SetDefault(key, default);
         }
 
-        public static Value SetDefaultEx<Key, Value>(this IDictionary<Key, Value> dict, Key key, Value defaultValue)
+        public static TValue SetDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
         {
             if (null != dict)
             {
-                Value value;
-                if (!dict.TryGetValue(key, out value))
+                if (!dict.TryGetValue(key, out var value))
                 {
                     value = defaultValue;
                     dict.Add(key, value);
@@ -48,24 +46,20 @@ namespace Unicorn
                 return value;
             }
 
-            return default(Value);
+            return default;
         }
 
-        public static Value AddEx<Key, Value>(this IDictionary<Key, Value> dict, Key key, Value v)
+        public static TValue Add<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue v)
         {
-            if (null != dict)
-            {
-                dict.Add(key, v);
-            }
-
+            dict?.Add(key, v);
             return v;
         }
 
-        public static void AddRangeEx<Key, Value>(this IDictionary<Key, Value> dictTo, IDictionary<Key, Value> dictFrom) where Key : IComparable
+        public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictTo, IDictionary<TKey, TValue> dictFrom) where TKey : IComparable
         {
             if (null != dictTo && null != dictFrom)
             {
-                var e = dictFrom.GetEnumerator();
+                using var e = dictFrom.GetEnumerator();
                 while (e.MoveNext())
                 {
                     var pair = e.Current;
@@ -74,25 +68,21 @@ namespace Unicorn
             }
         }
 
-        public static void DisposeAllAndClearEx(this IDictionary table)
+        public static void DisposeAllAndClear(this IDictionary table)
         {
-            if (null != table)
+            var count = table?.Count;
+            if (count > 0)
             {
-                var count = table.Count;
-                if (count > 0)
+                var iter = table.GetEnumerator();
+                while (iter.MoveNext())
                 {
-                    var iter = table.GetEnumerator();
-                    while (iter.MoveNext())
+                    if (iter.Value is IDisposable item)
                     {
-                        var item = iter.Value as IDisposable;
-                        if (null != item)
-                        {
-                            item.Dispose();
-                        }
+                        item.Dispose();
                     }
-
-                    table.Clear();
                 }
+
+                table.Clear();
             }
         }
     }
