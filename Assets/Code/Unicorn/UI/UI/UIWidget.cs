@@ -56,7 +56,7 @@ namespace Unicorn.UI
                 {
                     if (_window is null)
                     {
-                        throw new NullReferenceException("new UIWidget(name, window) 创建临时变量时, 必须传入有效的window参数");
+                        throw new NullReferenceException("1.临时变量: 创建时未传window参数 2. 类成员变量: 资源未OnLoaded()");
                     }
                     
                     _widget = _window.GetWidget(_name, typeof(T)) as T;
