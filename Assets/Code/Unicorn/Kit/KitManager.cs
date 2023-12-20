@@ -3,6 +3,8 @@
 created:    2022-09-05
 author:     lixianmin
 
+因为 Behavior Designer, 我们可能没有对KitManager的需求了, 因此这部分代码封禁
+
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 

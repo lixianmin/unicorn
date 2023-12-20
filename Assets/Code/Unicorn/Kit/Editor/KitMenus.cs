@@ -14,7 +14,7 @@ namespace Unicorn.Kit
 {
     internal static class KitMenus
     {
-        [MenuItem("*Tools/Kit/Make Auto Code", true)]
+        // [MenuItem("*Tools/Kit/Make Auto Code", true)]
         private static bool ValidateMake ()
         {
             var manifest = UnicornManifest.OpenOrCreate();
@@ -22,7 +22,7 @@ namespace Unicorn.Kit
             return isValid;
         }
         
-        [MenuItem("*Tools/Kit/Make Auto Code", false, 0)]
+        // [MenuItem("*Tools/Kit/Make Auto Code", false, 0)]
         private static void Make ()
         {
             // make auto code之前先Refresh()一把, 因为通常只所以需要make auto code就是因为加入了新的类型, 这时如果不Refresh()一把就找不到新的类型
@@ -35,7 +35,7 @@ namespace Unicorn.Kit
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("*Tools/Kit/Clear Auto Code", true)]
+        // [MenuItem("*Tools/Kit/Clear Auto Code", true)]
         private static bool ValidateClear()
         {
             var manifest = UnicornManifest.OpenOrCreate();
@@ -43,7 +43,7 @@ namespace Unicorn.Kit
             return isValid;
         }
 
-        [MenuItem("*Tools/Kit/Clear Auto Code", false, 1)]
+        // [MenuItem("*Tools/Kit/Clear Auto Code", false, 1)]
         public static void Clear ()
         {
             var factoryPath = _GetFactoryFilePath();
