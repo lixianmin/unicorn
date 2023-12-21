@@ -96,10 +96,10 @@ namespace Unicorn.UI
             var item = _IndexWindow(windowType);
             return item.window;
         }
-
-        public T GetWindow<T>() where T : UIWindowBase
+        
+        public IEnumerable<UIWindowBase> EnumerateWindows()
         {
-            return GetWindow(typeof(T)) as T;
+            return _windowsZOrder;
         }
 
         internal void SlowUpdate(float deltaTime)
