@@ -210,7 +210,7 @@ namespace Unicorn.UI.Internal
 
             var text = childText.AddComponent<UIText>();
             text.text = "";
-            text.enableWordWrapping = false;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
             text.extraPadding = true;
             text.richText = true;
             text.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
@@ -220,7 +220,7 @@ namespace Unicorn.UI.Internal
             placeholder.text = "Enter text...";
             placeholder.fontSize = 14;
             placeholder.fontStyle = FontStyles.Italic;
-            placeholder.enableWordWrapping = false;
+            placeholder.textWrappingMode = TextWrappingModes.NoWrap;
             placeholder.extraPadding = true;
             placeholder.raycastTarget = false; // 设置raycastTarget=false，减少cpu成本
 
