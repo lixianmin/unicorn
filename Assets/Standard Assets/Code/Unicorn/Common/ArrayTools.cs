@@ -46,6 +46,19 @@ namespace Unicorn
 
             return result;
         }
+        
+        public static void AddItem<T>(ref T[] items, ref int size, T item)
+        {
+            var capacity = items?.Length ?? 0;
+            if (size + 1 > capacity)
+            {
+                var nextCapacity = EnsureCapacity(capacity, size + 1);
+                Array.Resize(ref items, nextCapacity);
+            }
+
+            items![size] = item;
+            ++size;
+        }
 
         //		internal static void SetValueImpl (Array array, object val, int position)
         //		{
