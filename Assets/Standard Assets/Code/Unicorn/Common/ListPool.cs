@@ -10,33 +10,21 @@ using System.Collections.Generic;
 
 namespace Unicorn
 {
-    public static class ListPool<T>
-    {
-        public static List<T> Spawn ()
-        {
-            return _pool.Spawn();
-        }
-
-        public static void Recycle (List<T> list)
-        {
-            _pool.Recycle(list);
-        }
-
-        private static readonly ObjectPool<List<T>> _pool = new(null, list => list.Clear());
-    }
-
     public static class ListPool
     {
-        public static List<object> Spawn ()
+        public static List<T> Spawn<T> ()
         {
-            return _pool.Spawn();
+            return InnerData<T>.Pool.Spawn();
         }
     
-        public static void Recycle (List<object> list)
+        public static void Recycle<T> (List<T> list)
         {
-            _pool.Recycle(list);
+            InnerData<T>.Pool.Recycle(list);
         }
-    
-        private static readonly ObjectPool<List<object>> _pool = new ObjectPool<List<object>>(null, list => list.Clear());
+        
+        private static class InnerData<T>
+        {
+            public static readonly ObjectPool<List<T>> Pool = new(null, list => list.Clear());
+        }
     }
 }
