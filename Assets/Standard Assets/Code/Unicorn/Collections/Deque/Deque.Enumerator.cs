@@ -48,7 +48,7 @@ namespace Unicorn.Collections
 				_current = -1;
 			}
 			
-			public object Current
+			public T Current
 			{
 				get 
 				{
