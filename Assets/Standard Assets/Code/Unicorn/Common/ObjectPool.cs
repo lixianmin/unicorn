@@ -19,7 +19,7 @@ namespace Unicorn
             _recycleAction = recycleAction;
         }
 
-        public T Spawn()
+        public T Get()
         {
             T item;
 
@@ -41,7 +41,7 @@ namespace Unicorn
             return item;
         }
 
-        public void Recycle(T item)
+        public void Return(T item)
         {
             if (_isNullable && null == item)
             {

@@ -257,7 +257,7 @@ namespace Unicorn.UI
 
         private static void _FetchLabels(UISerializer script)
         {
-            var labelList = ListPool.Spawn<Text>();
+            var labelList = ListPool.Get<Text>();
 
             foreach (var node in _ForEachNode(script.transform))
             {
@@ -269,7 +269,7 @@ namespace Unicorn.UI
             }
 
             script.labels = labelList.ToArray();
-            ListPool.Recycle(labelList);
+            ListPool.Return(labelList);
         }
 
 //        [MenuItem("Assets/Test", false, 0)]
@@ -396,14 +396,14 @@ namespace Unicorn.UI
             _CheckEventSystemExistence(root);
 
             rootScript.widgets = null;
-            var dataList = ListPool.Spawn<UISerializer.WidgetData>();
+            var dataList = ListPool.Get<UISerializer.WidgetData>();
             _CollectWidgetFromCode(root, dataList);
 
             _FetchLabels(rootScript);
             _CollectUITextWithGUID(rootScript, dataList);
 
             rootScript.widgets = dataList.ToArray();
-            ListPool.Recycle(dataList);
+            ListPool.Return(dataList);
 
             _SavePrefab(root);
 

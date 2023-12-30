@@ -88,7 +88,7 @@ namespace Unicorn
         {
             if (null != listener)
             {
-                _observer ??= _cacheObservers.Spawn();
+                _observer ??= _cacheObservers.Get();
                 _observer.AddListener(message, listener);
 
                 var listenerData = new ListenerData { sender = this, message = message, listener = listener };
@@ -125,7 +125,7 @@ namespace Unicorn
         /// </summary>
         public virtual void Clear()
         {
-            _cacheObservers.Recycle(_observer);
+            _cacheObservers.Return(_observer);
             _observer = null;
             
             _parts?.Dispose();

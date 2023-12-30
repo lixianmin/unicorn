@@ -12,14 +12,14 @@ namespace Unicorn
 {
     public static class ListPool
     {
-        public static List<T> Spawn<T> ()
+        public static List<T> Get<T> ()
         {
-            return InnerData<T>.Pool.Spawn();
+            return InnerData<T>.Pool.Get();
         }
     
-        public static void Recycle<T> (List<T> list)
+        public static void Return<T> (List<T> list)
         {
-            InnerData<T>.Pool.Recycle(list);
+            InnerData<T>.Pool.Return(list);
         }
         
         private static class InnerData<T>
