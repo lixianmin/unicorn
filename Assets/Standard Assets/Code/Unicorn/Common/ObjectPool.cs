@@ -33,11 +33,7 @@ namespace Unicorn
                 CountAll++;
             }
 
-            if (null != _spawnAction)
-            {
-                _spawnAction(item);
-            }
-
+            _spawnAction?.Invoke(item);
             return item;
         }
 
@@ -54,19 +50,15 @@ namespace Unicorn
                 return;
             }
 
-            if (null != _recycleAction)
-            {
-                _recycleAction(item);
-            }
-
+            _recycleAction?.Invoke(item);
             _cache.PushBack(item);
         }
 
         internal int CountAll { get; private set; }
-        internal int CountActive { get { return CountAll - CountInactive; } }
-        internal int CountInactive { get { return _cache.Count; } }
+        internal int CountActive => CountAll - CountInactive;
+        internal int CountInactive => _cache.Count;
 
-        private readonly Deque _cache = new Deque();
+        private readonly Deque _cache = new();
         private readonly Action<T> _spawnAction;
         private readonly Action<T> _recycleAction;
 
