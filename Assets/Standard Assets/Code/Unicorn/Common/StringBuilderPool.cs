@@ -12,9 +12,9 @@ namespace Unicorn
 {
     public static class StringBuilderPool
     {
-        public static StringBuilder Spawn(int capacity = 256)
+        public static StringBuilder Get(int capacity = 256)
         {
-            var cache = StringBuilderPool._cache;
+            var cache = _cache;
             if (cache != null && cache.Capacity >= capacity)
             {
                 _cache = null;
@@ -25,29 +25,29 @@ namespace Unicorn
             return new StringBuilder(capacity);
         }
 
-        public static string GetStringAndRecycle(StringBuilder sb)
+        public static string GetStringAndReturn(StringBuilder sb)
         {
             if (null != sb)
             {
                 string text = sb.ToString();
-                Recycle(sb);
+                Return(sb);
                 return text;
             }
 
             return string.Empty;
         }
 
-        public static void Recycle(StringBuilder sb)
+        public static void Return(StringBuilder sb)
         {
-            if (null != sb && sb.Capacity <= MAX_BUILDER_SIZE)
+            if (sb is { Capacity: <= MAX_BUILDER_SIZE })
             {
                 _cache = sb;
             }
         }
 
         [ThreadStatic]
-        private static StringBuilder _cache = new StringBuilder(256);
+        private static StringBuilder _cache = new(256);
 
-        private const int MAX_BUILDER_SIZE = 512;
+        private const int MAX_BUILDER_SIZE = 1024;
     }
 }

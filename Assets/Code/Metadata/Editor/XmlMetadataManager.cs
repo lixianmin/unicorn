@@ -44,7 +44,7 @@ namespace Metadata
 				return;
 			}
 
-            var sbText = StringBuilderPool.Spawn();
+            var sbText = StringBuilderPool.Get();
             sbText.AppendLine("Export increment metadata:");
 
 			var counterparts = new HashSet<IMetadata>();
@@ -115,7 +115,7 @@ namespace Metadata
 				}
 			}
 
-            Logo.Info(StringBuilderPool.GetStringAndRecycle(sbText));
+            Logo.Info(StringBuilderPool.GetStringAndReturn(sbText));
 		}
 
         public bool IsEmpty ()

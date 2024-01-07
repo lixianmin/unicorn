@@ -120,9 +120,9 @@ namespace Unicorn
 				var root = transform.root;
 				if (transform != root)
 				{
-                    var sbPath = StringBuilderPool.Spawn();
+                    var sbPath = StringBuilderPool.Get();
                     _CollectFindPath(transform, root, sbPath);
-                    var path = StringBuilderPool.GetStringAndRecycle(sbPath);					
+                    var path = StringBuilderPool.GetStringAndReturn(sbPath);					
 					return path;
 				}
 			}
