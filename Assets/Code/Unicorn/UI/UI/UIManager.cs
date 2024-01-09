@@ -72,7 +72,8 @@ namespace Unicorn.UI
         }
 
         /// <summary>
-        /// 按指定windowType关闭一个window。如果被关闭的window是前台窗体，则它后面的那个window会收到OnActivated()事件
+        /// 1. 按指定windowType关闭一个window。如果被关闭的window是前台窗体，则它后面的那个window会收到OnActivated()事件.
+        /// 2. 调用CloseWindow()后, 并不意味着这个窗体立即销毁了, 需要等待关闭的状态机流程执行完成
         /// </summary>
         /// <param name="windowType"></param>
         public void CloseWindow(Type windowType)
