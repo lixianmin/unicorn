@@ -26,8 +26,7 @@ namespace Unicorn.UI
             {
                 _gameObject.SetActive(true);
                 _image.color = new Color(0, 0, 0, 0);
-                
-                _transform.SetAsLastSibling();
+
                 if (_discolorTime > 0)
                 {
                     _discolorRoutine = _CoDelayedDiscolor();
@@ -68,36 +67,48 @@ namespace Unicorn.UI
             _image.color = new Color(0, 0, 0, 0.506f);
             _discolorRoutine = null;
         }
-        
+
         private void _EnsureCreateGameObject()
         {
             if (_gameObject is not null)
             {
                 return;
             }
+
+            var go = new GameObject("loading_mask");
+            _AddCanvas(go);
+            _AddImage(go);
             
-            var goLoadingMask = new GameObject("LoadingMask");
-            var image = goLoadingMask.AddComponent<Image>();
-            image.color = new Color(0, 0, 0, 0);
+            _gameObject = go;
+        }
 
-            const int bigEnoughScale = 500;
-            var transform = goLoadingMask.transform;
-            transform.localScale = new Vector3(bigEnoughScale, bigEnoughScale, bigEnoughScale);
-
+        private void _AddCanvas(GameObject go)
+        {
+            var canvas = go.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            
+            // 这个是能否接收到mouse点击的关键
+            go.AddComponent<GraphicRaycaster>();
+            
+            // 设置父节点为UIRoot
             var parent = UIManager.It.GetUIRoot();
-            transform.SetParent(parent, false);
+            go.transform.SetParent(parent, false);
+        }
 
-            _gameObject = goLoadingMask;
-            _transform = transform;
+        private void _AddImage(GameObject go)
+        {
+            var image = go.AddComponent<Image>();
+            image.color = new Color(0, 0, 0, 0);
+            image.raycastTarget = true;
+
             _image = image;
         }
 
         private GameObject _gameObject;
-        private Transform _transform;
         private Image _image;
 
         private IEnumerator _discolorRoutine;
-        private float _discolorTime;
+        private readonly float _discolorTime;
         private int _openCount;
     }
 }

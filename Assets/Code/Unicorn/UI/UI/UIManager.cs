@@ -290,7 +290,7 @@ namespace Unicorn.UI
 
         internal void _ActivateWindow(UIWindowBase targetWindow)
         {
-            AssertTools.IsNotNull(targetWindow);
+            // AssertTools.IsNotNull(targetWindow);
             _version++;
 
             targetWindow._SetSortingOrder((int)targetWindow.GetRenderQueue() + _maxZOrder++);
@@ -399,7 +399,7 @@ namespace Unicorn.UI
             public int version;
         }
 
-        private UIWindowBase[] _foregroundWindows = new UIWindowBase[5]; // 第0个位置必然一直是null
+        private readonly UIWindowBase[] _foregroundWindows = new UIWindowBase[5]; // 第0个位置必然一直是null
         private Transform _uiRoot;
         private Camera _uiCamera;   // 用于canvas.renderMode = ScreenSpaceCamera
     }
