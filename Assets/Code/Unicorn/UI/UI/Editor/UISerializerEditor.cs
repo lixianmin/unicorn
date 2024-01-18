@@ -178,7 +178,7 @@ namespace Unicorn.UI
 
         private static void _CollectWidgetFromCode(Transform root, IList<UISerializer.WidgetData> dataList)
         {
-            var prefabName = root.name + ".prefab";
+            var prefabName = root.name + ".prefab"; // 防止有些UI的名字有部分重复的文字, 比如uibag与uibag_opener
             var window = _SearchWindow(prefabName);
             var layouts = _GetLayouts(window);
             if (layouts.Count == 0)
