@@ -178,7 +178,8 @@ namespace Unicorn.UI
 
         private static void _CollectWidgetFromCode(Transform root, IList<UISerializer.WidgetData> dataList)
         {
-            var window = _SearchWindow(root.name);
+            var prefabName = root.name + ".prefab";
+            var window = _SearchWindow(prefabName);
             var layouts = _GetLayouts(window);
             if (layouts.Count == 0)
             {
