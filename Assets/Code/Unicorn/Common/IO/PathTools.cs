@@ -38,7 +38,8 @@ namespace Unicorn
                     return EditorResourceRoot + "/windows64";
                 default:
                 {
-                    var message = $"Unsupported buildTarget found: {targetPlatform}, please change the 'Platform' in 'Build Settings'";
+                    var message =
+                        $"Unsupported buildTarget found: {targetPlatform}, please change the 'Platform' in 'Build Settings'";
                     throw new InvalidDataException(message);
                 }
             }
@@ -354,6 +355,32 @@ namespace Unicorn
                 }
 
                 return _projectPath;
+            }
+        }
+
+        private static string _projectName;
+
+        public static string ProjectName
+        {
+            get
+            {
+                if (_projectName == null)
+                {
+                    var dataPath = Application.dataPath;
+                    const string tail = "Assets";
+                    var startIndex = dataPath.Length - tail.Length - 2;
+                    for (var i = startIndex; i >= 0; i--)
+                    {
+                        var c = dataPath[i];
+                        if (c is '/' or '\\')
+                        {
+                            _projectName = dataPath.Substring(i + 1, startIndex - i);
+                            break;
+                        }
+                    }
+                }
+
+                return _projectName;
             }
         }
 

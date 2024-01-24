@@ -16,7 +16,7 @@ namespace Unicorn
         {
             // 这些代码不能在MbGame这个MonoBehaviour的构造方法中调用
             // isBigMemory = SystemInfo.systemMemorySize > 1024 + 512;
-            
+
             _InitIsReleaseMode();
         }
 
@@ -24,7 +24,8 @@ namespace Unicorn
         {
             if (Application.isEditor)
             {
-                var enabled = PlayerPrefs.GetInt("release.mode.enabled", 0);
+                var key = PathTools.ProjectName + ".release.mode.enabled";
+                var enabled = PlayerPrefs.GetInt(key, 0);
                 isReleaseMode = enabled == 1;
             }
             else

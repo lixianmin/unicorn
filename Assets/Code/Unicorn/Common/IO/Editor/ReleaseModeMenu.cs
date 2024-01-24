@@ -19,7 +19,8 @@ namespace Unicorn.Menus
             Menu.SetChecked(menuName, os.isReleaseMode);
 
             // isReleaseMode在游戏开始运行的时刻, 会被reset为false
-            PlayerPrefs.SetInt("release.mode.enabled", os.isReleaseMode ? 1 : 0);
+            var key = PathTools.ProjectName + ".release.mode.enabled";
+            PlayerPrefs.SetInt(key, os.isReleaseMode ? 1 : 0);
         }
 
         private const string menuName = "*Tools/Release Mode";
