@@ -24,6 +24,7 @@ namespace Unicorn
         {
             if (Application.isEditor)
             {
+                // 存储isReleaseMode的时候, 带上ProjectName, 防止同时开多个unity3d项目的时候冲突
                 var key = PathTools.ProjectName + ".release.mode.enabled";
                 var enabled = PlayerPrefs.GetInt(key, 0);
                 isReleaseMode = enabled == 1;
