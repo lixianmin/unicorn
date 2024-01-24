@@ -61,14 +61,6 @@ namespace Unicorn
             }
         }
 
-        public static bool isEqual(float a, float b)
-        {
-            const float eps = 0.000001f;
-
-            var delta = a - b;
-            return delta is < eps and > -eps;
-        }
-
         public static void InternalSetIsReleaseMode(bool b)
         {
             isReleaseMode = b;

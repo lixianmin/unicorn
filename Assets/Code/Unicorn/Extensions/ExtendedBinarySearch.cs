@@ -67,7 +67,7 @@ namespace Unicorn
                 }
             }
 
-            if (j == count || !os.isEqual(extract(list [j]), key))
+            if (j == count || !key.IsEqual(extract(list [j])))
             {
                 j = ~j;
             }
@@ -129,7 +129,7 @@ namespace Unicorn
                 }
             }
 
-            if (j == count || !os.isEqual(extract(list [j]), key))
+            if (j == count || !key.IsEqual(extract(list [j])))
             {
                 j = ~j;
             }
