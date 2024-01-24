@@ -108,7 +108,7 @@ namespace Unicorn
             return rawBundlePath;
         }
 
-        [System.Obsolete("use new version ExtractLocalPath()")]
+        [Obsolete("use new version ExtractLocalPath()")]
         public static string ExtractLocalPath(string localPathWithDigest)
         {
             var isExtracted = ExtractLocalPath(localPathWithDigest, out var localPath);
@@ -339,10 +339,7 @@ namespace Unicorn
             }
         }
 
-        public static string DefaultBaseUrl
-        {
-            get { return FileProtocolHead + DefaultBasePath; }
-        }
+        public static string DefaultBaseUrl => FileProtocolHead + DefaultBasePath;
 
         private static string _projectPath;
 
@@ -353,7 +350,7 @@ namespace Unicorn
                 if (null == _projectPath)
                 {
                     var dataPath = Application.dataPath;
-                    _projectPath = dataPath.Substring(0, dataPath.Length - 7);
+                    _projectPath = dataPath[..^7];
                 }
 
                 return _projectPath;

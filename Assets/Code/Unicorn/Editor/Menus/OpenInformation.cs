@@ -31,20 +31,7 @@ namespace Unicorn.Menus
                 Logo.Warn("To be implemented.");
             }
         }
-
-//		private void _OnSelectSceneGameObject (GameObject go)
-//		{
-//			var labels	= go.GetComponentsInChildren(NGUITypes.UILabel, true);
-//			var sprites = go.GetComponentsInChildren(NGUITypes.UISprite, true);
-//			var buttons = go.GetComponentsInChildren(NGUITypes.UIButton, true);
-//
-//			Logo.Warn("name={0} labels={1} sprites={2} buttons={3}"
-//			                          , go.name
-//			                          , labels.Length.ToString()
-//			                          , sprites.Length.ToString()
-//			                          , buttons.Length.ToString());
-//		}
-
+        
         private static void _OSX_Select()
         {
             foreach (var guid in Selection.assetGUIDs)
