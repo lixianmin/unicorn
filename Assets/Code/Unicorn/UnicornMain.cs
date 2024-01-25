@@ -2,7 +2,7 @@
 created:    2013-12-23
 author:     lixianmin
 
-1. Resources.UnloadUnusedAssets()這個方法不能在游戲過程中調用，只能寫在場景切換 
+1. Resources.UnloadUnusedAssets()這個方法不能在游戲過程中調用，只能寫在場景切換
 的時候，這個方法在iPad-mini2上會消耗80+ms，而在iPhone4s上會消耗180+ms
 
 2. The reason I remove OnTick event:
@@ -56,7 +56,7 @@ namespace Unicorn
                 , SystemInfo.systemMemorySize.ToString()
                 , SystemInfo.graphicsDeviceName
                 , SystemInfo.graphicsMemorySize.ToString()
-                , Constants.LogPath
+                , _GetLogPath()
                 , Application.dataPath
                 , Application.streamingAssetsPath
                 , persistentDataPath
@@ -99,11 +99,10 @@ namespace Unicorn
         {
             try
             {
-                var lastLogPath = Constants.LastLogPath;
-                var logPath = Constants.LogPath;
-
+                var logPath = _GetLogPath();
                 if (File.Exists(logPath))
                 {
+                    var lastLogPath = _GetLastLogPath();
                     FileTools.Overwrite(logPath, lastLogPath);
                 }
 
@@ -117,7 +116,7 @@ namespace Unicorn
                 Logo.Error("[UnicornMain._InitLogInfo()] ex={0}", ex);
             }
         }
-
+        
         /// <summary>
         /// 实际上就是Update()，之所以起名ExpensiveUpdate()，是为了让使用者郑重考虑是否启用这个可能会比较费的更新逻辑
         /// </summary>
@@ -125,7 +124,7 @@ namespace Unicorn
         {
             var time = Time.time;
             var deltaTime = Time.deltaTime;
-            
+
             Logo.ExpensiveUpdate();
             UpdateTools.ExpensiveUpdate(deltaTime);
             _UpdateLogs();
@@ -208,6 +207,30 @@ namespace Unicorn
                 _logWriter.Flush();
                 _logs.Clear();
             }
+        }
+        
+        /// <summary>
+        /// 无论是ice.client还是ice.art项目, persistentDataPath都是: C:/Users/user/AppData/LocalLow/ice/ice_client
+        /// </summary>
+        /// <returns></returns>
+        private static string _GetLogPath()
+        {
+            if (Application.isEditor)
+            {
+                return $"{Application.persistentDataPath}/{PathTools.ProjectName}.panda.log";
+            }
+
+            return Application.persistentDataPath + "/panda.log";
+        }
+
+        private static string _GetLastLogPath()
+        {
+            if (Application.isEditor)
+            {
+                return $"{Application.persistentDataPath}/{PathTools.ProjectName}.last_panda.log";
+            }
+
+            return Application.persistentDataPath + "/last_panda.log";
         }
 
         private static readonly ArrayList _logs = new();

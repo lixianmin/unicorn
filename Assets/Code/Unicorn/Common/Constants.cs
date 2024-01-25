@@ -13,9 +13,6 @@ namespace Unicorn
 {
     public static class Constants
     {
-        public static readonly string LogPath = Application.persistentDataPath + "/panda.log";
-        public static readonly string LastLogPath = Application.persistentDataPath + "/last-panda.log";
-        
         // 扩展名由.raw改为.bytes，目的是为了以TextAsset的方式加载，兼容Addressable加载流程
         public const string LocalMetadataPath = "metadata.bytes";
         public const string LocalIncrementMetadataPath = "metadata@.bytes";

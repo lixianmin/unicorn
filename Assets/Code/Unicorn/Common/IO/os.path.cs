@@ -32,7 +32,7 @@ namespace Unicorn
                     return path2;
                 }
 
-                var c = path1[path1.Length - 1];
+                var c = path1[^1];
                 if (!_IsRootChar(c))
                 {
                     return path1 + '/' + path2;
@@ -66,7 +66,7 @@ namespace Unicorn
                 }
                 catch (Exception)
                 {
-
+                    // ignored
                 }
 
                 return 0;
@@ -85,7 +85,7 @@ namespace Unicorn
                 }
                 catch (Exception)
                 {
-
+                    // ignored
                 }
 
                 return new DateTime();
@@ -104,7 +104,7 @@ namespace Unicorn
                 }
                 catch (Exception)
                 {
-
+                    // ignored
                 }
 
                 return new DateTime();
@@ -125,7 +125,7 @@ namespace Unicorn
                 if (null != paths)
                 {
                     var count = paths.Count;
-                    for (int i = 0; i < count; ++i)
+                    for (var i = 0; i < count; ++i)
                     {
                         paths[i] = normpath(paths[i]);
                     }
