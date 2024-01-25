@@ -78,6 +78,12 @@ namespace Unicorn.Web
                 return;
             }
 
+            // 会报错: Trying to set shader on a Material Variant.
+            if (material.isVariant)
+            {
+                return;
+            }
+            
             var shader = material.shader;
             if (shader == null)
             {
