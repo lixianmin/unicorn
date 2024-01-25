@@ -53,7 +53,7 @@ namespace Unicorn.Web
             _webItem ??= node;
         }
 
-        protected override void _DoDispose(bool isManualDisposing)
+        protected override void _DoDispose(int flags)
         {
             var allowDestroyingAssets = Application.isEditor;
             UnityEngine.Object.DestroyImmediate(_aidScript, allowDestroyingAssets);

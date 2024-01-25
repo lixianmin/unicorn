@@ -43,7 +43,7 @@ namespace Clients.Web
             CallbackTools.Handle(ref handler, this, string.Empty);
         }
 
-        protected override void _DoDispose(bool isManualDisposing)
+        protected override void _DoDispose(int flags)
         {
             _loadHandle.Dispose();
             _coroutineItem?.Kill();

@@ -41,7 +41,7 @@ namespace Unicorn
 					for (var i = 0; i < count; i++)
 					{
 						var obj = _tempItems[i] as IDisposable;
-						obj.Dispose();
+						obj?.Dispose();
 					}
 					
 					_tempItems.Clear();
@@ -49,8 +49,8 @@ namespace Unicorn
 			}
 		}
 
-		private static readonly object _locker = new object();
-		private static readonly ArrayList _receivedItems = new ArrayList();
-		private static readonly ArrayList _tempItems = new ArrayList();
+		private static readonly object _locker = new();
+		private static readonly ArrayList _receivedItems = new();
+		private static readonly ArrayList _tempItems = new();
 	}
 }

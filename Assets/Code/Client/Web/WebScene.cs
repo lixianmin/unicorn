@@ -64,7 +64,7 @@ namespace Clients.Web
             CallbackTools.Handle(ref handler, this, string.Empty);
         }
 
-        protected override void _DoDispose(bool isManualDisposing)
+        protected override void _DoDispose(int flags)
         {
             Logo.Info($"[_DoDispose()] _loadHandle.IsValid()={_loadHandle.IsValid} , Key={Key}");
             if (_loadHandle.IsValid)
