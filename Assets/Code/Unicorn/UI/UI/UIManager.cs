@@ -98,7 +98,7 @@ namespace Unicorn.UI
             var item = _IndexWindow(windowType);
             return item.window;
         }
-        
+
         public IEnumerable<UIWindowBase> EnumerateWindows()
         {
             return _windowsZOrder;
@@ -108,6 +108,9 @@ namespace Unicorn.UI
         {
             var snapshot = _TakeSnapshot();
             var windows = snapshot.windows;
+
+            _CheckUICameraChanged(windows);
+
             var count = windows.Count;
             for (var i = 0; i < count; i++)
             {
@@ -115,6 +118,43 @@ namespace Unicorn.UI
                 if (window.GetFetus().isLoaded)
                 {
                     window.InnerSlowUpdate(deltaTime);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 在切换场景的时候UICamera可能会重建, 这会导致原先的ui中对UICamera的引用消失
+        /// </summary>
+        /// <param name="windows"></param>
+        private void _CheckUICameraChanged(List<UIWindowBase> windows)
+        {
+            var lastCamera = _uiCamera;
+            if (lastCamera != null)
+            {
+                return;
+            }
+
+            var nextCamera = GetUICamera();
+            if (nextCamera == null)
+            {
+                return;
+            }
+
+            var position = nextCamera.transform.position;
+            if (position != Vector3.zero)
+            {
+                Logo.Warn($"UICamera is now at position {position}, it must be at (0, 0, 0)");
+            }
+
+            var count = windows.Count;
+            for (var i = 0; i < count; i++)
+            {
+                var window = windows[i];
+                var canvas = window.GetCanvas();
+                if (canvas != null)
+                {
+                    var is2D = canvas.renderMode != RenderMode.WorldSpace;
+                    canvas.worldCamera = is2D ? nextCamera : Camera.main;
                 }
             }
         }
@@ -129,7 +169,7 @@ namespace Unicorn.UI
                 var window = windows[i];
                 var fetus = window.GetFetus();
                 fetus.ExpensiveUpdate(deltaTime);
-                
+
                 if (fetus.isLoaded)
                 {
                     var updater = window as IExpensiveUpdater;
@@ -346,7 +386,7 @@ namespace Unicorn.UI
             // 保证切换场景时UIRoot不会被莫名其妙的销毁
             if (Application.isPlaying)
             {
-                UnityEngine.Object.DontDestroyOnLoad(goRoot);
+                Object.DontDestroyOnLoad(goRoot);
             }
 
             _uiRoot = goRoot.transform;
@@ -363,13 +403,15 @@ namespace Unicorn.UI
                     Logo.Error("Can not find UICamera");
                     return null;
                 }
-                
+
                 _uiCamera = gameObject.GetComponent<Camera>();
                 // 原设计中, UICamera放在Camera节点下 (Main Camera, CM vcam1等)
                 // 但, 由于BehaviorDesigner镜头动画的需要, 每个场景都需要单独配置自己的Main Camera, 所以整个Camera节点也转移到了各场景
                 // 但, 这带来的问题是: UICamera每个场景也有了多个, 这导致已经设置的UICamera的ui在切换场景后对UICamera的引用消失了
-                // 所以, 决定把UICamera单独摘出来, 并且设置为 DontDestroyOnLoad()
-                Object.DontDestroyOnLoad(gameObject);
+                // ~~所以, 决定把UICamera单独摘出来, 并且设置为 DontDestroyOnLoad()~~
+                //
+                // 上面这个方案不行, 因为MainCamera上面要设置Stack, 只能是在同场景中设置. 改为在SlowUpdate()中搞一搞
+                // Object.DontDestroyOnLoad(gameObject);
             }
 
             return _uiCamera;
@@ -407,6 +449,6 @@ namespace Unicorn.UI
 
         private readonly UIWindowBase[] _foregroundWindows = new UIWindowBase[5]; // 第0个位置必然一直是null
         private Transform _uiRoot;
-        private Camera _uiCamera;   // 用于canvas.renderMode = ScreenSpaceCamera
+        private Camera _uiCamera; // 用于canvas.renderMode = ScreenSpaceCamera
     }
 }
