@@ -24,6 +24,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Unicorn.UI
 {
@@ -364,6 +365,11 @@ namespace Unicorn.UI
                 }
                 
                 _uiCamera = gameObject.GetComponent<Camera>();
+                // 原设计中, UICamera放在Camera节点下 (Main Camera, CM vcam1等)
+                // 但, 由于BehaviorDesigner镜头动画的需要, 每个场景都需要单独配置自己的Main Camera, 所以整个Camera节点也转移到了各场景
+                // 但, 这带来的问题是: UICamera每个场景也有了多个, 这导致已经设置的UICamera的ui在切换场景后对UICamera的引用消失了
+                // 所以, 决定把UICamera单独摘出来, 并且设置为 DontDestroyOnLoad()
+                Object.DontDestroyOnLoad(gameObject);
             }
 
             return _uiCamera;
