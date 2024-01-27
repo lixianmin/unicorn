@@ -71,9 +71,9 @@ namespace Unicorn.UI
 
             // copy其viewport的sizeDelta到content
             var size = rectAncestor.sizeDelta;
-            if (size.IsZero())
+            if (size.x.IsZero() || size.y.IsZero())
             {
-                Logo.Warn($"size is zero, rectAncestor={rectAncestor}, root={_contentTransform.root}");
+                Logo.Warn($"size={size}, rectAncestor={rectAncestor}, root={_contentTransform.root}");
                 return;
             }
 
