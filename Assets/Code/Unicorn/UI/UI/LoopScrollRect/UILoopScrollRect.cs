@@ -63,15 +63,24 @@ namespace Unicorn.UI
                 rectAncestor = rectAncestor.parent as RectTransform;
             }
 
-            if (rectAncestor != null)
+            if (rectAncestor == null)
             {
-                // copy其viewport的sizeDelta到content
-                var size = rectAncestor.sizeDelta;
-                rectContent.sizeDelta = size;
-
-                // 初始化_viewportArea
-                _viewportArea = new Rect(0, -size.y, size.x, size.y);
+                Logo.Warn($"Can not find rectAncestor, root={_contentTransform.root}");
+                return;
             }
+
+            // copy其viewport的sizeDelta到content
+            var size = rectAncestor.sizeDelta;
+            if (size.IsZero())
+            {
+                Logo.Warn($"size is zero, rectAncestor={rectAncestor}, root={_contentTransform.root}");
+                return;
+            }
+
+            rectContent.sizeDelta = size;
+
+            // 初始化_viewportArea
+            _viewportArea = new Rect(0, -size.y, size.x, size.y);
         }
 
         private void _InitRank()
@@ -239,7 +248,7 @@ namespace Unicorn.UI
                 {
                     Destroy(rect);
                 }
-                
+
                 _goPool.Clear();
             }
         }
@@ -251,12 +260,12 @@ namespace Unicorn.UI
                 cell.SetVisible(true);
                 var rect = _SpawnCellTransform(cell);
                 cell.SetTransform(rect);
-                
+
                 var widget = cell.GetWidget();
                 widget?.OnVisibleChanged(cell);
             }
         }
-        
+
         private void _HideCell(Cell cell)
         {
             if (cell != null && cell.IsVisible())
