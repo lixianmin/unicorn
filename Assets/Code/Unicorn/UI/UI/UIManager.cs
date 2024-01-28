@@ -108,17 +108,21 @@ namespace Unicorn.UI
         {
             var snapshot = _TakeSnapshot();
             var windows = snapshot.windows;
-
-            _CheckUICameraChanged(windows);
-
             var count = windows.Count;
-            for (var i = 0; i < count; i++)
+
+            // 有些场景并没有UI, 也找不到UICamera, 如果任由_CheckUICameraChanged()调用, 会大量报错
+            if (count > 0)
             {
-                var window = windows[i];
-                if (window.GetFetus().isLoaded)
+                _CheckUICameraChanged(windows);
+                
+                for (var i = 0; i < count; i++)
                 {
-                    window.InnerSlowUpdate(deltaTime);
-                }
+                    var window = windows[i];
+                    if (window.GetFetus().isLoaded)
+                    {
+                        window.InnerSlowUpdate(deltaTime);
+                    }
+                }    
             }
         }
 
