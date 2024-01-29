@@ -33,7 +33,7 @@ namespace Metadata
             var creator = MetaFactory.GetMetaCreator(typeName);
             if (null != creator)
             {
-                metadata = metadata ?? creator.Create();
+                metadata ??= creator.Create();
             }
 
 			if (null != metadata)
@@ -43,7 +43,7 @@ namespace Metadata
 				var fields = TypeTools.GetSortedFields(type, flags);
 
 				var fieldsCount = fields.Length;
-                var layout = creator.GetLayout();
+                var layout = creator!.GetLayout();
 
                 try
                 {
@@ -67,6 +67,20 @@ namespace Metadata
 
         private static object _LoadObject (IOctetsReader reader, Type fieldType, BasicType basicType)
 		{
+            // 如果想在metadata中使用enum, 则必须要为每一个enum的成员赋一个整数值, 否则会报错: 
+            //  metadataType=Metadata.AdornTemplate, metadata=Metadata.AdornTemplate, ex=System.ArgumentException: Type provided must be an Enum.
+            // Parameter name: enumType at System.Enum.ToObject (System.Type enumType, System.Int32 value) [0x00026] in <787acc3c9a4c471ba7d971300105af24>:0 
+            // at Metadata.MetaTools._LoadObject (Unicorn.IO.IOctetsReader reader, System.Type fieldType, Metadata.BasicType basicType) [0x00118] in <3d17874701374e99b4f63583653f742c>:0 
+
+            // 比如:
+            // public enum AdornType
+            // {
+            //     None = 0,
+            //     Lite = 1, 
+            //     Shelf = 2,
+            //     House = 4,
+            // }
+            
 			switch (basicType)
 			{
 			case BasicType.Int32:
@@ -111,9 +125,9 @@ namespace Metadata
                 return LocaleTextManager.It.ReadLocaleText(reader);
             case BasicType.VInt3:
                 {
-                    int x = reader.ReadInt32();
-                    int y = reader.ReadInt32();
-                    int z = reader.ReadInt32();
+                    var x = reader.ReadInt32();
+                    var y = reader.ReadInt32();
+                    var z = reader.ReadInt32();
                     return new VInt3(x, y, z);
                 }
             case BasicType.Int32_t:
