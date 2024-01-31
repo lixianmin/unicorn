@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2017-07-27
 author:     lixianmin
 
@@ -21,16 +20,21 @@ namespace Unicorn
 
         public T Get()
         {
-            T item;
+            T item = default;
+            var isOk = false;
 
-            if (_cache.Count > 0)
+            lock (_locker)
             {
-                item = _cache.PopBack() as T;
+                if (_cache.Count > 0)
+                {
+                    item = _cache.PopBack() as T;
+                    isOk = true;
+                }
             }
-            else
+ 
+            if (!isOk)
             {
                 item = new T();
-                CountAll++;
             }
 
             _spawnAction?.Invoke(item);
@@ -44,21 +48,17 @@ namespace Unicorn
                 return;
             }
 
-            if (_cache.Count > 0 && ReferenceEquals(_cache.Back(), item))
-            {
-                Logo.Error("Internal error. Trying to destroy object that is already released to pool.");
-                return;
-            }
-
             _recycleAction?.Invoke(item);
-            _cache.PushBack(item);
+
+            lock (_locker)
+            {
+                _cache.PushBack(item);
+            }
         }
 
-        internal int CountAll { get; private set; }
-        internal int CountActive => CountAll - CountInactive;
-        internal int CountInactive => _cache.Count;
-
+        private readonly object _locker = new();
         private readonly Deque _cache = new();
+
         private readonly Action<T> _spawnAction;
         private readonly Action<T> _recycleAction;
 
