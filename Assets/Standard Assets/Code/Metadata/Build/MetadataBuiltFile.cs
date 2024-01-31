@@ -142,7 +142,7 @@ namespace Metadata.Build
             var newEntry = EntryItem.Create(xmlPath);
             if (null == newEntry)
             {
-                Logo.Error("newEntry=null, xmlPath={0}", xmlPath);
+                Debug.LogWarning($"newEntry=null, xmlPath={xmlPath}");
                 return;
             }
 
@@ -217,7 +217,7 @@ namespace Metadata.Build
             }
             else
             {
-                Logo.Error("rawMetadata=null, this xml file may not be used any more, xmlPath={0}", xmlPath);
+                Debug.LogWarning($"rawMetadata=null, this xml file may not be used any more, xmlPath={xmlPath}");
             }
         }
 
