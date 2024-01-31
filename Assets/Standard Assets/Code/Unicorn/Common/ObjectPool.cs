@@ -23,7 +23,7 @@ namespace Unicorn
             T item = default;
             var isOk = false;
 
-            lock (_locker)
+            // lock (_locker)
             {
                 if (_cache.Count > 0)
                 {
@@ -50,13 +50,13 @@ namespace Unicorn
 
             _recycleAction?.Invoke(item);
 
-            lock (_locker)
+            // lock (_locker)
             {
                 _cache.PushBack(item);
             }
         }
 
-        private readonly object _locker = new();
+        // private readonly object _locker = new();
         private readonly Deque _cache = new();
 
         private readonly Action<T> _spawnAction;
