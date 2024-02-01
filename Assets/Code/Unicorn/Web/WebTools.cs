@@ -5,6 +5,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,13 +21,7 @@ namespace Unicorn.Web
             }
 
             var renderers = goAsset.GetComponentsInChildren<Renderer>(true);
-            if (renderers != null)
-            {
-                foreach (var renderer in renderers)
-                {
-                    _ReloadRendererShader(renderer);
-                }
-            }
+            CoroutineManager.It.StartCoroutine(_CoReloadRenderersShaders(renderers));
 
             // UI相关, 一定是界面上的, 而不是3D场景里的
             var graphics = goAsset.GetComponentsInChildren<Graphic>(true);
@@ -51,13 +46,31 @@ namespace Unicorn.Web
             }
         }
 
+        private static IEnumerator _CoReloadRenderersShaders(Renderer[] renderers)
+        {
+            if (renderers != null)
+            {
+                // renderers.Length可能相当大, 比如3w的样子, 所以需要分帧执行一下
+                for (var i = 0; i < renderers.Length; i++)
+                {
+                    if (i % 5000 == 0)
+                    {
+                        yield return null;
+                    }
+
+                    var renderer = renderers[i];
+                    _ReloadRendererShader(renderer);
+                }
+            }
+        }
+
         private static void _ReloadRendererShader(Renderer renderer)
         {
             if (renderer == null)
             {
                 return;
             }
-            
+
             var sharedMaterials = renderer.sharedMaterials;
             if (sharedMaterials == null)
             {
@@ -83,7 +96,7 @@ namespace Unicorn.Web
             {
                 return;
             }
-            
+
             var shader = material.shader;
             if (shader == null)
             {
