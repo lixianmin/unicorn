@@ -1,74 +1,93 @@
-﻿
-/*********************************************************************
+﻿/*********************************************************************
 created:    2014-01-06
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
  *********************************************************************/
+
 using System;
 using System.Collections.Generic;
 
 namespace Unicorn
 {
-    //[Obfuscators.ObfuscatorIgnore]
     public static class ExtendedSort
     {
-        public static void InsertSortEx<T> (this T[] list, Comparison<T> comparison)
+        public static void InsertSort<T>(this T[] list, Comparison<T> comparison)
+        {
+            list.InsertSort(0, list?.Length ?? 0, comparison);
+        }
+
+        public static void InsertSort<T>(this T[] list, int index, int length, Comparison<T> comparison)
         {
             if (null == list)
             {
-                throw new ArgumentNullException("list is null");
+                throw new ArgumentNullException(nameof(list));
             }
 
             if (null == comparison)
             {
-                throw new ArgumentNullException("comparison is null");
+                throw new ArgumentNullException(nameof(comparison));
             }
 
-            int count = list.Length;
-            for (int i= 1; i< count; ++i)
+            _ClampIndexAndLength(ref index, ref length, list.Length);
+            var end = index + length;
+
+            for (var i = index + 1; i < end; ++i)
             {
-                if (comparison(list [i], list [i - 1]) < 0)
+                if (comparison(list[i], list[i - 1]) < 0)
                 {
-                    T temp = list [i];
-                    int j = i;
-                    while (j > 0 && comparison(temp , list[j-1]) < 0)
+                    var temp = list[i];
+                    var j = i;
+                    while (j > 0 && comparison(temp, list[j - 1]) < 0)
                     {
-                        list [j] = list [j - 1];
+                        list[j] = list[j - 1];
                         --j;
                     }
-                    
-                    list [j] = temp;
+
+                    list[j] = temp;
                 }
             }
         }
-        
-        public static void InsertSortEx<T> (this IList<T> list, Comparison<T> comparison)
+
+        private static void _ClampIndexAndLength(ref int index, ref int length, int totalSize)
+        {
+            index = Math.Clamp(index, 0, totalSize);
+            length = Math.Clamp(length, 0, totalSize - index);
+        }
+
+        public static void InsertSort<T>(this IList<T> list, Comparison<T> comparison)
+        {
+            list.InsertSort(0, list?.Count ?? 0, comparison);
+        }
+
+        public static void InsertSort<T>(this IList<T> list, int index, int length, Comparison<T> comparison)
         {
             if (null == list)
             {
-                throw new ArgumentNullException("list is null");
+                throw new ArgumentNullException(nameof(list));
             }
 
             if (null == comparison)
             {
-                throw new ArgumentNullException("comparison is null");
+                throw new ArgumentNullException(nameof(comparison));
             }
 
-            int count = list.Count;
-            for (int i= 1; i< count; ++i)
+            _ClampIndexAndLength(ref index, ref length, list.Count);
+            var end = index + length;
+
+            for (var i = index + 1; i < end; ++i)
             {
-                if (comparison(list [i], list [i - 1]) < 0)
+                if (comparison(list[i], list[i - 1]) < 0)
                 {
-                    T temp = list [i];
-                    int j = i;
-                    while (j > 0 && comparison(temp , list[j-1]) < 0)
+                    var temp = list[i];
+                    var j = i;
+                    while (j > 0 && comparison(temp, list[j - 1]) < 0)
                     {
-                        list [j] = list [j - 1];
+                        list[j] = list[j - 1];
                         --j;
                     }
-                    
-                    list [j] = temp;
+
+                    list[j] = temp;
                 }
             }
         }

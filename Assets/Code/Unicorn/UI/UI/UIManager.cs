@@ -342,7 +342,7 @@ namespace Unicorn.UI
 
             // 本方法中必须调整zorder, 原因是很多时候我们并不关闭窗口, 而是只不断的activate各个窗口, 这时没有load过程
             // 但是, 只在这里sort也许是不够的, 原因是如果存在加载动画, 我们会看到新窗口的动画是在background执行的
-            _windowsZOrder.InsertSortEx((a, b) => a._sortingOrder - b._sortingOrder);
+            _windowsZOrder.InsertSort((a, b) => a._sortingOrder - b._sortingOrder);
 
             // Logo.Info($"targetWindow={targetWindow.GetType()}, windowsZOrder={",".JoinEx(_windowsZOrder, item => item._GetSortingOrder().ToString())}, targetOrder={targetWindow._GetSortingOrder()}");
         }
