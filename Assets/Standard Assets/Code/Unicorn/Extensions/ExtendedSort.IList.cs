@@ -6,25 +6,26 @@ Copyright (C) - All Rights Reserved
  *********************************************************************/
 
 using System;
+using System.Collections.Generic;
 
 namespace Unicorn
 {
-    public static partial class ExtendedSort
+    static partial class ExtendedSort
     {
-        public static void Sort<T>(this T[] list, Comparison<T> comparison)
+        public static void Sort<T>(this IList<T> list, Comparison<T> comparison)
         {
             _CheckArguments(list, comparison);
-            _QuickSort(list, 0, list.Length, comparison);
+            _QuickSort(list, 0, list.Count, comparison);
         }
 
-        public static void Sort<T>(this T[] list, int index, int length, Comparison<T> comparison)
+        public static void Sort<T>(this IList<T> list, int index, int length, Comparison<T> comparison)
         {
             _CheckArguments(list, comparison);
-            _ClampIndexAndLength(ref index, ref length, list.Length);
+            _ClampIndexAndLength(ref index, ref length, list.Count);
             _QuickSort(list, index, length, comparison);
         }
 
-        private static void _QuickSort<T>(T[] list, int index, int length, Comparison<T> comparison)
+        private static void _QuickSort<T>(IList<T> list, int index, int length, Comparison<T> comparison)
         {
             while (length > 1)
             {
@@ -69,20 +70,20 @@ namespace Unicorn
             }
         }
 
-        public static void InsertSort<T>(this T[] list, Comparison<T> comparison)
+        public static void InsertSort<T>(this IList<T> list, Comparison<T> comparison)
         {
             _CheckArguments(list, comparison);
-            _InsertSort(list, 0, list.Length, comparison);
+            _InsertSort(list, 0, list.Count, comparison);
         }
 
-        public static void InsertSort<T>(this T[] list, int index, int length, Comparison<T> comparison)
+        public static void InsertSort<T>(this IList<T> list, int index, int length, Comparison<T> comparison)
         {
             _CheckArguments(list, comparison);
-            _ClampIndexAndLength(ref index, ref length, list.Length);
+            _ClampIndexAndLength(ref index, ref length, list.Count);
             _InsertSort(list, index, length, comparison);
         }
 
-        private static void _InsertSort<T>(T[] list, int index, int length, Comparison<T> comparison)
+        private static void _InsertSort<T>(IList<T> list, int index, int length, Comparison<T> comparison)
         {
             var end = index + length;
             for (var i = index + 1; i < end; ++i)
@@ -100,25 +101,6 @@ namespace Unicorn
                     list[j] = temp;
                 }
             }
-        }
-
-        private static void _CheckArguments<T>(object list, Comparison<T> comparison)
-        {
-            if (null == list)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
-
-            if (null == comparison)
-            {
-                throw new ArgumentNullException(nameof(comparison));
-            }
-        }
-
-        private static void _ClampIndexAndLength(ref int index, ref int length, int totalSize)
-        {
-            index = Math.Clamp(index, 0, totalSize);
-            length = Math.Clamp(length, 0, totalSize - index);
         }
     }
 }
