@@ -2,8 +2,11 @@
 created:    2014-01-06
 author:     lixianmin
 
+ 1. Array.Sort(), 每帧有 gc alloc
+ 2. Array.Sort(), 带int index, int length参数的时候, 不支持Comparison<T>参数
+
 Copyright (C) - All Rights Reserved
- *********************************************************************/
+*********************************************************************/
 
 using System;
 
