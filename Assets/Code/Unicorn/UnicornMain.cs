@@ -47,8 +47,8 @@ namespace Unicorn
             var now = DateTime.Now.ToString("yyyy-M-d HH:mm ddd");
             Logo.Info(
                 "[UnicornMain.Init()]\n{0}\nplatform={1}\nos={2}\ndeviceModel={3}\nprocessorCount={4}\nsystemMemorySize={5}\ngraphicsDevice={6}\ngraphicsMemorySize={7}\n" +
-                "logPath={8}\ndataPath={9}\nstreamingAssetsPath={10}\npersistentDataPath={11}\nresolution={12}x{13}\nScreen.dpi={14}\nSystemInfo.supportsInstancing={15}\n" +
-                "SystemInfo.supportsComputeShaders={16}\n"
+                "logPath={8}\ndataPath={9}\nstreamingAssetsPath={10}\npersistentDataPath={11}\nresolution={12}x{13}\nScreen.dpi={14}\nsupportsInstancing={15}\n" +
+                "supportsComputeShaders={16}\n"
                 , now
                 , Application.platform.ToString()
                 , SystemInfo.operatingSystem
