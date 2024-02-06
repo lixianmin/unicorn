@@ -27,10 +27,10 @@ namespace Unicorn
             _idMainThread = Thread.CurrentThread.ManagedThreadId;
             Flags = LogoFlags.DetailedMessage;
 
-            // if (Application.isEditor)
-            // {
-            //     Flags |= LogoFlags.FlushOnWrite;
-            // }
+            if (os.isReleaseMode)
+            {
+                Flags |= LogoFlags.FlushOnWrite;
+            }
         }
 
         internal static void ExpensiveUpdate()
@@ -226,7 +226,7 @@ namespace Unicorn
         private static float _time;
         private static int _frameCount;
         private static int _lastFrameCount;
-        
+
         private static readonly StringBuilder _sbLogText = new(512);
         private static readonly StringBuilder _sbFormatter = new();
 
