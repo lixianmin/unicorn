@@ -38,10 +38,11 @@ namespace Unicorn
             _lastSlowUpdateTime = Time.time;
             _nextSlowUpdateTime = Time.time;
 
-            // force call static ctor of Console class
-            Logo.ExpensiveUpdate();
-            _InitLogInfo();
             os.Init();
+            
+            // init log flags, must be after os.Init()
+            Logo.Init();
+            _InitLogFile();
 
             var persistentDataPath = Application.persistentDataPath;
             var now = DateTime.Now.ToString("yyyy-M-d HH:mm ddd");
@@ -98,7 +99,7 @@ namespace Unicorn
             PlayerLoop.SetPlayerLoop(nextSystem);
         }
 
-        private static void _InitLogInfo()
+        private static void _InitLogFile()
         {
             try
             {
