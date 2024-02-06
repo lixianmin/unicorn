@@ -136,7 +136,7 @@ namespace Unicorn.Collections
 		{
 			if (_isKeyNullable && null == key)
 			{
-				throw new ArgumentNullException("key is null");
+				throw new ArgumentNullException(nameof(key));
 			}
 
 			return _BinarySearch(key);
@@ -231,8 +231,8 @@ namespace Unicorn.Collections
 				Array.Copy(_values, index + 1, _values, index, _size - index);
 			}
 
-			_keys[_size] = default(TKey);
-			_values[_size] = default(TValue);
+			_keys[_size] = default;
+			_values[_size] = default;
 			++_version;
 		}
 

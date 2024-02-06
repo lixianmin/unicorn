@@ -36,6 +36,23 @@ namespace Unicorn.Collections
             ArrayTools.AddItem(ref Items, ref Count, item);
         }
 
+        public void RemoveAt(int index)
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException("index is out of range.");
+            }
+
+            --Count;
+
+            if (index < Count)
+            {
+                Array.Copy(Items, index + 1, Items, index, Count - index);
+            }
+
+            Items[Count] = default;
+        }
+
         public void AddRange(Slice<T> others)
         {
             if (others is { Count: > 0 })
