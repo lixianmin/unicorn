@@ -27,7 +27,7 @@ namespace Unicorn
             _idMainThread = Thread.CurrentThread.ManagedThreadId;
             Flags = LogoFlags.DetailedMessage;
 
-            if (os.isReleaseMode)
+            if (!os.isReleaseMode)
             {
                 Flags |= LogoFlags.FlushOnWrite;
             }
