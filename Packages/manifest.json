@@ -1,13 +1,14 @@
 {
   "dependencies": {
-    "com.tuyoogame.yooasset": "2.0.3-preview",
+    "com.tuyoogame.yooasset": "2.1.1",
     "com.unity.ai.navigation": "1.1.5",
-    "com.unity.collab-proxy": "2.0.7",
+    "com.unity.collab-proxy": "2.1.0",
     "com.unity.feature.development": "1.0.1",
     "com.unity.ide.rider": "3.0.26",
-    "com.unity.render-pipelines.universal": "14.0.8",
+    "com.unity.mathematics": "1.2.6",
+    "com.unity.render-pipelines.universal": "14.0.9",
     "com.unity.test-framework": "1.1.33",
-    "com.unity.textmeshpro": "3.2.0-pre.6",
+    "com.unity.textmeshpro": "3.2.0-pre.7",
     "com.unity.timeline": "1.7.6",
     "com.unity.ugui": "1.0.0",
     "com.unity.modules.ai": "1.0.0",

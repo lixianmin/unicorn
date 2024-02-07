@@ -9,7 +9,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Unicorn
+namespace Unicorn.Rendering
 {
     public class RWStructuredBuffer<T> : StructuredBuffer
     {

@@ -6,11 +6,10 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
-using System.Collections.Generic;
 using Unicorn.Collections;
 using UnityEngine;
 
-namespace Unicorn
+namespace Unicorn.Rendering
 {
     public class InstanceItem
     {

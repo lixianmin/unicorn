@@ -11,7 +11,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using Unity.Collections;
 
-namespace Unicorn
+namespace Unicorn.Rendering
 {
     public class InstanceTools
     {

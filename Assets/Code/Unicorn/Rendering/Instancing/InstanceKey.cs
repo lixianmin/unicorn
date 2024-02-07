@@ -8,7 +8,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using UnityEngine;
 
-namespace Unicorn
+namespace Unicorn.Rendering
 {
     public struct InstanceKey : IEquatable<InstanceKey>
     {

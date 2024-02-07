@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Unicorn.Collections;
 using UnityEngine;
 
-namespace Unicorn
+namespace Unicorn.Rendering
 {
     public class RendererButler
     {
