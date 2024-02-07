@@ -17,8 +17,6 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 using Unicorn.IO;
-using Unicorn.Kit;
-using Unicorn.Rendering;
 using Unicorn.UI;
 using UnityEngine.LowLevel;
 
@@ -159,7 +157,7 @@ namespace Unicorn
         /// <param name="deltaTime">两帧之间的时间间隔，远大于Time.deltaTime</param>
         private static void _SlowUpdate(float deltaTime)
         {
-            _kitManager.SlowUpdate(deltaTime);
+            // _kitManager.SlowUpdate(deltaTime);
             _uiManager.SlowUpdate(deltaTime);
         }
 
@@ -242,7 +240,7 @@ namespace Unicorn
         private static readonly ArrayList _logs = new();
         private static readonly PartUpdateSystem _partUpdateSystem = new();
         private static readonly CoroutineManager _coroutineManager = CoroutineManager.It;
-        private static readonly KitManager _kitManager = KitManager.It;
+        // private static readonly KitManager _kitManager = KitManager.It;
         private static readonly UIManager _uiManager = UIManager.It;
         private static readonly InstanceManager _instanceManager = InstanceManager.It;
 

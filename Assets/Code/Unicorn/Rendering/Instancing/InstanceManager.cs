@@ -11,7 +11,7 @@ using Unicorn.Collections;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Unicorn.Rendering
+namespace Unicorn
 {
     public class InstanceManager
     {

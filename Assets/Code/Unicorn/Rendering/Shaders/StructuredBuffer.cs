@@ -8,7 +8,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using UnityEngine;
 
-namespace Unicorn.Rendering
+namespace Unicorn
 {
     public class StructuredBuffer : Disposable
     {
