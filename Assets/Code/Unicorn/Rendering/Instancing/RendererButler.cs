@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Unicorn.Rendering
 {
-    public class RendererButler
+    internal class RendererButler
     {
         public bool AddMeshRenderer(MeshRenderer renderer, Camera camera)
         {

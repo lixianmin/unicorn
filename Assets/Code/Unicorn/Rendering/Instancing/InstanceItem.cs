@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Unicorn.Rendering
 {
-    public class InstanceItem
+    internal class InstanceItem
     {
         private struct MeshData
         {

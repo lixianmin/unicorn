@@ -17,17 +17,15 @@ namespace Unicorn.Rendering
     {
         private InstanceManager()
         {
-            var thread = new Thread(_Run);
-            thread.Start();
         }
 
-        public void RefreshMeshRenderers()
+        public void RefreshRenderers()
         {
             _mainCamera = Camera.main;
             _butler.Clear();
             _SetDirty();
 
-            if (_mainCamera == null)
+            if (_mainCamera == null || !IsEnabled())
             {
                 return;
             }
@@ -40,32 +38,32 @@ namespace Unicorn.Rendering
             }
         }
 
-        public void AddMeshRenderer(MeshRenderer renderer)
+        public void AddRenderer(MeshRenderer renderer)
         {
-            if (_butler.AddMeshRenderer(renderer, _mainCamera))
+            if (IsEnabled() && _butler.AddMeshRenderer(renderer, _mainCamera))
             {
                 _SetDirty();
             }
         }
 
-        public void RemoveMeshRenderer(MeshRenderer renderer)
+        public void RemoveRenderer(MeshRenderer renderer)
         {
-            if (_butler.RemoveMeshRender(renderer))
+            if (IsEnabled() && _butler.RemoveMeshRender(renderer))
             {
                 _SetDirty();
             }
         }
 
-        public void ExpensiveUpdate()
+        internal void ExpensiveUpdate()
         {
-            if (_mainCamera != null)
+            if (IsEnabled() && _mainCamera != null)
             {
                 if (_isDirty)
                 {
                     _isDirty = false;
                     _RefreshItems();
                 }
-                
+
                 GeometryUtility.CalculateFrustumPlanes(_mainCamera, _frustumPlanes);
                 foreach (var item in _instanceItems)
                 {
@@ -82,7 +80,7 @@ namespace Unicorn.Rendering
 
             const int stepTick = 1000 / 30;
 
-            while (true)
+            while (IsEnabled())
             {
                 var nextTick = Environment.TickCount;
                 var sleepTime = stepTick - nextTick + lastTick;
@@ -120,7 +118,7 @@ namespace Unicorn.Rendering
         {
             _isDirty = true;
         }
-        
+
         private void _RefreshItems()
         {
             _instanceItems.Clear();
@@ -130,6 +128,32 @@ namespace Unicorn.Rendering
             {
                 _sharedItems.Clear();
                 _sharedItems.AddRange(_instanceItems);
+            }
+        }
+
+        public bool IsEnabled()
+        {
+            return Interlocked.Read(ref _isEnabled) == 1;
+        }
+
+        public void Enable(bool enable)
+        {
+            if (enable != IsEnabled())
+            {
+                if (enable)
+                {
+                    lock (_locker)
+                    {
+                        if (!IsEnabled())
+                        {
+                            var thread = new Thread(_Run);
+                            thread.Start();     
+                        }
+                    }
+                }
+                
+                var v = enable ? 1 : 0;
+                Interlocked.Exchange(ref _isEnabled, v);
             }
         }
 
@@ -144,8 +168,8 @@ namespace Unicorn.Rendering
         private readonly Plane[] _frustumPlanes = new Plane[FrustumPlaneNum];
         private Camera _mainCamera;
         private bool _isDirty;
-        
-        public bool IsEnabled;
+        private long _isEnabled;
+
         public static readonly InstanceManager It = new();
     }
 }

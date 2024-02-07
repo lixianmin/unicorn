@@ -18,6 +18,7 @@ using System.IO;
 using UnityEngine;
 using Unicorn.IO;
 using Unicorn.Kit;
+using Unicorn.Rendering;
 using Unicorn.UI;
 using UnityEngine.LowLevel;
 
@@ -135,9 +136,10 @@ namespace Unicorn
 
             _coroutineManager.ExpensiveUpdate();
             _partUpdateSystem.ExpensiveUpdate(deltaTime);
-            _kitManager.ExpensiveUpdate(deltaTime);
+            // _kitManager.ExpensiveUpdate(deltaTime);
             _uiManager.ExpensiveUpdate(deltaTime);
-
+            _instanceManager.ExpensiveUpdate();
+            
             DisposableRecycler.Update();
 
             // 慢速帧
@@ -242,6 +244,7 @@ namespace Unicorn
         private static readonly CoroutineManager _coroutineManager = CoroutineManager.It;
         private static readonly KitManager _kitManager = KitManager.It;
         private static readonly UIManager _uiManager = UIManager.It;
+        private static readonly InstanceManager _instanceManager = InstanceManager.It;
 
         private static StreamWriter _logWriter;
         private static string _lastLogString;

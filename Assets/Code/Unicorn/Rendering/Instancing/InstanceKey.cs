@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Unicorn.Rendering
 {
-    public struct InstanceKey : IEquatable<InstanceKey>
+    internal struct InstanceKey : IEquatable<InstanceKey>
     {
         public Mesh mesh;
 
