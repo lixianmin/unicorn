@@ -27,12 +27,12 @@ namespace Unicorn
                 // 存储isReleaseMode的时候, 带上ProjectName, 防止同时开多个unity3d项目的时候冲突
                 var key = PathTools.ProjectName + ".release.mode.enabled";
                 var enabled = PlayerPrefs.GetInt(key, 0);
-                isReleaseMode = enabled == 1;
+                IsReleaseMode = enabled == 1;
             }
             else
             {
                 // 非编辑器状态, 强制为true
-                isReleaseMode = true;
+                IsReleaseMode = true;
             }
         }
 
@@ -54,18 +54,9 @@ namespace Unicorn
             return Kernel.Walk(path, searchPattern);
         }
 
-        public static void dispose<T>(ref T obj) where T : class, System.IDisposable
-        {
-            if (null != obj)
-            {
-                obj.Dispose();
-                obj = null;
-            }
-        }
-
         public static void InternalSetIsReleaseMode(bool b)
         {
-            isReleaseMode = b;
+            IsReleaseMode = b;
         }
 
         // public static void swap<T>(ref T lhs, ref T rhs)
@@ -96,7 +87,7 @@ namespace Unicorn
         /// <summary>
         /// 在editor中, 有时候需要模拟在真机上的运行环境, 执行release版本后的代码流程
         /// </summary>
-        public static bool isReleaseMode { get; private set; }
+        public static bool IsReleaseMode { get; private set; }
 
         // public static bool isBigMemory { get; private set; }
 

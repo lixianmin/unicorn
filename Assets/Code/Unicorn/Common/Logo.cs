@@ -31,7 +31,7 @@ namespace Unicorn
         internal static void Init()
         {
             // 编辑器中, 启用每次输出log, 方便开发过程中调试
-            if (!os.isReleaseMode)
+            if (!os.IsReleaseMode)
             {
                 Flags |= LogoFlags.FlushOnWrite;
             }

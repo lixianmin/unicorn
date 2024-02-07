@@ -15,12 +15,12 @@ namespace Unicorn.Menus
         [MenuItem(menuName, false, 208)]
         private static void _Execute()
         {
-            os.InternalSetIsReleaseMode(!os.isReleaseMode);
-            Menu.SetChecked(menuName, os.isReleaseMode);
+            os.InternalSetIsReleaseMode(!os.IsReleaseMode);
+            Menu.SetChecked(menuName, os.IsReleaseMode);
 
             // isReleaseMode在游戏开始运行的时刻, 会被reset为false
             var key = PathTools.ProjectName + ".release.mode.enabled";
-            PlayerPrefs.SetInt(key, os.isReleaseMode ? 1 : 0);
+            PlayerPrefs.SetInt(key, os.IsReleaseMode ? 1 : 0);
         }
 
         private const string menuName = "*Tools/Release Mode";
