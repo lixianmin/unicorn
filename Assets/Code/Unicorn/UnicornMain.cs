@@ -38,7 +38,7 @@ namespace Unicorn
             _nextSlowUpdateTime = Time.time;
 
             os.Init();
-            
+
             // init log flags, must be after os.Init()
             Logo.Init();
             _InitLogFile();
@@ -92,6 +92,12 @@ namespace Unicorn
                     },
 
                     lastSystem,
+
+                    new()
+                    {
+                        updateDelegate = _LateUpdate,
+                        type = typeof(UnicornMain)
+                    }
                 }
             };
 
@@ -119,7 +125,7 @@ namespace Unicorn
                 Logo.Error("[UnicornMain._InitLogInfo()] ex={0}", ex);
             }
         }
-        
+
         /// <summary>
         /// 实际上就是Update()，之所以起名ExpensiveUpdate()，是为了让使用者郑重考虑是否启用这个可能会比较费的更新逻辑
         /// </summary>
@@ -128,17 +134,15 @@ namespace Unicorn
             var time = Time.time;
             var deltaTime = Time.deltaTime;
 
-            Logo.ExpensiveUpdate();
             UpdateTools.ExpensiveUpdate(deltaTime);
+            Logo.ExpensiveUpdate();
             _UpdateLogs();
 
             _coroutineManager.ExpensiveUpdate();
             _partUpdateSystem.ExpensiveUpdate(deltaTime);
             // _kitManager.ExpensiveUpdate(deltaTime);
             _uiManager.ExpensiveUpdate(deltaTime);
-            _instanceManager.ExpensiveUpdate();
-            
-            DisposableRecycler.Update();
+
 
             // 慢速帧
             if (time >= _nextSlowUpdateTime)
@@ -149,6 +153,14 @@ namespace Unicorn
 
                 _SlowUpdate(slowDeltaTime);
             }
+        }
+
+        private static void _LateUpdate()
+        {
+            // 这个不能放到UnicornMain.ExpensiveUpdate()中, 否则看不见
+            _instanceManager.LateUpdate();
+            
+            DisposableRecycler.Update();
         }
 
         /// <summary>
@@ -202,7 +214,7 @@ namespace Unicorn
             var count = _logs.Count;
             if (count > 0 && null != _logWriter)
             {
-                for (int i = 0; i < count; ++i)
+                for (var i = 0; i < count; ++i)
                 {
                     var log = _logs[i];
                     _logWriter.WriteLine(log);
@@ -212,7 +224,7 @@ namespace Unicorn
                 _logs.Clear();
             }
         }
-        
+
         /// <summary>
         /// 无论是ice.client还是ice.art项目, persistentDataPath都是: C:/Users/user/AppData/LocalLow/ice/ice_client
         /// </summary>
@@ -239,7 +251,9 @@ namespace Unicorn
 
         private static readonly ArrayList _logs = new();
         private static readonly PartUpdateSystem _partUpdateSystem = new();
+
         private static readonly CoroutineManager _coroutineManager = CoroutineManager.It;
+
         // private static readonly KitManager _kitManager = KitManager.It;
         private static readonly UIManager _uiManager = UIManager.It;
         private static readonly InstanceManager _instanceManager = InstanceManager.It;

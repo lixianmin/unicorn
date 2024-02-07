@@ -54,7 +54,7 @@ namespace Unicorn
             }
         }
 
-        internal void ExpensiveUpdate()
+        internal void LateUpdate()
         {
             if (IsEnabled() && _mainCamera != null)
             {
@@ -129,6 +129,8 @@ namespace Unicorn
                 _sharedItems.Clear();
                 _sharedItems.AddRange(_instanceItems);
             }
+
+            Logo.Info($"[_RefreshItems()] _instanceItems.Count={_instanceItems.Count}");
         }
 
         public bool IsEnabled()
@@ -140,20 +142,17 @@ namespace Unicorn
         {
             if (enable != IsEnabled())
             {
-                if (enable)
-                {
-                    lock (_locker)
-                    {
-                        if (!IsEnabled())
-                        {
-                            var thread = new Thread(_Run);
-                            thread.Start();     
-                        }
-                    }
-                }
-                
                 var v = enable ? 1 : 0;
                 Interlocked.Exchange(ref _isEnabled, v);
+
+                // 如果频繁调用Enable(true), 有同时启动两个线程的风险, 目前应用场景只在初始化的时候启动一次, 先这样吧
+                if (enable)
+                {
+                    var thread = new Thread(_Run);
+                    thread.Start();
+                }
+
+                Logo.Info($"[InstanceManager.Enable()] IsEnabled={IsEnabled()}");
             }
         }
 

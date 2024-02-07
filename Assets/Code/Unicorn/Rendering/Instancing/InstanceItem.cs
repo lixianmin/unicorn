@@ -132,7 +132,7 @@ namespace Unicorn
             {
                 var size = Math.Min(maxBatchSize, total - i);
                 Graphics.RenderMeshInstanced(_renderParams, _sharedMesh, 0, tempVisibleMatrices.Items, size, i);
-                // Logo.Info($"_sharedMesh={_sharedMesh.name}, size={size}");
+                // Logo.Info($"[RenderMeshInstanced()] mesh={_sharedMesh.name}, material={_renderParams.material.name}, size={size}");
             }
         }
 
