@@ -134,7 +134,7 @@ namespace Unicorn
             var time = Time.time;
             var deltaTime = Time.deltaTime;
 
-            UpdateTools.ExpensiveUpdate(deltaTime);
+            UpdateTools.ExpensiveUpdate();
             Logo.ExpensiveUpdate();
             _UpdateLogs();
 
