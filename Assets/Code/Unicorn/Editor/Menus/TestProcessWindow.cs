@@ -17,7 +17,7 @@ namespace Unique.Menus
         [MenuItem("*Tools/Test Process", false, 602)]
         private static void _Execute()
         {
-			EditorWindow.GetWindow<TestProcessWindow>(false, "Test Process");
+			GetWindow<TestProcessWindow>(false, "Test Process");
         }
 
         private void OnEnable()
@@ -51,7 +51,7 @@ namespace Unique.Menus
 				psi.Arguments= _processArguments;
 				psi.UseShellExecute = true;
 				
-				var title = "Test Process";
+				const string title = "Test Process";
 				Logo.Info("[{0}] process start: {1} {2}", title, psi.FileName, psi.Arguments);
 				process.Start ();
 				process.WaitForExit();

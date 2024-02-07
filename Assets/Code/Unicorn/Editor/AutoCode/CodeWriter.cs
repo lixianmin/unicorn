@@ -133,7 +133,8 @@ namespace Unicorn.AutoCode
             {
                 return "// ";
             }
-            else if (path.EndsWith(".lua", CompareOptions.OrdinalIgnoreCase))
+
+            if (path.EndsWith(".lua", CompareOptions.OrdinalIgnoreCase))
             {
                 return "-- ";
             }
@@ -141,15 +142,9 @@ namespace Unicorn.AutoCode
             return string.Empty;
         }
 
-        public StreamWriter BaseWriter
-        {
-            get { return _writer; }
-        }
+        public StreamWriter BaseWriter => _writer;
 
-        public int Indent
-        {
-            get { return _indent; }
-        }
+        public int Indent => _indent;
 
         private const int _kMaxIndentCount = 20;
         private string[] _indentTexts = new string[_kMaxIndentCount];

@@ -20,7 +20,7 @@ namespace Clients.Web
             YooAssets.SetOperationSystemMaxTimeSlice(30);
             
             var playMode = EPlayMode.EditorSimulateMode;
-            if (os.isReleaseMode)
+            if (os.IsReleaseMode)
             {
                 playMode = EPlayMode.OfflinePlayMode;
             }
