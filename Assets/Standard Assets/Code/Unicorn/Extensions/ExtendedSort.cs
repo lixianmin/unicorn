@@ -29,8 +29,16 @@ namespace Unicorn
 
         private static void _QuickSort<T>(T[] list, int index, int length, Comparison<T> comparison)
         {
+            const int insertionSortThreshold = 10; // Adjust this threshold as needed
             while (length > 1)
             {
+                if (length <= insertionSortThreshold)
+                {
+                    // Use insertion sort for small arrays
+                    _InsertSort(list, index, length, comparison);
+                    break;
+                }
+                
                 var pivot = list[index + length / 2];
                 var i = index;
                 var j = index + length - 1;
@@ -65,43 +73,41 @@ namespace Unicorn
                     var index1 = index;
                     index = i;
                     length = index1 + length - i;
-                    continue;
                 }
-
-                break;
+                else
+                {
+                    break;
+                }
             }
         }
 
-        public static void InsertSort<T>(this T[] list, Comparison<T> comparison)
-        {
-            _CheckArguments(list, comparison);
-            _InsertSort(list, 0, list.Length, comparison);
-        }
-
-        public static void InsertSort<T>(this T[] list, int index, int length, Comparison<T> comparison)
-        {
-            _CheckArguments(list, comparison);
-            _ClampIndexAndLength(ref index, ref length, list.Length);
-            _InsertSort(list, index, length, comparison);
-        }
+        // public static void InsertSort<T>(this T[] list, Comparison<T> comparison)
+        // {
+        //     _CheckArguments(list, comparison);
+        //     _InsertSort(list, 0, list.Length, comparison);
+        // }
+        //
+        // public static void InsertSort<T>(this T[] list, int index, int length, Comparison<T> comparison)
+        // {
+        //     _CheckArguments(list, comparison);
+        //     _ClampIndexAndLength(ref index, ref length, list.Length);
+        //     _InsertSort(list, index, length, comparison);
+        // }
 
         private static void _InsertSort<T>(T[] list, int index, int length, Comparison<T> comparison)
         {
             var end = index + length;
-            for (var i = index + 1; i < end; ++i)
+            for (var i = index + 1; i < end; i++)
             {
-                if (comparison(list[i], list[i - 1]) < 0)
+                var key = list[i];
+                var j = i - 1;
+                while (j >= index && comparison(list[j], key) > 0)
                 {
-                    var temp = list[i];
-                    var j = i;
-                    while (j > 0 && comparison(temp, list[j - 1]) < 0)
-                    {
-                        list[j] = list[j - 1];
-                        --j;
-                    }
-
-                    list[j] = temp;
+                    list[j + 1] = list[j];
+                    j--;
                 }
+
+                list[j + 1] = key;
             }
         }
 
