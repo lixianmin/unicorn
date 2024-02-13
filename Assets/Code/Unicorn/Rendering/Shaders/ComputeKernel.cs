@@ -32,18 +32,16 @@ namespace Unicorn
             _threadGroupSizeY = (int)y;
         }
 
+        
+        public void SetTexture(string name, Texture texture)
+        {
+            _shader.SetTexture(_kernelIndex, name, texture);
+        }
+
         public void SetBuffer(string name, ComputeBuffer buffer)
         {
             _shader.SetBuffer(_kernelIndex, name, buffer);
         }
-
-        // public void SetBuffer(StructuredBuffer buffer)
-        // {
-        //     if (buffer != null)
-        //     {
-        //         _shader.SetBuffer(_kernelIndex, buffer.GetName(), buffer.GetBuffer());
-        //     }
-        // }
 
         public void SetBuffer(StructuredBuffer buffer, Array data)
         {
@@ -74,7 +72,7 @@ namespace Unicorn
                 _shader.SetBuffer(_kernelIndex, buffer.GetNameId(), backBuffer);
             }
         }
-
+        
         public void Dispatch(int width, int height = 1)
         {
             var threadGroupsX = width / _threadGroupSizeX;
