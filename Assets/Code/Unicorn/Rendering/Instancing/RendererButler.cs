@@ -57,8 +57,8 @@ namespace Unicorn
             }
 
             var sharedMesh = meshFilter.sharedMesh;
-            var sharedMaterial = renderer.sharedMaterial;
-            if (sharedMesh == null || sharedMaterial == null || !sharedMaterial.enableInstancing)
+            var sharedMaterials = renderer.sharedMaterials;
+            if (sharedMesh == null || sharedMaterials is not { Length: 1 } || !sharedMaterials[0].enableInstancing)
             {
                 return false;
             }
@@ -66,7 +66,7 @@ namespace Unicorn
             key = new InstanceKey
             {
                 mesh = sharedMesh,
-                material = sharedMaterial,
+                material = sharedMaterials[0],
             };
 
             return true;
