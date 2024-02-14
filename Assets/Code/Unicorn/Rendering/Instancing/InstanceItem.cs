@@ -102,7 +102,7 @@ namespace Unicorn
                 }
             }
 
-            lock (Locker)
+            lock (_locker)
             {
                 // 因为2个线程的执行速度不一样, 由子线程调用Clear()的好处是:
                 // 1. 不会因为子线程调用速度过快, 导致_sharedVisibleMatrices无限变长
@@ -115,7 +115,7 @@ namespace Unicorn
         public void RenderMeshInstanced(Slice<Matrix4x4> tempVisibleMatrices)
         {
             tempVisibleMatrices.Count = 0;
-            lock (Locker)
+            lock (_locker)
             {
                 if (_sharedVisibleMatrices.Count > 0)
                 {
@@ -140,7 +140,7 @@ namespace Unicorn
         private readonly RenderParams _renderParams;
         private readonly Slice<MeshData> _dataList = new();
 
-        private static readonly object Locker = new();
+        private static readonly object _locker = new();
         private readonly Slice<Matrix4x4> _sharedVisibleMatrices = new();
     }
 }
