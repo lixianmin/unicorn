@@ -79,6 +79,55 @@ namespace Unicorn
                 items.Add(pair.Value);
             }
         }
+        
+        // 做mesh合并, 把所有相同material的mesh合到一起, 有可能会进一步降低draw call, 只是这个要求mesh打开isReadable开关,
+        // 默认情况下是不开的, 打开后似乎是双倍内存
+        // 
+        // private class Info
+        // {
+        //     public Slice<MeshFilter> meshFilters;
+        //     public Slice<InstanceItem3.MeshData> dataList;
+        //     public RenderParams renderParams;
+        // }
+        //
+        // public void FetchInstanceItems(Slice<InstanceItem3> items)
+        // {
+        //     var infoDict = new Dictionary<Material, Info>();
+        //     
+        //     foreach (var pair in _items)
+        //     {
+        //         var item = pair.Value;
+        //         var material = item.GetMaterial();
+        //         if (!infoDict.TryGetValue(material, out var info))
+        //         {
+        //             info = new Info()
+        //             {
+        //                 meshFilters = new Slice<MeshFilter>(),
+        //                 dataList = new Slice<InstanceItem3.MeshData>(),
+        //                 renderParams = item.GetRenderParams(),
+        //             };
+        //             
+        //             infoDict.Add(material, info);
+        //         }
+        //
+        //         info.dataList.AddRange(item.GetDataList());
+        //         
+        //         foreach (var meshFilter in item.GetMeshFilters())
+        //         {
+        //             info.meshFilters.Add(meshFilter);
+        //         }
+        //     }
+        //     
+        //     // var combines = new Dictionary<Material, Mesh>();
+        //     foreach (var pair in infoDict)
+        //     {
+        //         var info = pair.Value;
+        //         var combinedMesh = _CombineMeshes(info.meshFilters.Items, info.meshFilters.Count);
+        //         
+        //         var item = new InstanceItem3(combinedMesh, info.renderParams, info.dataList);
+        //         items.Add(item);
+        //     }
+        // }
 
         public void Clear()
         {
