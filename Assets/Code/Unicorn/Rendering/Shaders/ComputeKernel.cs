@@ -12,6 +12,32 @@ namespace Unicorn
 {
     public class ComputeKernel
     {
+        private struct ThreadGroup
+        {
+            public int Num;
+
+            private int _groupSize;
+            private int _lastWidth;
+
+            public void SetGroupSize(uint size)
+            {
+                _groupSize = (int)size;
+            }
+
+            public void Update(int width)
+            {
+                if (_lastWidth != width)
+                {
+                    _lastWidth = width;
+                    Num = width / _groupSize;
+                    if (Num * _groupSize < width)
+                    {
+                        Num++;
+                    }
+                }
+            }
+        }
+
         public ComputeKernel(ComputeShader shader, string kernelName)
         {
             if (shader == null)
@@ -28,11 +54,11 @@ namespace Unicorn
             _kernelIndex = shader.FindKernel(kernelName);
 
             shader.GetKernelThreadGroupSizes(_kernelIndex, out var x, out var y, out _);
-            _threadGroupSizeX = (int)x;
-            _threadGroupSizeY = (int)y;
+            _threadGroupX.SetGroupSize(x);
+            _threadGroupY.SetGroupSize(y);
         }
 
-        
+
         public void SetTexture(string name, Texture texture)
         {
             _shader.SetTexture(_kernelIndex, name, texture);
@@ -72,27 +98,18 @@ namespace Unicorn
                 _shader.SetBuffer(_kernelIndex, buffer.GetNameId(), backBuffer);
             }
         }
-        
+
         public void Dispatch(int width, int height = 1)
         {
-            var threadGroupsX = width / _threadGroupSizeX;
-            if (threadGroupsX * _threadGroupSizeX < width)
-            {
-                threadGroupsX++;
-            }
-
-            var threadGroupsY = height / _threadGroupSizeY ;
-            if (threadGroupsY * _threadGroupSizeY < height)
-            {
-                threadGroupsY++;
-            }
-
-            _shader.Dispatch(_kernelIndex, threadGroupsX, threadGroupsY, 1);
+            _threadGroupX.Update(width);
+            _threadGroupY.Update(height);
+            _shader.Dispatch(_kernelIndex, _threadGroupX.Num, _threadGroupY.Num, 1);
         }
 
         private readonly ComputeShader _shader;
         private readonly int _kernelIndex;
-        private readonly int _threadGroupSizeX;
-        private readonly int _threadGroupSizeY;
+
+        private ThreadGroup _threadGroupX;
+        private ThreadGroup _threadGroupY;
     }
 }
