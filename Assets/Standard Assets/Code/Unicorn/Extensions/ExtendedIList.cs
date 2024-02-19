@@ -142,7 +142,7 @@ namespace Unicorn
             return false;
         }
         
-        public static bool AddUnique<T> (this List<T> list, T item)
+        public static bool AddUnique<T> (this IList<T> list, T item)
         {
 	        if (null != list && list.IndexOf(item) < 0)
 	        {
@@ -153,7 +153,7 @@ namespace Unicorn
 	        return false;
         }
         
-        public static T PopBack<T> (this List<T> list)
+        public static T PopBack<T> (this IList<T> list)
         {
 	        if (null != list)
 	        {
@@ -171,7 +171,7 @@ namespace Unicorn
 	        return default;
         }
         
-        public static T Back<T> (this List<T> list)
+        public static T Back<T> (this IList<T> list)
         {
 	        if (null != list)
 	        {
@@ -186,6 +186,21 @@ namespace Unicorn
 	        }
             
 	        return default;
+        }
+        
+        public static void DisposeAllAndClear<T>(this IList<T> list)
+        {
+	        var count = list?.Count;
+	        if (count > 0)
+	        {
+		        for (int i = 0; i < count; i++)
+		        {
+			        var item = list[i] as IDisposable;
+			        item?.Dispose();
+		        }
+
+		        list.Clear();
+	        }
         }
     }
 }
