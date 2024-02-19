@@ -55,31 +55,6 @@ namespace Unicorn
 	        }
         }
 
-        //       public static int MoveTo (this IList srcList, IList destList, object locker)
-		// {
-		// 	if (null != srcList && null != destList && null != locker)
-		// 	{
-		// 		lock (locker)
-		// 		{
-		// 			var count = srcList.Count;
-		// 			if (count > 0)
-		// 			{
-		// 				for (var i= 0; i< count; ++i)
-		// 				{
-		// 					var item = srcList[i];
-		// 					destList.Add(item);
-		// 				}
-		// 			
-		// 				srcList.Clear();
-		// 			}
-		// 			
-		// 			return count;
-		// 		}
-		// 	}
-		//
-		// 	return 0;
-		// }
-
 		public static Type GetElementType (this IList list)
 		{
 			if (null != list)
@@ -126,7 +101,7 @@ namespace Unicorn
             }
         }
         
-        public static bool IsNullOrEmpty<T> (this List<T> list)
+        public static bool IsNullOrEmpty<T> (this IList<T> list)
         {
 	        return list is { Count: 0 };
         }

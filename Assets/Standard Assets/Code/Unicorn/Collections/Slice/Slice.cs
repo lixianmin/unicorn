@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace Unicorn.Collections
 {
-    public partial class Slice<T> : IEnumerable<T>
+    public partial class Slice<T> : IEnumerable<T>, IEnumerable
     {
         public T[] Items;
         public int Count;
