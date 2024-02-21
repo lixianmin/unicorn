@@ -22,6 +22,8 @@ namespace Unicorn
         protected override void _DoDispose(int flags)
         {
             _argBuffer.Dispose();
+            _argsCount[0] = 0; // 重置count=0
+
             base._DoDispose(flags);
         }
 
@@ -31,16 +33,16 @@ namespace Unicorn
             {
                 var backBuffer = GetBuffer();
                 ComputeBuffer.CopyCount(backBuffer, _argBuffer, 0);
-                _argBuffer.GetData(_args);
+                _argBuffer.GetData(_argsCount);
 
-                var count = _args[0];
+                var count = _argsCount[0];
                 if (_data?.Length < count)
                 {
                     _data = new T[count];
                 }
-            
+
                 backBuffer.GetData(_data);
-                return _data;    
+                return _data;
             }
 
             return EmptyArray<T>.It;
@@ -61,7 +63,7 @@ namespace Unicorn
             {
                 var buffer = GetBuffer();
                 AsyncGPUReadback.Request(buffer, _lpfnOnAsyncGPUReadback);
-                return _data;                
+                return _data;
             }
 
             return EmptyArray<T>.It;
@@ -76,11 +78,11 @@ namespace Unicorn
             }
         }
 
-        public override int Count => _args[0];
+        public override int Count => _argsCount[0];
 
         private readonly Action<AsyncGPUReadbackRequest> _lpfnOnAsyncGPUReadback;
         private readonly ComputeBuffer _argBuffer;
-        private readonly int[] _args = { 0 };
+        private readonly int[] _argsCount = { 0 };
         private T[] _data = EmptyArray<T>.It;
     }
 }
