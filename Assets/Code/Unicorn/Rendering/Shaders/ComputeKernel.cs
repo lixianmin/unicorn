@@ -71,7 +71,7 @@ namespace Unicorn
 
         public void SetBuffer(StructuredBuffer buffer, Array data)
         {
-            if (buffer != null && data != null)
+            if (buffer != null && !buffer.IsDisposed() && data != null)
             {
                 buffer.SetData(data);
                 _shader.SetBuffer(_kernelIndex, buffer.GetNameId(), buffer.GetBuffer());
@@ -80,7 +80,7 @@ namespace Unicorn
 
         public void SetBuffer<T>(RWStructuredBuffer<T> buffer, int size)
         {
-            if (buffer != null)
+            if (buffer != null && !buffer.IsDisposed())
             {
                 buffer.Reserve(size); // 这个用于取回数据, 所以只需要设置size
                 _shader.SetBuffer(_kernelIndex, buffer.GetNameId(), buffer.GetBuffer());
@@ -89,7 +89,7 @@ namespace Unicorn
 
         public void SetBuffer<T>(AppendStructuredBuffer<T> buffer, int size)
         {
-            if (buffer != null)
+            if (buffer != null && !buffer.IsDisposed())
             {
                 buffer.Reserve(size); // 这个用于取回数据, 所以只需要设置size
 
