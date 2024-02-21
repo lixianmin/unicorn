@@ -20,11 +20,16 @@ namespace Unicorn
 
         public T[] GetData()
         {
-            var buffer = GetBuffer();
-            _ResizeData(buffer);
+            if (!IsDisposed())
+            {
+                var buffer = GetBuffer();
+                _ResizeData(buffer);
 
-            buffer.GetData(_data);
-            return _data;
+                buffer.GetData(_data);
+                return _data;    
+            }
+
+            return EmptyArray<T>.It;
         }
 
         public T[] GetDataAsync()
@@ -38,11 +43,16 @@ namespace Unicorn
             // https://dev.to/alpenglow/unity-fast-pixel-reading-part-2-asyncgpureadback-4kgn
             // 通过 AsyncGPUReadback.Request(buffer) 可以异步把数据从GPU取回, 但这样这个buffer就无法复用了
 
-            var buffer = GetBuffer();
-            _ResizeData(buffer);
+            if (!IsDisposed())
+            {
+                var buffer = GetBuffer();
+                _ResizeData(buffer);
 
-            AsyncGPUReadback.Request(buffer, _lpfnOnAsyncGPUReadback);
-            return _data;
+                AsyncGPUReadback.Request(buffer, _lpfnOnAsyncGPUReadback);
+                return _data;    
+            }
+
+            return EmptyArray<T>.It;
         }
 
         private void _ResizeData(ComputeBuffer buffer)

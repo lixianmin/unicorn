@@ -21,24 +21,29 @@ namespace Unicorn
 
         protected override void _DoDispose(int flags)
         {
-            _argBuffer.Release();
+            _argBuffer.Dispose();
             base._DoDispose(flags);
         }
 
         public T[] GetData()
         {
-            var backBuffer = GetBuffer();
-            ComputeBuffer.CopyCount(backBuffer, _argBuffer, 0);
-            _argBuffer.GetData(_args);
-
-            var count = _args[0];
-            if (_data?.Length < count)
+            if (!IsDisposed())
             {
-                _data = new T[count];
-            }
+                var backBuffer = GetBuffer();
+                ComputeBuffer.CopyCount(backBuffer, _argBuffer, 0);
+                _argBuffer.GetData(_args);
+
+                var count = _args[0];
+                if (_data?.Length < count)
+                {
+                    _data = new T[count];
+                }
             
-            backBuffer.GetData(_data);
-            return _data;
+                backBuffer.GetData(_data);
+                return _data;    
+            }
+
+            return EmptyArray<T>.It;
         }
 
         public T[] GetDataAsync()
@@ -52,9 +57,14 @@ namespace Unicorn
             // https://dev.to/alpenglow/unity-fast-pixel-reading-part-2-asyncgpureadback-4kgn
             // 通过 AsyncGPUReadback.Request(buffer) 可以异步把数据从GPU取回, 但这样这个buffer就无法复用了
 
-            var buffer = GetBuffer();
-            AsyncGPUReadback.Request(buffer, _lpfnOnAsyncGPUReadback);
-            return _data;
+            if (!IsDisposed())
+            {
+                var buffer = GetBuffer();
+                AsyncGPUReadback.Request(buffer, _lpfnOnAsyncGPUReadback);
+                return _data;                
+            }
+
+            return EmptyArray<T>.It;
         }
 
         private void _OnAsyncGPUReadback(AsyncGPUReadbackRequest request)

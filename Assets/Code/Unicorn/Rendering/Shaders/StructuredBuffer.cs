@@ -23,7 +23,7 @@ namespace Unicorn
 
         public void SetData(Array data)
         {
-            if (data != null)
+            if (data != null && !IsDisposed())
             {
                 Reserve(data.Length);
                 _buffer.SetData(data);
@@ -32,16 +32,16 @@ namespace Unicorn
 
         public void Reserve(int size)
         {
-            if (_buffer.count < size)
+            if (_buffer.count < size && !IsDisposed())
             {
-                _buffer.Release();
+                _buffer.Dispose();
                 _buffer = new ComputeBuffer(size, _stride, _type);
             }
         }
 
         protected override void _DoDispose(int flags)
         {
-            _buffer.Release();
+            _buffer.Dispose();
         }
 
         public ComputeBuffer GetBuffer()
@@ -54,10 +54,10 @@ namespace Unicorn
             return _nameId;
         }
 
-        public bool IsValid()
-        {
-            return _buffer.IsValid();
-        }
+        // public bool IsValid()
+        // {
+        //     return _buffer.IsValid();
+        // }
 
         public virtual int Count => _buffer.count;
 
