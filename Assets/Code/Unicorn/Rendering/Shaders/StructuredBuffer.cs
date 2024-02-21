@@ -59,7 +59,7 @@ namespace Unicorn
         //     return _buffer.IsValid();
         // }
 
-        public virtual int Count => _buffer.count;
+        public virtual int Count => !IsDisposed() ? _buffer.count : 0;
 
         private ComputeBuffer _buffer;
         private readonly int _nameId;
