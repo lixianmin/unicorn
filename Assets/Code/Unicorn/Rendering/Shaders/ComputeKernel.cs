@@ -99,6 +99,13 @@ namespace Unicorn
             }
         }
 
+        /// <summary>
+        /// compute shader中id是SV_DispatchThreadID, 注意名字里的Dispatch, 因此:
+        /// 1. id.xy的值与Dispatch()的参数有关系, id.x∈[0,width], id.y∈[0,height]
+        /// 2. id.xy的值与numthreads的值一点儿关系都没有
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
         public void Dispatch(int width, int height = 1)
         {
             _threadGroupX.Update(width);
