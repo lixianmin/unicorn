@@ -16,8 +16,9 @@ namespace Unicorn
     {
         None = 0x00,
         DetailedMessage = 0x01,
-        OpenStandardOutput = 0x02,
+        // OpenStandardOutput = 0x02,
         FlushOnWrite = 0x04,
+        LogDebug = 0x08,    // 是否启用debug级别的日志
     }
 
     public static class Logo
@@ -44,6 +45,22 @@ namespace Unicorn
             _CheckFlushLogText();
         }
 
+        public static void Debug(string format, params object[] args)
+        {
+            if (_HasFlags(LogoFlags.LogDebug))
+            {
+                _WriteLine(_lpfnLogInfo, _FormatMessage(format, args));
+            }
+        }
+
+        public static void Debug(string message)
+        {
+            if (_HasFlags(LogoFlags.LogDebug))
+            {
+                _WriteLine(_lpfnLogInfo, message);
+            }
+        }
+        
         public static void Info(string format, params object[] args)
         {
             _WriteLine(_lpfnLogInfo, _FormatMessage(format, args));
@@ -163,10 +180,10 @@ namespace Unicorn
                 _sbLogText.AppendLine(message.ToString());
             }
 
-            if (_HasFlags(LogoFlags.OpenStandardOutput))
-            {
-                System.Console.WriteLine(message);
-            }
+            // if (_HasFlags(LogoFlags.OpenStandardOutput))
+            // {
+            //     System.Console.WriteLine(message);
+            // }
         }
 
         private static void _LogWarn(object message)
@@ -174,10 +191,10 @@ namespace Unicorn
             _CheckFlushLogText();
             UnityEngine.Debug.LogWarning(message);
 
-            if (_HasFlags(LogoFlags.OpenStandardOutput))
-            {
-                System.Console.WriteLine(message);
-            }
+            // if (_HasFlags(LogoFlags.OpenStandardOutput))
+            // {
+            //     System.Console.WriteLine(message);
+            // }
         }
 
         private static void _LogError(object message)
@@ -185,10 +202,10 @@ namespace Unicorn
             _CheckFlushLogText();
             UnityEngine.Debug.LogError(message);
 
-            if (_HasFlags(LogoFlags.OpenStandardOutput))
-            {
-                System.Console.Error.WriteLine(message);
-            }
+            // if (_HasFlags(LogoFlags.OpenStandardOutput))
+            // {
+            //     System.Console.Error.WriteLine(message);
+            // }
         }
 
         private static void _CheckFlushLogText()
