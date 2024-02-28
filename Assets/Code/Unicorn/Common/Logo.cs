@@ -16,9 +16,10 @@ namespace Unicorn
     {
         None = 0x00,
         DetailedMessage = 0x01,
+
         // OpenStandardOutput = 0x02,
         FlushOnWrite = 0x04,
-        LogDebug = 0x08,    // 是否启用debug级别的日志
+        LogDebug = 0x08, // 是否启用debug级别的日志
     }
 
     public static class Logo
@@ -60,7 +61,15 @@ namespace Unicorn
                 _WriteLine(_lpfnLogInfo, message);
             }
         }
-        
+
+        public static void Debug(object message)
+        {
+            if (_HasFlags(LogoFlags.LogDebug))
+            {
+                _WriteLine(_lpfnLogInfo, message);
+            }
+        }
+
         public static void Info(string format, params object[] args)
         {
             _WriteLine(_lpfnLogInfo, _FormatMessage(format, args));
