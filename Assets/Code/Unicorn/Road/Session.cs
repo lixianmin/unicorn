@@ -6,6 +6,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -16,7 +17,7 @@ using Random = UnityEngine.Random;
 
 namespace Unicorn.Road
 {
-    public partial class Session : Disposable
+    public class Session : Disposable
     {
         public void Connect(string hostNameOrAddress, int port, ISerde serde, Action<JsonHandshake> onHandShaken = null)
         {
@@ -32,21 +33,8 @@ namespace Unicorn.Road
                     if (!addressList.IsNullOrEmpty())
                     {
                         var address = addressList[0];
-                        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                        _socket.Blocking = true;
-                        // _socket.ReceiveTimeout = 2000;   // 这两个Timeout的默认值都是0
-                        // _socket.SendTimeout = 1000;
-                        _socket.SendBufferSize = 512 * 1024; // SendBufferSize的默认值是128 * 1024
-                        _socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true); // Disable Nagle
-
-                        // 1. 目前测试得知, address使用127.0.0.1或正确的IP(如: 192.168.31.96)在macos上是可以正确连接到golang server的
-                        // 2. 使用ConnectAsync() 代替 Connect(), 是为了防止在connect的address错误的时候不卡死UI响应
-                        // 3. 但是, 使用ConnectAsync()时, 发现在肖老师的电脑上, 会反复报如下错误, 导致连不上
-                        //  Close socket by ex=System.Net.Sockets.SocketException (0x80004005): 由于套接字没有连接并且(当使用一个 sendto 调用发送数据报套接字时)没有提供地址，发送或接收数据的请求没有被接受。
-                        _socket.Connect(address, port);
-                        // Logo.Warn($"_socket.SendBufferSize={_socket.SendBufferSize}, receiveTimeout = {_socket.ReceiveTimeout}, sendTime={_socket.SendTimeout}");
-
-                        _sessionThread = new SessionThread(_socket);
+                        _sessionThread?.Close();
+                        _sessionThread = new SessionThread(address, port);
                     }
                 }
                 catch (Exception ex)
@@ -65,9 +53,6 @@ namespace Unicorn.Road
 
         public void Close()
         {
-            _socket?.Close();
-            _socket = null;
-
             _sessionThread?.Close();
             _sessionThread = null;
 
@@ -129,9 +114,9 @@ namespace Unicorn.Road
                 Buffer.BlockCopy(buffer, 0, _heartbeatBuffer, 0, size);
             }
 
-            if (null != _socket)
+            if (null != _sessionThread)
             {
-                _socket.Send(_heartbeatBuffer, 0, _heartbeatBuffer.Length, SocketFlags.None, out var err);
+                _sessionThread.Send(_heartbeatBuffer, 0, _heartbeatBuffer.Length, SocketFlags.None, out var err);
                 if (err != SocketError.Success)
                 {
                     Logo.Warn($"[_SendHeartbeat()] err={err}");
@@ -142,7 +127,7 @@ namespace Unicorn.Road
 
         private SocketError _SendPacket(Packet pack)
         {
-            if (_socket != null)
+            if (_sessionThread != null)
             {
                 var stream = _writer.BaseStream as OctetsStream;
                 stream!.Reset();
@@ -150,11 +135,41 @@ namespace Unicorn.Road
 
                 var buffer = stream.GetBuffer();
                 var size = (int)stream.Length;
-                _socket.Send(buffer, 0, size, SocketFlags.None, out var err);
-                return err;
+
+                if (_sessionThread.HasSocket())
+                {
+                    _sessionThread.Send(buffer, 0, size, SocketFlags.None, out var err);
+                    return err;
+                }
+
+                CoroutineManager.It.StartCoroutine(_CoSendBuffer(buffer, size));
+                return SocketError.Success;
             }
 
             return SocketError.NotConnected;
+        }
+
+        private IEnumerator _CoSendBuffer(byte[] buffer, int size)
+        {
+            var breakTime = Time.time + 30f;
+            while (!_sessionThread.HasSocket() && Time.time < breakTime)
+            {
+                yield return null;
+            }
+
+            if (Time.time < breakTime)
+            {
+                _sessionThread.Send(buffer, 0, size, SocketFlags.None, out var err);
+                if (err != SocketError.Success)
+                {
+                    Logo.Warn($"[_CoSendBuffer()] err= {err}");
+                    _sessionThread.Close();
+                }
+            }
+            else
+            {
+                _sessionThread.Close();
+            }
         }
 
         private void _CheckReceivePackets()
@@ -235,7 +250,7 @@ namespace Unicorn.Road
         private void _Kick(string reason)
         {
             Close();
-            
+
             _serverGid = string.Empty;
             _onKickedHandler?.Invoke();
             Logo.Warn(reason);
@@ -425,7 +440,6 @@ namespace Unicorn.Road
 
         private Action _reconnectAction;
         private float _nextReconnectTime;
-        private Socket _socket;
         private SessionThread _sessionThread;
 
         private ISerde _serde;
