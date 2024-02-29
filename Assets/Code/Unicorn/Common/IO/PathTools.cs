@@ -407,5 +407,35 @@ namespace Unicorn
                 return _apkPath;
             }
         }
+
+        /// <summary>
+        /// 无论是ice.client还是ice.art项目, persistentDataPath都是: C:/Users/user/AppData/LocalLow/ice/ice_client
+        /// </summary>
+        /// <returns></returns>
+        public static string LogPath
+        {
+            get
+            {
+                if (Application.isEditor)
+                {
+                    return $"{Application.persistentDataPath}/{PathTools.ProjectName}.panda.log";
+                }
+
+                return Application.persistentDataPath + "/panda.log";
+            }
+        }
+
+        internal static string LastLogPath
+        {
+            get
+            {
+                if (Application.isEditor)
+                {
+                    return $"{Application.persistentDataPath}/{PathTools.ProjectName}.last_panda.log";
+                }
+
+                return Application.persistentDataPath + "/last_panda.log";
+            }
+        }
     }
 }

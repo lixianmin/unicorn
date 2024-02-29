@@ -13,10 +13,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
-using System.Collections;
-using System.IO;
 using UnityEngine;
-using Unicorn.IO;
 using Unicorn.UI;
 using UnityEngine.LowLevel;
 
@@ -41,7 +38,7 @@ namespace Unicorn
 
             // init log flags, must be after os.Init()
             Logo.Init();
-            _InitLogFile();
+            LogFile.Init();
 
             var persistentDataPath = Application.persistentDataPath;
             var now = DateTime.Now.ToString("yyyy-M-d HH:mm ddd");
@@ -57,7 +54,7 @@ namespace Unicorn
                 , SystemInfo.systemMemorySize.ToString()
                 , SystemInfo.graphicsDeviceName
                 , SystemInfo.graphicsMemorySize.ToString()
-                , _GetLogPath()
+                , PathTools.LogPath
                 , Application.dataPath
                 , Application.streamingAssetsPath
                 , persistentDataPath
@@ -103,29 +100,7 @@ namespace Unicorn
 
             PlayerLoop.SetPlayerLoop(nextSystem);
         }
-
-        private static void _InitLogFile()
-        {
-            try
-            {
-                var logPath = _GetLogPath();
-                if (File.Exists(logPath))
-                {
-                    var lastLogPath = _GetLastLogPath();
-                    FileTools.Overwrite(logPath, lastLogPath);
-                }
-
-                var stream = new FileStream(logPath, FileMode.Create, FileAccess.Write, FileShare.Read);
-                _logWriter = new StreamWriter(stream);
-
-                Application.logMessageReceived += _HandlerLogCallBack;
-            }
-            catch (Exception ex)
-            {
-                Logo.Error("[UnicornMain._InitLogInfo()] ex={0}", ex);
-            }
-        }
-
+        
         /// <summary>
         /// 实际上就是Update()，之所以起名ExpensiveUpdate()，是为了让使用者郑重考虑是否启用这个可能会比较费的更新逻辑
         /// </summary>
@@ -136,7 +111,7 @@ namespace Unicorn
 
             UpdateTools.ExpensiveUpdate();
             Logo.ExpensiveUpdate();
-            _UpdateLogs();
+            LogFile.ExpensiveUpdate();
 
             _coroutineManager.ExpensiveUpdate();
             _partUpdateSystem.ExpensiveUpdate(deltaTime);
@@ -169,97 +144,13 @@ namespace Unicorn
         /// <param name="deltaTime">两帧之间的时间间隔，远大于Time.deltaTime</param>
         private static void _SlowUpdate(float deltaTime)
         {
-            // _kitManager.SlowUpdate(deltaTime);
             _uiManager.SlowUpdate(deltaTime);
         }
-
-        private static void _HandlerLogCallBack(string logString, string stackTrace, LogType type)
-        {
-            // the same log should not be write twice.
-            if (_lastLogString != logString)
-            {
-                _lastLogString = logString;
-
-                bool needMark = false;
-
-                if (type == LogType.Error)
-                {
-                    needMark = true;
-                    _logs.Add("[[[Error]]]");
-                }
-                else if (type == LogType.Exception)
-                {
-                    needMark = true;
-                    _logs.Add("[[[Exception]]]");
-                }
-
-                _logs.Add(logString);
-
-                if (type == LogType.Error || type == LogType.Warning || type == LogType.Exception)
-                {
-                    _logs.Add(stackTrace);
-                }
-
-                if (needMark)
-                {
-                    _logs.Add("[[[-]]]");
-                }
-
-                _logs.Add(os.linesep);
-            }
-        }
-
-        private static void _UpdateLogs()
-        {
-            var count = _logs.Count;
-            if (count > 0 && null != _logWriter)
-            {
-                for (var i = 0; i < count; ++i)
-                {
-                    var log = _logs[i];
-                    _logWriter.WriteLine(log);
-                }
-
-                _logWriter.Flush();
-                _logs.Clear();
-            }
-        }
-
-        /// <summary>
-        /// 无论是ice.client还是ice.art项目, persistentDataPath都是: C:/Users/user/AppData/LocalLow/ice/ice_client
-        /// </summary>
-        /// <returns></returns>
-        private static string _GetLogPath()
-        {
-            if (Application.isEditor)
-            {
-                return $"{Application.persistentDataPath}/{PathTools.ProjectName}.panda.log";
-            }
-
-            return Application.persistentDataPath + "/panda.log";
-        }
-
-        private static string _GetLastLogPath()
-        {
-            if (Application.isEditor)
-            {
-                return $"{Application.persistentDataPath}/{PathTools.ProjectName}.last_panda.log";
-            }
-
-            return Application.persistentDataPath + "/last_panda.log";
-        }
-
-        private static readonly ArrayList _logs = new();
+        
         private static readonly PartUpdateSystem _partUpdateSystem = new();
-
         private static readonly CoroutineManager _coroutineManager = CoroutineManager.It;
-
-        // private static readonly KitManager _kitManager = KitManager.It;
         private static readonly UIManager _uiManager = UIManager.It;
         private static readonly InstanceManager _instanceManager = InstanceManager.It;
-
-        private static StreamWriter _logWriter;
-        private static string _lastLogString;
 
         private static float _lastSlowUpdateTime;
         private static float _nextSlowUpdateTime;
