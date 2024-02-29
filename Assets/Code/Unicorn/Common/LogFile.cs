@@ -26,6 +26,8 @@ namespace Unicorn
                     FileTools.Overwrite(logPath, lastLogPath);
                 }
 
+                // 其它人要读取需要使用如下代码:
+                // var stream = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 var stream = new FileStream(logPath, FileMode.Create, FileAccess.Write, FileShare.Read);
                 _logWriter = new StreamWriter(stream);
 
