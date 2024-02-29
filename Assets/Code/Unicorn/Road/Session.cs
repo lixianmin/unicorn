@@ -46,7 +46,7 @@ namespace Unicorn.Road
                         _socket.Connect(address, port);
                         // Logo.Warn($"_socket.SendBufferSize={_socket.SendBufferSize}, receiveTimeout = {_socket.ReceiveTimeout}, sendTime={_socket.SendTimeout}");
 
-                        _receiverThread = new ReceiverThread(_socket);
+                        _sessionThread = new SessionThread(_socket);
                     }
                 }
                 catch (Exception ex)
@@ -68,8 +68,8 @@ namespace Unicorn.Road
             _socket?.Close();
             _socket = null;
 
-            _receiverThread?.Close();
-            _receiverThread = null;
+            _sessionThread?.Close();
+            _sessionThread = null;
 
             _serde = null;
             _onHandShaken = null;
@@ -89,7 +89,7 @@ namespace Unicorn.Road
 
         private void _CheckReconnect()
         {
-            if (_receiverThread != null && _receiverThread.IsClosed() && _reconnectAction != null &&
+            if (_sessionThread != null && _sessionThread.IsClosed() && _reconnectAction != null &&
                 Time.time > _nextReconnectTime)
             {
                 // 这一句必须在前面, 因为后面的_reconnectAction()可能会异常
@@ -135,7 +135,7 @@ namespace Unicorn.Road
                 if (err != SocketError.Success)
                 {
                     Logo.Warn($"[_SendHeartbeat()] err={err}");
-                    _receiverThread?.Close();
+                    _sessionThread?.Close();
                 }
             }
         }
@@ -159,9 +159,9 @@ namespace Unicorn.Road
 
         private void _CheckReceivePackets()
         {
-            if (_receiverThread != null)
+            if (_sessionThread != null)
             {
-                _receiverThread.ReceivePackets(_packets);
+                _sessionThread.ReceivePackets(_packets);
 
                 var size = _packets.Count;
                 if (size > 0)
@@ -426,7 +426,7 @@ namespace Unicorn.Road
         private Action _reconnectAction;
         private float _nextReconnectTime;
         private Socket _socket;
-        private ReceiverThread _receiverThread;
+        private SessionThread _sessionThread;
 
         private ISerde _serde;
         private Action<JsonHandshake> _onHandShaken;
