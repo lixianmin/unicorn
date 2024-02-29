@@ -188,10 +188,7 @@ namespace Unicorn.Road
                     // Logo.Info(pack);
                     break;
                 case PacketKind.Kick:
-                    // _socket.close(0, 'kicked')
-                    Close();
-                    _onKickedHandler?.Invoke();
-                    Logo.Warn("kicked by server");
+                    _Kick("kicked by server");
                     break;
                 case PacketKind.RouteKind:
                     _OnReceivedRouteKind(pack);
@@ -208,6 +205,13 @@ namespace Unicorn.Road
             var handshake = (JsonHandshake)JsonUtility.FromJson(text, typeof(JsonHandshake));
             Logo.Info("handshake={0}", text);
 
+            if (!_serverGid.IsNullOrEmpty() && _serverGid != handshake.gid)
+            {
+                _Kick("kicked by server restart");
+                return;
+            }
+
+            _serverGid = handshake.gid;
             _heartbeatInterval = handshake.heartbeat;
             _nextHeartbeatTime = Time.time + _heartbeatInterval;
 
@@ -226,6 +230,15 @@ namespace Unicorn.Road
             _HandshakeRe();
             _nonce = handshake.nonce;
             _onHandShaken?.Invoke(handshake);
+        }
+
+        private void _Kick(string reason)
+        {
+            Close();
+            
+            _serverGid = string.Empty;
+            _onKickedHandler?.Invoke();
+            Logo.Warn(reason);
         }
 
         private void _HandshakeRe()
@@ -419,6 +432,7 @@ namespace Unicorn.Road
         private Action<JsonHandshake> _onHandShaken;
         private Action _onKickedHandler;
         private int _nonce;
+        private string _serverGid = string.Empty;
 
         private float _nextHeartbeatTime = float.MaxValue;
         private float _heartbeatInterval;
