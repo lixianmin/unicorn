@@ -152,23 +152,26 @@ namespace Unicorn.Road
         private IEnumerator _CoSendBuffer(byte[] buffer, int size)
         {
             var breakTime = Time.time + 30f;
-            while (!_sessionThread.HasSocket() && Time.time < breakTime)
+            while (_sessionThread != null && !_sessionThread.HasSocket() && Time.time < breakTime)
             {
                 yield return null;
             }
 
-            if (Time.time < breakTime)
+            if (_sessionThread != null)
             {
-                _sessionThread.Send(buffer, 0, size, SocketFlags.None, out var err);
-                if (err != SocketError.Success)
+                if (Time.time < breakTime)
                 {
-                    Logo.Warn($"[_CoSendBuffer()] err= {err}");
+                    _sessionThread.Send(buffer, 0, size, SocketFlags.None, out var err);
+                    if (err != SocketError.Success)
+                    {
+                        Logo.Warn($"[_CoSendBuffer()] err= {err}");
+                        _sessionThread.Close();
+                    }
+                }
+                else
+                {
                     _sessionThread.Close();
                 }
-            }
-            else
-            {
-                _sessionThread.Close();
             }
         }
 
