@@ -266,9 +266,9 @@ namespace Unicorn
 
         private static readonly string[] _messageFormat =
         {
-            "[@@frame=", // 加两个@号, 方便使用 adb logcat | grep @@ 过滤日志
+            "[@@", // 加两个@号, 方便使用 adb logcat | grep @@ 过滤日志
             "(-_-)",
-            ", time=",
+            " ",
             null,
             "] ",
             null
