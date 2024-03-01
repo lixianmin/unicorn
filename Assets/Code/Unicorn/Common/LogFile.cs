@@ -26,8 +26,9 @@ namespace Unicorn
                     FileTools.Overwrite(logPath, lastLogPath);
                 }
 
-                // 其它人要读取需要使用如下代码:
-                // var stream = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                // FileShare指允许其它人做什么, 此处FileShare.Read是指我允许其它人read该文件. 但这个是相互的, 这意味着
+                // 其它人要读取时也要允许LogFile去write本日志, 因此其它人在读的时候需要使用FileShare.Write打开, 即:
+                // var readStream = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.Write);
                 var stream = new FileStream(logPath, FileMode.Create, FileAccess.Write, FileShare.Read);
                 _logWriter = new StreamWriter(stream);
 
