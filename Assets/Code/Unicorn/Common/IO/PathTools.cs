@@ -425,7 +425,7 @@ namespace Unicorn
             }
         }
 
-        internal static string LastLogPath
+        public static string LastLogPath
         {
             get
             {
