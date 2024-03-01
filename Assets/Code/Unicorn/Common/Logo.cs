@@ -144,7 +144,7 @@ namespace Unicorn
                     _messageFormat[1] = frameCount.ToString();
                 }
 
-                _messageFormat[3] = _time.ToString("F3");
+                _messageFormat[3] = _time.ToString("F2");
                 _messageFormat[5] = null != message ? message.ToString() : "null message (-_-)";
                 message = string.Concat(_messageFormat);
             }
