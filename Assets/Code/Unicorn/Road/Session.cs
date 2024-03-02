@@ -70,6 +70,8 @@ namespace Unicorn.Road
             _CheckReconnect();
             _CheckReceivePackets();
             _CheckSendHeartbeat();
+
+            _sessionThread?.Update();
         }
 
         private void _CheckReconnect()
@@ -114,18 +116,10 @@ namespace Unicorn.Road
                 Buffer.BlockCopy(buffer, 0, _heartbeatBuffer, 0, size);
             }
 
-            if (null != _sessionThread)
-            {
-                _sessionThread.Send(_heartbeatBuffer, 0, _heartbeatBuffer.Length, SocketFlags.None, out var err);
-                if (err != SocketError.Success)
-                {
-                    Logo.Warn($"[_SendHeartbeat()] err={err}");
-                    _sessionThread?.Close();
-                }
-            }
+            _sessionThread?.Send(_heartbeatBuffer, 0, _heartbeatBuffer.Length);
         }
 
-        private SocketError _SendPacket(Packet pack)
+        private void _SendPacket(Packet pack)
         {
             if (_sessionThread != null)
             {
@@ -136,42 +130,7 @@ namespace Unicorn.Road
                 var buffer = stream.GetBuffer();
                 var size = (int)stream.Length;
 
-                if (_sessionThread.HasSocket())
-                {
-                    _sessionThread.Send(buffer, 0, size, SocketFlags.None, out var err);
-                    return err;
-                }
-
-                CoroutineManager.It.StartCoroutine(_CoSendBuffer(buffer, size));
-                return SocketError.Success;
-            }
-
-            return SocketError.NotConnected;
-        }
-
-        private IEnumerator _CoSendBuffer(byte[] buffer, int size)
-        {
-            var breakTime = Time.time + 30f;
-            while (_sessionThread != null && !_sessionThread.HasSocket() && Time.time < breakTime)
-            {
-                yield return null;
-            }
-
-            if (_sessionThread != null)
-            {
-                if (Time.time < breakTime)
-                {
-                    _sessionThread.Send(buffer, 0, size, SocketFlags.None, out var err);
-                    if (err != SocketError.Success)
-                    {
-                        Logo.Warn($"[_CoSendBuffer()] err= {err}");
-                        _sessionThread.Close();
-                    }
-                }
-                else
-                {
-                    _sessionThread.Close();
-                }
+                _sessionThread.Send(buffer, 0, size);
             }
         }
 
@@ -398,7 +357,8 @@ namespace Unicorn.Road
                 };
             }
 
-            return _SendPacket(pack);
+            _SendPacket(pack);
+            return SocketError.Success;
         }
 
         public void On<T>(string route, Action<T, Error> handler) where T : new()

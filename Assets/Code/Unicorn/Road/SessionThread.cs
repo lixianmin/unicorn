@@ -50,12 +50,13 @@ namespace Unicorn.Road
                     }
                 }
 
+                socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
             }
             catch (Exception ex)
             {
-                Logo.Warn("Close socket by ex={0}", ex);
                 Close();
+                Logo.Warn($"[_Run()] Close socket by ex={ex}");
             }
         }
 
@@ -65,7 +66,7 @@ namespace Unicorn.Road
             // 只所以把连socket的操作放到Thread中, 是因为它会block, 会阻塞主线程做工作
             // 特别是当client切网, 需要重连的时候, 游戏会卡死, 玩家体验很差
             socket.Blocking = true;
-            
+
             // _socket.ReceiveTimeout = 2000;   // 这两个Timeout的默认值都是0
             // _socket.SendTimeout = 1000;
             socket.SendBufferSize = 512 * 1024; // SendBufferSize的默认值是128 * 1024
@@ -97,16 +98,65 @@ namespace Unicorn.Road
             }
         }
 
-        public void Send(byte[] buffer, int offset, int size, SocketFlags socketFlags, out SocketError errorCode)
+        internal void Send(byte[] buffer, int offset, int size)
         {
-            errorCode = SocketError.NotConnected;
-            if (_socket != null && !IsClosed())
+            if (buffer.IsNullOrEmpty() || offset < 0 || size <= 0)
             {
-                _socket.Send(buffer, offset, size, socketFlags, out errorCode);
+                return;
+            }
+            
+            // _pendingStream不需要lock, 它用于接收数据并转交给_sendingStream, 因此_pendingStream所有相关操作都是主线程
+            _pendingStream.Write(buffer, offset, size);
+        }
+
+        internal void Update()
+        {
+            if (_pendingStream.Length > 0 && Interlocked.Read(ref _canSend) == 1)
+            {
+                Interlocked.Exchange(ref _canSend, 0);
+                
+                // _sendingStream也不需要lock, 因为它的数据虽然跨线程, 但是对它的修改全是在主线程里进行的, 而且在
+                // _OnSendCallback()回调之前, 不会再次修改
+                _sendingStream.Tidy();
+                _pendingStream.WriteTo(_sendingStream);
+                _pendingStream.Tidy();
+                
+                try
+                {
+                    var buffer = _sendingStream.GetBuffer();
+                    var size = (int)_sendingStream.Length;
+                    _socket.BeginSend(buffer, 0, size, SocketFlags.None, _OnSendCallback, null);
+                }
+                catch (Exception ex)
+                {
+                    Close();
+                    Logo.Warn($"[Update()] Close socket by ex={ex}");
+                }
             }
         }
 
-        public void ReceivePackets(List<Packet> packets)
+        /// <summary>
+        /// 这个回调方法跟BeginSend()不是一个线程
+        /// </summary>
+        /// <param name="ar"></param>
+        private void _OnSendCallback(IAsyncResult ar)
+        {
+            if (_socket != null && !IsClosed())
+            {
+                try
+                {
+                    _socket.EndSend(ar);
+                    Interlocked.Exchange(ref _canSend, 1);
+                }
+                catch (Exception ex)
+                {
+                    Close();
+                    Logo.Warn($"[_OnSendCallback()] Close socket by ex={ex}");
+                }
+            }
+        }
+
+        internal void ReceivePackets(List<Packet> packets)
         {
             lock (_locker)
             {
@@ -122,12 +172,7 @@ namespace Unicorn.Road
         {
             return Interlocked.Read(ref _isRunning) == 0;
         }
-
-        public bool HasSocket()
-        {
-            return _socket != null;
-        }
-
+        
         public void Close()
         {
             Interlocked.Exchange(ref _isRunning, 0);
@@ -136,6 +181,10 @@ namespace Unicorn.Road
         private readonly IPAddress _address;
         private readonly int _port;
         private Socket _socket;
+
+        private long _canSend = 1;
+        private readonly OctetsStream _pendingStream = new();
+        private readonly OctetsStream _sendingStream = new();
 
         private long _isRunning = 1;
         private readonly List<Packet> _sharedPackets = new();
