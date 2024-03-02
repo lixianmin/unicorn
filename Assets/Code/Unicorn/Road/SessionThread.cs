@@ -107,9 +107,19 @@ namespace Unicorn.Road
             
             // _pendingStream不需要lock, 它用于接收数据并转交给_sendingStream, 因此_pendingStream所有相关操作都是主线程
             _pendingStream.Write(buffer, offset, size);
+            
+            // 立即调用, 尽可能减少发送延迟
+            _CheckSendPendingStream();
         }
 
         internal void Update()
+        {
+            // 之所以设计成先缓存到_pendingStream中的方案, 因为据说socket.BeginSend()在callback回来之前不能反复调用
+            // 参考: https://stackoverflow.com/questions/21284000/predictable-behaviour-of-overlapping-socket-beginsend-endsend-calls
+            _CheckSendPendingStream();
+        }
+
+        private void _CheckSendPendingStream()
         {
             if (_pendingStream.Length > 0 && Interlocked.Read(ref _canSend) == 1)
             {
@@ -145,8 +155,8 @@ namespace Unicorn.Road
             {
                 try
                 {
+                    // EndSend()是一个blocking操作
                     _socket.EndSend(ar);
-                    Interlocked.Exchange(ref _canSend, 1);
                 }
                 catch (Exception ex)
                 {
@@ -154,6 +164,8 @@ namespace Unicorn.Road
                     Logo.Warn($"[_OnSendCallback()] Close socket by ex={ex}");
                 }
             }
+            
+            Interlocked.Exchange(ref _canSend, 1);
         }
 
         internal void ReceivePackets(List<Packet> packets)
