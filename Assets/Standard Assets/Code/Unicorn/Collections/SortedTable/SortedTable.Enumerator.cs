@@ -21,7 +21,7 @@ namespace Unicorn.Collections
 				_table = table;
 				_index = 0;
 
-				_pair  = default(KeyValuePair<TKey, TValue>);
+				_pair  = default;
                 _version = _table._version;
 			}
 			
@@ -49,7 +49,7 @@ namespace Unicorn.Collections
 				}
 
 				_index = count + 1;
-				_pair  = default(KeyValuePair<TKey, TValue>);
+				_pair  = default;
 				return false;
 			}
 
@@ -66,50 +66,20 @@ namespace Unicorn.Collections
                 }
 
 				_index = 0;
-				_pair  = default(KeyValuePair<TKey, TValue>);
+				_pair  = default;
 			}
 
-            public KeyValuePair<TKey, TValue> Current
-			{
-				get 
-				{
-					return _pair;
-				}
-			}
+            public KeyValuePair<TKey, TValue> Current => _pair;
 
-			object IEnumerator.Current
-			{
-				get
-				{
-					return (this as IDictionaryEnumerator).Entry;
-				}
-			}
+            object IEnumerator.Current => (this as IDictionaryEnumerator).Entry;
 
-			DictionaryEntry IDictionaryEnumerator.Entry
-			{
-				get
-				{
-					return new DictionaryEntry(_pair.Key, _pair.Value);
-				}
-			}
+			DictionaryEntry IDictionaryEnumerator.Entry => new(_pair.Key, _pair.Value);
 
-			object IDictionaryEnumerator.Key
-			{
-				get
-				{
-					return _pair.Key;
-				}
-			}
-			
-			object IDictionaryEnumerator.Value
-			{
-				get
-				{
-					return _pair.Value;
-				}
-			}
+			object IDictionaryEnumerator.Key => _pair.Key;
 
-            private readonly SortedTable<TKey, TValue> _table;
+			object IDictionaryEnumerator.Value => _pair.Value;
+
+			private readonly SortedTable<TKey, TValue> _table;
 			private int _index;
 
 			private KeyValuePair<TKey, TValue> _pair;

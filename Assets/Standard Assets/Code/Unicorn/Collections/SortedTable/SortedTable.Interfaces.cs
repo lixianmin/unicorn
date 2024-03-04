@@ -15,13 +15,13 @@ namespace Unicorn.Collections
 	{
         bool ICollection<KeyValuePair<TKey, TValue>>.Contains (KeyValuePair<TKey, TValue> pair)
         {
-            int index = IndexOfKey(pair.Key);
+            var index = IndexOfKey(pair.Key);
             return index >= 0 && EqualityComparer<TValue>.Default.Equals(_values[index], pair.Value);
         }
         
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove (KeyValuePair<TKey, TValue> pair)
         {
-            int index = IndexOfKey(pair.Key);
+            var index = IndexOfKey(pair.Key);
             if (index >= 0 && EqualityComparer<TValue>.Default.Equals(_values[index], pair.Value))
             {
                 RemoveAt(index);
@@ -35,18 +35,18 @@ namespace Unicorn.Collections
         {
             if (null == array)
             {
-                throw new ArgumentNullException("array is null");
+                throw new ArgumentNullException(nameof(array));
             }
             
             if (arrayIndex < 0 || arrayIndex > array.Length)
             {
-                var text = string.Format("ArrayIndex = {0}, array.Length={1}", arrayIndex, array.Length);
+                var text = $"ArrayIndex = {arrayIndex}, array.Length={array.Length}";
                 throw new ArgumentOutOfRangeException(text);
             }
             
             if (array.Length - arrayIndex < Count)
             {
-                var text = string.Format("ArrayIndex = {0}, array.Length={1}", arrayIndex, array.Length);
+                var text = $"ArrayIndex = {arrayIndex}, array.Length={array.Length}";
                 throw new ArgumentException(text);
             }
             
@@ -66,7 +66,7 @@ namespace Unicorn.Collections
 		{
 			if (key == null)
 			{
-				throw new ArgumentNullException ("key");
+				throw new ArgumentNullException (nameof(key));
 			}
 			return key is TKey && this.ContainsKey ((TKey)((object)key));
 		}
@@ -75,17 +75,18 @@ namespace Unicorn.Collections
 		{
 			if (key == null)
 			{
-				throw new ArgumentNullException ("key");
+				throw new ArgumentNullException (nameof(key));
 			}
-			if (key is TKey)
+			
+			if (key is TKey key1)
 			{
-				this.Remove ((TKey)((object)key));
+				this.Remove (key1);
 			}
 		}
 
 		IDictionaryEnumerator IDictionary.GetEnumerator ()
 		{
-			return new SortedTable<TKey, TValue>.Enumerator (this);
+			return new Enumerator (this);
 		}
 
 		object IDictionary.this [object key]
@@ -98,85 +99,52 @@ namespace Unicorn.Collections
 				}
 				return null;
 			}
-			set
-			{
-				this [_ToTKey (key)] = _ToTValue (value);
-			}
+			set => this [_ToTKey (key)] = _ToTValue (value);
 		}
 
 		private TKey _ToTKey (object key)
 		{
 			if (key == null)
 			{
-				throw new ArgumentNullException ("key");
+				throw new ArgumentNullException (nameof(key));
 			}
 			if (!(key is TKey))
 			{
 				throw new ArgumentException ("not of type: " + typeof(TKey).ToString (), "key");
 			}
 
-			return (TKey)((object)key);
+			return (TKey)key;
 		}
 
 		private TValue _ToTValue (object value)
 		{
 			if (value == null && !typeof(TValue).IsValueType)
 			{
-				return default(TValue);
+				return default;
 			}
 			if (!(value is TValue))
 			{
 				throw new ArgumentException ("not of type: " + typeof(TValue).ToString (), "value");
 			}
 
-			return (TValue)((object)value);
+			return (TValue)value;
 		}
 
-        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly
-        { 
-            get 
-            { 
-                return false;
-            }
-        }
+        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
 
-        ICollection<TKey> IDictionary<TKey, TValue>.Keys
-        {
-            get 
-            {
-				return this.Keys;
-            }
-        }
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => Keys;
 
-		ICollection IDictionary.Keys
-		{
-			get
-			{
-				return this.Keys;
-			}
-		}
-        
-        ICollection<TValue> IDictionary<TKey, TValue>.Values
-        {
-            get 
-            {
-				return this.Values;
-            }
-        }
+        ICollection IDictionary.Keys => Keys;
 
-		ICollection IDictionary.Values
-		{
-			get
-			{
-				return this.Values;
-			}
-		}
+		ICollection<TValue> IDictionary<TKey, TValue>.Values => Values;
 
-        void ICollection.CopyTo (Array array, int arrayIndex)
+        ICollection IDictionary.Values => Values;
+
+		void ICollection.CopyTo (Array array, int arrayIndex)
         {
             if (array == null)
             {
-                throw new ArgumentNullException ("array");
+                throw new ArgumentNullException (nameof(array));
             }
 
             if (array.Rank > 1 || array.GetLowerBound (0) != 0)
@@ -185,43 +153,19 @@ namespace Unicorn.Collections
             }
 
             var count = this._size;
-            for (int i= 0; i< count; ++i)
+            for (var i= 0; i< count; ++i)
             {
                 var item = new KeyValuePair<TKey, TValue>(_keys[i], _values[i]);
                 array.SetValue(item, i + arrayIndex);
             }
         }
 
-		bool IDictionary.IsFixedSize
-		{
-			get
-			{
-				return false;
-			}
-		}
-		
-		bool IDictionary.IsReadOnly
-		{
-			get
-			{
-				return false;
-			}
-		}
+		bool IDictionary.IsFixedSize => false;
 
-        bool ICollection.IsSynchronized
-        {
-            get 
-            {
-                return false;
-            }
-        }
-        
-        object ICollection.SyncRoot
-        {
-            get
-            {
-                return this;
-            }
-        }
+		bool IDictionary.IsReadOnly => false;
+
+		bool ICollection.IsSynchronized => false;
+
+        object ICollection.SyncRoot => this;
 	}
 }

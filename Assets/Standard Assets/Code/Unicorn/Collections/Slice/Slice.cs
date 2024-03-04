@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace Unicorn.Collections
 {
-    public partial class Slice<T> : ICollection<T>, IEnumerable<T>, IEnumerable
+    public partial class Slice<T> : ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
     {
         public T[] Items;
         public int Size;
@@ -101,12 +101,7 @@ namespace Unicorn.Collections
         {
             return IndexOf(item) >= 0;
         }
-
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            Array.Copy(Items, 0, array, arrayIndex, Size);
-        }
-
+        
         public bool Remove(T item)
         {
             var index = IndexOf(item);
@@ -118,33 +113,7 @@ namespace Unicorn.Collections
 
             return false;
         }
-
-
-        public Enumerator GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return _GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _GetEnumerator();
-        }
-
-        private IEnumerator<T> _GetEnumerator()
-        {
-            for (var i = 0; i < Size; ++i)
-            {
-                var result = Items[i];
-                yield return result;
-            }
-        }
-
+        
         public int Count => Size;
-        public bool IsReadOnly => false;
     }
 }

@@ -6,6 +6,8 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Unicorn.Collections
 {
@@ -52,6 +54,30 @@ namespace Unicorn.Collections
             // caution: 这里故意没有记录version, 就需要程序自己来保证在foreach的过程中不要修改slice
             private readonly Slice<T> _slice;
             private int _current;
+        }
+        
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return _GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _GetEnumerator();
+        }
+
+        private IEnumerator<T> _GetEnumerator()
+        {
+            for (var i = 0; i < Size; ++i)
+            {
+                var result = Items[i];
+                yield return result;
+            }
         }
     }
 }
