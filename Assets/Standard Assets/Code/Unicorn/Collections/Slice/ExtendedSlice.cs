@@ -13,7 +13,7 @@ namespace Unicorn
     {
         public static bool IsNullOrEmpty<T>(this Slice<T> my)
         {
-            return my == null || my.Count == 0;
+            return my == null || my.Size == 0;
         }
     }
 }

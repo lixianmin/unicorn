@@ -21,7 +21,7 @@ namespace Unicorn.Collections
 
             public bool MoveNext()
             {
-                if (_current >= _slice.Count - 1)
+                if (_current >= _slice.Size - 1)
                 {
                     _current = -1;
                     return false;
@@ -40,7 +40,7 @@ namespace Unicorn.Collections
             {
                 get
                 {
-                    if (_current < 0 || _current >= _slice.Count)
+                    if (_current < 0 || _current >= _slice.Size)
                     {
                         throw new InvalidOperationException();
                     }

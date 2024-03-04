@@ -89,14 +89,8 @@ namespace Unicorn.Collections
 
 			object IList.this [int index]
 			{
-				get
-				{
-					return this [index];
-				}
-				set
-				{
-					throw new NotImplementedException();
-				}
+				get => this [index];
+				set => throw new NotImplementedException();
 			}
 
 			public int IndexOf (TValue item)

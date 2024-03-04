@@ -130,7 +130,7 @@ namespace Unicorn
                 _sharedItems.AddRange(_instanceItems);
             }
 
-            Logo.Info($"[_RefreshItems()] _instanceItems.Count={_instanceItems.Count}");
+            Logo.Info($"[_RefreshItems()] _instanceItems.Count={_instanceItems.Size}");
         }
 
         public bool IsEnabled()

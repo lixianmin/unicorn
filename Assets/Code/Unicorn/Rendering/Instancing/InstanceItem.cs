@@ -51,7 +51,7 @@ namespace Unicorn
             if (renderer != null)
             {
                 var id = renderer.GetInstanceID();
-                for (var i = 0; i < _dataList.Count; i++)
+                for (var i = 0; i < _dataList.Size; i++)
                 {
                     var meshData = _dataList.Items[i];
                     if (meshData.instanceId == id)
@@ -91,8 +91,8 @@ namespace Unicorn
         /// <param name="tempVisibleMatrices"></param>
         public void CollectVisibleMatrices(Plane[] frustumPlanes, Slice<Matrix4x4> tempVisibleMatrices)
         {
-            tempVisibleMatrices.Count = 0;
-            for (var i = 0; i < _dataList.Count; i++)
+            tempVisibleMatrices.Size = 0;
+            for (var i = 0; i < _dataList.Size; i++)
             {
                 var data = _dataList.Items[i];
                 var isVisible = InstanceTools.TestPlanesAABB(frustumPlanes, data.bounds);
@@ -114,10 +114,10 @@ namespace Unicorn
 
         public void RenderMeshInstanced(Slice<Matrix4x4> tempVisibleMatrices)
         {
-            tempVisibleMatrices.Count = 0;
+            tempVisibleMatrices.Size = 0;
             lock (_locker)
             {
-                if (_sharedVisibleMatrices.Count > 0)
+                if (_sharedVisibleMatrices.Size > 0)
                 {
                     tempVisibleMatrices.AddRange(_sharedVisibleMatrices);
                 }
@@ -126,7 +126,7 @@ namespace Unicorn
             // 单次推送的上限就是1023个
             // https://docs.unity3d.com/ScriptReference/Graphics.RenderMeshInstanced.html
             const int maxBatchSize = 1023;
-            var total = tempVisibleMatrices.Count;
+            var total = tempVisibleMatrices.Size;
 
             for (var i = 0; i < total; i += maxBatchSize)
             {

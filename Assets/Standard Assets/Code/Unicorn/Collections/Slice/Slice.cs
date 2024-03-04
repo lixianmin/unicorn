@@ -15,10 +15,10 @@ using System.Collections.Generic;
 
 namespace Unicorn.Collections
 {
-    public partial class Slice<T> : IEnumerable<T>, IEnumerable
+    public partial class Slice<T> : ICollection<T>, IEnumerable<T>, IEnumerable
     {
         public T[] Items;
-        public int Count;
+        public int Size;
 
         public Slice() : this(4)
         {
@@ -33,35 +33,35 @@ namespace Unicorn.Collections
 
         public void Add(T item)
         {
-            ArrayTools.AddItem(ref Items, ref Count, item);
+            ArrayTools.AddItem(ref Items, ref Size, item);
         }
 
         public void RemoveAt(int index)
         {
-            if (index < 0 || index >= Count)
+            if (index < 0 || index >= Size)
             {
                 throw new ArgumentOutOfRangeException("index is out of range.");
             }
 
-            --Count;
+            --Size;
 
-            if (index < Count)
+            if (index < Size)
             {
-                Array.Copy(Items, index + 1, Items, index, Count - index);
+                Array.Copy(Items, index + 1, Items, index, Size - index);
             }
 
-            Items[Count] = default;
+            Items[Size] = default;
         }
 
         public void AddRange(Slice<T> others)
         {
-            if (others is { Count: > 0 })
+            if (others is { Size: > 0 })
             {
-                var nextCount = Count + others.Count;
+                var nextCount = Size + others.Size;
                 Reserve(nextCount);
 
-                Array.Copy(others.Items, 0, Items!, Count, others.Count);
-                Count = nextCount;
+                Array.Copy(others.Items, 0, Items!, Size, others.Size);
+                Size = nextCount;
             }
         }
 
@@ -77,12 +77,48 @@ namespace Unicorn.Collections
 
         public void Clear()
         {
-            if (Count > 0)
+            if (Size > 0)
             {
-                Array.Clear(Items, 0, Count);
-                Count = 0;
+                Array.Clear(Items, 0, Size);
+                Size = 0;
             }
         }
+
+        public int IndexOf(T item)
+        {
+            for (var index = 0; index < Size; ++index)
+            {
+                if (Equals(Items[index], item))
+                {
+                    return index;
+                }
+            }
+
+            return -1;
+        }
+
+        public bool Contains(T item)
+        {
+            return IndexOf(item) >= 0;
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            Array.Copy(Items, 0, array, arrayIndex, Size);
+        }
+
+        public bool Remove(T item)
+        {
+            var index = IndexOf(item);
+            if (index >= 0)
+            {
+                RemoveAt(index);
+                return true;
+            }
+
+            return false;
+        }
+
 
         public Enumerator GetEnumerator()
         {
@@ -101,11 +137,14 @@ namespace Unicorn.Collections
 
         private IEnumerator<T> _GetEnumerator()
         {
-            for (var i = 0; i < Count; ++i)
+            for (var i = 0; i < Size; ++i)
             {
                 var result = Items[i];
                 yield return result;
             }
         }
+
+        public int Count => Size;
+        public bool IsReadOnly => false;
     }
 }
