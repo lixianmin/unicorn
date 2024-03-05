@@ -7,7 +7,6 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 using System;
-using System.Collections;
 using Unicorn;
 using Unicorn.IO;
 
@@ -25,7 +24,7 @@ namespace Metadata
 				var elementType = fieldType.GetElementType();
 				var array = ArrayTools.CreateInstanceImpl(elementType, count);
 
-				for (int i= 0; i< count; ++i)
+				for (var i= 0; i< count; ++i)
 				{
                     var val = _LoadObject(reader, elementType, basicType);
 					array.SetValue(val, i);
@@ -38,16 +37,16 @@ namespace Metadata
 			{
 				var array = target as Array;
 
-                Type elementType = null != array ? array.GetElementType() : null;
+                var elementType = array?.GetElementType();
                 var basicType = null != elementType ? GetBasicType(elementType) : BasicType.Null;
                 writer.Write((byte) basicType);
 
-                var count = null != array ? array.GetLength(0) : 0;
+                var count = array?.GetLength(0) ?? 0;
                 writer.Write(count);
 
-				for (int i= 0; i< count; ++i)
+				for (var i= 0; i< count; ++i)
 				{
-					var item = array.GetValue(i);
+					var item = array!.GetValue(i);
                     _SaveObject(writer, item, elementType, isFullMode);
 				}
 			}

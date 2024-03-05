@@ -5,12 +5,13 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
-using System;
 
 namespace Metadata
 {
     public enum BasicType : byte
     {
+        String, // string和int用的最多, 所以放到最前面
+        
         Int32,
         Single,
         Boolean,
@@ -29,7 +30,6 @@ namespace Metadata
         Color,
 
         Null,
-        String,
         Array,
         List,
         Enum,

@@ -98,11 +98,10 @@ namespace Unicorn
         {
             if (null != type)
             {
-                var fields = _sortedFields[type] as FieldInfo[];
-                if (null == fields)
+                if (_sortedFields[type] is not FieldInfo[] fields)
                 {
                     fields = type.GetFields(flags);
-                    Array.Sort(fields, (x, y) => x.Name.CompareTo(y.Name));
+                    Array.Sort(fields, (x, y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
                     _sortedFields[type] = fields;
                 }
 

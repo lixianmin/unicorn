@@ -293,11 +293,11 @@ namespace Metadata
             foreach (var creator in creators)
             {
                 var metadataType = creator.GetMetadataType();
-                var typeName = metadataType.FullName;
-                int typeIndex = _textTable[typeName];
+                var typeName = metadataType.FullName!;
+                var typeIndex = _textTable[typeName];
 
                 var layout = creator.GetLayout();
-                ushort fieldCount = (ushort) layout.Length;
+                var fieldCount = (ushort) layout.Length;
 
                 writer.Write((uint) typeIndex);
                 writer.Write(fieldCount);

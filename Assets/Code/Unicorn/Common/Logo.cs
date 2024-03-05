@@ -8,6 +8,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.Text;
 using System.Threading;
+using UnityEngine;
 
 namespace Unicorn
 {
@@ -180,7 +181,9 @@ namespace Unicorn
 
         private static void _LogInfo(object message)
         {
-            if (_HasFlags(LogoFlags.FlushOnWrite))
+            // 编辑器中, 如果在执行菜单指令的话, 还是希望能立即输出打印出来
+            var isFlush = _HasFlags(LogoFlags.FlushOnWrite) || Application.isEditor && !Application.isPlaying;
+            if (isFlush)
             {
                 UnityEngine.Debug.Log(message);
             }

@@ -8,6 +8,7 @@ Copyright (C) - All Rights Reserved
 using System;
 using System.IO;
 using System.Collections;
+using Unicorn;
 using Unicorn.IO;
 using Unicorn.Collections;
 
@@ -34,13 +35,13 @@ namespace Metadata
             if (isIncrement)
             {
                 var incrementCatalog = new Hashtable();
-                var flags = NodeFlags.Increment;
+                const NodeFlags flags = NodeFlags.Increment;
                 _LoadCatalog(reader, incrementCatalog, flags);
                 _MergeCatalog(catalog, incrementCatalog);
             }
             else
             {
-                var flags = NodeFlags.None;
+                const NodeFlags flags = NodeFlags.None;
                 _LoadCatalog(reader, catalog, flags);
             }
 
@@ -126,7 +127,7 @@ namespace Metadata
         private void _LoadLayout(OctetsReader headReader)
         {
             int count = headReader.ReadUInt16();
-            for (int i = 0; i < count; ++i)
+            for (var i = 0; i < count; ++i)
             {
                 var typeIndex = headReader.ReadUInt32();
                 var typeName = _texts[typeIndex];
@@ -135,10 +136,10 @@ namespace Metadata
                 var layout = headReader.ReadBytes(fieldCount);
 
                 var creator = MetaFactory.GetMetaCreator(typeName);
-                if (null != creator)
-                {
-                    creator.SetLayout(layout);
-                }
+                creator?.SetLayout(layout);
+
+                // var layoutText = ", ".Join(layout, item => item.ToString());
+                // Logo.Info($"typeName={typeName}, fieldCount={fieldCount}, layout={layoutText}");
             }
         }
 

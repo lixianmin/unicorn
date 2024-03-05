@@ -6,6 +6,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 using System;
+using System.Reflection;
 using Unicorn;
 
 namespace Metadata
@@ -31,14 +32,9 @@ namespace Metadata
 
 		internal IMetadata Create ()
 		{
-			if (null != _lpfnCreator)
-			{
-                var metadata = _lpfnCreator();
-                return metadata;
-			}
-
-			return null;
-		}
+            var metadata = _lpfnCreator?.Invoke();
+            return metadata;
+        }
 
         internal byte[] GetLayout ()
         {
@@ -48,12 +44,11 @@ namespace Metadata
                 var metadataType = GetMetadataType();
                 if (null != metadataType)
                 {
-                    var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public;
-                    var fields = TypeTools.GetSortedFields(metadataType, flags);
-                    var fieldCount = (ushort) fields.Length;
+                    var fields = TypeTools.GetSortedFields(metadataType);
+                    var fieldCount = fields.Length;
                     layout = new byte[fieldCount];
 
-                    for (int i= 0; i< fieldCount; ++i)
+                    for (var i= 0; i< fieldCount; ++i)
                     {
                         var field = fields[i];
                         var basicType = MetaTools.GetBasicType(field.FieldType);
