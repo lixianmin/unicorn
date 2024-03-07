@@ -168,8 +168,8 @@ namespace Metadata
             const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
             var fields = TypeTools.GetSortedFields(type, flags);
 
-            var fieldsText = ", ".Join(fields, item => item.Name);
-            Logo.Info($"metadataType={metadataType}, fieldsText=`{fieldsText}`");
+            // var fieldsText = ", ".Join(fields, item => item.Name);
+            // Logo.Info($"metadataType={metadataType}, fieldsText=`{fieldsText}`");
 
             var fieldsCount = fields.Length;
             for (int i = 0; i < fieldsCount; ++i)
