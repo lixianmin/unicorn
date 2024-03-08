@@ -74,8 +74,9 @@ namespace Unicorn
 
         private void _Run()
         {
-            var receivedItems = new Slice<InstanceItem>();
-            var tempVisibleMatrices = new Slice<Matrix4x4>();
+            // 主副线程交换数据这个设计模式, 需要三个一模一样的List/Slice, 一个在主线程中, 一个在副线程中, 一个shared用于交换
+            var threadInstanceItems = new Slice<InstanceItem>();
+            var threadVisibleMatrices = new Slice<Matrix4x4>();
             var lastTick = Environment.TickCount;
 
             const int stepTick = 1000 / 30;
@@ -97,13 +98,13 @@ namespace Unicorn
                 {
                     lock (_locker)
                     {
-                        receivedItems.Clear();
-                        receivedItems.AddRange(_sharedItems);
+                        threadInstanceItems.Clear();
+                        threadInstanceItems.AddRange(_sharedInstanceItems);
                     }
 
-                    foreach (var item in receivedItems)
+                    foreach (var item in threadInstanceItems)
                     {
-                        item.CollectVisibleMatrices(_frustumPlanes, tempVisibleMatrices);
+                        item.CollectVisibleMatrices(_frustumPlanes, threadVisibleMatrices);
                     }
                 }
                 catch (Exception)
@@ -126,8 +127,8 @@ namespace Unicorn
 
             lock (_locker)
             {
-                _sharedItems.Clear();
-                _sharedItems.AddRange(_instanceItems);
+                _sharedInstanceItems.Clear();
+                _sharedInstanceItems.AddRange(_instanceItems);
             }
 
             Logo.Info($"[_RefreshItems()] _instanceItems.Count={_instanceItems.Size}");
@@ -157,7 +158,7 @@ namespace Unicorn
         }
 
         private readonly object _locker = new();
-        private readonly Slice<InstanceItem> _sharedItems = new();
+        private readonly Slice<InstanceItem> _sharedInstanceItems = new();
 
         private readonly Slice<InstanceItem> _instanceItems = new();
         private readonly Slice<Matrix4x4> _tempVisibleMatrices = new();

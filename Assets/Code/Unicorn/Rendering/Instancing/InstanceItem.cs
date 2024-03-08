@@ -80,7 +80,7 @@ namespace Unicorn
         ///
         /// 本次使用是独立线程的方案, 可以完全解放主线程的计算消耗
         ///
-        /// 为什么不使用IJob系统? 要求所有操作的对象都是纯struct, 不现实
+        /// 为什么不使用Job System? 是一个可以尝试的方案, 但要求所有对象都是纯struct
         /// 为什么不不使用UniTask? 在创建action的过程中, 每一帧都会产生大量的 gc alloc
         /// 
         /// 在多线程处理过程中, _dataList并不会发生改变, 只需要关注frustumPlanes与_sharedVisibleMatrices的变化
@@ -88,17 +88,17 @@ namespace Unicorn
         /// 2. _sharedVisibleMatrices: 长度会发生变化, 需好好处理data race
         /// </summary>
         /// <param name="frustumPlanes"></param>
-        /// <param name="tempVisibleMatrices"></param>
-        public void CollectVisibleMatrices(Plane[] frustumPlanes, Slice<Matrix4x4> tempVisibleMatrices)
+        /// <param name="threadVisibleMatrices"></param>
+        public void CollectVisibleMatrices(Plane[] frustumPlanes, Slice<Matrix4x4> threadVisibleMatrices)
         {
-            tempVisibleMatrices.Size = 0;
+            threadVisibleMatrices.Size = 0;
             for (var i = 0; i < _dataList.Size; i++)
             {
                 var data = _dataList.Items[i];
                 var isVisible = InstanceTools.TestPlanesAABB(frustumPlanes, data.bounds);
                 if (isVisible)
                 {
-                    tempVisibleMatrices.Add(data.matrix);
+                    threadVisibleMatrices.Add(data.matrix);
                 }
             }
 
@@ -108,7 +108,7 @@ namespace Unicorn
                 // 1. 不会因为子线程调用速度过快, 导致_sharedVisibleMatrices无限变长
                 // 2. 主线程每次都能读到有数据的_sharedVisibleMatrices, 而if由主线程调用Clear(), 则可能在下一帧读不到有数据的_sharedVisibleMatrices
                 _sharedVisibleMatrices.Clear();
-                _sharedVisibleMatrices.AddRange(tempVisibleMatrices);
+                _sharedVisibleMatrices.AddRange(threadVisibleMatrices);
             }
         }
 
