@@ -24,7 +24,7 @@ namespace Unicorn
             if (!_items.TryGetValue(key, out var instanceItem))
             {
                 var renderParams = InstanceTools.CreateRenderParams(key.material, renderer, camera);
-                instanceItem = new InstanceItem(key.mesh, renderParams);
+                instanceItem = new InstanceItem(key.mesh, renderParams, _visibleProducer, _visibleConsumer);
                 _items.Add(key, instanceItem);
             }
 
@@ -79,7 +79,7 @@ namespace Unicorn
                 items.Add(pair.Value);
             }
         }
-        
+
         // 做mesh合并, 把所有相同material的mesh合到一起, 有可能会进一步降低draw call, 只是这个要求mesh打开isReadable开关,
         // 默认情况下是不开的, 打开后似乎是双倍内存
         // 
@@ -135,5 +135,8 @@ namespace Unicorn
         }
 
         private readonly Dictionary<InstanceKey, InstanceItem> _items = new();
+
+        private readonly Slice<Matrix4x4> _visibleProducer = new();
+        private readonly Slice<Matrix4x4> _visibleConsumer = new();
     }
 }

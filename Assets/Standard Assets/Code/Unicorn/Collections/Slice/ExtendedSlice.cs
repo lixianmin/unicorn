@@ -5,9 +5,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-using Unicorn.Collections;
-
-namespace Unicorn
+namespace Unicorn.Collections
 {
     public static class ExtendedSlice
     {

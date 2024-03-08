@@ -65,9 +65,9 @@ namespace Unicorn
                 }
 
                 GeometryUtility.CalculateFrustumPlanes(_mainCamera, _frustumPlanes);
-                foreach (var item in _instanceItems)
+                foreach (var item in _instanceSwapper.GetProducer())
                 {
-                    item.RenderMeshInstanced(_tempVisibleMatrices);
+                    item.RenderMeshInstanced();
                 }
             }
         }
@@ -75,8 +75,7 @@ namespace Unicorn
         private void _Run()
         {
             // 主副线程交换数据这个设计模式, 需要三个一模一样的List/Slice, 一个在主线程中, 一个在副线程中, 一个shared用于交换
-            var threadInstanceItems = new Slice<InstanceItem>();
-            var threadVisibleMatrices = new Slice<Matrix4x4>();
+            var instanceConsumer = _instanceSwapper.GetConsumer();
             var lastTick = Environment.TickCount;
 
             const int stepTick = 1000 / 30;
@@ -96,15 +95,12 @@ namespace Unicorn
 
                 try
                 {
-                    lock (_locker)
-                    {
-                        threadInstanceItems.Clear();
-                        threadInstanceItems.AddRange(_sharedInstanceItems);
-                    }
+                    instanceConsumer.Clear();
+                    _instanceSwapper.Take(false);
 
-                    foreach (var item in threadInstanceItems)
+                    foreach (var item in instanceConsumer)
                     {
-                        item.CollectVisibleMatrices(_frustumPlanes, threadVisibleMatrices);
+                        item.CollectVisibleMatrices(_frustumPlanes);
                     }
                 }
                 catch (Exception)
@@ -122,16 +118,12 @@ namespace Unicorn
 
         private void _RefreshItems()
         {
-            _instanceItems.Clear();
-            _butler.FetchInstanceItems(_instanceItems);
+            var producer = _instanceSwapper.GetProducer();
+            producer.Clear();
+            _butler.FetchInstanceItems(producer);
 
-            lock (_locker)
-            {
-                _sharedInstanceItems.Clear();
-                _sharedInstanceItems.AddRange(_instanceItems);
-            }
-
-            Logo.Info($"[_RefreshItems()] _instanceItems.Count={_instanceItems.Size}");
+            _instanceSwapper.Put(true);
+            Logo.Info($"[_RefreshItems()] _instanceItems.Count={producer.Size}");
         }
 
         public bool IsEnabled()
@@ -157,11 +149,7 @@ namespace Unicorn
             }
         }
 
-        private readonly object _locker = new();
-        private readonly Slice<InstanceItem> _sharedInstanceItems = new();
-
-        private readonly Slice<InstanceItem> _instanceItems = new();
-        private readonly Slice<Matrix4x4> _tempVisibleMatrices = new();
+        private readonly ThreadSwapper<InstanceItem> _instanceSwapper = new();
         private readonly RendererButler _butler = new();
 
         private const int FrustumPlaneNum = 6;

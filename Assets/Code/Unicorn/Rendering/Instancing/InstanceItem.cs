@@ -20,10 +20,12 @@ namespace Unicorn
             public int instanceId;
         }
 
-        public InstanceItem(Mesh sharedMesh, RenderParams renderParams)
+        public InstanceItem(Mesh sharedMesh, RenderParams renderParams,
+            Slice<Matrix4x4> visibleProducer, Slice<Matrix4x4> visibleConsumer)
         {
             _sharedMesh = sharedMesh;
             _renderParams = renderParams;
+            _visibleSwapper = new ThreadSwapper<Matrix4x4>(visibleProducer, visibleConsumer);
         }
 
         public void AddMeshRenderer(MeshRenderer renderer)
@@ -89,49 +91,38 @@ namespace Unicorn
         /// </summary>
         /// <param name="frustumPlanes"></param>
         /// <param name="threadVisibleMatrices"></param>
-        public void CollectVisibleMatrices(Plane[] frustumPlanes, Slice<Matrix4x4> threadVisibleMatrices)
+        public void CollectVisibleMatrices(Plane[] frustumPlanes)
         {
-            threadVisibleMatrices.Size = 0;
+            var producer = _visibleSwapper.GetProducer();
+            producer.Size = 0;
             for (var i = 0; i < _dataList.Size; i++)
             {
                 var data = _dataList.Items[i];
                 var isVisible = InstanceTools.TestPlanesAABB(frustumPlanes, data.bounds);
                 if (isVisible)
                 {
-                    threadVisibleMatrices.Add(data.matrix);
+                    producer.Add(data.matrix);
                 }
             }
-
-            lock (_locker)
-            {
-                // 因为2个线程的执行速度不一样, 由子线程调用Clear()的好处是:
-                // 1. 不会因为子线程调用速度过快, 导致_sharedVisibleMatrices无限变长
-                // 2. 主线程每次都能读到有数据的_sharedVisibleMatrices, 而if由主线程调用Clear(), 则可能在下一帧读不到有数据的_sharedVisibleMatrices
-                _sharedVisibleMatrices.Clear();
-                _sharedVisibleMatrices.AddRange(threadVisibleMatrices);
-            }
+            
+            _visibleSwapper.Put(true);
         }
 
-        public void RenderMeshInstanced(Slice<Matrix4x4> tempVisibleMatrices)
+        public void RenderMeshInstanced()
         {
-            tempVisibleMatrices.Size = 0;
-            lock (_locker)
-            {
-                if (_sharedVisibleMatrices.Size > 0)
-                {
-                    tempVisibleMatrices.AddRange(_sharedVisibleMatrices);
-                }
-            }
+            var consumer = _visibleSwapper.GetConsumer();
+            consumer.Size = 0;
+            _visibleSwapper.Take(false);
 
             // 单次推送的上限就是1023个
             // https://docs.unity3d.com/ScriptReference/Graphics.RenderMeshInstanced.html
             const int maxBatchSize = 1023;
-            var total = tempVisibleMatrices.Size;
+            var total = consumer.Size;
 
             for (var i = 0; i < total; i += maxBatchSize)
             {
                 var size = Math.Min(maxBatchSize, total - i);
-                Graphics.RenderMeshInstanced(_renderParams, _sharedMesh, 0, tempVisibleMatrices.Items, size, i);
+                Graphics.RenderMeshInstanced(_renderParams, _sharedMesh, 0, consumer.Items, size, i);
                 // Logo.Info($"[RenderMeshInstanced()] mesh={_sharedMesh.name}, material={_renderParams.material.name}, size={size}");
             }
         }
@@ -140,7 +131,6 @@ namespace Unicorn
         private readonly RenderParams _renderParams;
         private readonly Slice<MeshData> _dataList = new();
 
-        private static readonly object _locker = new();
-        private readonly Slice<Matrix4x4> _sharedVisibleMatrices = new();
+        private readonly ThreadSwapper<Matrix4x4> _visibleSwapper;
     }
 }
