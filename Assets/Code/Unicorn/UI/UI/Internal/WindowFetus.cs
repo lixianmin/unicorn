@@ -5,7 +5,6 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
-
 using Unicorn.UI.States;
 using Unicorn.Web;
 using UnityEngine;
@@ -55,9 +54,11 @@ namespace Unicorn.UI.Internal
         {
             if (_lastKind != _nextKind)
             {
+                // ~~在OnExit()/OnEnter()的过程中, _nextKind有可能会改~~
                 _lastKind = _nextKind;
+                
                 _state.OnExit(this, _nextArg1);
-                _state = StateBase.Create(_nextKind);
+                _state = UIStateBase.Create(_nextKind);
                 _state.OnEnter(this, _nextArg1);
             }
         }
@@ -141,7 +142,7 @@ namespace Unicorn.UI.Internal
             }
         }
 
-        public StateBase GetState()
+        internal UIStateBase GetState()
         {
             return _state;
         }
@@ -162,7 +163,7 @@ namespace Unicorn.UI.Internal
 
         internal readonly UIWindowBase master;
 
-        private StateBase _state = StateBase.Create(StateKind.None);
+        private UIStateBase _state = UIStateBase.Create(StateKind.None);
         private StateKind _lastKind = StateKind.None;
         private StateKind _nextKind = StateKind.None;
         private object _nextArg1;

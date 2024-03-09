@@ -9,14 +9,14 @@ using Unicorn.UI.Internal;
 
 namespace Unicorn.UI.States
 {
-    internal class UnloadState : StateBase
+    internal class UnloadState : UIStateBase
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
             var master = fetus.master;
             master.InnerOnUnloading("[OnEnterUnloadState()]");
 
-            var isDelayedOpening = _isDelayedOpening;
+            var isDelayedOpening = _delayedAction == DelayedAction.OpenWindow;
             fetus.isLoaded = false;
             fetus.ChangeState(StateKind.None);
             master.Dispose();   // 这个会设置_isDelayedOpening=false;
@@ -26,20 +26,18 @@ namespace Unicorn.UI.States
             {
                 UIManager.It.OpenWindow(master.GetType());
             }
-            
-            AssertTools.IsTrue(!_isDelayedOpening);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            _isDelayedOpening = true;
+            _delayedAction = DelayedAction.OpenWindow;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            _isDelayedOpening = false;
+            _delayedAction = DelayedAction.CloseWindow;
         }
         
-        private bool _isDelayedOpening; // 遇到了OpenWindow()的请求
+        private DelayedAction _delayedAction; // 遇到了OpenWindow()的请求
     }
 }

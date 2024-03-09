@@ -9,7 +9,7 @@ using Unicorn.UI.Internal;
 
 namespace Unicorn.UI.States
 {
-    internal class OpenedState : StateBase
+    internal class OpenedState : UIStateBase
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
@@ -20,9 +20,9 @@ namespace Unicorn.UI.States
             fetus.isOpened = true;
 
             // 如果在OnOpened()或OnActivated()中收到了CloseWindow()
-            if (_isDelayedClosing)
+            if (_delayedAction == DelayedAction.CloseWindow)
             {
-                _isDelayedClosing = false;
+                _delayedAction = DelayedAction.None;
                 fetus.ChangeState(StateKind.CloseAnimation);
             }
         }
@@ -36,41 +36,38 @@ namespace Unicorn.UI.States
             UIManager.It._OnClosingWindow(master);
             master.InnerOnClosing("[OnExit()]");
 
-            if (_isDelayedOpening)
+            if (_delayedAction == DelayedAction.OpenWindow)
             {
-                _isDelayedOpening = false;
+                _delayedAction = DelayedAction.None;
                 fetus.ChangeState(StateKind.Opened);
             }
-            
-            AssertTools.IsTrue(!_isDelayedClosing);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            _isDelayedOpening = true;
-            _isDelayedClosing = false;
-            
             if (fetus.isOpened)
             {
                 var master = fetus.master;
                 UIManager.It._SetForegroundWindow(master, master.GetRenderQueue());
             }
+            else
+            {
+                _delayedAction = DelayedAction.OpenWindow;
+            }
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            _isDelayedOpening = false;
             if (fetus.isOpened)
             {
                 fetus.ChangeState(StateKind.CloseAnimation);
             }
             else
             {
-                _isDelayedClosing = true;
+                _delayedAction = DelayedAction.CloseWindow;
             }
         }
 
-        private bool _isDelayedOpening;
-        private bool _isDelayedClosing;
+        private DelayedAction _delayedAction; // 遇到了OpenWindow/CloseWindow的请求
     }
 }

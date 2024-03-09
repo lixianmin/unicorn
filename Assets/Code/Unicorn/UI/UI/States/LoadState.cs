@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Unicorn.UI.States
 {
-    internal class LoadState : StateBase
+    internal class LoadState : UIStateBase
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
@@ -43,17 +43,16 @@ namespace Unicorn.UI.States
         public override void OnExit(WindowFetus fetus, object arg1)
         {
             _loadWindowMask.CloseWindow();
-            AssertTools.IsTrue(!_isDelayedClosing);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            _isDelayedClosing = false;
+            _delayedAction = DelayedAction.OpenWindow;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            _isDelayedClosing = true;
+            _delayedAction = DelayedAction.CloseWindow;
         }
 
         private void _LoadAsset(WindowFetus fetus, string assetPath)
@@ -66,9 +65,9 @@ namespace Unicorn.UI.States
                 
                 var master = fetus.master;
                 var isLoading = this == fetus.GetState();
-                if (_isDelayedClosing)
+                if (_delayedAction == DelayedAction.CloseWindow)
                 {
-                    _isDelayedClosing = false;
+                    _delayedAction = DelayedAction.None;
                     fetus.ChangeState(StateKind.None);
                     master.Dispose();
                 }
@@ -104,11 +103,11 @@ namespace Unicorn.UI.States
             master.InnerOnLoaded( "[_OnLoadGameObject()]");
             fetus.isLoaded = true;
 
-            var next = _isDelayedClosing ? StateKind.Unload : StateKind.OpenAnimation;
-            _isDelayedClosing = false;
+            var next = _delayedAction == DelayedAction.CloseWindow ? StateKind.Unload : StateKind.OpenAnimation;
+            _delayedAction = DelayedAction.None;
             fetus.ChangeState(next);
         }
         
-        private bool _isDelayedClosing; // 遇到了CloseWindow()的请示
+        private DelayedAction _delayedAction; // 遇到了CloseWindow()的请求
     }
 }

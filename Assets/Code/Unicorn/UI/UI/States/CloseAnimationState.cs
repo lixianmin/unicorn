@@ -9,7 +9,7 @@ using Unicorn.UI.Internal;
 
 namespace Unicorn.UI.States
 {
-    internal class CloseAnimationState : StateBase
+    internal class CloseAnimationState : UIStateBase
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
@@ -45,8 +45,6 @@ namespace Unicorn.UI.States
                 _playAnimationMask.CloseWindow();
                 _isPlaying = false;
             }
-            
-            AssertTools.IsTrue(!_isDelayedOpening);
         }
 
         private void _OnCloseWindowAnimationDone(WindowFetus fetus)
@@ -55,29 +53,30 @@ namespace Unicorn.UI.States
             _isPlaying = false;
             _closeAnimation.SetEnabledEx(false);
 
-            if (_isDelayedOpening)
+            if (_delayedAction == DelayedAction.OpenWindow)
             {
-                _isDelayedOpening = false;
                 fetus.ChangeState(StateKind.OpenAnimation);
             }
-            else
+            else if (_delayedAction == DelayedAction.CloseWindow)
             {
                 fetus.ChangeState(StateKind.Closed);
             }
+
+            _delayedAction = DelayedAction.None;
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            _isDelayedOpening = true;
+            _delayedAction = DelayedAction.OpenWindow;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            _isDelayedOpening = false;
+            _delayedAction = DelayedAction.CloseWindow;
         }
 
         private UIWindowAnimation _closeAnimation;
         private bool _isPlaying;
-        private bool _isDelayedOpening; // 遇到了OpenWindow()的请求
+        private DelayedAction _delayedAction; // 遇到了OpenWindow()的请求
     }
 }

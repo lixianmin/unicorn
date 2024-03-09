@@ -9,7 +9,7 @@ using Unicorn.UI.Internal;
 
 namespace Unicorn.UI.States
 {
-    internal class ClosedState : StateBase
+    internal class ClosedState : UIStateBase
     {
         private static bool _IsWindowCacheable(WindowFetus fetus)
         {

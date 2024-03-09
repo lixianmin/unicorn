@@ -9,7 +9,7 @@ using Unicorn.UI.Internal;
 
 namespace Unicorn.UI.States
 {
-    internal class NoneState : StateBase
+    internal class NoneState : UIStateBase
     {
         public override void OnOpenWindow(WindowFetus fetus)
         {

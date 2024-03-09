@@ -9,11 +9,11 @@ using Unicorn.UI.Internal;
 
 namespace Unicorn.UI.States
 {
-    internal abstract class StateBase
+    internal abstract class UIStateBase
     {
-        public static StateBase Create(StateKind kind)
+        public static UIStateBase Create(StateKind kind)
         {
-            StateBase state = null;
+            UIStateBase state = null;
             switch (kind)
             {
                 case StateKind.None:

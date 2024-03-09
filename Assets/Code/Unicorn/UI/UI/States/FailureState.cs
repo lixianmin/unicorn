@@ -9,7 +9,7 @@ using Unicorn.UI.Internal;
 
 namespace Unicorn.UI.States
 {
-    internal class FailureState : StateBase
+    internal class FailureState : UIStateBase
     {
         public override void OnEnter(WindowFetus fetus, object failureText)
         {
