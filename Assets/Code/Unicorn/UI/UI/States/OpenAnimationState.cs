@@ -9,7 +9,7 @@ using Unicorn.UI.Internal;
 
 namespace Unicorn.UI.States
 {
-    internal class OpenAnimationState: UIStateBase
+    internal class OpenAnimationState : UIStateBase
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
@@ -19,14 +19,11 @@ namespace Unicorn.UI.States
                 _openAnimation = serializer.openWindowAnimation;
                 _isPlaying = _openAnimation != null;
             }
-            
+
             if (_isPlaying)
             {
                 _openAnimation!.enabled = true;
-                _=_openAnimation.Init(() =>
-                {
-                    _OnOpenWindowAnimationDone(fetus);
-                });
+                _ = _openAnimation.Init(() => { _OnOpenWindowAnimationDone(fetus); });
                 _playAnimationMask.OpenWindow();
             }
             else
@@ -51,17 +48,16 @@ namespace Unicorn.UI.States
             _playAnimationMask.CloseWindow();
             _isPlaying = false;
             _openAnimation.SetEnabledEx(false);
-            
+
             if (_delayedAction == DelayedAction.CloseWindow)
             {
+                _delayedAction = DelayedAction.None;
                 fetus.ChangeState(StateKind.CloseAnimation);
             }
-            else if (_delayedAction == DelayedAction.OpenWindow)
+            else // if (_delayedAction == DelayedAction.OpenWindow)
             {
                 fetus.ChangeState(StateKind.Opened);
             }
-
-            _delayedAction = DelayedAction.None;
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
