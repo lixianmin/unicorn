@@ -47,6 +47,10 @@ namespace Unicorn.UI.States
         {
             if (fetus.isOpened)
             {
+                // 之所以要加这一句, 是为了防止前面有代码调用CloseWindow()修改过_nextKind
+                fetus.ChangeState(StateKind.Opened);
+                
+                // 原代码流程
                 var master = fetus.master;
                 UIManager.It._SetForegroundWindow(master, master.GetRenderQueue());
             }
