@@ -19,15 +19,12 @@ namespace Unicorn.UI.States
                 _closeAnimation = serializer.closeWindowAnimation;
                 _isPlaying = _closeAnimation != null;
             }
-            
+
             if (_isPlaying)
             {
                 _closeAnimation!.enabled = true;
-                _=_closeAnimation.Init(() =>
-                {
-                    _OnCloseWindowAnimationDone(fetus);
-                });
-                
+                _ = _closeAnimation.Init(() => { _OnCloseWindowAnimationDone(fetus); });
+
                 _playAnimationMask.OpenWindow();
             }
             else
@@ -56,13 +53,12 @@ namespace Unicorn.UI.States
             if (_delayedAction == DelayedAction.OpenWindow)
             {
                 fetus.ChangeState(StateKind.OpenAnimation);
+                _delayedAction = DelayedAction.None;
             }
-            else if (_delayedAction == DelayedAction.CloseWindow)
+            else // if (_delayedAction == DelayedAction.CloseWindow)
             {
                 fetus.ChangeState(StateKind.Closed);
             }
-
-            _delayedAction = DelayedAction.None;
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
