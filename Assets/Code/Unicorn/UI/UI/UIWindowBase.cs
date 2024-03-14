@@ -30,6 +30,7 @@ namespace Unicorn.UI
         
         public Transform GetTransform() { return _transform; }
         public Canvas GetCanvas() { return _canvas; }
+        public bool IsOpened() { return _fetus.isOpened; }
         
         /// <summary>
         /// 跟踪window加载进度
