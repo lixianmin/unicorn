@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace Unicorn.Collections
 {
-    public partial class Slice<T> : IList<T>, ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
+    public partial class Slice<T> : IList<T>, IList, ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
     {
         public T[] Items;
         public int Size;
