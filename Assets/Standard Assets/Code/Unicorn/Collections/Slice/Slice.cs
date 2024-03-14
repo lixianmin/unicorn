@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace Unicorn.Collections
 {
-    public partial class Slice<T> : ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
+    public partial class Slice<T> : IList<T>, ICollection<T>, ICollection, IEnumerable<T>, IEnumerable
     {
         public T[] Items;
         public int Size;
@@ -36,13 +36,30 @@ namespace Unicorn.Collections
             ArrayTools.AddItem(ref Items, ref Size, item);
         }
 
-        public void RemoveAt(int index)
+        public void Insert(int index, T item)
         {
-            if (index < 0 || index >= Size)
+            _CheckIndex(index);
+
+            var nextSize = Size + 1;
+            var capacity = Items.Length;
+            if (nextSize > capacity)
             {
-                throw new ArgumentOutOfRangeException("index is out of range.");
+                var nextCapacity = ArrayTools.EnsureCapacity(capacity, nextSize);
+                Array.Resize(ref Items, nextCapacity);
             }
 
+            if (index < Size)
+            {
+                Array.Copy(Items, index, (Array)Items, index + 1, Size - index);
+            }
+
+            Items[index] = item;
+            ++Size;
+        }
+
+        public void RemoveAt(int index)
+        {
+            _CheckIndex(index);
             --Size;
 
             if (index < Size)
@@ -97,11 +114,26 @@ namespace Unicorn.Collections
             return -1;
         }
 
+        public T this[int index]
+        {
+            get
+            {
+                _CheckIndex(index);
+                return Items[index];
+            }
+
+            set
+            {
+                _CheckIndex(index);
+                Items[index] = value;
+            }
+        }
+
         public bool Contains(T item)
         {
             return IndexOf(item) >= 0;
         }
-        
+
         public bool Remove(T item)
         {
             var index = IndexOf(item);
@@ -113,7 +145,15 @@ namespace Unicorn.Collections
 
             return false;
         }
-        
+
+        private void _CheckIndex(int index)
+        {
+            if (index < 0 || index >= Size)
+            {
+                throw new ArgumentOutOfRangeException("index is out of range.");
+            }
+        }
+
         public int Count => Size;
     }
 }
