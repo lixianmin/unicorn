@@ -17,9 +17,9 @@ namespace Unicorn.UI.States
             master.InnerOnUnloading("[OnEnterUnloadState()]");
 
             var isDelayedOpening = _delayedAction == DelayedAction.OpenWindow;
-            fetus.isLoaded = false;
+            fetus.RemoveFlag(WindowFlags.Loaded);
             fetus.ChangeState(StateKind.None);
-            master.Dispose();   // 这个会设置_isDelayedOpening=false;
+            master.Dispose(); // 这个会设置_isDelayedOpening=false;
 
             // 如果在关闭的过程中遇到了打开本window的请示，则在关闭后重新打开自己
             if (isDelayedOpening)
@@ -37,7 +37,7 @@ namespace Unicorn.UI.States
         {
             _delayedAction = DelayedAction.CloseWindow;
         }
-        
+
         private DelayedAction _delayedAction; // 遇到了OpenWindow()的请求
     }
 }

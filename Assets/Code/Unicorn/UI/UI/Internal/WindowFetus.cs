@@ -161,6 +161,21 @@ namespace Unicorn.UI.Internal
             return _webNode;
         }
 
+        public void AddFlag(WindowFlags flag)
+        {
+            _flags |= flag;
+        }
+
+        public void RemoveFlag(WindowFlags flag)
+        {
+            _flags &= ~flag;
+        }
+        
+        public bool HasFlag(WindowFlags flag)
+        {
+            return (_flags & flag) != 0;
+        }
+
         internal readonly UIWindowBase master;
 
         private UIStateBase _state = UIStateBase.Create(StateKind.None);
@@ -172,9 +187,6 @@ namespace Unicorn.UI.Internal
         private Transform _parent = UIManager.It.GetUIRoot();
         private UISerializer _serializer;
         private readonly WebData _webNode = new();
-
-        public bool isWindowCached;
-        public bool isLoaded;
-        public bool isOpened;
+        private WindowFlags _flags;
     }
 }

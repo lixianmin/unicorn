@@ -14,7 +14,7 @@ author:     lixianmin
  window加载生命周期:
  ----------------------------------------------------------------------
  |  new     --> load   --> open animation  --> open  --> active  -->  |
- |                                                                    |  
+ |                                                                    |
  |  dispose <-- unload <-- close animation <-- close <-- deactive <-- |
  ----------------------------------------------------------------------
 
@@ -23,6 +23,7 @@ Copyright (C) - All Rights Reserved
 
 using System;
 using System.Collections.Generic;
+using Unicorn.UI.Internal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -114,15 +115,15 @@ namespace Unicorn.UI
             if (count > 0)
             {
                 _CheckUICameraChanged(windows);
-                
+
                 for (var i = 0; i < count; i++)
                 {
                     var window = windows[i];
-                    if (window.GetFetus().isLoaded)
+                    if (window.GetFetus().HasFlag(WindowFlags.Loaded))
                     {
                         window.InnerSlowUpdate(deltaTime);
                     }
-                }    
+                }
             }
         }
 
@@ -174,7 +175,7 @@ namespace Unicorn.UI
                 var fetus = window.GetFetus();
                 fetus.ExpensiveUpdate(deltaTime);
 
-                if (fetus.isLoaded)
+                if (fetus.HasFlag(WindowFlags.Loaded))
                 {
                     var updater = window as IExpensiveUpdater;
                     updater?.ExpensiveUpdate(deltaTime);
@@ -250,7 +251,7 @@ namespace Unicorn.UI
                 for (var i = count - 1; i >= 0; i--)
                 {
                     var window = _windowsZOrder[i];
-                    if (window._sortingOrder < foregroundOrder && window.GetFetus().isOpened)
+                    if (window._sortingOrder < foregroundOrder && window.GetFetus().HasFlag(WindowFlags.Opened))
                     {
                         return window;
                     }

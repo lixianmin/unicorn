@@ -14,6 +14,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using Unicorn.UI.Internal;
 using Unicorn.Web;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ namespace Unicorn.UI
         
         public Transform GetTransform() { return _transform; }
         public Canvas GetCanvas() { return _canvas; }
-        public bool IsOpened() { return _fetus.isOpened; }
+        public bool IsOpened() { return _fetus.HasFlag(WindowFlags.Opened); }
         
         /// <summary>
         /// 跟踪window加载进度

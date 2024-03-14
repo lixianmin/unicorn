@@ -26,7 +26,7 @@ namespace Unicorn.UI.States
 
             var uiRoot = UIManager.It.GetUIRoot();
             var child = uiRoot.Find(assetPath);
-            
+
             // 如果在UIRoot下找到名为assetPath的节点，则直接使用该节点；否则当作UI资源的路径从addressable加载
             // 通常3d界面可能是内置到场景中的
             var needLoadAsset = child == null;
@@ -39,7 +39,7 @@ namespace Unicorn.UI.States
                 _OnLoadGameObject(fetus, child.gameObject);
             }
         }
-        
+
         public override void OnExit(WindowFetus fetus, object arg1)
         {
             _loadWindowMask.CloseWindow();
@@ -62,7 +62,7 @@ namespace Unicorn.UI.States
             {
                 var node = fetus.GetWebNode();
                 node.CopyFrom(prefab);
-                
+
                 var master = fetus.master;
                 var isLoading = this == fetus.GetState();
                 if (_delayedAction == DelayedAction.CloseWindow)
@@ -75,7 +75,7 @@ namespace Unicorn.UI.States
                 {
                     var mainAsset = prefab.Asset;
                     var goCloned = Object.Instantiate(mainAsset);
-                    
+
                     if (goCloned is not null)
                     {
                         goCloned.name = mainAsset.name;
@@ -94,20 +94,20 @@ namespace Unicorn.UI.States
                 prefab.Dispose();
             });
         }
-        
+
         private void _OnLoadGameObject(WindowFetus fetus, GameObject gameObject)
         {
             fetus.OnLoadGameObject(gameObject);
 
             var master = fetus.master;
-            master.InnerOnLoaded( "[_OnLoadGameObject()]");
-            fetus.isLoaded = true;
+            master.InnerOnLoaded("[_OnLoadGameObject()]");
+            fetus.AddFlag(WindowFlags.Loaded);
 
             var next = _delayedAction == DelayedAction.CloseWindow ? StateKind.Unload : StateKind.OpenAnimation;
             _delayedAction = DelayedAction.None;
             fetus.ChangeState(next);
         }
-        
+
         private DelayedAction _delayedAction; // 遇到了CloseWindow()的请求
     }
 }
