@@ -22,7 +22,7 @@ namespace Unicorn.UI.States
             if (_IsWindowCacheable(fetus))
             {
                 fetus.SetActive(false);
-                fetus.AddFlag(WindowFlags.WindowCached);
+                fetus.AddFlag(WindowFlags.Cached);
             }
             else
             {
@@ -32,10 +32,10 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            if (fetus.HasFlag(WindowFlags.WindowCached))
+            if (fetus.HasFlag(WindowFlags.Cached))
             {
                 fetus.SetActive(true);
-                fetus.RemoveFlag(WindowFlags.WindowCached);
+                fetus.RemoveFlag(WindowFlags.Cached);
             }
 
             fetus.ChangeState(StateKind.OpenAnimation);

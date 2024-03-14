@@ -31,7 +31,7 @@ namespace Unicorn.UI
         
         public Transform GetTransform() { return _transform; }
         public Canvas GetCanvas() { return _canvas; }
-        public bool IsOpened() { return _fetus.HasFlag(WindowFlags.Opened); }
+        public bool IsOpened() { return _fetus.HasFlag(WindowFlags.Opened1); }
         
         /// <summary>
         /// 跟踪window加载进度

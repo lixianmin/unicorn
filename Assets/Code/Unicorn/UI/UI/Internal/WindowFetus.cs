@@ -56,7 +56,7 @@ namespace Unicorn.UI.Internal
             {
                 // ~~在OnExit()/OnEnter()的过程中, _nextKind有可能会改~~
                 _lastKind = _nextKind;
-                
+
                 _state.OnExit(this, _nextArg1);
                 _state = UIStateBase.Create(_nextKind);
                 _state.OnEnter(this, _nextArg1);
@@ -123,10 +123,12 @@ namespace Unicorn.UI.Internal
         public void OpenWindow()
         {
             _state.OnOpenWindow(this);
+            AddFlag(WindowFlags.Opened1);
         }
 
         public void CloseWindow()
         {
+            RemoveFlag(WindowFlags.Opened1);
             _state.OnCloseWindow(this);
         }
 
@@ -170,7 +172,7 @@ namespace Unicorn.UI.Internal
         {
             _flags &= ~flag;
         }
-        
+
         public bool HasFlag(WindowFlags flag)
         {
             return (_flags & flag) != 0;
