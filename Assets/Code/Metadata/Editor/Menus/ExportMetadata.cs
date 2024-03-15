@@ -19,6 +19,9 @@ namespace Metadata.Menus
         [MenuItem(EditorMetaTools.MenuRoot + "Dispatch Metadata %&m", false, 201)]
         public static void Dispatch()
         {
+            // 很多时候, 如果给template增加或删除了字段, 会导致导出时使用的layout不对, 有可能是因为TypeTools缓存了sorted fields原因
+            TypeTools.Clear();
+            
             var startTime = Time.realtimeSinceStartup;
             var manager = Export(ExportFlags.ClearBuiltFile);
             // PlatformTools.DispatchFile(Constants.LocalMetadataPath);

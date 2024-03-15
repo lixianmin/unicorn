@@ -62,7 +62,7 @@ namespace Unicorn
 
         static TypeTools()
         {
-            _Clear();
+            Clear();
             _Init_MakeGenericType();
         }
 
@@ -201,7 +201,7 @@ namespace Unicorn
             }
         }
 
-        private static void _Clear()
+        public static void Clear()
         {
             _sortedFields.Clear();
 

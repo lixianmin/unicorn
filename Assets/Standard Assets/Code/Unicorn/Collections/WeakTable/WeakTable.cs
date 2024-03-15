@@ -47,17 +47,14 @@ namespace Unicorn.Collections
                 return target;
             }
 
-            set
-            {
-                _items[key] = value;
-            }
+            set => _items[key] = value;
         }
 
-        public int Count { get { return _items.Count; } }
+        public int Count => _items.Count;
 
-        private readonly Hashtable _items = new Hashtable();
+        private readonly Hashtable _items = new();
         private readonly Action<int> _lpfnOnGCHandler;
 
-        private static readonly SafeEvent<int> _OnGC = new SafeEvent<int>();
+        private static readonly SafeEvent<int> _OnGC = new();
     }
 }
