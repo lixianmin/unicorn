@@ -121,6 +121,8 @@ namespace Metadata.Menus
                 const bool isFullMode = false;
                 LocaleTextManager.It.Save(stream, isFullMode);
             }
+            
+            Logo.Info($"[_ExportMetadata()] exportPath={exportPath}");
         }
 
         public static event Action<XmlMetadataManager> OnExporting;
