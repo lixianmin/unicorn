@@ -63,6 +63,13 @@ namespace Unicorn
                 return false;
             }
 
+            // 启用了static batching, 就不要再使用instancing了
+            var name = sharedMesh.name;
+            if (name.StartsWith("Combined Mesh"))
+            {
+                return false;
+            }
+            
             key = new InstanceKey
             {
                 mesh = sharedMesh,
