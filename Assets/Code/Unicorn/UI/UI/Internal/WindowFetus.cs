@@ -123,12 +123,15 @@ namespace Unicorn.UI.Internal
         public void OpenWindow()
         {
             _state.OnOpenWindow(this);
-            AddFlag(WindowFlags.Opened1);
+
+            var flags = (FetusFlags)master.GetWindowFlags();
+            AddFlag(flags);
+            AddFlag(FetusFlags.Opened1);
         }
 
         public void CloseWindow()
         {
-            RemoveFlag(WindowFlags.Opened1);
+            RemoveFlag(FetusFlags.Opened1);
             _state.OnCloseWindow(this);
         }
 
@@ -163,17 +166,17 @@ namespace Unicorn.UI.Internal
             return _webNode;
         }
 
-        public void AddFlag(WindowFlags flag)
+        public void AddFlag(FetusFlags flag)
         {
             _flags |= flag;
         }
 
-        public void RemoveFlag(WindowFlags flag)
+        public void RemoveFlag(FetusFlags flag)
         {
             _flags &= ~flag;
         }
 
-        public bool HasFlag(WindowFlags flag)
+        public bool HasFlag(FetusFlags flag)
         {
             return (_flags & flag) != 0;
         }
@@ -189,6 +192,6 @@ namespace Unicorn.UI.Internal
         private Transform _parent = UIManager.It.GetUIRoot();
         private UISerializer _serializer;
         private readonly WebData _webNode = new();
-        private WindowFlags _flags;
+        private FetusFlags _flags;
     }
 }

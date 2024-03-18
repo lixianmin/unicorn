@@ -101,7 +101,7 @@ namespace Unicorn.UI.States
 
             var master = fetus.master;
             master.InnerOnLoaded("[_OnLoadGameObject()]");
-            fetus.AddFlag(WindowFlags.Loaded);
+            fetus.AddFlag(FetusFlags.Loaded);
 
             var next = _delayedAction == DelayedAction.CloseWindow ? StateKind.Unload : StateKind.OpenAnimation;
             _delayedAction = DelayedAction.None;

@@ -28,10 +28,12 @@ namespace Unicorn.UI
         /// <returns>assetPath：UIRoot下的Canvas节点名， 或加载UI的资源路径</returns>
         public abstract string GetAssetPath();
         public virtual RenderQueue GetRenderQueue() { return RenderQueue.Geometry; }
+
+        public virtual WindowFlags GetWindowFlags() { return WindowFlags.None; }
         
         public Transform GetTransform() { return _transform; }
         public Canvas GetCanvas() { return _canvas; }
-        public bool IsOpened() { return _fetus.HasFlag(WindowFlags.Opened1); }
+        public bool IsOpened() { return _fetus.HasFlag(FetusFlags.Opened1); }
         
         /// <summary>
         /// 跟踪window加载进度

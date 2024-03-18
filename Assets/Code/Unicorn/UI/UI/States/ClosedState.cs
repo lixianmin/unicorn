@@ -14,7 +14,7 @@ namespace Unicorn.UI.States
         private static bool _IsWindowCacheable(WindowFetus fetus)
         {
             // return fetus._master.CACHE_HINT and LuaUITools.isBigMemoryMode
-            return false;
+            return fetus.HasFlag(FetusFlags.Cache);
         }
 
         public override void OnEnter(WindowFetus fetus, object failureText)
@@ -22,7 +22,6 @@ namespace Unicorn.UI.States
             if (_IsWindowCacheable(fetus))
             {
                 fetus.SetActive(false);
-                fetus.AddFlag(WindowFlags.Cached);
             }
             else
             {
@@ -32,10 +31,9 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            if (fetus.HasFlag(WindowFlags.Cached))
+            if (fetus.HasFlag(FetusFlags.Cache))
             {
                 fetus.SetActive(true);
-                fetus.RemoveFlag(WindowFlags.Cached);
             }
 
             fetus.ChangeState(StateKind.OpenAnimation);

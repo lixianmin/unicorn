@@ -119,7 +119,7 @@ namespace Unicorn.UI
                 for (var i = 0; i < count; i++)
                 {
                     var window = windows[i];
-                    if (window.GetFetus().HasFlag(WindowFlags.Loaded))
+                    if (window.GetFetus().HasFlag(FetusFlags.Loaded))
                     {
                         window.InnerSlowUpdate(deltaTime);
                     }
@@ -175,7 +175,7 @@ namespace Unicorn.UI
                 var fetus = window.GetFetus();
                 fetus.ExpensiveUpdate(deltaTime);
 
-                if (fetus.HasFlag(WindowFlags.Loaded))
+                if (fetus.HasFlag(FetusFlags.Loaded))
                 {
                     var updater = window as IExpensiveUpdater;
                     updater?.ExpensiveUpdate(deltaTime);
@@ -251,7 +251,7 @@ namespace Unicorn.UI
                 for (var i = count - 1; i >= 0; i--)
                 {
                     var window = _windowsZOrder[i];
-                    if (window._sortingOrder < foregroundOrder && window.GetFetus().HasFlag(WindowFlags.Opened))
+                    if (window._sortingOrder < foregroundOrder && window.GetFetus().HasFlag(FetusFlags.Opened))
                     {
                         return window;
                     }

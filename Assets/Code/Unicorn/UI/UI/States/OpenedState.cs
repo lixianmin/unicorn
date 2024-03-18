@@ -17,7 +17,7 @@ namespace Unicorn.UI.States
 
             master.InnerOnOpened("[OnEnter()]");
             UIManager.It._SetForegroundWindow(master, master.GetRenderQueue());
-            fetus.AddFlag(WindowFlags.Opened);
+            fetus.AddFlag(FetusFlags.Opened);
 
             // 如果在OnOpened()或OnActivated()中收到了CloseWindow()
             if (_delayedAction == DelayedAction.CloseWindow)
@@ -31,7 +31,7 @@ namespace Unicorn.UI.States
         {
             var master = fetus.master;
             // isOpened is used to judge whether the window can be activated, thus it must be set to be false as soon as OnExit() is called.
-            fetus.RemoveFlag(WindowFlags.Opened);
+            fetus.RemoveFlag(FetusFlags.Opened);
 
             UIManager.It._OnClosingWindow(master);
             master.InnerOnClosing("[OnExit()]");
@@ -45,7 +45,7 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            if (fetus.HasFlag(WindowFlags.Opened))
+            if (fetus.HasFlag(FetusFlags.Opened))
             {
                 // 之所以要加这一句, 是为了防止前面有代码调用CloseWindow()修改过_nextKind
                 fetus.ChangeState(StateKind.Opened);
@@ -62,7 +62,7 @@ namespace Unicorn.UI.States
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            if (fetus.HasFlag(WindowFlags.Opened))
+            if (fetus.HasFlag(FetusFlags.Opened))
             {
                 fetus.ChangeState(StateKind.CloseAnimation);
             }

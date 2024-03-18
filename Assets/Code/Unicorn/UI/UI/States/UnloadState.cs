@@ -17,7 +17,7 @@ namespace Unicorn.UI.States
             master.InnerOnUnloading("[OnEnterUnloadState()]");
 
             var isDelayedOpening = _delayedAction == DelayedAction.OpenWindow;
-            fetus.RemoveFlag(WindowFlags.Loaded);
+            fetus.RemoveFlag(FetusFlags.Loaded);
             fetus.ChangeState(StateKind.None);
             master.Dispose(); // 这个会设置_isDelayedOpening=false;
 
