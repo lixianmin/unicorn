@@ -72,6 +72,15 @@ namespace Unicorn
             }
         }
 
+        public void AddListener<T1, T2>(UnityEvent<T1, T2> evt, UnityAction<T1, T2> handler)
+        {
+            if (evt != null && handler != null)
+            {
+                evt.AddListener(handler);
+                _removeList.Add(() => { evt.RemoveListener(handler); });
+            }
+        }
+
         public void AddListener(EventTrigger trigger, EventTriggerType eventId, UnityAction<BaseEventData> handler)
         {
             if (trigger != null && handler != null)
@@ -84,7 +93,7 @@ namespace Unicorn
                 entry.callback.AddListener(handler);
                 trigger.triggers.Add(entry);
 
-                _removeList.Add(() => { trigger.triggers.Remove(entry); });    
+                _removeList.Add(() => { trigger.triggers.Remove(entry); });
             }
         }
 
