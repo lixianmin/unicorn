@@ -37,7 +37,7 @@ namespace Unicorn
 
                 // for Curved World, 膨胀一个, 防止穿帮
                 var bounds = renderer.bounds;
-                bounds.Expand(0.3f);
+                bounds.Expand(3f);
 
                 _dataList.Add(new MeshData
                 {
