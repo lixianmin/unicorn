@@ -36,6 +36,7 @@ namespace Unicorn
                 renderer.enabled = false;
 
                 // for Curved World, 膨胀一个, 防止穿帮
+                // InstanceItem扩张bounds的参数改为3, 因为影子很影响视觉效果
                 var bounds = renderer.bounds;
                 bounds.Expand(3f);
 
