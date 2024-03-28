@@ -148,7 +148,11 @@ namespace Unicorn.UI
             var position = nextCamera.transform.position;
             if (position != Vector3.zero)
             {
-                Logo.Warn($"UICamera is now at position {position}, it must be at (0, 0, 0)");
+                nextCamera.transform.position = Vector3.zero;
+                if (Application.isEditor)
+                {
+                    Logo.Warn($"UICamera is at {position}, it will be forced set at (0, 0, 0)");
+                }
             }
 
             var count = windows.Count;
