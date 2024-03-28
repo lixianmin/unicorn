@@ -25,7 +25,7 @@ namespace Unicorn.UI.States
                 _closeAnimation!.enabled = true;
                 _ = _closeAnimation.Init(() => { _OnCloseWindowAnimationDone(fetus); });
 
-                _playAnimationMask.OpenWindow();
+                // _playAnimationMask.OpenWindow();
             }
             else
             {
@@ -39,14 +39,14 @@ namespace Unicorn.UI.States
 
             if (_isPlaying)
             {
-                _playAnimationMask.CloseWindow();
+                // _playAnimationMask.CloseWindow();
                 _isPlaying = false;
             }
         }
 
         private void _OnCloseWindowAnimationDone(WindowFetus fetus)
         {
-            _playAnimationMask.CloseWindow();
+            // _playAnimationMask.CloseWindow();
             _isPlaying = false;
             _closeAnimation.SetEnabledEx(false);
 

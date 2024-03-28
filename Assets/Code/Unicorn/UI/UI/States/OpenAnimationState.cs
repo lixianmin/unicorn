@@ -24,7 +24,7 @@ namespace Unicorn.UI.States
             {
                 _openAnimation!.enabled = true;
                 _ = _openAnimation.Init(() => { _OnOpenWindowAnimationDone(fetus); });
-                _playAnimationMask.OpenWindow();
+                // _playAnimationMask.OpenWindow();
             }
             else
             {
@@ -38,14 +38,14 @@ namespace Unicorn.UI.States
 
             if (_isPlaying)
             {
-                _playAnimationMask.CloseWindow();
+                // _playAnimationMask.CloseWindow();
                 _isPlaying = false;
             }
         }
 
         private void _OnOpenWindowAnimationDone(WindowFetus fetus)
         {
-            _playAnimationMask.CloseWindow();
+            // _playAnimationMask.CloseWindow();
             _isPlaying = false;
             _openAnimation.SetEnabledEx(false);
 

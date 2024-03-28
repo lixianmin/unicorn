@@ -56,6 +56,6 @@ namespace Unicorn.UI.States
         public virtual void OnCloseWindow(WindowFetus fetus) {}
 
         protected static readonly UILoadingMask _loadWindowMask = new(0.5f);
-        protected static readonly UILoadingMask _playAnimationMask = new(0);
+        // protected static readonly UILoadingMask _playAnimationMask = new(0);
     }
 }

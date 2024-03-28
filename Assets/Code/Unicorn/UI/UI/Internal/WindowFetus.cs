@@ -48,12 +48,16 @@ namespace Unicorn.UI.Internal
         {
             _nextKind = kind;
             _nextArg1 = arg1;
+            // Logo.Warn($"_nextKind={_nextKind}, assetPath={master.GetAssetPath()}");
         }
 
-        public void ExpensiveUpdate(float deltaTime)
+        public void ExpensiveUpdate()
         {
             if (_lastKind != _nextKind)
             {
+                // Logo.Warn(
+                //     $"[ExpensiveUpdate()] {_lastKind}=>{_nextKind}, _state={_state}, assetPath={master.GetAssetPath()}");
+
                 // ~~在OnExit()/OnEnter()的过程中, _nextKind有可能会改~~
                 _lastKind = _nextKind;
 

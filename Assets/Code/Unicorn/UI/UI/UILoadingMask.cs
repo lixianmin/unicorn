@@ -18,8 +18,9 @@ namespace Unicorn.UI
             _discolorTime = Mathf.Max(discolorTime, 0);
         }
 
-        public void OpenWindow()
+        public void OpenWindow(string assetPath)
         {
+            // Logo.Warn($"[OpenWindow()] _openCount={_openCount}, assetPath={assetPath}");
             _EnsureCreateGameObject();
 
             if (_openCount == 0)
@@ -37,14 +38,16 @@ namespace Unicorn.UI
             _openCount++;
         }
 
-        public void CloseWindow()
+        public void CloseWindow(string assetPath)
         {
             if (_openCount <= 0)
             {
+                // Logo.Warn($"[CloseWindow()] _openCount={_openCount}, assetPath={assetPath}");
                 return;
             }
 
             _openCount--;
+            // Logo.Warn($"[CloseWindow()] _openCount={_openCount}, assetPath={assetPath}");
             if (_openCount == 0)
             {
                 _gameObject.SetActive(false);
@@ -78,7 +81,7 @@ namespace Unicorn.UI
             var go = new GameObject("loading_mask");
             _AddCanvas(go);
             _AddImage(go);
-            
+
             _gameObject = go;
         }
 
@@ -86,10 +89,10 @@ namespace Unicorn.UI
         {
             var canvas = go.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            
+
             // 这个是能否接收到mouse点击的关键
             go.AddComponent<GraphicRaycaster>();
-            
+
             // 设置父节点为UIRoot
             var parent = UIManager.It.GetUIRoot();
             go.transform.SetParent(parent, false);

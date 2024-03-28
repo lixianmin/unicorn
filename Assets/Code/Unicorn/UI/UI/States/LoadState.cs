@@ -15,9 +15,9 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            _loadWindowMask.OpenWindow();
-
             var assetPath = fetus.master.GetAssetPath();
+            _loadWindowMask.OpenWindow(assetPath);
+            
             if (string.IsNullOrEmpty(assetPath))
             {
                 Logo.Error("assetPath is empty.");
@@ -42,7 +42,7 @@ namespace Unicorn.UI.States
 
         public override void OnExit(WindowFetus fetus, object arg1)
         {
-            _loadWindowMask.CloseWindow();
+            _loadWindowMask.CloseWindow(fetus.master.GetAssetPath());
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
@@ -69,6 +69,9 @@ namespace Unicorn.UI.States
                 {
                     _delayedAction = DelayedAction.None;
                     fetus.ChangeState(StateKind.None);
+                    
+                    // master.Dispose(), 会导致当前状态的OnExit()无法被正常调用到, 逻辑闭环就打破了
+                    OnExit(fetus, null);
                     master.Dispose();
                 }
                 else if (isLoading)

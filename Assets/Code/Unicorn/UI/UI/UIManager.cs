@@ -177,7 +177,7 @@ namespace Unicorn.UI
             {
                 var window = windows[i];
                 var fetus = window.GetFetus();
-                fetus.ExpensiveUpdate(deltaTime);
+                fetus.ExpensiveUpdate();
 
                 if (fetus.HasFlag(FetusFlags.Loaded))
                 {
