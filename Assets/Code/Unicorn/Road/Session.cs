@@ -342,32 +342,7 @@ namespace Unicorn.Road
 
             if (handler != null)
             {
-                _requestHandlers[requestId] = (data1, err) =>
-                {
-                    if (data1 != null)
-                    {
-                        var response = _serde.Deserialize<T>(data1);
-                        try
-                        {
-                            handler(response, null);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logo.Warn($"response={response}, ex={ex}");
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            handler(default, err);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logo.Warn($"err={err}, ex={ex}");
-                        }
-                    }
-                };
+                _requestHandlers[requestId] = (data1, err) => { _CallHandler(handler, data1, err); };
             }
 
             _SendPacket(pack);
@@ -383,18 +358,34 @@ namespace Unicorn.Road
             }
 
             // _registeredHandlers的key必须使用string而不能使用byte[], 因为byte[]是一个ref类型, 没有像string一个重载GetHash()相关的方法
-            _registeredHandlers[route] = (data1, err) =>
+            _registeredHandlers[route] = (data1, err) => { _CallHandler(handler, data1, err); };
+        }
+
+        private void _CallHandler<T>(Action<T, Error> handler, byte[] data, Error err) where T : new()
+        {
+            if (data != null)
             {
-                if (data1 != null)
+                var response = _serde.Deserialize<T>(data);
+                try
                 {
-                    var response = _serde.Deserialize<T>(data1);
                     handler(response, null);
                 }
-                else
+                catch (Exception ex)
+                {
+                    Logo.Warn($"response={response}, ex={ex}");
+                }
+            }
+            else
+            {
+                try
                 {
                     handler(default, err);
                 }
-            };
+                catch (Exception ex)
+                {
+                    Logo.Warn($"err={err}, ex={ex}");
+                }
+            }
         }
 
         public void OnKicked(Action handler)
