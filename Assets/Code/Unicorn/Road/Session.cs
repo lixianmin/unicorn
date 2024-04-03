@@ -139,10 +139,11 @@ namespace Unicorn.Road
             {
                 _sessionThread.ReceivePackets(_packets);
 
-                var size = _packets.Count;
-                if (size > 0)
+                if (_packets.Count > 0)
                 {
-                    for (int i = 0; i < size; i++)
+                    // _packets可以确认是主线程执行的, 但在遍历的过程中, 如果遇到了Kick,
+                    // 则会调用Close, 则会把_packets清空
+                    for (var i = 0; i < _packets.Count; i++)
                     {
                         var pack = _packets[i];
                         _OnReceivedPacket(pack);
