@@ -347,11 +347,25 @@ namespace Unicorn.Road
                     if (data1 != null)
                     {
                         var response = _serde.Deserialize<T>(data1);
-                        handler(response, null);
+                        try
+                        {
+                            handler(response, null);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logo.Warn($"response={response}, ex={ex}");
+                        }
                     }
                     else
                     {
-                        handler(default, err);
+                        try
+                        {
+                            handler(default, err);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logo.Warn($"err={err}, ex={ex}");
+                        }
                     }
                 };
             }
