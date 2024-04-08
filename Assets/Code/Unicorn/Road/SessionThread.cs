@@ -37,6 +37,8 @@ namespace Unicorn.Road
                 return;
             }
 
+            _socket = socket;
+            
             const int bufferSize = 4096;
             var buffer = new byte[bufferSize];
             var stream = new OctetsStream(128);

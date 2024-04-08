@@ -18,13 +18,15 @@ namespace Unicorn.Road
 {
     public class Session : Disposable
     {
-        public void Connect(string hostNameOrAddress, int port, ISerde serde, Action<JsonHandshake> onHandShaken = null)
+        public void Connect(string hostNameOrAddress, int port, ISerde serde,
+            Action<JsonHandshake> onHandShaken = null, Action onClosed = null)
         {
             Close();
             _reconnectAction = () =>
             {
                 _serde = serde ?? throw new ArgumentNullException(nameof(serde));
-                _onHandShaken = onHandShaken;
+                _onHandShakenHandler = onHandShaken;
+                _onClosedHandler = onClosed;
 
                 try
                 {
@@ -56,7 +58,8 @@ namespace Unicorn.Road
             _sessionThread = null;
 
             _serde = null;
-            _onHandShaken = null;
+            _onHandShakenHandler = null;
+            _onClosedHandler = null;
             _nonce = 0;
 
             _nextHeartbeatTime = float.MaxValue;
@@ -78,6 +81,15 @@ namespace Unicorn.Road
             if (_sessionThread != null && _sessionThread.IsClosed() && _reconnectAction != null &&
                 Time.time > _nextReconnectTime)
             {
+                // _nonce>0 意味着已经收到 HandShaken
+                // server确保返回的 nonce>0
+                if (_onClosedHandler != null && _nonce > 0)
+                {
+                    _onClosedHandler();
+                    _onClosedHandler = null;
+                    _nonce = 0;
+                }
+
                 // 这一句必须在前面, 因为后面的_reconnectAction()可能会异常
                 var randomSeconds = Random.Range(2, 5);
                 _nextReconnectTime = Time.time + randomSeconds;
@@ -206,7 +218,7 @@ namespace Unicorn.Road
 
             _HandshakeRe();
             _nonce = handshake.nonce;
-            _onHandShaken?.Invoke(handshake);
+            _onHandShakenHandler?.Invoke(handshake);
         }
 
         private void _Kick(string reason)
@@ -411,7 +423,8 @@ namespace Unicorn.Road
         private SessionThread _sessionThread;
 
         private ISerde _serde;
-        private Action<JsonHandshake> _onHandShaken;
+        private Action<JsonHandshake> _onHandShakenHandler;
+        private Action _onClosedHandler;
         private Action _onKickedHandler;
         private int _nonce;
         private string _serverGid = string.Empty;
