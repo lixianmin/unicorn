@@ -2,6 +2,9 @@
 created:    2023-06-12
 author:     lixianmin
 
+现在的设计是有缺陷的, 除非改成_pendingStream在接收到服务器的确认协议后主动删除的方式,
+而且还需要加上幂等, 也就是改成确定性消息, 否则一定会有丢失的风险
+
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
@@ -28,6 +31,11 @@ namespace Unicorn.Road
         private void _Run()
         {
             var socket = _ConnectSocket(_address, _port);
+            if (socket == null)
+            {
+                Close();
+                return;
+            }
 
             const int bufferSize = 4096;
             var buffer = new byte[bufferSize];
@@ -60,7 +68,7 @@ namespace Unicorn.Road
             }
         }
 
-        private Socket _ConnectSocket(IPAddress address, int port)
+        private static Socket _ConnectSocket(IPAddress address, int port)
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             // 只所以把连socket的操作放到Thread中, 是因为它会block, 会阻塞主线程做工作
@@ -75,10 +83,19 @@ namespace Unicorn.Road
             // 1. 目前测试得知, address使用127.0.0.1或正确的IP(如: 192.168.31.96)在macos上是可以正确连接到golang server的
             // 2. 使用ConnectAsync() 代替 Connect(), 是为了防止在connect的address错误的时候不卡死UI响应
             // 3. 但是, 使用ConnectAsync()时, 发现在肖老师的电脑上, 会反复报如下错误, 导致连不上
-            //  Close socket by ex=System.Net.Sockets.SocketException (0x80004005): 由于套接字没有连接并且(当使用一个 sendto 调用发送数据报套接字时)没有提供地址，发送或接收数据的请求没有被接受。
-            socket.Connect(address, port);
+            //  Close socket by ex=System.Net.Sockets.SocketException (0x80004005): 由于套接字没有连接
+            // 并且(当使用一个 sendto 调用发送数据报套接字时)没有提供地址，发送或接收数据的请求没有被接受。
 
-            _socket = socket;
+            try
+            {
+                socket.Connect(address, port);
+            }
+            catch (Exception ex)
+            {
+                Logo.Warn($"ex={ex}");
+                return null;
+            }
+
             // Logo.Warn($"_socket.SendBufferSize={_socket.SendBufferSize}, receiveTimeout = {_socket.ReceiveTimeout}, sendTime={_socket.SendTimeout}");
 
             return socket;
@@ -104,10 +121,10 @@ namespace Unicorn.Road
             {
                 return;
             }
-            
+
             // _pendingStream不需要lock, 它用于接收数据并转交给_sendingStream, 因此_pendingStream所有相关操作都是主线程
             _pendingStream.Write(buffer, offset, size);
-            
+
             // 立即调用, 尽可能减少发送延迟
             _CheckSendPendingStream();
         }
@@ -121,21 +138,22 @@ namespace Unicorn.Road
 
         private void _CheckSendPendingStream()
         {
-            if (_pendingStream.Length > 0 && Interlocked.Read(ref _canSend) == 1)
+            var socket = _socket;
+            if (socket != null && _pendingStream.Length > 0 && Interlocked.Read(ref _canSend) == 1)
             {
                 Interlocked.Exchange(ref _canSend, 0);
-                
+
                 // _sendingStream也不需要lock, 因为它的数据虽然跨线程, 但是对它的修改全是在主线程里进行的, 而且在
                 // _OnSendCallback()回调之前, 不会再次修改
                 _sendingStream.Tidy();
                 _pendingStream.WriteTo(_sendingStream);
                 _pendingStream.Tidy();
-                
+
                 try
                 {
                     var buffer = _sendingStream.GetBuffer();
                     var size = (int)_sendingStream.Length;
-                    _socket.BeginSend(buffer, 0, size, SocketFlags.None, _OnSendCallback, null);
+                    socket.BeginSend(buffer, 0, size, SocketFlags.None, _OnSendCallback, null);
                 }
                 catch (Exception ex)
                 {
@@ -151,12 +169,13 @@ namespace Unicorn.Road
         /// <param name="ar"></param>
         private void _OnSendCallback(IAsyncResult ar)
         {
-            if (_socket != null && !IsClosed())
+            var socket = _socket;
+            if (socket != null && !IsClosed())
             {
                 try
                 {
                     // EndSend()是一个blocking操作
-                    _socket.EndSend(ar);
+                    socket.EndSend(ar);
                 }
                 catch (Exception ex)
                 {
@@ -164,7 +183,7 @@ namespace Unicorn.Road
                     Logo.Warn($"[_OnSendCallback()] Close socket by ex={ex}");
                 }
             }
-            
+
             Interlocked.Exchange(ref _canSend, 1);
         }
 
@@ -184,7 +203,7 @@ namespace Unicorn.Road
         {
             return Interlocked.Read(ref _isRunning) == 0;
         }
-        
+
         public void Close()
         {
             Interlocked.Exchange(ref _isRunning, 0);
