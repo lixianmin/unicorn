@@ -19,7 +19,7 @@ namespace Unicorn
         {
         }
 
-        public void RefreshRenderers()
+        public void RefreshRenderers(Predicate<MeshRenderer> canGpuInstancing = null)
         {
             _mainCamera = Camera.main;
             _butler.Clear();
@@ -34,13 +34,13 @@ namespace Unicorn
             var meshRenderers = Object.FindObjectsOfType<MeshRenderer>();
             foreach (var meshRenderer in meshRenderers)
             {
-                _butler.AddMeshRenderer(meshRenderer, _mainCamera);
+                _butler.AddMeshRenderer(meshRenderer, _mainCamera, canGpuInstancing);
             }
         }
 
-        public void AddRenderer(MeshRenderer renderer)
+        public void AddRenderer(MeshRenderer renderer, Predicate<MeshRenderer> canGpuInstancing = null)
         {
-            if (IsEnabled() && _butler.AddMeshRenderer(renderer, _mainCamera))
+            if (IsEnabled() && _butler.AddMeshRenderer(renderer, _mainCamera, canGpuInstancing))
             {
                 _SetDirty();
             }

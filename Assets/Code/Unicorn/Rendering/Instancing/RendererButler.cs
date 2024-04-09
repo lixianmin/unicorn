@@ -5,6 +5,7 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
 using System.Collections.Generic;
 using Unicorn.Collections;
 using UnityEngine;
@@ -13,10 +14,22 @@ namespace Unicorn
 {
     internal class RendererButler
     {
-        public bool AddMeshRenderer(MeshRenderer renderer, Camera camera)
+        public bool AddMeshRenderer(MeshRenderer renderer, Camera camera,
+            Predicate<MeshRenderer> canGpuInstancing = null)
         {
             var invisible = renderer == null || !renderer.enabled || renderer.forceRenderingOff;
-            if (invisible || camera == null || !_CreateInstanceKey(renderer, out var key))
+            if (invisible || camera == null)
+            {
+                return false;
+            }
+
+            // behavior designer, 因为可见性优化, 这些tree所在的Renderer不能加入gpu instancing
+            if (canGpuInstancing != null && !canGpuInstancing(renderer))
+            {
+                return false;
+            }
+
+            if (!_CreateInstanceKey(renderer, out var key))
             {
                 return false;
             }
@@ -69,7 +82,7 @@ namespace Unicorn
             {
                 return false;
             }
-            
+
             key = new InstanceKey
             {
                 mesh = sharedMesh,
