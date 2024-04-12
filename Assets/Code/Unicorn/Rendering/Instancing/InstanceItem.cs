@@ -80,9 +80,9 @@ namespace Unicorn
         /// 1. 使用4叉树
         /// 2. 使用独立线程
         /// 3. 使用compute shader
-        ///
+        /// 
         /// 本次使用是独立线程的方案, 可以完全解放主线程的计算消耗
-        ///
+        /// 
         /// 为什么不使用Job System? 是一个可以尝试的方案, 但要求所有对象都是纯struct
         /// 为什么不不使用UniTask? 在创建action的过程中, 每一帧都会产生大量的 gc alloc
         /// 
@@ -91,7 +91,6 @@ namespace Unicorn
         /// 2. _sharedVisibleMatrices: 长度会发生变化, 需好好处理data race
         /// </summary>
         /// <param name="frustumPlanes"></param>
-        /// <param name="threadVisibleMatrices"></param>
         public void CollectVisibleMatrices(Plane[] frustumPlanes)
         {
             var producer = _visibleSwapper.GetProducer();
