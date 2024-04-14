@@ -6,7 +6,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
-using System.Collections.Generic;
+using System.Collections;
 
 namespace Unicorn
 {
@@ -22,13 +22,15 @@ namespace Unicorn
             return item;
         }
 
-        public void DisposeAnClear()
+        public void DisposeAndClear()
         {
-            if (_items.Count > 0)
+            var count = _items.Count;
+            if (count > 0)
             {
-                foreach (var item in _items)
+                for (var i = 0; i < count; i++)
                 {
-                    item.Dispose();
+                    var item = _items[i] as IDisposable;
+                    item?.Dispose();
                 }
 
                 _items.Clear();
@@ -37,9 +39,9 @@ namespace Unicorn
 
         protected override void _DoDispose(int flags)
         {
-            DisposeAnClear();
+            DisposeAndClear();
         }
 
-        private readonly List<IDisposable> _items = new();
+        private readonly ArrayList _items = new();
     }
 }
