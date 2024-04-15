@@ -2,7 +2,7 @@
 created:    2024-03-16
 author:     lixianmin
 
- https://github.com/ThousandAnt/ta-frustrum-culling.git
+ https://github.com/ThousandAnt/ta-frustrum-culling/blob/master/Assets/Scripts/ThousandAnt.FrustumCulling/Collections/UnsafeReadOnlyArray.cs
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
