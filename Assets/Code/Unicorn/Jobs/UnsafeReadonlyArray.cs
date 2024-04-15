@@ -23,6 +23,24 @@ namespace Unicorn
             _ptr = (T*)_handle.AddrOfPinnedObject().ToPointer();
         }
 
+        /// <summary>
+        /// 接收部分array, 为接收Slice<T>做准备
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="length"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public UnsafeReadonlyArray(T[] data, int length)
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            Length = length <= data.Length ? length : data.Length;
+            _handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            _ptr = (T*)_handle.AddrOfPinnedObject().ToPointer();
+        }
+
         public void Dispose()
         {
             if (_handle.IsAllocated)
