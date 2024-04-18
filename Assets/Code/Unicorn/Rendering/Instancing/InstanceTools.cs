@@ -7,9 +7,8 @@ https://forum.unity.com/threads/managed-version-of-geometryutility-testplanesaab
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System.Runtime.CompilerServices;
 using UnityEngine;
-using Unity.Mathematics;
-using Unity.Collections;
 
 namespace Unicorn
 {
@@ -25,11 +24,16 @@ namespace Unicorn
         {
             foreach (var plane in planes)
             {
-                var normalSign = math.sign(plane.normal);
-                var testPoint = (float3)bounds.center + bounds.extents * normalSign;
+                var normal = plane.normal;
+                var normalSign = new Vector3(_Sign(normal.x), _Sign(normal.y), _Sign(normal.z));
+                var extents = bounds.extents;
+                var testPoint = bounds.center + new Vector3(
+                    extents.x * normalSign.x,
+                    extents.y * normalSign.y,
+                    extents.z * normalSign.z);
 
-                var dot = math.dot(testPoint, plane.normal);
-                if (dot + plane.distance < 0)
+                var dotted = _Dot(testPoint, normal);
+                if (dotted + plane.distance < 0)
                 {
                     return false;
                 }
@@ -38,22 +42,22 @@ namespace Unicorn
             return true;
         }
 
-        public static bool TestPlanesAABB(NativeArray<Plane> planes, Bounds bounds)
-        {
-            foreach (var plane in planes)
-            {
-                var normalSign = math.sign(plane.normal);
-                var testPoint = (float3)bounds.center + bounds.extents * normalSign;
-
-                var dot = math.dot(testPoint, plane.normal);
-                if (dot + plane.distance < 0)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        // public static bool TestPlanesAABB(NativeArray<Plane> planes, Bounds bounds)
+        // {
+        //     foreach (var plane in planes)
+        //     {
+        //         var normalSign = math.sign(plane.normal);
+        //         var testPoint = (float3)bounds.center + bounds.extents * normalSign;
+        //
+        //         var dot = math.dot(testPoint, plane.normal);
+        //         if (dot + plane.distance < 0)
+        //         {
+        //             return false;
+        //         }
+        //     }
+        //
+        //     return true;
+        // }
 
         public static RenderParams CreateRenderParams(Material material, Renderer renderer, Camera camera = null)
         {
@@ -71,6 +75,19 @@ namespace Unicorn
             }
 
             return renderParams;
+        }
+        
+                
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float _Sign(float x)
+        {
+            return (x > 0.0f ? 1.0f : 0.0f) - (x < 0.0f ? 1.0f : 0.0f);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float _Dot(Vector3 x, Vector3 y)
+        {
+            return x.x * y.x + x.y * y.y + x.z * y.z;
         }
 
         // public enum TestPlanesResults
