@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2014-10-08
 author:     lixianmin
 
@@ -12,7 +11,7 @@ namespace Unicorn
 {
     public static class CallbackTools
     {
-        public static void Handle(Action handler, string title)
+        public static void Handle(Action handler, string title = "")
         {
             if (null != handler)
             {
@@ -22,26 +21,22 @@ namespace Unicorn
                 }
                 catch (Exception ex)
                 {
-                    Logo.Error("[CallbackTools.Handle()] {0}, ex= {1},\n\n StackTrace={2}"
-                        , title, ex, ex.StackTrace);
+                    Logo.Warn($"[CallbackTools.Handle()] {title}, ex= {ex},\n\n StackTrace={ex.StackTrace}");
                 }
             }
         }
-        
-        public static void Handle(ref Action handler, string title)
+
+        public static void Handle(ref Action handler, string title = "")
         {
             if (null != handler)
             {
                 try
                 {
-                    //AssertTools.BeginTimeout();
                     handler();
-                    //AssertTools.EndTimeout(Timeout);
                 }
                 catch (Exception ex)
                 {
-                    Logo.Error("[CallbackTools.Handle()] {0}, ex= {1},\n\n StackTrace={2}"
-                                            , title, ex, ex.StackTrace);
+                    Logo.Warn($"[CallbackTools.Handle()] {title}, ex= {ex},\n\n StackTrace={ex.StackTrace}");
                 }
                 finally
                 {
@@ -50,12 +45,7 @@ namespace Unicorn
             }
         }
 
-        public static void Handle<T>(ref Action<T> handler, T self, string title)
-        {
-            Handle(ref handler, self, title, string.Empty);
-        }
-        
-        public static void Handle<T, U>(ref Action<T> handler, T self, string title, U text)
+        public static void Handle<T>(ref Action<T> handler, T self, string title = "")
         {
             if (null != handler)
             {
@@ -67,8 +57,8 @@ namespace Unicorn
                 }
                 catch (Exception ex)
                 {
-                    Logo.Error("[CallbackTools.Handle()] {0} {1}, ex= {2},\n\n StackTrace={3},\n\n this= {4}"
-                                            , title, text.ToString(), ex.ToString(), ex.StackTrace, self);
+                    Logo.Warn(
+                        $"[CallbackTools.Handle()] {title}, ex= {ex},\n\n StackTrace={ex.StackTrace},\n\n this= {self}");
                 }
                 finally
                 {
@@ -76,7 +66,5 @@ namespace Unicorn
                 }
             }
         }
-        
-        //        public static float Timeout = 5f;
     }
 }
