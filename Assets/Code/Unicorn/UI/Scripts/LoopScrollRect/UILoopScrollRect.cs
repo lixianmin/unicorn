@@ -56,21 +56,23 @@ namespace Unicorn.UI
             rectContent.anchorMin = Vector2.up;
             rectContent.anchorMax = Vector2.up;
 
-            var rectAncestor = rectContent.parent as RectTransform;
-            // 如果是stretch mode, 就取其父节点
-            while (rectAncestor != null && rectAncestor.anchorMin != rectAncestor.anchorMax)
-            {
-                rectAncestor = rectAncestor.parent as RectTransform;
-            }
+            // var rectAncestor = rectContent.parent as RectTransform;
+            // // 如果是stretch mode, 就取其父节点
+            // while (rectAncestor != null && rectAncestor.anchorMin != rectAncestor.anchorMax)
+            // {
+            //     rectAncestor = rectAncestor.parent as RectTransform;
+            // }
+            //
+            // if (rectAncestor == null)
+            // {
+            //     Logo.Warn($"Can not find rectAncestor, root={_contentTransform.root}");
+            //     return;
+            // }
 
-            if (rectAncestor == null)
-            {
-                Logo.Warn($"Can not find rectAncestor, root={_contentTransform.root}");
-                return;
-            }
-
+            // 这个取的应该就是UILoopScrollRect所在的节点, 上一版本按stretch mode取, 如果它自己也设置成了stretch, 就取到上面的节点去了
+            var rectAncestor = transform as RectTransform;
             // copy其viewport的sizeDelta到content
-            var size = rectAncestor.sizeDelta;
+            var size = rectAncestor!.sizeDelta;
             if (size.x.IsZero() || size.y.IsZero())
             {
                 Logo.Warn($"size={size}, rectAncestor={rectAncestor}, root={_contentTransform.root}");
