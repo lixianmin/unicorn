@@ -109,7 +109,7 @@ namespace Unicorn.Web
             material.shader = Shader.Find(shaderName);
             var nextRenderQueue = material.renderQueue;
 
-            // we can not change the renderQueue of font manually, because InputField.text may disappear.
+            // we can't change the renderQueue of font manually, because InputField.text may disappear.
             // renderQueue is changed when manually setting shader, and should be restored
             if (lastRenderQueue != nextRenderQueue && !shaderName.StartsWith("TextMeshPro/"))
             {
@@ -117,12 +117,5 @@ namespace Unicorn.Web
                 // Logo.Info($"material.name={material.name}, shader.name={shaderName}, last={lastRenderQueue}, next={nextRenderQueue}");
             }
         }
-
-        internal static int GetNextId()
-        {
-            return ++_idGenerator;
-        }
-
-        private static int _idGenerator;
     }
 }
