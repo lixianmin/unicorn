@@ -5,9 +5,14 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using Unicorn.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 
 namespace Unicorn.Web
 {
@@ -117,5 +122,67 @@ namespace Unicorn.Web
                 // Logo.Info($"material.name={material.name}, shader.name={shaderName}, last={lastRenderQueue}, next={nextRenderQueue}");
             }
         }
+
+        public static void ReloadVisualEffects(GameObject goAsset)
+        {
+            if (!Application.isEditor || goAsset == null)
+            {
+                return;
+            }
+
+            _CheckInitVisualEffectPaths();
+            var list = ListPool.Get<VisualEffect>();
+            goAsset.GetComponentsInChildren(true, list);
+
+            var count = list.Count;
+            for (var i = 0; i < count; i++)
+            {
+                var effect = list[i];
+                var assetName = effect.visualEffectAsset.name;
+                if (assetName.IsNullOrEmpty())
+                {
+                    continue;
+                }
+
+                var assetPath = _visualEffectPaths.Get(assetName);
+                if (assetPath.IsNullOrEmpty())
+                {
+                    Logo.Warn($"cant find vfx with assetName={assetName}");
+                    continue;
+                }
+
+                var asset = AssetDatabase.LoadMainAssetAtPath(assetPath) as VisualEffectAsset;
+                if (asset != null)
+                {
+                    effect.visualEffectAsset = asset;
+                }
+            }
+
+            ListPool.Return(list);
+        }
+
+        private static void _CheckInitVisualEffectPaths()
+        {
+            if (!_isVisualEffectPathsInited)
+            {
+                _isVisualEffectPathsInited = true;
+
+                var guids = AssetDatabase.FindAssets("t:VisualEffectAsset", null);
+                foreach (var guid in guids)
+                {
+                    var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                    var fileName = Path.GetFileName(assetPath);
+                    if (fileName.EndsWith(".vfx", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        fileName = fileName[..^4];
+                    }
+
+                    _visualEffectPaths[fileName] = assetPath;
+                }
+            }
+        }
+
+        private static readonly Dictionary<string, string> _visualEffectPaths = new();
+        private static bool _isVisualEffectPathsInited;
     }
 }

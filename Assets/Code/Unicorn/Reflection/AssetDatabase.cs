@@ -1,12 +1,13 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2015-03-03
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 using UnityEngine;
 using System;
+using System.Reflection;
 
 namespace Unicorn.Reflection
 {
@@ -21,27 +22,31 @@ namespace Unicorn.Reflection
 //		ForceUncompressedImport = 16384
 //	}
 
-	public static class AssetDatabase
-	{
+    public static class AssetDatabase
+    {
         private static Action _lpfnSaveAssets;
-		public static void SaveAssets ()
-		{
-			if (null == _lpfnSaveAssets)
-			{
-				var method = MyType.GetMethod("SaveAssets", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-				TypeTools.CreateDelegate(method, out _lpfnSaveAssets);
-			}
 
-			_lpfnSaveAssets();
-		}
+        public static void SaveAssets()
+        {
+            if (null == _lpfnSaveAssets)
+            {
+                var method = MyType.GetMethod("SaveAssets",
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                TypeTools.CreateDelegate(method, out _lpfnSaveAssets);
+            }
+
+            _lpfnSaveAssets();
+        }
 
         private static Func<UnityEngine.Object, string> _lpfnGetAssetPath;
-        public static string GetAssetPath (UnityEngine.Object assetObject)
+
+        public static string GetAssetPath(UnityEngine.Object assetObject)
         {
             if (null == _lpfnGetAssetPath)
             {
-                var flags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static;
-                var method = MyType.GetMethod("GetAssetPath", flags, null, new Type[]{ typeof(UnityEngine.Object) }, null);
+                const BindingFlags flags = System.Reflection.BindingFlags.Public |
+                                           System.Reflection.BindingFlags.Static;
+                var method = MyType.GetMethod("GetAssetPath", flags, null, new[] { typeof(UnityEngine.Object) }, null);
                 TypeTools.CreateDelegate(method, out _lpfnGetAssetPath);
             }
 
@@ -49,11 +54,12 @@ namespace Unicorn.Reflection
         }
 
         private static Func<string, string[], string[]> _lpfnFindAssets;
-        public static string[] FindAssets (string filter, string[] searchInFolders)
+
+        public static string[] FindAssets(string filter, string[] searchInFolders)
         {
             if (null == _lpfnFindAssets)
             {
-                var method = MyType.GetMethod("FindAssets", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                var method = _GetPublicStaticMethod("FindAssets", new[] { typeof(string), typeof(string[]) });
                 TypeTools.CreateDelegate(method, out _lpfnFindAssets);
             }
 
@@ -61,11 +67,12 @@ namespace Unicorn.Reflection
         }
 
         private static Func<string, string> _lpfnGUIDToAssetPath;
-        public static string GUIDToAssetPath (string guid)
+
+        public static string GUIDToAssetPath(string guid)
         {
             if (null == _lpfnGUIDToAssetPath)
             {
-                var method = MyType.GetMethod("GUIDToAssetPath", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                var method = _GetPublicStaticMethod("GUIDToAssetPath", new[] { typeof(string) });
                 TypeTools.CreateDelegate(method, out _lpfnGUIDToAssetPath);
             }
 
@@ -73,11 +80,12 @@ namespace Unicorn.Reflection
         }
 
         private static Func<string, string> _lpfnAssetPathToGUID;
-        public static string AssetPathToGUID (string path)
+
+        public static string AssetPathToGUID(string path)
         {
             if (null == _lpfnAssetPathToGUID)
             {
-                var method = MyType.GetMethod("AssetPathToGUID", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                var method = _GetPublicStaticMethod("AssetPathToGUID", new[] { typeof(string) });
                 TypeTools.CreateDelegate(method, out _lpfnAssetPathToGUID);
             }
 
@@ -85,29 +93,38 @@ namespace Unicorn.Reflection
         }
 
         private static Func<string, UnityEngine.Object> _lpfnLoadMainAssetAtPath;
-        public static UnityEngine.Object LoadMainAssetAtPath (string guid)
+
+        public static UnityEngine.Object LoadMainAssetAtPath(string assetPath)
         {
             if (null == _lpfnLoadMainAssetAtPath)
             {
-                var method = MyType.GetMethod("LoadMainAssetAtPath", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                var method = _GetPublicStaticMethod("LoadMainAssetAtPath", new[] { typeof(string) });
                 TypeTools.CreateDelegate(method, out _lpfnLoadMainAssetAtPath);
             }
 
-            return _lpfnLoadMainAssetAtPath(guid);
+            return _lpfnLoadMainAssetAtPath(assetPath);
         }
 
-		private static Type _myType;
-		public static Type MyType
-		{
-			get
-			{
-				if (null == _myType)
-				{
-					_myType = System.Type.GetType("UnityEditor.AssetDatabase,UnityEditor");
-				}
+        private static MethodInfo _GetPublicStaticMethod(string methodName, Type[] types)
+        {
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
+            var method = MyType.GetMethod(methodName, flags, null, types, null);
+            return method;
+        }
 
-				return _myType;
-			}
-		}
-	}
+        private static Type _myType;
+
+        public static Type MyType
+        {
+            get
+            {
+                if (null == _myType)
+                {
+                    _myType = System.Type.GetType("UnityEditor.AssetDatabase,UnityEditor");
+                }
+
+                return _myType;
+            }
+        }
+    }
 }

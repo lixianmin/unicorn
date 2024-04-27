@@ -32,6 +32,7 @@ namespace Unicorn.Web
 // #if UNITY_EDITOR
                     // 只要是在editor中, 无论script是否为null, 都需要赋值shader
                     WebTools.ReloadShaders(mainAsset);
+                    WebTools.ReloadVisualEffects(mainAsset);
 // #endif
 
                     _aidScript = script;
