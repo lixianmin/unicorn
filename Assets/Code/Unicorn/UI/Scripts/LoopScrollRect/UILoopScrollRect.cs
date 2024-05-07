@@ -55,6 +55,8 @@ namespace Unicorn.UI
             // 设置Content对齐方式为左上角
             rectContent.anchorMin = Vector2.up;
             rectContent.anchorMax = Vector2.up;
+            // 设置pivot为 (0, 1), 至少在uishop中需要这样子
+            rectContent.pivot = Vector2.up;
 
             // var rectAncestor = rectContent.parent as RectTransform;
             // // 如果是stretch mode, 就取其父节点
