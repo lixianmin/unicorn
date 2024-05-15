@@ -5,7 +5,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
-using Unicorn;
+
 using Unicorn.Collections;
 
 namespace Metadata
@@ -13,15 +13,15 @@ namespace Metadata
 	//[HeapDump(HeapDumpFlags.DontDump)]
     public class TemplateTable: SortedTable<int, Template>
     {
-        public TemplateTable ()
+        internal TemplateTable ()
         {
 
         }
 
-        public TemplateTable (int capacity): base(capacity)
-        {
-
-        }
+        // public TemplateTable (int capacity): base(capacity)
+        // {
+        //
+        // }
 
 		internal bool IsCompleted;
     }

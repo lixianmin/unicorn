@@ -12,14 +12,14 @@ MetadataManager的单键用法，是一种非常尴尬却又无奈的抉择：
 
 3. 它必须负责起单键的责任，因为在Game与Editor体系的公共代码中，只有MetadataManager.Instance
    是可用的，你不能使用GameMetadataManger.Instance或EditorMetadataManager.Instance；
-   
+
 4. 它定义protected的构造方法就是为了让client必须生成自己的子类，否则该类无法使用；
 
 5. 它自己不生成默认的Instance对象（虽然它自己本身也是可用的），就是确保如果client不为
    Instance赋值的话，在调用Instance时会立即出错，从很快修正错误；
 
 6. 为什么需要metadataType这样一个ushort的类型存在，为什么不能使用反射出的field.Type直接创建metadata对象
-   答：原因是，反射得到的类型有可能是某个abstract的基类，不是实际的对象类型，无法用于metadata对象创建. 
+   答：原因是，反射得到的类型有可能是某个abstract的基类，不是实际的对象类型，无法用于metadata对象创建.
    ------ 新的系统中，尝试使用type.FullName来存储对象类型，因为建立了对string的intern机制，估计效率还可以；
 
 7. C#可以依赖反射加载，但lua实现中必须要记忆数据的结构，这样才能实现动态添加新的类型；
@@ -70,7 +70,7 @@ namespace Metadata
                         MetaTools.Load(aid, metadata);
                         template = metadata as Template;
                     }
-                    
+
                     // 防止缓存穿透. 必须有subType才能加一个默认值, 否则无论type是啥都加进来了, 会导致插入一些非法值
                     table.InsertByIndex(~templateIndex, templateId, template);
                     return template;
@@ -116,6 +116,9 @@ namespace Metadata
             var aid = GetLoadAid();
             if (null != aid)
             {
+                // 如果以前调用过GetTemplate(), 则table会存储一些数据, 必须先清理掉
+                table.Clear();
+                
                 var typeName = templateType.FullName;
                 aid.LoadTemplates(typeName, table);
 

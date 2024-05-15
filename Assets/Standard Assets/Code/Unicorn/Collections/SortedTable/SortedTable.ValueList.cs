@@ -1,271 +1,237 @@
-﻿
-/*********************************************************************
+﻿/*********************************************************************
 created:    2022-08-11
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Unicorn.Collections
 {
-	partial class SortedTable<TKey, TValue>
-	{
+    partial class SortedTable<TKey, TValue>
+    {
         [Serializable]
-        public struct ValueList : IList<TValue>, IList, ICollection<TValue>, ICollection, IEnumerable<TValue>, IEnumerable
+        public struct ValueList : IList<TValue>, IList, ICollection<TValue>, ICollection, IEnumerable<TValue>,
+            IEnumerable
         {
-            internal ValueList (SortedTable<TKey, TValue> table)
+            internal ValueList(SortedTable<TKey, TValue> table)
             {
                 _table = table;
             }
 
-			public void ForEach (Action<TValue> action)
-			{
-				if (null != action && null != _table)
-				{
-					var values  = _table._values;
-					var count	= _table._size;
+            public void ForEach(Action<TValue> action)
+            {
+                if (null != action && null != _table)
+                {
+                    var values = _table._values;
+                    var count = _table._size;
 
-					for (int i= 0; i< count; ++i)
-					{
-						action(values[i]);
-					}
-				}
-			}
-			            
-            public ValueEnumerator GetEnumerator ()
+                    for (int i = 0; i < count; ++i)
+                    {
+                        action(values[i]);
+                    }
+                }
+            }
+
+            public ValueEnumerator GetEnumerator()
             {
                 return new ValueEnumerator(_table);
             }
-            
-            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator ()
+
+            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator()
             {
-				return _GetEnumerator();
-            }
-            
-            IEnumerator IEnumerable.GetEnumerator ()
-            {
-				return _GetEnumerator();
+                return _GetEnumerator();
             }
 
-			private IEnumerator<TValue> _GetEnumerator ()
-			{
-				var lastVersion = _table._version;
-				var count = _table._size;
-				var values = _table._values;
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return _GetEnumerator();
+            }
 
-				for (int i= 0; i< count; ++i)
-				{
-					yield return values[i];
+            private IEnumerator<TValue> _GetEnumerator()
+            {
+                var lastVersion = _table._version;
+                var count = _table._size;
+                var values = _table._values;
 
-					if (lastVersion != _table._version)
-					{
-						throw new InvalidOperationException("Invalid table version");
-					}
-				}
-			}
+                for (int i = 0; i < count; ++i)
+                {
+                    yield return values[i];
 
-			public TValue this [int index]
-			{
-				get 
-				{
-					var count = _table._size;
-					if (index >= 0 && index < count)
-					{
-						return _table._values[index];
-					}
+                    if (lastVersion != _table._version)
+                    {
+                        throw new InvalidOperationException("Invalid table version");
+                    }
+                }
+            }
 
-					var message = string.Format("[ValueList.get_Item()] index={0}, count={1}", index.ToString(), count.ToString());
-					throw new IndexOutOfRangeException(message);
-				}
+            public TValue this[int index]
+            {
+                get
+                {
+                    var count = _table._size;
+                    if (index >= 0 && index < count)
+                    {
+                        return _table._values[index];
+                    }
 
-				set
-				{
-					throw new NotImplementedException();
-				}
-			}
+                    var message = string.Format("[ValueList.get_Item()] index={0}, count={1}", index.ToString(),
+                        count.ToString());
+                    throw new IndexOutOfRangeException(message);
+                }
 
-			object IList.this [int index]
-			{
-				get => this [index];
-				set => throw new NotImplementedException();
-			}
+                set => throw new NotImplementedException();
+            }
 
-			public int IndexOf (TValue item)
-			{
-				var values = _table._values;
-				var count  = _table._size;
+            object IList.this[int index]
+            {
+                get => this[index];
+                set => throw new NotImplementedException();
+            }
 
-				for (int index= 0; index< count; ++index)
-				{
-					if (object.Equals(values[index], item))
-					{
-						return index;
-					}
-				}
+            public int IndexOf(TValue item)
+            {
+                var values = _table._values;
+                var count = _table._size;
 
-				return -1;
-			}
+                for (var index = 0; index < count; ++index)
+                {
+                    if (object.Equals(values[index], item))
+                    {
+                        return index;
+                    }
+                }
 
-			int IList.IndexOf (object item)
-			{
-				try
-				{
-					return this.IndexOf ((TValue)((object)item));
-				}
-				catch (NullReferenceException)
-				{
-				}
-				catch (InvalidCastException)
-				{
-				}
-				return -1;
-			}
+                return -1;
+            }
 
-			void IList<TValue>.Insert (int index, TValue item)
-			{
-				throw new NotImplementedException();
-			}
+            int IList.IndexOf(object item)
+            {
+                try
+                {
+                    return IndexOf((TValue)item);
+                }
+                catch (NullReferenceException)
+                {
+                }
+                catch (InvalidCastException)
+                {
+                }
 
-			void IList.Insert (int index, object item)
-			{
-				throw new NotImplementedException();
-			}
+                return -1;
+            }
 
-			void IList<TValue>.RemoveAt (int index)
-			{
-				throw new NotImplementedException();
-			}
+            void IList<TValue>.Insert(int index, TValue item)
+            {
+                throw new NotImplementedException();
+            }
 
-			void IList.RemoveAt (int index)
-			{
-				throw new NotImplementedException();
-			}
+            void IList.Insert(int index, object item)
+            {
+                throw new NotImplementedException();
+            }
 
-			void ICollection<TValue>.Add (TValue item)
-			{
-				throw new NotImplementedException();
-			}
+            void IList<TValue>.RemoveAt(int index)
+            {
+                throw new NotImplementedException();
+            }
 
-			int IList.Add (object item)
-			{
-				throw new NotImplementedException();
-			}
+            void IList.RemoveAt(int index)
+            {
+                throw new NotImplementedException();
+            }
 
-			public bool Contains (TValue item)
-			{
-				return IndexOf(item) != -1;
-			}
+            void ICollection<TValue>.Add(TValue item)
+            {
+                throw new NotImplementedException();
+            }
 
-			bool IList.Contains (object item)
-			{
-				try
-				{
-					return this.Contains ((TValue)((object)item));
-				}
-				catch (NullReferenceException)
-				{
-				}
-				catch (InvalidCastException)
-				{
-				}
-				return false;
-			}
+            int IList.Add(object item)
+            {
+                throw new NotImplementedException();
+            }
 
-			bool ICollection<TValue>.Remove (TValue item)
-			{
-				throw new NotImplementedException();
-			}
+            public bool Contains(TValue item)
+            {
+                return IndexOf(item) != -1;
+            }
 
-			void IList.Remove (object item)
-			{
-				throw new NotImplementedException();
-			}
+            bool IList.Contains(object item)
+            {
+                try
+                {
+                    return this.Contains((TValue)((object)item));
+                }
+                catch (NullReferenceException)
+                {
+                }
+                catch (InvalidCastException)
+                {
+                }
 
-			public void CopyTo (TValue[] array)
-			{
-				Array.Copy (_table._values, 0, array, 0, _table._size);
-			}
+                return false;
+            }
 
-			public void CopyTo (TValue[] array, int arrayIndex)
-			{
-				Array.Copy (_table._values, 0, array, arrayIndex, _table._size);
-			}
+            bool ICollection<TValue>.Remove(TValue item)
+            {
+                throw new NotImplementedException();
+            }
 
-			void ICollection.CopyTo (Array array, int arrayIndex)
-			{
-				Array.Copy (_table._values, 0, array, arrayIndex, _table._size);
-			}
+            void IList.Remove(object item)
+            {
+                throw new NotImplementedException();
+            }
 
-			public TValue[] ToArray ()
-			{
-				var count = _table._size;
-				if (count > 0)
-				{
-					var array = new TValue[count];
-					Array.Copy(_table._values, 0, array, 0, count);
-					
-					return array;
-				}
+            public void CopyTo(TValue[] array)
+            {
+                Array.Copy(_table._values, 0, array, 0, _table._size);
+            }
 
-				return _emptyValues;
-			}
+            public void CopyTo(TValue[] array, int arrayIndex)
+            {
+                Array.Copy(_table._values, 0, array, arrayIndex, _table._size);
+            }
 
-			void ICollection<TValue>.Clear ()
-			{
-				throw new NotImplementedException();
-			}
+            void ICollection.CopyTo(Array array, int arrayIndex)
+            {
+                Array.Copy(_table._values, 0, array, arrayIndex, _table._size);
+            }
 
-			void IList.Clear ()
-			{
-				throw new NotImplementedException();
-			}
+            public TValue[] ToArray()
+            {
+                var count = _table._size;
+                if (count > 0)
+                {
+                    var array = new TValue[count];
+                    Array.Copy(_table._values, 0, array, 0, count);
 
-			bool IList.IsFixedSize
-			{
-				get
-				{
-					return false;
-				}
-			}
-			
-			bool IList.IsReadOnly
-			{
-				get
-				{
-					return false;
-				}
-			}
+                    return array;
+                }
 
-			bool ICollection<TValue>.IsReadOnly
-			{
-				get
-				{
-					return true;
-				}
-			}
+                return _emptyValues;
+            }
 
-			bool ICollection.IsSynchronized
-			{
-				get
-				{
-					return false;
-				}
-			}
-			
-			object ICollection.SyncRoot
-			{
-				get
-				{
-					return this;
-				}
-			}
+            void ICollection<TValue>.Clear()
+            {
+                throw new NotImplementedException();
+            }
 
-			public int Count { get { return _table._size; } }
-			
+            void IList.Clear()
+            {
+                throw new NotImplementedException();
+            }
+
+            bool IList.IsFixedSize => false;
+            bool IList.IsReadOnly => false;
+            bool ICollection<TValue>.IsReadOnly => true;
+            bool ICollection.IsSynchronized => false;
+            object ICollection.SyncRoot => this;
+            public int Count => _table._size;
+
             private readonly SortedTable<TKey, TValue> _table;
         }
-	}
+    }
 }

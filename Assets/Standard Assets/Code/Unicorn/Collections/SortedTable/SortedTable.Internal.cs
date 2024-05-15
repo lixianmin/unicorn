@@ -6,8 +6,6 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Unicorn.Collections
 {
@@ -17,7 +15,7 @@ namespace Unicorn.Collections
 		{
 			if (index < 0)
 			{
-				var message = string.Format("[Insert()] index < 0, index={0}", index);
+				var message = $"[Insert()] index < 0, index={index}";
 				throw new ArgumentOutOfRangeException(message);
 			}
 
@@ -42,7 +40,7 @@ namespace Unicorn.Collections
 		{
 			if (_isKeyNullable && null == key)
 			{
-				throw new ArgumentNullException("key is null");
+				throw new ArgumentNullException(nameof(key));
 			}
 
 			if (_size == _capacity)

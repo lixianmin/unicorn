@@ -192,8 +192,8 @@ namespace Unicorn
             var typeName = "System.Type,mscorlib";
             var methodName = "MakeGenericType";
 
-            var type = System.Type.GetType(typeName);
-            TypeTools.CreateDelegate(type, methodName, out _lpfnMakeGenericType);
+            var type = Type.GetType(typeName);
+            CreateDelegate(type, methodName, out _lpfnMakeGenericType);
 
             if (null == _lpfnMakeGenericType)
             {
