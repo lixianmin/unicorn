@@ -27,6 +27,7 @@ namespace Unicorn
 
             if (_mainCamera == null || !IsEnabled())
             {
+                Logo.Warn($"_mainCamera={_mainCamera}, IsEnabled={IsEnabled()}");
                 return;
             }
 

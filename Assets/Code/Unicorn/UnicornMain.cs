@@ -43,26 +43,12 @@ namespace Unicorn
             var persistentDataPath = Application.persistentDataPath;
             var now = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
             Logo.Info(
-                "[UnicornMain.Init()]\n{0}\nplatform={1}\nos={2}\ndeviceModel={3}\nprocessorCount={4}\nsystemMemorySize={5}\ngraphicsDevice={6}\ngraphicsMemorySize={7}\n" +
-                "logPath={8}\ndataPath={9}\nstreamingAssetsPath={10}\npersistentDataPath={11}\nresolution={12}x{13}\nScreen.dpi={14}\nsupportsInstancing={15}\n" +
-                "supportsComputeShaders={16}\n"
-                , now
-                , Application.platform.ToString()
-                , SystemInfo.operatingSystem
-                , SystemInfo.deviceModel
-                , SystemInfo.processorCount
-                , SystemInfo.systemMemorySize.ToString()
-                , SystemInfo.graphicsDeviceName
-                , SystemInfo.graphicsMemorySize.ToString()
-                , PathTools.LogPath
-                , Application.dataPath
-                , Application.streamingAssetsPath
-                , persistentDataPath
-                , Screen.width.ToString()
-                , Screen.height.ToString()
-                , Screen.dpi.ToString("F2")
-                , SystemInfo.supportsInstancing
-                , SystemInfo.supportsComputeShaders
+                $"[UnicornMain.Init()]\n{now}\nplatform={Application.platform}\nos={SystemInfo.operatingSystem}\n" +
+                $"deviceModel={SystemInfo.deviceModel}\nprocessorType={SystemInfo.processorType}\nprocessorCount={SystemInfo.processorCount}\n" +
+                $"systemMemorySize={SystemInfo.systemMemorySize}\ngraphicsDevice={SystemInfo.graphicsDeviceName}\ngraphicsMemorySize={SystemInfo.graphicsMemorySize}\n" +
+                $"logPath={PathTools.LogPath}\ndataPath={Application.dataPath}\nstreamingAssetsPath={Application.streamingAssetsPath}\n" +
+                $"persistentDataPath={persistentDataPath}\nresolution={Screen.width}x{Screen.height}\nScreen.dpi={Screen.dpi:F2}\n" +
+                $"supportsInstancing={SystemInfo.supportsInstancing}\nsupportsComputeShaders={SystemInfo.supportsComputeShaders}\n"
             );
 
             if (string.IsNullOrEmpty(persistentDataPath))
@@ -100,7 +86,7 @@ namespace Unicorn
 
             PlayerLoop.SetPlayerLoop(nextSystem);
         }
-        
+
         /// <summary>
         /// 实际上就是Update()，之所以起名ExpensiveUpdate()，是为了让使用者郑重考虑是否启用这个可能会比较费的更新逻辑
         /// </summary>
@@ -134,7 +120,7 @@ namespace Unicorn
         {
             // 这个不能放到UnicornMain.ExpensiveUpdate()中, 否则看不见
             _instanceManager.LateUpdate();
-            
+
             DisposableRecycler.Update();
         }
 
@@ -146,7 +132,7 @@ namespace Unicorn
         {
             _uiManager.SlowUpdate(deltaTime);
         }
-        
+
         private static readonly PartUpdateSystem _partUpdateSystem = new();
         private static readonly CoroutineManager _coroutineManager = CoroutineManager.It;
         private static readonly UIManager _uiManager = UIManager.It;
