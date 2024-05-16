@@ -122,6 +122,8 @@ namespace Unicorn
             for (var i = 0; i < total; i += maxBatchSize)
             {
                 var size = Math.Min(maxBatchSize, total - i);
+                // https://issuetracker.unity3d.com/issues/android-opengles-3-drawmeshinstanced-is-not-compatible-on-snapdragon-cpus-with-a-custom-render-pipeline
+                // 这个api在Adreno GLES drivers不支持, 似乎vulkan可以, 但红米note5绘制不出来
                 Graphics.RenderMeshInstanced(_renderParams, _sharedMesh, 0, consumer.Items, size, i);
                 // Logo.Info($"[RenderMeshInstanced()] mesh={_sharedMesh.name}, material={_renderParams.material.name}, size={size}");
             }
