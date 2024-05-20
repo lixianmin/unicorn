@@ -45,7 +45,9 @@ namespace Unicorn
             Logo.Info(
                 $"[UnicornMain.Init()]\n{now}\nplatform={Application.platform}\nos={SystemInfo.operatingSystem}\n" +
                 $"deviceModel={SystemInfo.deviceModel}\nprocessorType={SystemInfo.processorType}\nprocessorCount={SystemInfo.processorCount}\n" +
-                $"systemMemorySize={SystemInfo.systemMemorySize}\ngraphicsDevice={SystemInfo.graphicsDeviceName}\ngraphicsMemorySize={SystemInfo.graphicsMemorySize}\n" +
+                $"systemMemorySize={SystemInfo.systemMemorySize}\ngraphicsDeviceName={SystemInfo.graphicsDeviceName}\n" +
+                $"graphicsDeviceVendor={SystemInfo.graphicsDeviceVendor}\ngraphicsDeviceVersion={SystemInfo.graphicsDeviceVersion}\n" +
+                $"graphicsShaderLevel={SystemInfo.graphicsShaderLevel}\ngraphicsMemorySize={SystemInfo.graphicsMemorySize}\n" +
                 $"logPath={PathTools.LogPath}\ndataPath={Application.dataPath}\nstreamingAssetsPath={Application.streamingAssetsPath}\n" +
                 $"persistentDataPath={persistentDataPath}\nresolution={Screen.width}x{Screen.height}\nScreen.dpi={Screen.dpi:F2}\n" +
                 $"supportsInstancing={SystemInfo.supportsInstancing}\nsupportsComputeShaders={SystemInfo.supportsComputeShaders}\n"
