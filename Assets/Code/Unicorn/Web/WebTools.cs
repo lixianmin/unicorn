@@ -18,6 +18,11 @@ namespace Unicorn.Web
 {
     public static class WebTools
     {
+        /// <summary>
+        /// client工程会需要这个功能; 不支持调整material的renderQueue
+        /// </summary>
+        /// <param name="goAsset"></param>
+        /// <returns></returns>
         public static void ReloadShaders(GameObject goAsset)
         {
             // 1. 只有editor下需要这个逻辑, mobile里面不需要
