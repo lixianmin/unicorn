@@ -20,7 +20,9 @@ namespace Unicorn.Web
     {
         public static void ReloadShaders(GameObject goAsset)
         {
-            if (!Application.isEditor || goAsset == null)
+            // 1. 只有editor下需要这个逻辑, mobile里面不需要
+            // 2. release mode不能作为是否执行的标准, 因为client项目中必须执行
+            if (!_enableReloadShaders || !Application.isEditor || goAsset == null)
             {
                 return;
             }
@@ -110,17 +112,21 @@ namespace Unicorn.Web
             }
 
             var shaderName = shader.name;
+            // 1. material记录的renderQueue, 在editor中使用原始资源时是对的.
+            // 2. 但打包成ab文件后, 如果在windows平台使用android平台的ab文件, 这时取出来的renderQueue是错的
             var lastRenderQueue = material.renderQueue;
             material.shader = Shader.Find(shaderName);
             var nextRenderQueue = material.renderQueue;
 
-            // we can't change the renderQueue of font manually, because InputField.text may disappear.
-            // renderQueue is changed when manually setting shader, and should be restored
-            if (lastRenderQueue != nextRenderQueue && !shaderName.StartsWith("TextMeshPro/"))
-            {
-                material.renderQueue = lastRenderQueue;
-                // Logo.Info($"material.name={material.name}, shader.name={shaderName}, last={lastRenderQueue}, next={nextRenderQueue}");
-            }
+            // 3. 因此, 在windows使用ab文件时, 如果替换成material的renderQueue, 大概率会出错, 反而不如不替换
+            //    至少可以保证材质是可见的的, 不会变成transparent的材质不会放到opaque里去渲染
+            // // we can't change the renderQueue of font manually, otherwise InputField.text may disappear.
+            // // renderQueue is changed when manually setting shader, and should be restored
+            // if (lastRenderQueue != nextRenderQueue && !shaderName.StartsWith("TextMeshPro/"))
+            // {
+            //     material.renderQueue = lastRenderQueue;
+            //     Logo.Warn($"material.name={material.name}, shader.name={shaderName}, last={lastRenderQueue}, next={nextRenderQueue}");
+            // }
         }
 
         public static void ReloadVisualEffects(GameObject goAsset)
@@ -181,6 +187,13 @@ namespace Unicorn.Web
                 }
             }
         }
+
+        public static void EnableReloadShader(bool enable)
+        {
+            _enableReloadShaders = enable;
+        }
+
+        private static bool _enableReloadShaders = false;
 
         private static readonly Dictionary<string, string> _visualEffectPaths = new();
         private static bool _isVisualEffectPathsInited;
