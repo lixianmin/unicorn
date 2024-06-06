@@ -20,11 +20,6 @@ namespace Unicorn
             public IPart part;
         }
 
-        public EntityTable()
-        {
-            _parts = _cacheArrayParts.Count <= 0 ? new PartItem[_kArraySize] : _cacheArrayParts.PopBack() as PartItem[];
-        }
-
         public void Add(Type type, IPart part, bool checkDuplicated)
         {
             if (_parts is PartItem[] array)
@@ -193,7 +188,7 @@ namespace Unicorn
 
         private int _size;
 
-        private object _parts;
+        private object _parts = _cacheArrayParts.Count <= 0 ? new PartItem[_kArraySize] : _cacheArrayParts.PopBack() as PartItem[];
 
         private static readonly Deque _cacheArrayParts = new();
 

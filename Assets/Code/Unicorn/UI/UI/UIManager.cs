@@ -323,10 +323,7 @@ namespace Unicorn.UI
 
         private void _SendDeactivating(UIWindowBase targetWindow)
         {
-            if (targetWindow is not null)
-            {
-                targetWindow.InnerOnDeactivating("[_SendDeactivating()]");
-            }
+            targetWindow?.InnerOnDeactivating("[_SendDeactivating()]");
         }
 
         private void _SendActivated(UIWindowBase targetWindow)

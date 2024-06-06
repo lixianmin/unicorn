@@ -44,13 +44,13 @@ namespace Unicorn.UI
         // 事件相关: 以下6个事件, gameObject都是可用的, widget变量都是可用的
         
         /// <summary>
-        /// 时机: 加载完成事件, 与OnUnloading()呼应. 此时window可见, widget可用, 但未执行open animation
+        /// 时机: 加载完成事件, 与OnUnloading()呼应. 此时window与widget对象可用, 但尚不可见, 且未执行open animation
         /// 用途: 控件数据初始化, register events
         /// </summary>
         protected virtual void OnLoaded() {}
         
         /// <summary>
-        /// 时机: 打开完成事件, 与OnClosing呼应. open animation执行完成, window等待玩家输入
+        /// 时机: 打开完成事件, 与OnClosing呼应. 此时window与widget对象已经可见了, open animation执行完成, window等待玩家输入
         /// 用途: 
         /// </summary>
         protected virtual void OnOpened() {}
