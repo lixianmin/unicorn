@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace Unicorn.UI
 {
-    public abstract partial class UIWindowBase
+    public abstract partial class UIWindowBase : IHaveTransform
     {
         /// <summary>
         /// 如果UIRoot的直接子节点存在以assetPath命名的Canvas节点，则直接使用该节点; 否则被当作UI资源的路径从addressable加载
