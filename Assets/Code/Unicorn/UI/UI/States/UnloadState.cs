@@ -30,12 +30,22 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[UnloadState.OnOpenWindow()]");    
+            }
+            
             _delayedAction = DelayedAction.OpenWindow;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
             _delayedAction = DelayedAction.CloseWindow;
+            
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[UnloadState.OnCloseWindow()]");    
+            }
         }
 
         private DelayedAction _delayedAction; // 遇到了OpenWindow()的请求

@@ -31,6 +31,11 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[ClosedState.OnOpenWindow()]");    
+            }
+            
             if (fetus.HasFlag(FetusFlags.Cache))
             {
                 fetus.SetActive(true);

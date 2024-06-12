@@ -13,6 +13,11 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn($"[CloseAnimationState.OnEnter()] _delayedAction={_delayedAction}");    
+            }
+            
             var serializer = fetus.GetSerializer();
             if (serializer is not null)
             {
@@ -35,6 +40,11 @@ namespace Unicorn.UI.States
 
         public override void OnExit(WindowFetus fetus, object arg1)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn($"[CloseAnimationState.OnExit()] _delayedAction={_delayedAction}");    
+            }
+            
             _closeAnimation = null;
 
             if (_isPlaying)
@@ -63,12 +73,29 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
-            _delayedAction = DelayedAction.OpenWindow;
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[CloseAnimationState.OnOpenWindow()]");    
+            }
+
+            if (_isPlaying)
+            {
+                _delayedAction = DelayedAction.OpenWindow;
+            }
+            else
+            {
+                fetus.ChangeState(StateKind.OpenAnimation);
+            }
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
             _delayedAction = DelayedAction.CloseWindow;
+            
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[CloseAnimationState.OnCloseWindow()]");    
+            }
         }
 
         private UIWindowAnimation _closeAnimation;

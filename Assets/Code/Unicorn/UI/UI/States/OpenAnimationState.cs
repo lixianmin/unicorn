@@ -62,12 +62,22 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[OpenAnimationState.OnOpenWindow()]");    
+            }
+            
             _delayedAction = DelayedAction.OpenWindow;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
             _delayedAction = DelayedAction.CloseWindow;
+            
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[OpenAnimationState.OnCloseWindow()]");    
+            }
         }
 
         private UIWindowAnimation _openAnimation;

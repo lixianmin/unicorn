@@ -45,6 +45,11 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[OpenedState.OnOpenWindow()]");    
+            }
+            
             if (fetus.HasFlag(FetusFlags.Opened))
             {
                 // 之所以要加这一句, 是为了防止前面有代码调用CloseWindow()修改过_nextKind
@@ -69,6 +74,11 @@ namespace Unicorn.UI.States
             else
             {
                 _delayedAction = DelayedAction.CloseWindow;
+            }
+            
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[ClosedState.OnOpenWindow()]");    
             }
         }
 

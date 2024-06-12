@@ -13,6 +13,11 @@ namespace Unicorn.UI.States
     {
         public override void OnOpenWindow(WindowFetus fetus)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[NoneState.OnOpenWindow()]");    
+            }
+            
             fetus.ChangeState(StateKind.Load);
         }
     }

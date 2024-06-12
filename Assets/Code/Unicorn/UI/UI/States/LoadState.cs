@@ -47,12 +47,22 @@ namespace Unicorn.UI.States
 
         public override void OnOpenWindow(WindowFetus fetus)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[LoadState.OnOpenWindow()]");    
+            }
+            
             _delayedAction = DelayedAction.OpenWindow;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
             _delayedAction = DelayedAction.CloseWindow;
+            
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[LoadState.OnCloseWindow()]");    
+            }
         }
 
         private void _LoadAsset(WindowFetus fetus, string assetPath)

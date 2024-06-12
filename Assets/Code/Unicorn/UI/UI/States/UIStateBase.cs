@@ -52,8 +52,21 @@ namespace Unicorn.UI.States
 
         public virtual void OnExit(WindowFetus fetus, object arg1) {}
 
-        public virtual void OnOpenWindow(WindowFetus fetus) {}
-        public virtual void OnCloseWindow(WindowFetus fetus) {}
+        public virtual void OnOpenWindow(WindowFetus fetus)
+        {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[UIStateBase.OnOpenWindow()]");    
+            }
+        }
+
+        public virtual void OnCloseWindow(WindowFetus fetus)
+        {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[UIStateBase.OnCloseWindow()]");    
+            }
+        }
 
         protected static readonly UILoadingMask _loadWindowMask = new(0.5f);
         // protected static readonly UILoadingMask _playAnimationMask = new(0);
