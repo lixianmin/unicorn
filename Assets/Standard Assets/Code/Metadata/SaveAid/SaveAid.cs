@@ -315,8 +315,9 @@ namespace Metadata
                 writer.Write(layout);
 
                 var layoutText = ", ".Join(layout, item => item.ToString());
+                var fieldNames = ", ".Join(creator.GetFieldNames());
                 Logo.Info(
-                    $"[_SaveLayout()] typeIndex={typeIndex} typeName={typeName} fieldCount={fieldCount} layoutText={layoutText}");
+                    $"[_SaveLayout()] typeIndex={typeIndex} typeName={typeName} fieldCount={fieldCount} layoutText={layoutText} fieldNames={fieldNames}");
             }
         }
 

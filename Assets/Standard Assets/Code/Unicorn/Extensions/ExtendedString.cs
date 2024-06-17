@@ -104,6 +104,7 @@ namespace Unicorn
                 var item = iter.Current;
                 if (null != item)
                 {
+                    sbText ??= new StringBuilder(128);
                     sbText.Append(separator);
                     sbText.Append(item);
                 }
