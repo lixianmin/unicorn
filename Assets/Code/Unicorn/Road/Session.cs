@@ -192,7 +192,16 @@ namespace Unicorn.Road
         {
             var text = Encoding.UTF8.GetString(pack.Data);
             var handshake = (JsonHandshake)JsonUtility.FromJson(text, typeof(JsonHandshake));
-            Logo.Info("handshake={0}", text);
+
+            // release的时候, 不打印routes细节
+            if (os.IsReleaseMode)
+            {
+                Logo.Info($"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} gid={handshake.gid}");
+            }
+            else
+            {
+                Logo.Info("handshake={0}", text);
+            }
 
             if (!_serverGid.IsNullOrEmpty() && _serverGid != handshake.gid)
             {
