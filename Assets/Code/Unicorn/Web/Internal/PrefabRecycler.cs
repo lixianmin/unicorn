@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-08-13
 author:     lixianmin
@@ -7,6 +6,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System.Collections.Generic;
+using System.Text;
 
 namespace Unicorn.Web.Internal
 {
@@ -15,8 +15,8 @@ namespace Unicorn.Web.Internal
         public WebPrefab prefab;
         public int counter;
     }
-    
-    internal static class PrefabRecycler
+
+    public static class PrefabRecycler
     {
         public static void TryAddPrefab(string localPath, WebPrefab prefab)
         {
@@ -27,9 +27,9 @@ namespace Unicorn.Web.Internal
                     prefab = prefab
                 };
                 _cache.Add(localPath, cached);
-            } 
+            }
         }
-        
+
         public static void AddReference(string localPath)
         {
             if (_cache.TryGetValue(localPath, out var cached))
@@ -47,9 +47,24 @@ namespace Unicorn.Web.Internal
                 {
                     _cache.Remove(localPath);
                 }
-            }       
+            }
         }
-        
-         private static readonly Dictionary<string, RecyclerItem> _cache = new (128);
+
+        public static void PrintSummary()
+        {
+            var sb = new StringBuilder();
+            sb.Append($"count={_cache.Count}\n");
+            foreach (var item in _cache)
+            {
+                sb.Append(item.Key);
+                sb.Append(": ");
+                sb.Append(item.Value.counter);
+                sb.Append("\n");
+            }
+
+            Logo.Warn(sb.ToString());
+        }
+
+        private static readonly Dictionary<string, RecyclerItem> _cache = new(128);
     }
 }

@@ -15,21 +15,25 @@ using UnityEngine;
 
 namespace Unicorn.Web.Internal
 {
-    internal class MbPrefabAid : MonoBehaviour
+    public class MbPrefabAid : MonoBehaviour
     {
-        // Caution: Awake() will not be automatically called immediately 
-        // when _mainAsset is not active.
+        // 1. Caution: Awake() will not be automatically called immediately when _mainAsset is not active.
+        // 2. Awake()与OnDestroy()都是最多执行一次
+        // 3. ~~Init()可以最多执行2次~~
+        // 4. 无论是否执行过Init(), 调用OnDestroy()都不会有问题
         private void Awake ()
         {
             Init();
         }
 
-        internal void Init ()
+        private void Init ()
         {
+            // 这个方法没必要在WebPrefab加载完成的时候调用一次, 因为WebPrefab会在OnLoaded()/Dispose()中处理自己的引用计数
             if (!_isInited)
             {
                 _isInited = true;
                 PrefabRecycler.AddReference(key);
+                // Logo.Info($"instanceId={GetInstanceID()}");
             }
         }
 

@@ -19,32 +19,39 @@ namespace Unicorn.Web
             // 你永远也不知道构造方法和handler谁先到来
             var node = WebManager.It.LoadAsset(argument, webItem =>
             {
-                if (webItem.Asset is GameObject mainAsset)
+                if (!IsDisposed())
                 {
-                    var script = mainAsset.GetComponent<MbPrefabAid>();
-                    if (script is null)
+                    if (webItem.Asset is GameObject mainAsset)
                     {
-                        script = mainAsset.AddComponent<MbPrefabAid>();
-                        script.key = argument.key;
-                    }
+                        var script = mainAsset.GetComponent<MbPrefabAid>();
+                        if (script is null)
+                        {
+                            script = mainAsset.AddComponent<MbPrefabAid>();
+                            script.key = argument.key;
+                        }
 
 // 实践证明这个注释没有意义，因为这个项目会编译成dll，编译时UNITY_EDITOR是有的 --> 因为引入三方库, 编译时需移除UNITY_EDITOR
 // #if UNITY_EDITOR
-                    // 只要是在editor中, 无论script是否为null, 都需要赋值shader
-                    WebTools.ReloadShaders(mainAsset);
-                    WebTools.ReloadVisualEffects(mainAsset);
+                        // 只要是在editor中, 无论script是否为null, 都需要赋值shader
+                        WebTools.ReloadShaders(mainAsset);
+                        WebTools.ReloadVisualEffects(mainAsset);
 // #endif
 
-                    _aidScript = script;
-                    PrefabRecycler.TryAddPrefab(argument.key, this);
+                        _aidScript = script;
 
-                    // 这里的handler是有可能立即调用到的, 所以不能外面new WebItem()返回值的时候设置_webItem
-                    _webItem = webItem;
-                }
-                else
-                {
-                    Logo.Warn($"webItem.Asset is not gameObject, argument.key={argument.key}, webItem.Asset={webItem.Asset}");
-                    _webItem = EmptyWebNode.It;
+                        // 添加引用计数, WebPrefab也算作一次引用计数
+                        PrefabRecycler.TryAddPrefab(argument.key, this);
+                        PrefabRecycler.AddReference(argument.key);
+
+                        // 这里的handler是有可能立即调用到的, 所以不能外面new WebItem()返回值的时候设置_webItem
+                        _webItem = webItem;
+                    }
+                    else
+                    {
+                        Logo.Warn(
+                            $"webItem.Asset is not gameObject, argument.key={argument.key}, webItem.Asset={webItem.Asset}");
+                        _webItem = EmptyWebNode.It;
+                    }
                 }
 
                 CallbackTools.Handle(ref handler, this, "[WebPrefab()]");
@@ -56,9 +63,18 @@ namespace Unicorn.Web
 
         protected override void _DoDispose(int flags)
         {
-            var allowDestroyingAssets = Application.isEditor;
-            UnityEngine.Object.DestroyImmediate(_aidScript, allowDestroyingAssets);
-            // Logo.Info("[_DoDispose()] {0}", this.ToString());
+            if (_aidScript != null)
+            {
+                var key = _aidScript.key;
+                
+                // WebPrefab也算作计数1次
+                PrefabRecycler.RemoveReference(key);
+
+                var allowDestroyingAssets = Application.isEditor;
+                UnityEngine.Object.DestroyImmediate(_aidScript, allowDestroyingAssets);
+
+                // Logo.Info($"[_DoDispose()] key={key}");
+            }
         }
 
         // public override string ToString()
