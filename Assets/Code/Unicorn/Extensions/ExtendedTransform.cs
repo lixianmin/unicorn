@@ -1,10 +1,10 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2014-01-03
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 using UnityEngine;
 using System;
 using System.Collections.Generic;
@@ -13,15 +13,15 @@ namespace Unicorn
 {
     public static partial class ExtendedTransform
     {
-	    public static void Destroy(this Transform my)
-	    {
-		    if (my != null)
-		    {
-			    UnityEngine.Object.Destroy(my.gameObject);
-		    }
-	    }
-	    
-        public static Component DeepFindComponent (this Transform father, string name, Type type)
+        public static void Destroy(this Transform my)
+        {
+            if (my != null)
+            {
+                UnityEngine.Object.Destroy(my.gameObject);
+            }
+        }
+
+        public static Component DeepFindComponent(this Transform father, string name, Type type)
         {
             if (null != type)
             {
@@ -75,7 +75,7 @@ namespace Unicorn
 //			return null;
 //        }
 
-        public static Transform DeepFind (this Transform father, string name)
+        public static Transform DeepFind(this Transform father, string name)
         {
             if (null == father || null == name)
             {
@@ -91,65 +91,81 @@ namespace Unicorn
             return found;
         }
 
-		private static Transform _InternalDeepFind (Transform father, string name)
-		{
-			var targetChild = father.Find (name);
-			if (null != targetChild)
-			{
-				return targetChild;
-			}
-			
-			var childCount = father.childCount;
-			for (int i= 0; i< childCount; ++i)
-			{
-				var child = father.GetChild(i);
-				var grandson = _InternalDeepFind(child, name);
-				if (null != grandson)
-				{
-					return grandson;
-				}
-			}
-
-			return null;
-		}
-
-        public static string GetFindPath (this Transform transform)
+        private static Transform _InternalDeepFind(Transform father, string name)
         {
-			if (null != transform)
-			{
-				var root = transform.root;
-				if (transform != root)
-				{
-                    var sbPath = StringBuilderPool.Get();
-                    _CollectFindPath(transform, root, sbPath);
-                    var path = StringBuilderPool.GetStringAndReturn(sbPath);					
-					return path;
-				}
-			}
+            var targetChild = father.Find(name);
+            if (null != targetChild)
+            {
+                return targetChild;
+            }
+
+            var childCount = father.childCount;
+            for (int i = 0; i < childCount; ++i)
+            {
+                var child = father.GetChild(i);
+                var grandson = _InternalDeepFind(child, name);
+                if (null != grandson)
+                {
+                    return grandson;
+                }
+            }
+
+            return null;
+        }
+
+        public static string GetScenePath(this Transform transform)
+        {
+            if (null != transform)
+            {
+                var path = transform.name;
+                while ((transform = transform.parent) != null)
+                {
+                    path = transform.name + "/" + path;
+                }
+
+                return path;
+            }
 
             return string.Empty;
         }
 
-        private static void _CollectFindPath (Transform transform, Transform root, System.Text.StringBuilder sbPath)
-		{
-			var parent = transform.parent;
-			if (null != parent && parent != root)
-			{
-                _CollectFindPath(parent, root, sbPath);
-				sbPath.Append("/");
-			}
-			
-			sbPath.Append(transform.name);
-		}
+        public static string GetFindPath(this Transform transform)
+        {
+            if (null != transform)
+            {
+                var root = transform.root;
+                if (transform != root)
+                {
+                    var sbPath = StringBuilderPool.Get();
+                    _CollectFindPath(transform, root, sbPath);
+                    var path = StringBuilderPool.GetStringAndReturn(sbPath);
+                    return path;
+                }
+            }
 
-        internal static IEnumerable<Transform> EnumerateChildren (this Transform father)
+            return string.Empty;
+        }
+
+        private static void _CollectFindPath(Transform transform, Transform root, System.Text.StringBuilder sbPath)
+        {
+            var parent = transform.parent;
+            if (null != parent && parent != root)
+            {
+                _CollectFindPath(parent, root, sbPath);
+                sbPath.Append("/");
+            }
+
+            sbPath.Append(transform.name);
+        }
+
+        internal static IEnumerable<Transform> EnumerateChildren(this Transform father)
         {
             if (null != father)
             {
                 yield return father;
 
                 var childCount = father.childCount;
-                for (int i= 0; i< childCount; ++i)
+                for (int i = 0; i < childCount; ++i)
                 {
                     var child = father.GetChild(i);
                     foreach (var node in EnumerateChildren(child))
