@@ -182,6 +182,9 @@ namespace Unicorn.Road
                 case PacketKind.RouteKind:
                     _OnReceivedRouteKind(pack);
                     break;
+                case PacketKind.Echo:
+                    _OnReceivedEcho(pack);
+                    break;
                 default:
                     _OnReceivedUserdata(pack);
                     break;
@@ -264,7 +267,13 @@ namespace Unicorn.Road
             _routeKinds[bean.route] = bean.kind;
             _kindRoutes[bean.kind] = bean.route;
 
-            Logo.Info($"[_OnReceivedRouteKind()], kind={bean.kind}, route={bean.route}");
+            Logo.Info($"[_OnReceivedRouteKind()] kind={bean.kind} route={bean.route}");
+        }
+
+        private void _OnReceivedEcho(Packet pack)
+        {
+            _SendPacket(pack);
+            Logo.Info($"[_OnReceivedEcho()] kind={pack.Kind} requestId={pack.RequestId}");
         }
 
         private void _OnReceivedUserdata(Packet pack)
@@ -310,9 +319,8 @@ namespace Unicorn.Road
             var requestId = pack.RequestId;
             if (requestId != 0)
             {
-                if (_requestHandlers.TryGetValue(requestId, out var handler))
+                if (_requestHandlers.Remove(requestId, out var handler))
                 {
-                    _requestHandlers.Remove(requestId);
                     return handler;
                 }
             }
