@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2022-08-12
 author:     lixianmin
 
@@ -12,5 +11,6 @@ namespace Unicorn.Web
     public struct WebArgument
     {
         public string key;
+        public int flags;
     }
 }
