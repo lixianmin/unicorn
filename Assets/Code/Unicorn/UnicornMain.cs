@@ -61,6 +61,7 @@ namespace Unicorn
             System.Net.ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
 
             _InsertPlayerLoop();
+            Application.quitting += _OnApplicationQuit;
         }
 
         private static void _InsertPlayerLoop()
@@ -133,6 +134,14 @@ namespace Unicorn
         private static void _SlowUpdate(float deltaTime)
         {
             _uiManager.SlowUpdate(deltaTime);
+        }
+
+        /// <summary>
+        /// 游戏从play状态退出
+        /// </summary>
+        private static void _OnApplicationQuit()
+        {
+            _coroutineManager.Clear();
         }
 
         private static readonly PartUpdateSystem _partUpdateSystem = new();
