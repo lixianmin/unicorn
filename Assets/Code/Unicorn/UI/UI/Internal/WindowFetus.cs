@@ -194,7 +194,7 @@ namespace Unicorn.UI.Internal
 
         internal bool IsDebugging()
         {
-            // return master.GetAssetPath().EndsWith("uinpc_dialog.prefab");
+            // return master.GetAssetPath().EndsWith(" for top-up.prefab");
             return false;
         }
 

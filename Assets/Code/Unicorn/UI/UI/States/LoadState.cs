@@ -17,7 +17,7 @@ namespace Unicorn.UI.States
         {
             var assetPath = fetus.master.GetAssetPath();
             _loadWindowMask.OpenWindow(assetPath);
-            
+
             if (string.IsNullOrEmpty(assetPath))
             {
                 Logo.Error("assetPath is empty.");
@@ -49,24 +49,38 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[LoadState.OnOpenWindow()]");    
+                Logo.Warn("[LoadState.OnOpenWindow()]");
             }
-            
+
             _delayedAction = DelayedAction.OpenWindow;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            _delayedAction = DelayedAction.CloseWindow;
-            
+            // 如果gameObject已经加载完成了, 则直接转Unload状态
+            var isLoaded = fetus.HasFlag(FetusFlags.Loaded);
+            if (isLoaded)
+            {
+                fetus.ChangeState(StateKind.Unload);
+            }
+            else
+            {
+                _delayedAction = DelayedAction.CloseWindow;
+            }
+
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[LoadState.OnCloseWindow()]");    
+                Logo.Warn($"[LoadState.OnCloseWindow()] _delayedAction={_delayedAction}");
             }
         }
 
         private void _LoadAsset(WindowFetus fetus, string assetPath)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn($"[LoadState._LoadAsset()] _delayedAction={_delayedAction}");
+            }
+
             var argument = new WebArgument { key = assetPath };
             WebManager.It.LoadPrefab(argument, prefab =>
             {
@@ -75,11 +89,17 @@ namespace Unicorn.UI.States
 
                 var master = fetus.master;
                 var isLoading = this == fetus.GetState();
+
+                if (fetus.IsDebugging())
+                {
+                    Logo.Warn($"[LoadState._OnLoadedPrefab()] _delayedAction={_delayedAction} isLoading={isLoading}");
+                }
+
                 if (_delayedAction == DelayedAction.CloseWindow)
                 {
                     _delayedAction = DelayedAction.None;
                     fetus.ChangeState(StateKind.None);
-                    
+
                     // master.Dispose(), 会导致当前状态的OnExit()无法被正常调用到, 逻辑闭环就打破了
                     OnExit(fetus, null);
                     master.Dispose();
@@ -110,6 +130,11 @@ namespace Unicorn.UI.States
 
         private void _OnLoadGameObject(WindowFetus fetus, GameObject gameObject)
         {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn($"[LoadState._OnLoadGameObject()] _delayedAction={_delayedAction}");
+            }
+
             fetus.OnLoadGameObject(gameObject);
 
             var master = fetus.master;

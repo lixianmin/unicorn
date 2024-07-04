@@ -20,5 +20,15 @@ namespace Unicorn.UI.States
             
             fetus.ChangeState(StateKind.Load);
         }
+
+        public override void OnCloseWindow(WindowFetus fetus)
+        {
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn("[NoneState.OnCloseWindow()]");    
+            }
+            
+            fetus.ChangeState(StateKind.None);
+        }
     }
 }
