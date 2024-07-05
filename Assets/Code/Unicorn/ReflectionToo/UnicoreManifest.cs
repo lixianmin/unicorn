@@ -72,7 +72,7 @@ namespace Unicorn
                     XmlTools.Serialize(manifestPath, this);
                 }
             }
-            
+
             var fullPath = Path.GetFullPath(targetRelativePath);
             return fullPath;
         }
@@ -92,7 +92,7 @@ namespace Unicorn
             var fullPath = manifest._CheckChooseFullPath(ref manifest.relativePaths.excelMetadataRoot, title);
             return fullPath;
         }
-        
+
         public static string GetXmlMetadataRoot()
         {
             var manifest = OpenOrCreate();
@@ -100,7 +100,7 @@ namespace Unicorn
             var fullPath = manifest._CheckChooseFullPath(ref manifest.relativePaths.xmlMetadataRoot, title);
             return fullPath;
         }
-        
+
         public static string GetExportMetadataRoot()
         {
             var manifest = OpenOrCreate();
@@ -108,7 +108,23 @@ namespace Unicorn
             var fullPath = manifest._CheckChooseFullPath(ref manifest.relativePaths.exportMetadataRoot, title);
             return fullPath;
         }
-        
+
+        public static string GetUserDirectory1()
+        {
+            var manifest = OpenOrCreate();
+            const string title = "Please choose user directory1";
+            var fullPath = manifest._CheckChooseFullPath(ref manifest.relativePaths.userDirectory1, title);
+            return fullPath;
+        }
+
+        public static string GetUserDirectory2()
+        {
+            var manifest = OpenOrCreate();
+            const string title = "Please choose user director2";
+            var fullPath = manifest._CheckChooseFullPath(ref manifest.relativePaths.userDirectory2, title);
+            return fullPath;
+        }
+
         public static string GetLuaScriptRoot()
         {
             // 我们暂时没有使用lua的需求

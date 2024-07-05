@@ -28,6 +28,10 @@ namespace Unicorn
             public string excelMetadataRoot = string.Empty;
             public string xmlMetadataRoot = string.Empty;
             public string exportMetadataRoot = string.Empty;
+
+            // 用户自定义目录
+            public string userDirectory1 = string.Empty;
+            public string userDirectory2 = string.Empty;
         }
 
         public Paths relativePaths = new();
