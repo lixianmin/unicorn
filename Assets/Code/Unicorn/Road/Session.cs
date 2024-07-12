@@ -18,13 +18,13 @@ namespace Unicorn.Road
 {
     public class Session : Disposable
     {
-        public void Connect(string hostNameOrAddress, int port, ISerde serde,
+        public void Connect(string hostNameOrAddress, int port, Func<Session, ISerde> serdeBuilder,
             Action<JsonHandshake> onHandShaken = null, Action onClosed = null)
         {
             Close();
             _reconnectAction = () =>
             {
-                _serde = serde ?? throw new ArgumentNullException(nameof(serde));
+                _serdeBuilder = serdeBuilder ?? throw new ArgumentNullException(nameof(serdeBuilder));
                 _onHandShakenHandler = onHandShaken;
                 _onClosedHandler = onClosed;
 
@@ -58,6 +58,8 @@ namespace Unicorn.Road
             _sessionThread = null;
 
             _serde = null;
+            _serdeBuilder = null;
+
             _onHandShakenHandler = null;
             _onClosedHandler = null;
             _nonce = 0;
@@ -228,8 +230,10 @@ namespace Unicorn.Road
                 _kindRoutes[kind] = route;
             }
 
-            _HandshakeRe();
             _nonce = handshake.nonce;
+            _serde = _serdeBuilder(this);
+
+            _HandshakeRe();
             _onHandShakenHandler?.Invoke(handshake);
         }
 
@@ -393,6 +397,12 @@ namespace Unicorn.Road
 
         private void _CallHandler<T>(Action<T, Error> handler, byte[] data, Error err) where T : new()
         {
+            if (_serde == null)
+            {
+                Logo.Warn($"_serde is null");
+                return;
+            }
+
             if (data != null)
             {
                 var response = _serde.Deserialize<T>(data);
@@ -440,6 +450,8 @@ namespace Unicorn.Road
         private SessionThread _sessionThread;
 
         private ISerde _serde;
+        private Func<Session, ISerde> _serdeBuilder;
+
         private Action<JsonHandshake> _onHandShakenHandler;
         private Action _onClosedHandler;
         private Action _onKickedHandler;
