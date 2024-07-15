@@ -1,5 +1,4 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2022-08-11
 author:     lixianmin
 
@@ -11,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Unicorn.Collections;
-
 using Assembly = System.Reflection.Assembly;
 using BindingFlags = System.Reflection.BindingFlags;
 using FieldInfo = System.Reflection.FieldInfo;
@@ -62,7 +60,6 @@ namespace Unicorn
 
         static TypeTools()
         {
-            Clear();
             _Init_MakeGenericType();
         }
 
@@ -94,7 +91,8 @@ namespace Unicorn
             return null;
         }
 
-        public static FieldInfo[] GetSortedFields(Type type, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance)
+        public static FieldInfo[] GetSortedFields(Type type,
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance)
         {
             if (null != type)
             {
@@ -132,15 +130,15 @@ namespace Unicorn
             {
                 var results = new List<System.Reflection.Assembly>();
                 var validPrefixes = new[]
-                    {
-                        "Unicorn,",
-                        "Unicorn.Core,",
-                        "Unicorn.Editor,",
+                {
+                    "Unicorn,",
+                    "Unicorn.Core,",
+                    "Unicorn.Editor,",
 
-                        "Assembly-CSharp-firstpass,",
-                        "Assembly-CSharp,",
-                        "Assembly-CSharp-Editor,",
-                    };
+                    "Assembly-CSharp-firstpass,",
+                    "Assembly-CSharp,",
+                    "Assembly-CSharp-Editor,",
+                };
 
                 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
@@ -210,7 +208,7 @@ namespace Unicorn
             _customAssemblies = null;
         }
 
-        private static readonly WeakTable _sortedFields = new(1000);
+        private static readonly Dictionary<Type, object> _sortedFields = new(100);
         private static Func<Type, Type[], Type> _lpfnMakeGenericType;
 
         private static System.Reflection.Assembly _editorAssembly;
