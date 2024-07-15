@@ -96,7 +96,7 @@ namespace Unicorn
         {
             if (null != type)
             {
-                if (_sortedFields[type] is not FieldInfo[] fields)
+                if (_sortedFields.GetValueOrDefault(type) is not FieldInfo[] fields)
                 {
                     fields = type.GetFields(flags);
                     Array.Sort(fields, (x, y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
