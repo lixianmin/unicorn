@@ -75,9 +75,9 @@ namespace Unicorn.UI
 
         public override void OnPointerDown(PointerEventData eventData)
         {
-            if (!_isButtonDown)
+            if (!_isPointerDown)
             {
-                _isButtonDown = true;
+                _isPointerDown = true;
                 base.OnPointerDown(eventData);
                 _onPointerDown?.Invoke(eventData);
             }
@@ -85,9 +85,9 @@ namespace Unicorn.UI
 
         public override void OnPointerUp(PointerEventData eventData)
         {
-            if (_isButtonDown)
+            if (_isPointerDown)
             {
-                _isButtonDown = false;
+                _isPointerDown = false;
                 base.OnPointerUp(eventData);
                 _onPointerUp?.Invoke(eventData);
             }
@@ -106,6 +106,6 @@ namespace Unicorn.UI
         private PointerEvent _onPointerDown;
         private PointerEvent _onPointerUp;
 
-        private bool _isButtonDown;
+        private bool _isPointerDown;
     }
 }
