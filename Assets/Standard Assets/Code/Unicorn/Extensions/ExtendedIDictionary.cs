@@ -1,13 +1,14 @@
-﻿
-/********************************************************************
+﻿/********************************************************************
 created:    2020-10-20
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unicorn.Collections;
 
 namespace Unicorn
 {
@@ -33,7 +34,8 @@ namespace Unicorn
             return dict.SetDefault(key, default);
         }
 
-        public static TValue SetDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
+        public static TValue SetDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key,
+            TValue defaultValue)
         {
             if (null != dict)
             {
@@ -55,7 +57,8 @@ namespace Unicorn
             return v;
         }
 
-        public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictTo, IDictionary<TKey, TValue> dictFrom) where TKey : IComparable
+        public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictTo,
+            IDictionary<TKey, TValue> dictFrom) where TKey : IComparable
         {
             if (null != dictTo && null != dictFrom)
             {
@@ -68,6 +71,7 @@ namespace Unicorn
             }
         }
 
+        [Obsolete("use DisposeAll().Clear() for instead")]
         public static void DisposeAllAndClear(this IDictionary table)
         {
             var count = table?.Count;
@@ -84,6 +88,40 @@ namespace Unicorn
 
                 table.Clear();
             }
+        }
+
+        public static IDictionary DisposeAll(this IDictionary table)
+        {
+            var count = table?.Count ?? 0;
+            if (count > 0)
+            {
+                var snapshot = SlicePool.Get<IDisposable>();
+                var iter = table!.GetEnumerator();
+                while (iter.MoveNext())
+                {
+                    if (iter.Value is IDisposable item)
+                    {
+                        snapshot.Add(item);
+                    }
+                }
+
+                // 回收iterator
+                if (iter is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+
+                // item.Dispose()方法, 有可能会修改原始table本身
+                for (var i = 0; i < snapshot.Size; i++)
+                {
+                    var item = snapshot[i];
+                    item.Dispose();
+                }
+
+                SlicePool.Return(snapshot);
+            }
+
+            return table;
         }
     }
 }
