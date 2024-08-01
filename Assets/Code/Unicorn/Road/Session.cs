@@ -180,7 +180,7 @@ namespace Unicorn.Road
                     break;
                 case PacketKind.Kick:
                     var reason = Encoding.UTF8.GetString(pack.Data);
-                    _Kick($"kicked by server, reason=${reason}");
+                    _Kick($"kicked by server, reason={reason}");
                     break;
                 case PacketKind.RouteKind:
                     _OnReceivedRouteKind(pack);
