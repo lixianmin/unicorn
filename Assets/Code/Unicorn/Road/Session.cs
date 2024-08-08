@@ -209,11 +209,11 @@ namespace Unicorn.Road
                 Logo.Info("handshake={0}", text);
             }
 
-            if (!_serverGid.IsNullOrEmpty() && _serverGid != handshake.gid)
-            {
-                _Kick("kicked by server restart");
-                return;
-            }
+            // if (!_serverGid.IsNullOrEmpty() && _serverGid != handshake.gid)
+            // {
+            //     _Kick("kicked by server restart");
+            //     return;
+            // }
 
             _serverGid = handshake.gid;
             _heartbeatInterval = handshake.heartbeat;
