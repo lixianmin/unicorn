@@ -15,9 +15,9 @@ namespace Clients.UI
 {
     public class UIShopWidget : UILoopScrollRect.IWidget
     {
-        public UIShopWidget(ShopGoods goods)
+        public UIShopWidget(ShopGood good)
         {
-            _goods = goods;
+            _good = good;
         }
 
         public void OnVisibleChanged(UILoopScrollRect.Cell cell)
@@ -26,11 +26,11 @@ namespace Clients.UI
             {
                 _rect = cell.GetTransform();
                 var title = _rect.GetComponentInChildren<UIText>();
-                title.text = "item: " + _goods.GetTemplateId();
+                title.text = "item: " + _good.GetTemplateId();
 
                 var btn = _rect.GetComponentInChildren<UIButton>();
                 _dog.AddListener(btn.onClick, _OnClickButton);
-                _dog.AddListener(_goods.OnUpdateGoods, _OnUpdateGoods);
+                _dog.AddListener(_good.OnUpdateGoods, _OnUpdateGoods);
             }
             else
             {
@@ -41,13 +41,13 @@ namespace Clients.UI
         private void _OnClickButton()
         {
             var nextId = ShopManager.It.GetNextId();
-            _goods.SetName(nextId.ToString());
+            _good.SetName(nextId.ToString());
             
             // ShopManager.It.DeleteGoods(_tid);
             // ShopManager.It.InsertGoods(nextId);
         }
 
-        private void _OnUpdateGoods(ShopGoods goods)
+        private void _OnUpdateGoods(ShopGood good)
         {
             var image = _rect.GetComponentInChildren<UIImage>();
             // 如果一个cell隐藏又显示了, 因为有transform的交换, 可能会导致变色
@@ -56,10 +56,10 @@ namespace Clients.UI
 
         public int GetTemplateId()
         {
-            return _goods.GetTemplateId();
+            return _good.GetTemplateId();
         }
         
-        private readonly ShopGoods _goods;
+        private readonly ShopGood _good;
         private RectTransform _rect;
 
         private readonly EventDog _dog = new();

@@ -11,9 +11,9 @@ using UnityEngine.Events;
 
 namespace Clients.UI
 {
-    public class ShopGoods
+    public class ShopGood
     {
-        public ShopGoods(int tid, string name)
+        public ShopGood(int tid, string name)
         {
             _tid = tid;
             _name = name;
@@ -38,7 +38,7 @@ namespace Clients.UI
             return _name;
         }
 
-        public readonly UnityEvent<ShopGoods> OnUpdateGoods = new();
+        public readonly UnityEvent<ShopGood> OnUpdateGoods = new();
 
         private int _tid;
         private string _name;

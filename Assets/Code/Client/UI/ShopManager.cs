@@ -26,9 +26,9 @@ namespace Clients.UI
         
         public void InsertGoods(int tid)
         {
-            var goods = new ShopGoods(tid, tid.ToString());
+            var goods = new ShopGood(tid, tid.ToString());
             _goods.Add(tid, goods);
-            OnInsertGoods.Invoke(goods);
+            OnInsertGood.Invoke(goods);
         }
 
         public bool DeleteGoods(int tid)
@@ -37,19 +37,16 @@ namespace Clients.UI
             if (index >= 0)
             {
                 _goods.RemoveAt(index);
-                OnDeleteGoods.Invoke(goods);
+                OnDeleteGood.Invoke(goods);
                 return true;
             }
 
             return false;
         }
 
-        public IEnumerable<ShopGoods> GetEnumerator()
+        public SortedTable<int, ShopGood>.ValueList GetGoods()
         {
-            foreach (var goods in _goods.Values)
-            {
-                yield return goods;
-            }
+            return _goods.Values;
         }
 
         public int GetNextId()
@@ -58,10 +55,10 @@ namespace Clients.UI
         }
 
         public readonly UnityEvent OnInited = new();
-        public readonly UnityEvent<ShopGoods> OnInsertGoods = new();
-        public readonly UnityEvent<ShopGoods> OnDeleteGoods = new();
+        public readonly UnityEvent<ShopGood> OnInsertGood = new();
+        public readonly UnityEvent<ShopGood> OnDeleteGood = new();
 
-        private readonly SortedTable<int, ShopGoods> _goods = new();
+        private readonly SortedTable<int, ShopGood> _goods = new();
 
         public static readonly ShopManager It = new();
         private static int _idGenerator;

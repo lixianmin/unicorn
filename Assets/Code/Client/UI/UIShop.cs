@@ -23,27 +23,29 @@ namespace Clients.UI
         {
             _ReloadWidgets();
 
-            _dog.AddListener(ShopManager.It.OnInsertGoods, _OnInsertGoods);
-            _dog.AddListener(ShopManager.It.OnDeleteGoods, _OnDeleteGoods);
+            _dog.AddListener(ShopManager.It.OnInsertGood, _OnInsertGoods);
+            _dog.AddListener(ShopManager.It.OnDeleteGood, _OnDeleteGoods);
         }
 
         private void _ReloadWidgets()
         {
             _loopScrollRect.UI.RemoveAllCells();
-            foreach (var goods in ShopManager.It.GetEnumerator())
+
+            foreach (var good in ShopManager.It.GetGoods())
             {
-                var widget = new UIShopWidget(goods);
+                var widget = new UIShopWidget(good);
                 _loopScrollRect.UI.AddCell(widget);
+                Logo.Info($"tid={good.GetTemplateId()}, good={good}");
             }
         }
 
-        private void _OnInsertGoods(ShopGoods goods)
+        private void _OnInsertGoods(ShopGood good)
         {
-            var widget = new UIShopWidget(goods);
+            var widget = new UIShopWidget(good);
             _loopScrollRect.UI.AddCell(widget);
         }
 
-        private void _OnDeleteGoods(ShopGoods goods)
+        private void _OnDeleteGoods(ShopGood good)
         {
             var ui = _loopScrollRect.UI;
             var count = ui.GetCellCount();
@@ -51,7 +53,7 @@ namespace Clients.UI
             {
                 var cell = ui.GetCell(i);
                 var widget = cell.GetWidget() as UIShopWidget;
-                if (widget!.GetTemplateId() == goods.GetTemplateId())
+                if (widget!.GetTemplateId() == good.GetTemplateId())
                 {
                     ui.RemoveCell(i);
                     break;
