@@ -42,8 +42,11 @@ namespace Unicorn
 
         internal static void ExpensiveUpdate()
         {
-            _time = UnityEngine.Time.realtimeSinceStartup;
-            _frameCount = UnityEngine.Time.frameCount;
+            var nextTime = Time.realtimeSinceStartup;
+            _deltaRealtime = nextTime - _realtimeSinceStartup;
+            _realtimeSinceStartup = nextTime;
+            
+            _frameCount = Time.frameCount;
             _CheckFlushLogText();
         }
 
@@ -143,10 +146,11 @@ namespace Unicorn
                 {
                     _lastFrameCount = frameCount;
                     _messageFormat[1] = frameCount.ToString();
+                    _messageFormat[5] = _deltaRealtime.ToString("F2");
                 }
 
-                _messageFormat[3] = _time.ToString("F2");
-                _messageFormat[5] = null != message ? message.ToString() : "null message (-_-)";
+                _messageFormat[3] = _realtimeSinceStartup.ToString("F2");
+                _messageFormat[7] = null != message ? message.ToString() : "null message (-_-)";
                 message = string.Concat(_messageFormat);
             }
 
@@ -256,9 +260,10 @@ namespace Unicorn
         private static LogoFlags _flags;
 
         private static readonly int _idMainThread;
-        private static float _time;
         private static int _frameCount;
         private static int _lastFrameCount;
+        private static float _realtimeSinceStartup;
+        private static float _deltaRealtime;
 
         private static readonly StringBuilder _sbLogText = new(512);
         private static readonly StringBuilder _sbFormatter = new();
@@ -269,12 +274,14 @@ namespace Unicorn
 
         private static readonly string[] _messageFormat =
         {
-            "[@@", // 加两个@号, 方便使用 adb logcat | grep @@ 过滤日志
-            "(-_-)",
-            " ",
-            null,
-            "] ",
-            null
+            "[",        // 过滤日志使用: adb logcat | grep 'Unity '
+            "(-_-)",    // 1. Time.frameCount
+            " ",        // 2. 空格
+            null,       // 3. Time.realtimeSinceStartup
+            " ",        // 4. 空格
+            null,       // 5. deltaRealtime
+            "] ",       // 6.
+            null        // 7. message
         };
     }
 }
