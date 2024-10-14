@@ -114,7 +114,10 @@ namespace Unicorn.UI
             // 有些场景并没有UI, 也找不到UICamera, 如果任由_CheckUICameraChanged()调用, 会大量报错
             if (count > 0)
             {
-                _CheckUICameraChanged(windows);
+                if (_uiCameraName != string.Empty && _uiCamera == null)
+                {
+                    _CheckUICameraChanged(windows);
+                }
 
                 for (var i = 0; i < count; i++)
                 {
@@ -133,12 +136,6 @@ namespace Unicorn.UI
         /// <param name="windows"></param>
         private void _CheckUICameraChanged(List<UIWindowBase> windows)
         {
-            var lastCamera = _uiCamera;
-            if (lastCamera != null)
-            {
-                return;
-            }
-
             var nextCamera = GetUICamera();
             if (nextCamera == null)
             {
@@ -160,10 +157,25 @@ namespace Unicorn.UI
             {
                 var window = windows[i];
                 var canvas = window.GetCanvas();
-                if (canvas != null)
+                SetCanvasWorldCamera(canvas);
+            }
+        }
+
+        internal void SetCanvasWorldCamera(Canvas canvas)
+        {
+            if (canvas != null)
+            {
+                switch (canvas.renderMode)
                 {
-                    var is2D = canvas.renderMode != RenderMode.WorldSpace;
-                    canvas.worldCamera = is2D ? nextCamera : Camera.main;
+                    case RenderMode.ScreenSpaceOverlay:
+                        canvas.worldCamera = null;
+                        break;
+                    case RenderMode.ScreenSpaceCamera:
+                        canvas.worldCamera = GetUICamera();
+                        break;
+                    case RenderMode.WorldSpace:
+                        canvas.worldCamera = Camera.main;
+                        break;
                 }
             }
         }
@@ -399,14 +411,25 @@ namespace Unicorn.UI
             return _uiRoot;
         }
 
+        public void SetUICameraName(string name)
+        {
+            _uiCameraName = name ?? string.Empty;
+        }
+
         internal Camera GetUICamera()
         {
             if (_uiCamera == null)
             {
-                var gameObject = GameObject.Find("UICamera");
+                if (string.IsNullOrEmpty(_uiCameraName))
+                {
+                    Logo.Error("UICamera name is not set");
+                    return null;
+                }
+
+                var gameObject = GameObject.Find(_uiCameraName);
                 if (null == gameObject)
                 {
-                    Logo.Error("Can not find UICamera");
+                    Logo.Error("Can not find UICamera with name={0}", _uiCameraName);
                     return null;
                 }
 
@@ -455,6 +478,10 @@ namespace Unicorn.UI
 
         private readonly UIWindowBase[] _foregroundWindows = new UIWindowBase[5]; // 第0个位置必然一直是null
         private Transform _uiRoot;
+
+        // 曾经的默认行为是canvas.renderMode = ScreenSpaceCamera, 也就是使用两个Camera, 一个用于UI, 一个用于WorldSpace
+        // 现在, 默认行为改成canvas.renderMode = ScreenSpaceOverlay, 也就是不使用UICamera, 这样可以节约一遍绘制
         private Camera _uiCamera; // 用于canvas.renderMode = ScreenSpaceCamera
+        private string _uiCameraName = string.Empty;    // 默认是空, 也就是不使用UICamera
     }
 }
