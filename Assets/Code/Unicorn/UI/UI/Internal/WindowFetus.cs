@@ -96,19 +96,21 @@ namespace Unicorn.UI.Internal
             if (canvas != null)
             {
                 canvas.overrideSorting = true;
-
                 var is2D = canvas.renderMode != RenderMode.WorldSpace;
                 master._is2D = is2D;
 
-                // 2d和3d界面分别设置不同的camera
-                if (is2D)
+                // // 2d和3d界面分别设置不同的camera
+                switch (canvas.renderMode)
                 {
-                    canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                    canvas.worldCamera = UIManager.It.GetUICamera();
-                }
-                else
-                {
-                    canvas.worldCamera = Camera.main;
+                    case RenderMode.ScreenSpaceOverlay:
+                        canvas.worldCamera = null;
+                        break;
+                    case RenderMode.ScreenSpaceCamera:
+                        canvas.worldCamera = UIManager.It.GetUICamera();
+                        break;
+                    case RenderMode.WorldSpace:
+                        canvas.worldCamera = Camera.main;
+                        break;
                 }
 
                 // 自动设置layer：如果后续有不自动调整layer的需求，只需要在UISerializer中补一个autoSetLayer变量控制即可

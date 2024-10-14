@@ -63,3 +63,4 @@ crashlytics-build.properties
 *.cs.meta
 Bundles/
 Assets/StreamingAssets/yoo/
+.vscode/*
