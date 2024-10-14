@@ -74,13 +74,41 @@ namespace Unicorn.Collections
         {
             if (others is { Size: > 0 })
             {
-                var nextCount = Size + others.Size;
-                Reserve(nextCount);
+                var nextSize = Size + others.Size;
+                Reserve(nextSize);
 
                 Array.Copy(others.Items, 0, Items!, Size, others.Size);
-                Size = nextCount;
+                Size = nextSize;
             }
         }
+
+        public void AddRange(List<T> others)
+        {
+            var othersCount = others?.Count ?? 0;
+            if (othersCount > 0)
+            {
+                var nextSize = Size + othersCount;
+                Reserve(nextSize);
+
+                others.CopyTo(Items, Size);
+                Size = nextSize;
+            }
+        }
+
+        // public void AddRange(IList<T> others)
+        // {
+        //     if (others != null)
+        //     {
+        //         var count = others.Count;
+        //         for (int i = 0; i < count; i++)
+        //         {
+        //             var item = others[i];
+        //             ArrayTools.AddItem(ref Items, ref Size, item);
+        //         }
+        //     }
+        // }
+
+
 
         public void Reserve(int minCapacity)
         {
