@@ -13,10 +13,10 @@ namespace Unicorn
     public class Part : IDisposable, IHaveEntity, IInitPart, IPart, IIsDisposed
     {
         void IInitPart.InitPart(Entity entity)
-		{
-			_entity = entity;
-			Awake();
-		}
+        {
+            _entity = entity;
+            Awake();
+        }
 
         void IDisposable.Dispose()
         {

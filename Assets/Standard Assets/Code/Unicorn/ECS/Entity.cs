@@ -7,12 +7,11 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Unicorn
 {
-    public partial class Entity : IRemoveListener
+    public partial class Entity
     {
         public IPart AddPart(Type type)
         {
@@ -32,7 +31,7 @@ namespace Unicorn
             var part = constructor?.Invoke(Array.Empty<object>()) as IPart;
             if (part != null)
             {
-	            if (part is IInitPart initPart)
+                if (part is IInitPart initPart)
                 {
                     initPart.InitPart(this);
                 }
@@ -46,124 +45,56 @@ namespace Unicorn
         }
 
         public IPart GetPart(Type type)
-		{
-			var parts = _parts;
-			if (type != null && parts != null)
-			{
-				return parts.GetPart(type);
-			}
-
-			return null;
-		}
-
-        public void GetParts(List<IPart> results)
         {
-	        _parts?.GetParts(results);
+            var parts = _parts;
+            if (type != null && parts != null)
+            {
+                return parts.GetPart(type);
+            }
+
+            return null;
         }
 
         public IPart SetDefaultPart(Type type)
-		{
-			if (type != null)
-			{
-				_parts ??= new EntityTable();
-				var part = _parts.GetPart(type) ?? _AddPart(type, false);
+        {
+            if (type != null)
+            {
+                _parts ??= new EntityTable();
+                var part = _parts.GetPart(type) ?? _AddPart(type, false);
 
-				return part;
-			}
-			return null;
-		}
+                return part;
+            }
+
+            return null;
+        }
 
         public bool RemovePart(Type type)
-		{
-			var parts = _parts;
-			if (type != null && parts != null)
-			{
-				return parts.Remove(type);
-			}
-            
-			return false;
-		}
-
-        public ListenerData AddListener(int message, Action listener)
         {
-            if (null != listener)
+            var parts = _parts;
+            if (type != null && parts != null)
             {
-                _observer ??= _cacheObservers.Get();
-                _observer.AddListener(message, listener);
-
-                var listenerData = new ListenerData { sender = this, message = message, listener = listener };
-                return listenerData;
+                return parts.Remove(type);
             }
 
-            return default;
-        }
-
-        public void RemoveListener(int message, Action listener)
-        {
-            var observer = _observer;
-            if (null != observer && null != listener)
-            {
-                observer.RemoveListener(message, listener);
-            }
-        }
-
-        void IRemoveListener.RemoveListener(int message, Delegate listener)
-        {
-            RemoveListener(message, listener as Action);
-        }
-
-        public void SendMessage(int message)
-        {
-            _observer?.SendMessage(message);
+            return false;
         }
 
         /// <summary>
         /// 清理Entity状态.
-        /// Entity原本实现了Dispose()方法, 但目前评估加一个Clear()方法可能更有效. 原因是:
-        /// 1. Dispose()方法是销毁对象, 对象就无法复用了, 而Clear()方法代表对象还可以接着使用
-        /// 2. Entity本身没有让GC自动回收的动机, 如果子类有这样的需求, 则直接在子类中Dispose()相关逻辑即可
+        /// Entity原本实现了Dispose()方法, 但目前评估加一个Clear()方法可能更合理. 原因是:
+        /// 1. Dispose()方法是销毁对象, 但之后对象就无法复用了. 对比之下Clear()方法代表对象还可以接着使用, Clear()方法优势更大
+        /// 2. 有些类一开始并未做Ecs设计, 因此Entity只能后续作为作为其类的成员对象出现, 则有自动Dispose()的需求. 
+        /// 3. 然而, Disposeable是在主线程回收的, 目前无法支持到Unicorn.Core
         /// </summary>
         public virtual void Clear()
         {
-            _cacheObservers.Return(_observer);
-            _observer = null;
-            
             _parts?.Dispose();
             _parts = null;
         }
-        
-        // public void Dispose()
-        // {
-        //     if (_isDisposed)
-        //     {
-        //         return;
-        //     }
-        //
-        //     _isDisposed = true;
-        //
-        //     // 将observer的回收放在_DoDispose前面，这样如果_DoDispose()中有调用RemoveListener()时，开销会变低
-        //     _cacheObservers.Recycle(_observer);
-        //     _observer = null;
-        //
-        //     _DoDispose();
-        //
-        //     _parts?.Dispose();
-        //     _parts = null;
-        // }
-        //
-        // public bool IsDisposed()
-        // {
-        //     return _isDisposed;
-        // }
-        //
-        // protected virtual void _DoDispose() { }
 
         private EntityTable _parts;
-        // private bool _isDisposed;
-        private Observer _observer;
 
         // global variables
         public static event Action<IPart> OnPartCreated;
-        private static readonly ObjectPool<Observer> _cacheObservers = new(null, item => item.RemoveAllListeners());
     }
 }
