@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace Unicorn
 {
-    public partial class Entity
+    public partial class EntityBase
     {
         public IPart AddPart(Type type)
         {
@@ -88,8 +88,11 @@ namespace Unicorn
         /// </summary>
         public virtual void Clear()
         {
-            _parts?.Dispose();
-            _parts = null;
+            if (_parts != null)
+            {
+                _parts.Dispose();
+                _parts = null;
+            }
         }
 
         private EntityTable _parts;

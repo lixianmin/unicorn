@@ -10,6 +10,6 @@ namespace Unicorn
 {
 	public interface IHaveEntity
 	{
-		Entity GetEntity();
+		EntityBase GetEntity();
 	}
 }

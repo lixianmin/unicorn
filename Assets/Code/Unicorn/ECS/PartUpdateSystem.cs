@@ -21,7 +21,7 @@ namespace Unicorn
 
         internal PartUpdateSystem()
         {
-            Entity.OnPartCreated += _OnPartCreated;
+            EntityBase.OnPartCreated += _OnPartCreated;
         }
 
         private void _OnPartCreated(IPart part)

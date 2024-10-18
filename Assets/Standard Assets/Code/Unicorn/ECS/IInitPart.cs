@@ -9,6 +9,6 @@ namespace Unicorn
 {
     public interface IInitPart
     {
-        void InitPart(Entity entity);
+        void InitPart(EntityBase entity);
     }
 }

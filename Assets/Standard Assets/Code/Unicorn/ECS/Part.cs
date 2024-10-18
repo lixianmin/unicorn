@@ -12,7 +12,7 @@ namespace Unicorn
 {
     public class Part : IDisposable, IHaveEntity, IInitPart, IPart, IIsDisposed
     {
-        void IInitPart.InitPart(Entity entity)
+        void IInitPart.InitPart(EntityBase entity)
         {
             _entity = entity;
             Awake();
@@ -29,7 +29,7 @@ namespace Unicorn
             OnDestroy();
         }
 
-        public Entity GetEntity()
+        public EntityBase GetEntity()
         {
             return _entity;
         }
@@ -42,7 +42,7 @@ namespace Unicorn
         protected virtual void Awake() { }
         protected virtual void OnDestroy() { }
 
-        private Entity _entity;
+        private EntityBase _entity;
         private bool _isDisposed;
     }
 }
