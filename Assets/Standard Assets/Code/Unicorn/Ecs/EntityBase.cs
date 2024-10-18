@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace Unicorn
 {
-    public partial class EntityBase
+    public partial class EntityBase : IDisposable, IIsDisposed
     {
         public IPart AddPart(Type type)
         {
