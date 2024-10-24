@@ -12,18 +12,18 @@ using System.Diagnostics;
 
 namespace Unicorn.Collections
 {
-    [DebuggerDisplay ("Count={Count}")]
-    [Serializable]
+	[DebuggerDisplay("Count={Count}")]
+	[Serializable]
 	public partial class SortedTable<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary
 	{
-		public SortedTable ()
+		public SortedTable()
 		{
-			_keys   = _emptyKeys;
+			_keys = _emptyKeys;
 			_values = _emptyValues;
-            _SetComparer(null);
-        }
+			_SetComparer(null);
+		}
 
-		public SortedTable (int capacity)
+		public SortedTable(int capacity)
 		{
 			if (capacity < 0)
 			{
@@ -33,29 +33,29 @@ namespace Unicorn.Collections
 			_keys = new TKey[capacity];
 			_values = new TValue[capacity];
 			_capacity = capacity;
-            _SetComparer(null);
+			_SetComparer(null);
 		}
 
-        public SortedTable (IComparer<TKey> comparer): this()
-        {
-            _SetComparer(comparer);
-        }
+		public SortedTable(IComparer<TKey> comparer) : this()
+		{
+			_SetComparer(comparer);
+		}
 
-        public SortedTable (int capacity, IComparer<TKey> comparer): this(comparer)
-        {
-            Capacity = capacity;
-        }
+		public SortedTable(int capacity, IComparer<TKey> comparer) : this(comparer)
+		{
+			Capacity = capacity;
+		}
 
-        public SortedTable (IDictionary<TKey, TValue> dict): this(dict, null)
-        {
-        }
+		public SortedTable(IDictionary<TKey, TValue> dict) : this(dict, null)
+		{
+		}
 
-        public SortedTable (IDictionary<TKey, TValue> dict, IComparer<TKey> comparer): this(dict?.Count ?? 0, comparer)
-        {
-            if (null == dict)
-            {
-                throw new ArgumentNullException("dict is null");
-            }
+		public SortedTable(IDictionary<TKey, TValue> dict, IComparer<TKey> comparer) : this(dict?.Count ?? 0, comparer)
+		{
+			if (null == dict)
+			{
+				throw new ArgumentNullException("dict is null");
+			}
 
 			var count = dict.Count;
 			_size = count;
@@ -77,14 +77,14 @@ namespace Unicorn.Collections
 				dict.Values.CopyTo(_values, 0);
 				_Sort();
 			}
-        }
+		}
 
-        private void _SetComparer (IComparer<TKey> inputComparer)
-        {
+		private void _SetComparer(IComparer<TKey> inputComparer)
+		{
 			_comparer = inputComparer ?? Comparer<TKey>.Default;
-        }
- 
-		public void Add (TKey key, TValue value)
+		}
+
+		public void Add(TKey key, TValue value)
 		{
 			if (_isKeyNullable && null == key)
 			{
@@ -95,14 +95,14 @@ namespace Unicorn.Collections
 			if (index >= 0)
 			{
 				var oldValue = _values[index];
-				var message= string.Format("Find duplicated key={0}, newValue={1}, oldValue={2}", key, value, oldValue);
+				var message = string.Format("Find duplicated key={0}, newValue={1}, oldValue={2}", key, value, oldValue);
 				throw new ArgumentException(message);
 			}
 
 			InsertByIndex(~index, key, value);
 		}
 
-		public void Clear ()
+		public void Clear()
 		{
 			++_version;
 
@@ -114,7 +114,7 @@ namespace Unicorn.Collections
 			}
 		}
 
-		public bool ContainsKey (TKey key)
+		public bool ContainsKey(TKey key)
 		{
 			if (!_isKeyNullable || null != key)
 			{
@@ -126,13 +126,13 @@ namespace Unicorn.Collections
 			return false;
 		}
 
-		public bool ContainsValue (TValue value)
+		public bool ContainsValue(TValue value)
 		{
 			var index = Array.IndexOf(_values, value, 0, _size);
 			return index >= 0;
 		}
 
-		public int IndexOfKey (TKey key)
+		public int IndexOfKey(TKey key)
 		{
 			if (_isKeyNullable && null == key)
 			{
@@ -142,45 +142,45 @@ namespace Unicorn.Collections
 			return _BinarySearch(key);
 		}
 
-		protected int _BinarySearch (TKey key)
+		protected int _BinarySearch(TKey key)
 		{
-//			int i = -1;
-//			int j = _size;
-//			while (i + 1 != j)
-//			{
-//				int mid = i + (j - i >> 1);
-//				if (_comparer.Compare (_keys [mid], key) < 0)
-//				{
-//					i = mid;
-//				}
-//				else
-//				{
-//					j = mid;
-//				}
-//			}
-//			
-//			if (j == _size || _comparer.Compare (_keys [j], key) != 0)
-//			{
-//				j = ~j;
-//			}
-//			
-//			return j;
+			//			int i = -1;
+			//			int j = _size;
+			//			while (i + 1 != j)
+			//			{
+			//				int mid = i + (j - i >> 1);
+			//				if (_comparer.Compare (_keys [mid], key) < 0)
+			//				{
+			//					i = mid;
+			//				}
+			//				else
+			//				{
+			//					j = mid;
+			//				}
+			//			}
+			//			
+			//			if (j == _size || _comparer.Compare (_keys [j], key) != 0)
+			//			{
+			//				j = ~j;
+			//			}
+			//			
+			//			return j;
 			// I choose the following algorithm but not the front one because
 			// the following algorithm will call more less _comparer.Compare().
 
-			int left  = 0;
+			int left = 0;
 			int right = _size - 1;
-			
+
 			while (left <= right)
 			{
-				int mid  = left + ((right - left) >> 1);
-				int test = _comparer.Compare (key, _keys [mid]);
-				
+				int mid = left + ((right - left) >> 1);
+				int test = _comparer.Compare(key, _keys[mid]);
+
 				if (test == 0)
 				{
 					return mid;
 				}
-				
+
 				if (test < 0)
 				{
 					right = mid - 1;
@@ -190,16 +190,16 @@ namespace Unicorn.Collections
 					left = mid + 1;
 				}
 			}
-			
+
 			return ~left;
 		}
 
-		public int IndexOfValue (TValue value)
+		public int IndexOfValue(TValue value)
 		{
 			return Array.IndexOf(_values, value, 0, _size);
 		}
 
-		public bool Remove (TKey key)
+		public bool Remove(TKey key)
 		{
 			if (!_isKeyNullable || null != key)
 			{
@@ -208,7 +208,7 @@ namespace Unicorn.Collections
 				{
 					RemoveAt(index);
 				}
-				
+
 				var removed = index >= 0;
 				return removed;
 			}
@@ -216,7 +216,7 @@ namespace Unicorn.Collections
 			return false;
 		}
 
-		public void RemoveAt (int index)
+		public void RemoveAt(int index)
 		{
 			if (index < 0 || index >= _size)
 			{
@@ -236,7 +236,7 @@ namespace Unicorn.Collections
 			++_version;
 		}
 
-		public int RemoveAll (Func<TKey, TValue, bool> match)
+		public int RemoveAll(Func<TKey, TValue, bool> match)
 		{
 			if (null == match)
 			{
@@ -246,7 +246,7 @@ namespace Unicorn.Collections
 			int i;
 			for (i = 0; i < _size; i++)
 			{
-				if (match (_keys[i], _values[i]))
+				if (match(_keys[i], _values[i]))
 				{
 					break;
 				}
@@ -262,20 +262,20 @@ namespace Unicorn.Collections
 			int j;
 			for (j = i + 1; j < _size; j++)
 			{
-				if (!match (_keys[j], _values[j]))
+				if (!match(_keys[j], _values[j]))
 				{
-					_keys[i]	= _keys[j];
-					_values[i]	= _values[j];
+					_keys[i] = _keys[j];
+					_values[i] = _values[j];
 
 					++i;
 				}
 			}
 
-            var removedCount = j - i;
-            if (removedCount > 0)
+			var removedCount = j - i;
+			if (removedCount > 0)
 			{
-                Array.Clear (_keys, i, removedCount);
-                Array.Clear (_values, i, removedCount);
+				Array.Clear(_keys, i, removedCount);
+				Array.Clear(_values, i, removedCount);
 			}
 
 			_size = i;
@@ -283,9 +283,9 @@ namespace Unicorn.Collections
 			return removedCount;
 		}
 
-		public void TrimExcess ()
+		public void TrimExcess()
 		{
-			var num = (int) (_keys.Length * 0.9);
+			var num = (int)(_keys.Length * 0.9);
 
 			if (_size < num)
 			{
@@ -293,13 +293,13 @@ namespace Unicorn.Collections
 			}
 		}
 
-		public int TryIndexValue (TKey key, out TValue value)
+		public int TryIndexValue(TKey key, out TValue value)
 		{
 			if (_isKeyNullable && null == key)
 			{
 				throw new ArgumentNullException("key is null");
 			}
-			
+
 			int index = _BinarySearch(key);
 			if (index >= 0)
 			{
@@ -309,17 +309,17 @@ namespace Unicorn.Collections
 			{
 				value = default(TValue);
 			}
-			
+
 			return index;
 		}
 
-		public bool TryGetValue (TKey key, out TValue value)
+		public bool TryGetValue(TKey key, out TValue value)
 		{
 			if (_isKeyNullable && null == key)
 			{
 				throw new ArgumentNullException("key is null");
 			}
-			
+
 			int index = _BinarySearch(key);
 			if (index >= 0)
 			{
@@ -330,14 +330,14 @@ namespace Unicorn.Collections
 			{
 				value = default(TValue);
 				return false;
-			}			
+			}
 		}
 
-		public void ForEach (Action<KeyValuePair<TKey, TValue>> action)
+		public void ForEach(Action<KeyValuePair<TKey, TValue>> action)
 		{
 			if (null != action)
 			{
-				for (int i= 0; i< _size; ++i)
+				for (int i = 0; i < _size; ++i)
 				{
 					var pair = new KeyValuePair<TKey, TValue>(_keys[i], _values[i]);
 					action(pair);
@@ -345,105 +345,105 @@ namespace Unicorn.Collections
 			}
 		}
 
-        public void Merge (SortedTable<TKey, TValue> other)
-        {
-            if (null == other || other.Count == 0)
-            {
-                return;
-            }
+		public void Merge(SortedTable<TKey, TValue> other)
+		{
+			if (null == other || other.Count == 0)
+			{
+				return;
+			}
 
-            var counter1 = Count;
-            var counter2 = other.Count;
-            var capacity = counter1 + counter2;
+			var counter1 = Count;
+			var counter2 = other.Count;
+			var capacity = counter1 + counter2;
 
-            var keys = new TKey[capacity];
-            var values = new TValue[capacity];
+			var keys = new TKey[capacity];
+			var values = new TValue[capacity];
 
-            int currentIndex = 0;
-            int index1 = 0;
-            int index2 = 0;
+			int currentIndex = 0;
+			int index1 = 0;
+			int index2 = 0;
 
-            while (index1 < counter1 && index2 < counter2)
-            {
-                var key1 = _keys[index1];
-                var key2 = other._keys[index2];
+			while (index1 < counter1 && index2 < counter2)
+			{
+				var key1 = _keys[index1];
+				var key2 = other._keys[index2];
 
-                var flags = _comparer.Compare(key1, key2);
-                if (flags < 0)
-                {
-                    keys[currentIndex] = key1;
-                    values[currentIndex] = _values[index1];
-                    ++index1;
-                }
-                else if (flags > 0)
-                {
-                    keys[currentIndex] = key2;
-                    values[currentIndex] = other._values[index2];
-                    ++index2;
-                }
-                else
-                {
-                    keys[currentIndex] = key2;
-                    values[currentIndex] = other._values[index2];
-                    ++index2;
-                    ++index1;
-                }
+				var flags = _comparer.Compare(key1, key2);
+				if (flags < 0)
+				{
+					keys[currentIndex] = key1;
+					values[currentIndex] = _values[index1];
+					++index1;
+				}
+				else if (flags > 0)
+				{
+					keys[currentIndex] = key2;
+					values[currentIndex] = other._values[index2];
+					++index2;
+				}
+				else
+				{
+					keys[currentIndex] = key2;
+					values[currentIndex] = other._values[index2];
+					++index2;
+					++index1;
+				}
 
-                ++currentIndex;
-            }
+				++currentIndex;
+			}
 
-            while (index1 < counter1)
-            {
-                keys[currentIndex] = _keys[index1];
-                values[currentIndex] = _values[index1];
-                ++index1;
-                ++currentIndex;
-            }
+			while (index1 < counter1)
+			{
+				keys[currentIndex] = _keys[index1];
+				values[currentIndex] = _values[index1];
+				++index1;
+				++currentIndex;
+			}
 
-            while (index2 < counter2)
-            {
-                keys[currentIndex] = other._keys[index2];
-                values[currentIndex] = other._values[index2];
-                ++index2;
-                ++currentIndex;
-            }
+			while (index2 < counter2)
+			{
+				keys[currentIndex] = other._keys[index2];
+				values[currentIndex] = other._values[index2];
+				++index2;
+				++currentIndex;
+			}
 
-            _keys = keys;
-            _values = values;
-            _size = currentIndex;
-            _capacity = capacity;
-            ++_version;
-        }
+			_keys = keys;
+			_values = values;
+			_size = currentIndex;
+			_capacity = capacity;
+			++_version;
+		}
 
-        /// <summary>
-        /// This method exists for supporting XmlSerializer
-        /// </summary>
-        /// <param name="pair">Pair.</param>
-        public void Add (KeyValuePair<TKey, TValue> pair)
-        {
-            Add (pair.Key, pair.Value);
-        }
+		/// <summary>
+		/// This method exists for supporting XmlSerializer
+		/// </summary>
+		/// <param name="pair">Pair.</param>
+		public void Add(KeyValuePair<TKey, TValue> pair)
+		{
+			Add(pair.Key, pair.Value);
+		}
 
-        public Enumerator GetEnumerator ()
-        {
-            return new Enumerator(this);
-        }
+		public Enumerator GetEnumerator()
+		{
+			return new Enumerator(this);
+		}
 
-		IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator ()
+		IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
 		{
 			return _GetEnumerator();
-        }
-		
-		IEnumerator IEnumerable.GetEnumerator ()
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return _GetEnumerator();
-        }
+		}
 
-		private IEnumerator<KeyValuePair<TKey, TValue>> _GetEnumerator ()
+		private IEnumerator<KeyValuePair<TKey, TValue>> _GetEnumerator()
 		{
 			var lastVersion = _version;
 
-			for (int i= 0; i< _size; ++i)
+			for (int i = 0; i < _size; ++i)
 			{
 				var pair = new KeyValuePair<TKey, TValue>(_keys[i], _values[i]);
 				yield return pair;
@@ -455,16 +455,16 @@ namespace Unicorn.Collections
 			}
 		}
 
-		public TValue this [TKey key]
+		public TValue this[TKey key]
 		{
-			get 
+			get
 			{
 				if (_isKeyNullable && null == key)
 				{
 					throw new ArgumentNullException("key is null");
 				}
 
-				int index = _BinarySearch (key);
+				int index = _BinarySearch(key);
 				if (index >= 0)
 				{
 					return _values[index];
@@ -473,7 +473,7 @@ namespace Unicorn.Collections
 				throw new KeyNotFoundException("key =" + key);
 			}
 
-			set 
+			set
 			{
 				if (_isKeyNullable && null == key)
 				{
@@ -481,7 +481,7 @@ namespace Unicorn.Collections
 				}
 
 				int index = _BinarySearch(key);
-				if(index >= 0)
+				if (index >= 0)
 				{
 					_values[index] = value;
 					++_version;
@@ -492,7 +492,7 @@ namespace Unicorn.Collections
 			}
 		}
 
-		protected void _EnsureCapacity (int min)
+		protected void _EnsureCapacity(int min)
 		{
 			var num = _keys.Length == 0 ? 4 : _keys.Length * 2;
 			const int max = 2146435071;
@@ -510,12 +510,12 @@ namespace Unicorn.Collections
 
 		public int Capacity
 		{
-			get 
+			get
 			{
 				return _capacity;
 			}
 
-			set 
+			set
 			{
 				if (value != _keys.Length)
 				{
@@ -549,42 +549,42 @@ namespace Unicorn.Collections
 			}
 		}
 
-        public override string ToString ()
-        {
-            var sbText = new System.Text.StringBuilder(1024);
-            sbText.Append("[SortedTable] Capacity= ");
-            sbText.Append(Capacity);
-            
-            sbText.Append(", ");
-            sbText.Append("Count= ");
-            sbText.Append(Count);
-            
-//            sbText.Append(", ");
-//            sbText.Append("Comparer= ");
-//            sbText.Append(Comparer);
-//            
-//            sbText.Append(", ");
-//            sbText.Append("Items= ");
-//            sbText.Append("\n");
-//            
-//            var e = GetEnumerator();
-//            while (e.MoveNext())
-//            {
-//                var item = e.Current;
-//                sbText.Append("[");
-//                sbText.Append(item.Key);
-//                sbText.Append(", ");
-//                sbText.Append(item.Value);
-//                sbText.Append("]\n");
-//            }
-            
-            return sbText.ToString();
-        }
+		public override string ToString()
+		{
+			var sbText = new System.Text.StringBuilder(1024);
+			sbText.Append("[SortedTable] Capacity= ");
+			sbText.Append(Capacity);
 
-		public int              Count       { get { return _size; } }
-        public KeyList    		Keys        { get { return new KeyList(this); } }
-        public ValueList  		Values      { get { return new ValueList(this); } }
-        public IComparer<TKey>  Comparer    { get { return _comparer; }}
+			sbText.Append(", ");
+			sbText.Append("Count= ");
+			sbText.Append(Count);
+
+			//            sbText.Append(", ");
+			//            sbText.Append("Comparer= ");
+			//            sbText.Append(Comparer);
+			//            
+			//            sbText.Append(", ");
+			//            sbText.Append("Items= ");
+			//            sbText.Append("\n");
+			//            
+			//            var e = GetEnumerator();
+			//            while (e.MoveNext())
+			//            {
+			//                var item = e.Current;
+			//                sbText.Append("[");
+			//                sbText.Append(item.Key);
+			//                sbText.Append(", ");
+			//                sbText.Append(item.Value);
+			//                sbText.Append("]\n");
+			//            }
+
+			return sbText.ToString();
+		}
+
+		public int Count { get { return _size; } }
+		public KeyList Keys { get { return new KeyList(this); } }
+		public ValueList Values { get { return new ValueList(this); } }
+		public IComparer<TKey> Comparer { get { return _comparer; } }
 
 		protected TKey[] _keys;
 		protected TValue[] _values;

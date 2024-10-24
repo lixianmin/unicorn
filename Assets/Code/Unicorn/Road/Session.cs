@@ -20,10 +20,17 @@ namespace Unicorn.Road
     public class Session : Disposable
     {
 
-        public struct Handler
+        private class Handler
         {
-            public float expireSeconds;
+            public void Invoke(byte[] data, Error err)
+            {
+                done = true;
+                callback(data, err);
+            }
+
+            public float expireTime;
             public Action<byte[], Error> callback;
+            public bool done;
         }
 
         public void Connect(string hostNameOrAddress, int port, Func<Session, ISerde> serdeBuilder,
@@ -82,6 +89,7 @@ namespace Unicorn.Road
             _CheckReconnect();
             _CheckReceivePackets();
             _CheckSendHeartbeat();
+            _CheckRequestTimeout();
 
             _sessionThread?.Update();
         }
@@ -110,10 +118,29 @@ namespace Unicorn.Road
 
         private void _CheckSendHeartbeat()
         {
-            if (Time.time > _nextHeartbeatTime)
+            var time = Time.time;
+            if (time > _nextHeartbeatTime)
             {
                 _SendHeartbeat();
-                _nextHeartbeatTime = Time.time + _heartbeatInterval;
+                _nextHeartbeatTime = time + _heartbeatInterval;
+            }
+        }
+
+        private void _CheckRequestTimeout()
+        {
+            var now = Time.time;
+            if (now > _nextTimeoutTime && _requestHandlers.Count > 0)
+            {
+                foreach (var handler in _requestHandlers.Values)
+                {
+                    if (now > handler.expireTime)
+                    {
+                        handler.Invoke(null, _clientSideTimeoutError);
+                    }
+                }
+
+                _requestHandlers.RemoveAll((_, handler) => handler.done);
+                _nextTimeoutTime = now + 0.5f;
             }
         }
 
@@ -299,7 +326,7 @@ namespace Unicorn.Road
             }
 
             var handler = _FetchHandler(pack);
-            if (null == handler.callback)
+            if (handler == null)
             {
                 // 有些协议, 真不想处理, 就不设置handlers了. 通常只要有requestId, 就是故意不处理的
                 if (pack.RequestId == 0)
@@ -314,16 +341,16 @@ namespace Unicorn.Road
             var hasError = pack.Code is { Length: > 0 };
             if (hasError)
             {
-                var err = new Error()
+                var err = new Error
                 {
                     Code = Encoding.UTF8.GetString(pack.Code),
                     Message = Encoding.UTF8.GetString(pack.Data)
                 };
-                handler.callback(null, err);
+                handler.Invoke(null, err);
             }
             else
             {
-                handler.callback(pack.Data, null);
+                handler.Invoke(pack.Data, null);
             }
         }
 
@@ -332,10 +359,8 @@ namespace Unicorn.Road
             var requestId = pack.RequestId;
             if (requestId != 0)
             {
-                if (_requestHandlers.Remove(requestId, out var handler))
-                {
-                    return handler;
-                }
+                _requestHandlers.TryGetValue(requestId, out var handler);
+                return handler;
             }
             else
             {
@@ -343,11 +368,15 @@ namespace Unicorn.Road
                 _registeredHandlers.TryGetValue(route, out var handler);
                 return handler;
             }
-
-            return default;
         }
 
         public SocketError Request<T>(string route, object request, Action<T, Error> handler) where T : new()
+        {
+            const float timeout = 3600;
+            return Request(route, request, timeout, handler);
+        }
+
+        public SocketError Request<T>(string route, object request, float timeout, Action<T, Error> handler) where T : new()
         {
             if (_serde == null)
             {
@@ -386,7 +415,11 @@ namespace Unicorn.Road
             if (handler != null)
             {
                 // 这是, 通过创建匿名函数, 把handler的参数的类型信息T给隐藏了
-                _requestHandlers[requestId] = new Handler() { callback = (data1, err1) => { _CallHandler(handler, data1, err1); } };
+                _requestHandlers[requestId] = new Handler
+                {
+                    expireTime = Time.time + (timeout > 0 ? timeout : 0),
+                    callback = (data1, err1) => { _CallHandler(handler, data1, err1); }
+                };
             }
 
             _SendPacket(pack);
@@ -452,7 +485,7 @@ namespace Unicorn.Road
         private readonly Slice<Packet> _packets = new();
         private readonly Dictionary<string, int> _routeKinds = new();
         private readonly Dictionary<int, string> _kindRoutes = new();
-        private readonly Dictionary<int, Handler> _requestHandlers = new();
+        private readonly SortedTable<int, Handler> _requestHandlers = new();
         private readonly Dictionary<string, Handler> _registeredHandlers = new();
 
         private Action _reconnectAction;
@@ -470,6 +503,10 @@ namespace Unicorn.Road
 
         private float _nextHeartbeatTime = float.MaxValue;
         private float _heartbeatInterval;
+        private float _nextTimeoutTime = 0;
+        private readonly Error _clientSideTimeoutError = new() { Code = "ClientSideTimeout", Message = "request timeout on client side" };
+
+
         private byte[] _heartbeatBuffer;
         private int _requestIdGenerator;
     }
