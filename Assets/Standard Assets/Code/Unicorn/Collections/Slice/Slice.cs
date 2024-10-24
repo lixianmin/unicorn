@@ -82,7 +82,7 @@ namespace Unicorn.Collections
             }
         }
 
-        public void AddRange(List<T> others)
+        public void AddRange(IList<T> others)
         {
             var othersCount = others?.Count ?? 0;
             if (othersCount > 0)

@@ -43,7 +43,7 @@ namespace Unicorn.Road
             var buffer = new byte[bufferSize];
             var stream = new OctetsStream(128);
             var reader = new OctetsReader(stream);
-            var packs = new List<Packet>();
+            var packs = new Slice<Packet>();
 
             try
             {
@@ -103,10 +103,10 @@ namespace Unicorn.Road
             return socket;
         }
 
-        private void _OnReceivedData(OctetsReader reader, List<Packet> packs)
+        private void _OnReceivedData(OctetsReader reader, Slice<Packet> packs)
         {
             PacketTools.Decode(reader, packs);
-            if (packs.Count > 0)
+            if (packs.Size > 0)
             {
                 lock (_locker)
                 {
