@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Unicorn.IO;
+using Unicorn.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -153,13 +154,13 @@ namespace Unicorn.Road
             {
                 _sessionThread.ReceivePackets(_packets);
 
-                if (_packets.Count > 0)
+                if (_packets.Size > 0)
                 {
                     // _packets可以确认是主线程执行的, 但在遍历的过程中, 如果遇到了Kick,
                     // 则会调用Close, 则会把_packets清空
-                    for (var i = 0; i < _packets.Count; i++)
+                    for (var i = 0; i < _packets.Size; i++)
                     {
-                        var pack = _packets[i];
+                        var pack = _packets.Items[i];
                         _OnReceivedPacket(pack);
                     }
 
@@ -440,7 +441,7 @@ namespace Unicorn.Road
         }
 
         private readonly OctetsWriter _writer = new(new OctetsStream());
-        private readonly List<Packet> _packets = new();
+        private readonly Slice<Packet> _packets = new();
         private readonly Dictionary<string, int> _routeKinds = new();
         private readonly Dictionary<int, string> _kindRoutes = new();
         private readonly Dictionary<int, Action<byte[], Error>> _requestHandlers = new();

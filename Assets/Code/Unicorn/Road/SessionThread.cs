@@ -14,7 +14,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Unicorn.IO;
-
+using Unicorn.Collections;
 namespace Unicorn.Road
 {
     internal class SessionThread
@@ -38,7 +38,7 @@ namespace Unicorn.Road
             }
 
             _socket = socket;
-            
+
             const int bufferSize = 4096;
             var buffer = new byte[bufferSize];
             var stream = new OctetsStream(128);
@@ -189,11 +189,11 @@ namespace Unicorn.Road
             Interlocked.Exchange(ref _canSend, 1);
         }
 
-        internal void ReceivePackets(List<Packet> packets)
+        internal void ReceivePackets(Slice<Packet> packets)
         {
             lock (_locker)
             {
-                if (_sharedPackets.Count > 0)
+                if (_sharedPackets.Size > 0)
                 {
                     packets.AddRange(_sharedPackets);
                     _sharedPackets.Clear();
@@ -220,7 +220,7 @@ namespace Unicorn.Road
         private readonly OctetsStream _sendingStream = new();
 
         private long _isRunning = 1;
-        private readonly List<Packet> _sharedPackets = new();
+        private readonly Slice<Packet> _sharedPackets = new();
         private readonly object _locker = new();
     }
 }
