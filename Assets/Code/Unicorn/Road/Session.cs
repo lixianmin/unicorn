@@ -370,11 +370,11 @@ namespace Unicorn.Road
             }
         }
 
-        public SocketError Request<T>(string route, object request, Action<T, Error> handler) where T : new()
-        {
-            const float timeout = 3600;
-            return Request(route, request, timeout, handler);
-        }
+        // public SocketError Request<T>(string route, object request, Action<T, Error> handler) where T : new()
+        // {
+        //     const float timeout = 3600;
+        //     return Request(route, request, timeout, handler);
+        // }
 
         public SocketError Request<T>(string route, object request, float timeout, Action<T, Error> handler) where T : new()
         {
