@@ -19,6 +19,13 @@ namespace Unicorn.Road
 {
     public class Session : Disposable
     {
+
+        public struct Handler
+        {
+            public float expireSeconds;
+            public Action<byte[], Error> callback;
+        }
+
         public void Connect(string hostNameOrAddress, int port, Func<Session, ISerde> serdeBuilder,
             Action<JsonHandshake> onHandShaken = null, Action onClosed = null)
         {
@@ -292,7 +299,7 @@ namespace Unicorn.Road
             }
 
             var handler = _FetchHandler(pack);
-            if (null == handler)
+            if (null == handler.callback)
             {
                 // 有些协议, 真不想处理, 就不设置handlers了. 通常只要有requestId, 就是故意不处理的
                 if (pack.RequestId == 0)
@@ -312,15 +319,15 @@ namespace Unicorn.Road
                     Code = Encoding.UTF8.GetString(pack.Code),
                     Message = Encoding.UTF8.GetString(pack.Data)
                 };
-                handler(null, err);
+                handler.callback(null, err);
             }
             else
             {
-                handler(pack.Data, null);
+                handler.callback(pack.Data, null);
             }
         }
 
-        private Action<byte[], Error> _FetchHandler(Packet pack)
+        private Handler _FetchHandler(Packet pack)
         {
             var requestId = pack.RequestId;
             if (requestId != 0)
@@ -337,7 +344,7 @@ namespace Unicorn.Road
                 return handler;
             }
 
-            return null;
+            return default;
         }
 
         public SocketError Request<T>(string route, object request, Action<T, Error> handler) where T : new()
@@ -378,7 +385,8 @@ namespace Unicorn.Road
 
             if (handler != null)
             {
-                _requestHandlers[requestId] = (data1, err) => { _CallHandler(handler, data1, err); };
+                // 这是, 通过创建匿名函数, 把handler的参数的类型信息T给隐藏了
+                _requestHandlers[requestId] = new Handler() { callback = (data1, err1) => { _CallHandler(handler, data1, err1); } };
             }
 
             _SendPacket(pack);
@@ -394,7 +402,7 @@ namespace Unicorn.Road
             }
 
             // _registeredHandlers的key必须使用string而不能使用byte[], 因为byte[]是一个ref类型, 没有像string一个重载GetHash()相关的方法
-            _registeredHandlers[route] = (data1, err) => { _CallHandler(handler, data1, err); };
+            _registeredHandlers[route] = new Handler() { callback = (data1, err) => { _CallHandler(handler, data1, err); } };
         }
 
         private void _CallHandler<T>(Action<T, Error> handler, byte[] data, Error err) where T : new()
@@ -444,8 +452,8 @@ namespace Unicorn.Road
         private readonly Slice<Packet> _packets = new();
         private readonly Dictionary<string, int> _routeKinds = new();
         private readonly Dictionary<int, string> _kindRoutes = new();
-        private readonly Dictionary<int, Action<byte[], Error>> _requestHandlers = new();
-        private readonly Dictionary<string, Action<byte[], Error>> _registeredHandlers = new();
+        private readonly Dictionary<int, Handler> _requestHandlers = new();
+        private readonly Dictionary<string, Handler> _registeredHandlers = new();
 
         private Action _reconnectAction;
         private float _nextReconnectTime;
