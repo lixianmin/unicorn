@@ -64,19 +64,27 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[OpenAnimationState.OnOpenWindow()]");    
+                Logo.Warn($"[OpenAnimationState.OnOpenWindow()] assetPath={fetus.GetAssetPath()}");
             }
-            
+
             _delayedAction = DelayedAction.OpenWindow;
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
         {
-            _delayedAction = DelayedAction.CloseWindow;
-            
+            if (!_isPlaying)
+            {
+                _delayedAction = DelayedAction.None;
+                fetus.ChangeState(StateKind.CloseAnimation);
+            }
+            else
+            {
+                _delayedAction = DelayedAction.CloseWindow;
+            }
+
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[OpenAnimationState.OnCloseWindow()]");    
+                Logo.Warn($"[OpenAnimationState.OnCloseWindow()] assetPath={fetus.GetAssetPath()}");
             }
         }
 

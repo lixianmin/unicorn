@@ -15,7 +15,7 @@ namespace Unicorn.UI.States
     {
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
-            var assetPath = fetus.master.GetAssetPath();
+            var assetPath = fetus.GetAssetPath();
             _loadWindowMask.OpenWindow(assetPath);
 
             if (string.IsNullOrEmpty(assetPath))
@@ -42,7 +42,7 @@ namespace Unicorn.UI.States
 
         public override void OnExit(WindowFetus fetus, object arg1)
         {
-            _loadWindowMask.CloseWindow(fetus.master.GetAssetPath());
+            _loadWindowMask.CloseWindow(fetus.GetAssetPath());
         }
 
         public override void OnOpenWindow(WindowFetus fetus)
@@ -70,7 +70,7 @@ namespace Unicorn.UI.States
 
             if (fetus.IsDebugging())
             {
-                Logo.Warn($"[LoadState.OnCloseWindow()] _delayedAction={_delayedAction}");
+                Logo.Warn($"[LoadState.OnCloseWindow()] _delayedAction={_delayedAction} assetPath={fetus.GetAssetPath()}");
             }
         }
 
@@ -92,7 +92,7 @@ namespace Unicorn.UI.States
 
                 if (fetus.IsDebugging())
                 {
-                    Logo.Warn($"[LoadState._OnLoadedPrefab()] _delayedAction={_delayedAction} isLoading={isLoading}");
+                    Logo.Warn($"[LoadState._OnLoadedPrefab()] _delayedAction={_delayedAction} isLoading={isLoading} assetPath={fetus.GetAssetPath()}");
                 }
 
                 if (_delayedAction == DelayedAction.CloseWindow)
@@ -132,7 +132,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn($"[LoadState._OnLoadGameObject()] _delayedAction={_delayedAction}");
+                Logo.Warn($"[LoadState._OnLoadGameObject()] _delayedAction={_delayedAction} assetPath={fetus.GetAssetPath()}");
             }
 
             fetus.OnLoadGameObject(gameObject);

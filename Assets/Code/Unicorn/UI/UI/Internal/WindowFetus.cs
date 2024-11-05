@@ -184,8 +184,13 @@ namespace Unicorn.UI.Internal
 
         internal bool IsDebugging()
         {
-            // return master.GetAssetPath().EndsWith(" for top-up.prefab");
+            // return master.GetAssetPath().EndsWith("uiprogressbar.prefab");
             return false;
+        }
+
+        internal string GetAssetPath()
+        {
+            return master.GetAssetPath();
         }
 
         internal readonly UIWindowBase master;
