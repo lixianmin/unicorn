@@ -128,6 +128,12 @@ namespace Unicorn.UI.Internal
             var flags = (FetusFlags)master.GetWindowFlags();
             AddFlag(flags);
             AddFlag(FetusFlags.Opened1);
+
+            // 如果当前状态是NoneState，则立即推动到LoadState, 否则UI会延迟1帧后才加载, 对立马显示loading动画有影响
+            if (_state is NoneState)
+            {
+                ExpensiveUpdate();
+            }
         }
 
         public void CloseWindow()
