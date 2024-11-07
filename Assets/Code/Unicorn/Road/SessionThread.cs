@@ -9,7 +9,6 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -178,6 +177,9 @@ namespace Unicorn.Road
                 {
                     // EndSend()是一个blocking操作
                     socket.EndSend(ar);
+
+                    // 如果发送异常了, 就不需要设置_canSend了
+                    Interlocked.Exchange(ref _canSend, 1);
                 }
                 catch (Exception ex)
                 {
@@ -185,8 +187,6 @@ namespace Unicorn.Road
                     Logo.Warn($"[_OnSendCallback()] Close socket by ex={ex}");
                 }
             }
-
-            Interlocked.Exchange(ref _canSend, 1);
         }
 
         internal void ReceivePackets(Slice<Packet> packets)
@@ -209,6 +209,7 @@ namespace Unicorn.Road
         public void Close()
         {
             Interlocked.Exchange(ref _isRunning, 0);
+            _socket = null;
         }
 
         private readonly IPAddress _address;
