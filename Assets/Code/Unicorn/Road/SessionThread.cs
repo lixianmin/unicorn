@@ -18,11 +18,10 @@ namespace Unicorn.Road
 {
     internal class SessionThread
     {
-        public SessionThread(IPAddress address, int port, int connectExpireSeconds = 2)
+        public SessionThread(IPAddress address, int port)
         {
             _address = address;
             _port = port;
-            _connectExpireSeconds = connectExpireSeconds;
 
             var thread = new Thread(_Run);
             thread.Start();
@@ -30,7 +29,7 @@ namespace Unicorn.Road
 
         private void _Run()
         {
-            var socket = _ConnectSocket(_address, _port, _connectExpireSeconds);
+            var socket = _ConnectSocket(_address, _port);
             if (socket == null)
             {
                 Close();
@@ -70,16 +69,18 @@ namespace Unicorn.Road
             }
         }
 
-        private static Socket _ConnectSocket(IPAddress address, int port, int expireSeconds)
+        private static Socket _ConnectSocket(IPAddress address, int port)
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             // 只所以把连socket的操作放到Thread中, 是因为它会block, 会阻塞主线程做工作
             // 特别是当client切网, 需要重连的时候, 游戏会卡死, 玩家体验很差
             socket.Blocking = true;
 
-            // _socket.ReceiveTimeout = 2000;   // 这两个Timeout的默认值都是0
-            // _socket.SendTimeout = 1000;
-            socket.SendBufferSize = 512 * 1024; // SendBufferSize的默认值是128 * 1024
+            const int connectTimeout = 5 * 1000; // 单位: 毫秒
+            socket.SendTimeout = 10 * 1000;      // SendTimeout默认值是0, 即无限等待 (不设置, 会导致把app切到后台, 然后就再也发不出去消息了)
+            socket.ReceiveTimeout = 10 * 1000;   // ReceiveTimeout默认值是0, 即无限等待
+
+            socket.SendBufferSize = 1024 * 1024;  // SendBufferSize的默认值是128 * 1024
             socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true); // Disable Nagle
 
             // 1. 目前测试得知, address使用127.0.0.1或正确的IP(如: 192.168.31.96)在macos上是可以正确连接到golang server的
@@ -93,11 +94,11 @@ namespace Unicorn.Road
                 // socket.Connect(address, port);
                 // 使用WaitOne来实现5秒超时控制
                 var connectResult = socket.BeginConnect(address, port, null, null);
-                bool success = connectResult.AsyncWaitHandle.WaitOne(expireSeconds * 1000, true);
+                bool success = connectResult.AsyncWaitHandle.WaitOne(connectTimeout, true);
                 if (!success)
                 {
                     socket.Close();
-                    Logo.Warn($"Connect timeout after {expireSeconds} seconds");
+                    Logo.Warn($"Connect timeout after {connectTimeout} ms");
                     return null;
                 }
 
@@ -226,7 +227,6 @@ namespace Unicorn.Road
 
         private readonly IPAddress _address;
         private readonly int _port;
-        private readonly int _connectExpireSeconds;
 
         private Socket _socket;
 
