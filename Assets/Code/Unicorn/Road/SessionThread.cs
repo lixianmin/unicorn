@@ -18,10 +18,11 @@ namespace Unicorn.Road
 {
     internal class SessionThread
     {
-        public SessionThread(IPAddress address, int port)
+        public SessionThread(IPAddress address, int port, int connectExpireSeconds = 2)
         {
             _address = address;
             _port = port;
+            _connectExpireSeconds = connectExpireSeconds;
 
             var thread = new Thread(_Run);
             thread.Start();
@@ -29,7 +30,7 @@ namespace Unicorn.Road
 
         private void _Run()
         {
-            var socket = _ConnectSocket(_address, _port);
+            var socket = _ConnectSocket(_address, _port, _connectExpireSeconds);
             if (socket == null)
             {
                 Close();
@@ -69,7 +70,7 @@ namespace Unicorn.Road
             }
         }
 
-        private static Socket _ConnectSocket(IPAddress address, int port)
+        private static Socket _ConnectSocket(IPAddress address, int port, int expireSeconds)
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             // 只所以把连socket的操作放到Thread中, 是因为它会block, 会阻塞主线程做工作
@@ -89,7 +90,18 @@ namespace Unicorn.Road
 
             try
             {
-                socket.Connect(address, port);
+                // socket.Connect(address, port);
+                // 使用WaitOne来实现5秒超时控制
+                var connectResult = socket.BeginConnect(address, port, null, null);
+                bool success = connectResult.AsyncWaitHandle.WaitOne(expireSeconds * 1000, true);
+                if (!success)
+                {
+                    socket.Close();
+                    Logo.Warn($"Connect timeout after {expireSeconds} seconds");
+                    return null;
+                }
+
+                socket.EndConnect(connectResult);
             }
             catch (Exception ex)
             {
@@ -214,6 +226,8 @@ namespace Unicorn.Road
 
         private readonly IPAddress _address;
         private readonly int _port;
+        private readonly int _connectExpireSeconds;
+
         private Socket _socket;
 
         private long _canSend = 1;
