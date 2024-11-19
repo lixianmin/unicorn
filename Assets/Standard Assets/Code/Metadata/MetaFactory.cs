@@ -175,13 +175,13 @@ namespace Metadata
                             {
                                 break;
                             }
-                            
+
                             if (!_subTypes.TryGetValue(baseType, out var list))
                             {
                                 list = new List<Type>();
                                 _subTypes.Add(baseType, list);
                             }
-                            
+
                             list.Add(t);
                             t = baseType;
                         }
@@ -195,6 +195,12 @@ namespace Metadata
             }
 
             return Array.Empty<Type>();
+        }
+
+        public static void Clear()
+        {
+            _lookupTableByName = null;
+            _subTypes = null;
         }
 
         public static readonly string outerFactoryName = "OuterMetaFactory";

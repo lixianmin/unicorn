@@ -21,7 +21,8 @@ namespace Metadata.Menus
         {
             // 很多时候, 如果给template增加或删除了字段, 会导致导出时使用的layout不对, 有可能是因为TypeTools缓存了sorted fields原因
             TypeTools.Clear();
-            
+            MetaFactory.Clear();
+
             var startTime = Time.realtimeSinceStartup;
             var manager = Export(ExportFlags.ClearBuiltFile);
             // PlatformTools.DispatchFile(Constants.LocalMetadataPath);
@@ -124,7 +125,7 @@ namespace Metadata.Menus
                 const bool isFullMode = false;
                 LocaleTextManager.It.Save(stream, isFullMode);
             }
-            
+
             Logo.Info($"[_ExportMetadata()] exportPath={exportPath}");
         }
 
