@@ -37,6 +37,14 @@ namespace Unicorn.Road
             Action<JsonHandshake> onHandShaken = null, Action onClosed = null)
         {
             Close();
+            
+            var addressList = _GetAddresses(hostNameOrAddress);
+            if (addressList.IsNullOrEmpty())
+            {
+                Logo.Warn($"empty addressList, please check the network, hostNameOrAddress={hostNameOrAddress}");
+                return;
+            }
+
             _reconnectAction = () =>
             {
                 _serdeBuilder = serdeBuilder ?? throw new ArgumentNullException(nameof(serdeBuilder));
@@ -45,13 +53,10 @@ namespace Unicorn.Road
 
                 try
                 {
-                    var addressList = Dns.GetHostAddresses(hostNameOrAddress);
-                    if (!addressList.IsNullOrEmpty())
-                    {
-                        var address = addressList[0];
-                        _sessionThread?.Close();
-                        _sessionThread = new SessionThread(address, port);
-                    }
+                    var index = Random.Range(0, addressList.Length);
+                    var address = addressList[index];
+                    _sessionThread?.Close();
+                    _sessionThread = new SessionThread(address, port);
                 }
                 catch (Exception ex)
                 {
@@ -60,6 +65,28 @@ namespace Unicorn.Road
             };
 
             _reconnectAction();
+        }
+
+        private static IPAddress[] _GetAddresses(string hostNameOrAddress)
+        {
+            try
+            {
+                const int maxRetry = 3;
+                for (var i = 0; i < maxRetry; i++)
+                {
+                    var addressList = Dns.GetHostAddresses(hostNameOrAddress);
+                    if (!addressList.IsNullOrEmpty())
+                    {
+                        return addressList;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logo.Warn($"ex={ex}");
+            }
+
+            return null;
         }
 
         protected override void _DoDispose(int flags)
