@@ -410,6 +410,13 @@ namespace Unicorn.Road
                 return SocketError.Shutdown;
             }
 
+            // 发送handshake之后, 远程server才建立_serde, 才能发数据到远程
+            var isHandshakeSent = _nonce != 0;
+            if (!isHandshakeSent)
+            {
+                return SocketError.NotConnected;
+            }
+
             if (string.IsNullOrEmpty(route) || null == request)
             {
                 return SocketError.InvalidArgument;
