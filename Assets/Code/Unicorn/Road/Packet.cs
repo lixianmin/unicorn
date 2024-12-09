@@ -26,6 +26,7 @@ namespace Unicorn.Road
 
         // 有序的routes, 其kinds值从Userdata(1000)有序增加; 只所以这么做并不是为了省流量, 而是unity3d的JsonUtility不支持反序列化Dictionary
         public string[] routes;
+        public long sid;
     }
 
     // 回复server的握手协议, 使用json序列化

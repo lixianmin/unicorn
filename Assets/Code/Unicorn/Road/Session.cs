@@ -264,7 +264,7 @@ namespace Unicorn.Road
             // release的时候, 不打印routes细节
             if (os.IsReleaseMode)
             {
-                Logo.Info($"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} gid={handshake.gid}");
+                Logo.Info($"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} gid={handshake.gid} sid={handshake.sid}");
             }
             else
             {
