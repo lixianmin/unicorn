@@ -60,6 +60,10 @@ namespace Unicorn.UI
                     }
                     
                     _widget = _window.GetWidget(_name, typeof(T)) as T;
+                    if (_widget == null)
+                    {
+                        throw new NullReferenceException($"can not find the _widget with _name={_name}");
+                    }
                 }
 
                 return _widget;
