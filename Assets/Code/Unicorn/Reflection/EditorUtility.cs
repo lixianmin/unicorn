@@ -205,19 +205,7 @@ namespace Unicorn.Reflection
 		}
 
 		private static Type _myType;
-
-		public static Type MyType
-		{
-			get
-			{
-				if (null == _myType && Application.isEditor)
-				{
-					_myType = System.Type.GetType("UnityEditor.EditorUtility,UnityEditor");
-				}
-
-				return _myType;
-			}
-		}
+		public static Type MyType => _myType ??= Type.GetType("UnityEditor.EditorUtility,UnityEditor");
 
 		private static Action _lpfnClearProgressBar;
 

@@ -113,18 +113,6 @@ namespace Unicorn.Reflection
         }
 
         private static Type _myType;
-
-        public static Type MyType
-        {
-            get
-            {
-                if (null == _myType)
-                {
-                    _myType = System.Type.GetType("UnityEditor.AssetDatabase,UnityEditor");
-                }
-
-                return _myType;
-            }
-        }
+        public static Type MyType => _myType ??= Type.GetType("UnityEditor.AssetDatabase,UnityEditor");
     }
 }
