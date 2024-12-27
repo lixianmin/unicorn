@@ -104,6 +104,17 @@ namespace Unicorn.Reflection
             _lpfnSetFloat(key, value);
         }
 
+        public static bool HasKey(string key)
+        {
+            if (null == _lpfnHasKey)
+            {
+                var method = MyType.GetMethod("HasKey", _GetMethodFlags);
+                TypeTools.CreateDelegate(method, out _lpfnHasKey);
+            }
+
+            return _lpfnHasKey(key);
+        }
+
         private static Func<string, int, int> _lpfnGetInt;
         private static Action<string, int> _lpfnSetInt;
 
@@ -115,6 +126,8 @@ namespace Unicorn.Reflection
 
         private static Func<string, float, float> _lpfnGetFloat;
         private static Action<string, float> _lpfnSetFloat;
+
+        private static Func<string, bool> _lpfnHasKey;
 
         private static readonly System.Reflection.BindingFlags _GetMethodFlags =
             System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static;
