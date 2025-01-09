@@ -190,7 +190,7 @@ namespace Unicorn
 				var count = list.Count;
 				if (count > 0)
 				{
-					for (int i= 0; i< count; ++i)
+					for (var i= 0; i< count; ++i)
 					{
 						var item = list[i];
 						if (null != item)

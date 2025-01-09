@@ -45,7 +45,7 @@ namespace Unicorn
             var nextTime = Time.realtimeSinceStartup;
             _deltaRealtime = nextTime - _realtimeSinceStartup;
             _realtimeSinceStartup = nextTime;
-            
+
             _frameCount = Time.frameCount;
             _CheckFlushLogText();
         }
@@ -161,13 +161,13 @@ namespace Unicorn
             }
             catch (MissingMethodException)
             {
-                System.Console.WriteLine(message);
+                Console.WriteLine(message);
             }
         }
 
         private static string _FormatMessage(string format, params object[] args)
         {
-            if (args.IsNullOrEmpty())
+            if (args == null || args.Length == 0)
             {
                 return format;
             }

@@ -20,7 +20,7 @@ namespace Unicorn.IO
                 return false;
             }
 
-            title = title ?? string.Empty;
+            title ??= string.Empty;
             var length = paths.Length;
 
             var invLength = 1.0f / length;

@@ -176,7 +176,7 @@ namespace Unicorn
             else
             {
                 var hashtable = _parts as Hashtable;
-                hashtable.DisposeAllAndClear();
+                hashtable.DisposeAll().Clear();
                 _cacheHashParts.PushBack(hashtable);
             }
 

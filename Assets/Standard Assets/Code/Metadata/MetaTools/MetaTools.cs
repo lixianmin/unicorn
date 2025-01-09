@@ -172,7 +172,7 @@ namespace Metadata
             // Logo.Info($"metadataType={metadataType}, fieldsText=`{fieldsText}`");
 
             var fieldsCount = fields.Length;
-            for (int i = 0; i < fieldsCount; ++i)
+            for (var i = 0; i < fieldsCount; ++i)
             {
                 var field = fields[i];
                 var target = field.GetValue(metadata);
