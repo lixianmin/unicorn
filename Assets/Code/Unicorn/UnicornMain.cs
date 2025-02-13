@@ -66,28 +66,61 @@ namespace Unicorn
 
         private static void _InsertPlayerLoop()
         {
-            var lastSystem = PlayerLoop.GetCurrentPlayerLoop();
-            var nextSystem = new PlayerLoopSystem
+            // 1. Get the current PlayerLoop.
+            var playerLoop = PlayerLoop.GetCurrentPlayerLoop();
+            var subSystemList = playerLoop.subSystemList;
+
+            // 2. Find the insertion points (Update and LateUpdate).
+            var updateIndex = -1;
+            var lateUpdateIndex = -1;
+
+            for (var i = 0; i < subSystemList.Length; i++)
             {
-                subSystemList = new[]
+                if (subSystemList[i].type == typeof(UnityEngine.PlayerLoop.Update))
                 {
-                    new()
-                    {
-                        updateDelegate = _ExpensiveUpdate,
-                        type = typeof(UnicornMain)
-                    },
-
-                    lastSystem,
-
-                    new()
-                    {
-                        updateDelegate = _LateUpdate,
-                        type = typeof(UnicornMain)
-                    }
+                    updateIndex = i;
                 }
-            };
+                else if (subSystemList[i].type == typeof(UnityEngine.PlayerLoop.PostLateUpdate))
+                {
+                    lateUpdateIndex = i;
+                }
+            }
 
-            PlayerLoop.SetPlayerLoop(nextSystem);
+            if (updateIndex == -1 || lateUpdateIndex == -1)
+            {
+                Debug.LogError("Could not find Update or LateUpdate in the PlayerLoop.");
+                return;
+            }
+
+            // 4. Insert our custom systems into the PlayerLoop.
+            // Insert into Update
+            subSystemList[updateIndex].subSystemList = _AppendLoop(subSystemList[updateIndex].subSystemList,
+                new PlayerLoopSystem
+                {
+                    updateDelegate = _ExpensiveUpdate,
+                    type = typeof(UnicornMain)
+                });
+
+            // Insert into LateUpdate
+            subSystemList[lateUpdateIndex].subSystemList = _AppendLoop(subSystemList[lateUpdateIndex].subSystemList,
+                new PlayerLoopSystem
+                {
+                    updateDelegate = _LateUpdate,
+                    type = typeof(UnicornMain)
+                });
+
+            // 5. Set the modified PlayerLoop.
+            PlayerLoop.SetPlayerLoop(playerLoop);
+        }
+
+        private static PlayerLoopSystem[] _AppendLoop(PlayerLoopSystem[] list, PlayerLoopSystem newbie)
+        {
+            var size = list.Length;
+            var nextList = new PlayerLoopSystem[size + 1];
+            Array.Copy(list, nextList, size);
+            nextList[size] = newbie;
+
+            return nextList;
         }
 
         /// <summary>
