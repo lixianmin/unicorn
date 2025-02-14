@@ -57,7 +57,7 @@ namespace Unicorn.UI
         }
 
         /// <summary>
-        /// IsDispose()为true, 代表当前窗体已经调用过UIManager.It.CloseWindow(type)
+        /// IsDisposed()为true, 代表当前窗体已经调用过UIManager.It.CloseWindow(type)
         /// </summary>
         /// <returns></returns>
         public bool IsDisposed()

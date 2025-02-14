@@ -283,7 +283,7 @@ namespace Unicorn.UI
         }
 
         /// <summary>
-        /// 这个方法应该可以直接使用OpenWindow(typeof(XXX))代替
+        /// 这个方法应该直接使用OpenWindow(typeof(XXX))代替
         /// </summary>
         /// <param name="window"></param>
         // public static void SetForegroundWindow(UIWindowBase window)
