@@ -33,25 +33,27 @@ namespace Unicorn
             return new StringBuilder(capacity);
         }
 
-        public static string GetStringAndReturn(StringBuilder sb)
-        {
-            if (null != sb)
-            {
-                var text = sb.ToString();
-                Return(sb);
-                return text;
-            }
+        // public static string GetStringAndReturn(StringBuilder sb)
+        // {
+        //     if (null != sb)
+        //     {
+        //         var text = sb.ToString();
+        //         Return(sb);
+        //         return text;
+        //     }
+        //
+        //     return string.Empty;
+        // }
 
-            return string.Empty;
-        }
-
-        public static void Return(StringBuilder sb)
+        public static StringBuilder Return(StringBuilder sb)
         {
             const int maxBuilderSize = 1024;
             if (sb is { Capacity: <= maxBuilderSize })
             {
                 _cache = sb;
             }
+
+            return sb;
         }
 
         [ThreadStatic] private static StringBuilder _cache;

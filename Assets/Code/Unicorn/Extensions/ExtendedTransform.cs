@@ -138,7 +138,7 @@ namespace Unicorn
                 {
                     var sbPath = StringBuilderPool.Get();
                     _CollectFindPath(transform, root, sbPath);
-                    var path = StringBuilderPool.GetStringAndReturn(sbPath);
+                    var path = StringBuilderPool.Return(sbPath).ToString();
                     return path;
                 }
             }
