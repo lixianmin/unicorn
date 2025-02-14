@@ -19,11 +19,18 @@ using UnityEngine.LowLevel;
 
 namespace Unicorn
 {
-    internal static class UnicornMain
+    public static class UnicornMain
     {
-        [RuntimeInitializeOnLoadMethod]
-        private static void _OnInit()
+        // 把UnicornMain.Init()开为public的, 也许有一天Unicorn.dll就可以热更新了
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        public static void Init()
         {
+            if (_isInited)
+            {
+                return;
+            }
+
+            _isInited = true;
             // Default value on Android:
             // Max workerThreads :60  completionPortThreads:30
             // Min workerThreads:4  completionPortThreads:4
@@ -184,5 +191,6 @@ namespace Unicorn
 
         private static float _lastSlowUpdateTime;
         private static float _nextSlowUpdateTime;
+        private static bool _isInited;
     }
 }
