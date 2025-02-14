@@ -14,9 +14,9 @@ namespace Unicorn.UI.Internal
     {
         None = 0x00,
         Cache = 0x01,
-        
+
         Loaded = 0x10,
         Opened = 0x20, // 指OpenedState
-        Opened1 = 0x40, // 指使用OpenWindow()打开了这个窗体
+        Disposed = 0x40, // 指使用CloseWindow()关闭了这个窗体
     }
 }
