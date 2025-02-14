@@ -136,10 +136,11 @@ namespace Unicorn.UI.States
             }
 
             fetus.OnLoadGameObject(gameObject);
+            // 因为Loaded这个flag代表gameObject可用性, 因此需要在InnerOnLoaded()事件之前加入
+            fetus.AddFlag(FetusFlags.Loaded);
 
             var master = fetus.master;
             master.InnerOnLoaded("[_OnLoadGameObject()]");
-            fetus.AddFlag(FetusFlags.Loaded);
 
             var next = _delayedAction == DelayedAction.CloseWindow ? StateKind.Unload : StateKind.OpenAnimation;
             _delayedAction = DelayedAction.None;
