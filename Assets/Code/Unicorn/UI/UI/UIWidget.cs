@@ -21,11 +21,11 @@ namespace Unicorn.UI
         {
             return _name;
         }
-        
+
         protected UIWindowBase _window;
         protected string _name;
     }
-    
+
     public class UIWidget<T> : UIWidgetBase where T : Component
     {
         /// <summary>
@@ -39,15 +39,14 @@ namespace Unicorn.UI
             {
                 throw new ArgumentException("name is null or empty");
             }
-            
+
             _name = name;
             _window = window;
         }
 
         /// <summary>
-        /// 获取具体的UI对象, 用于注册事件或设置UI属性
+        /// 获取具体的UI组件. 获取不到的时候只打印日志, 不再抛出异常, 这样client有机会通过判空绕过异常
         /// </summary>
-        /// <exception cref="NullReferenceException"></exception>
         public T UI
         {
             get
@@ -56,13 +55,15 @@ namespace Unicorn.UI
                 {
                     if (_window is null)
                     {
-                        throw new NullReferenceException("1.临时变量: 创建时未传window参数 2. 类成员变量: 资源未OnLoaded()");
+                        Logo.Warn("1.临时变量: 创建时未传window参数 2. 类成员变量: 资源未OnLoaded()");
+                        return null;
                     }
-                    
+
                     _widget = _window.GetWidget(_name, typeof(T)) as T;
                     if (_widget == null)
                     {
-                        throw new NullReferenceException($"can not find the _widget with _name={_name}");
+                        Logo.Warn("can not find the _widget with _name={0}", _name);
+                        _widget = null;
                     }
                 }
 
