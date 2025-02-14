@@ -165,7 +165,7 @@ namespace Unicorn
                 yield return father;
 
                 var childCount = father.childCount;
-                for (int i = 0; i < childCount; ++i)
+                for (var i = 0; i < childCount; ++i)
                 {
                     var child = father.GetChild(i);
                     foreach (var node in EnumerateChildren(child))

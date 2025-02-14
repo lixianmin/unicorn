@@ -8,6 +8,7 @@ Copyright (C) - All Rights Reserved
 
 using System.IO;
 using System.Collections.Generic;
+using System.Text;
 using Unicorn;
 
 namespace Metadata
@@ -44,7 +45,7 @@ namespace Metadata
 				return;
 			}
 
-            var sbText = StringBuilderPool.Get();
+            var sbText = new StringBuilder();
             sbText.AppendLine("Export increment metadata:");
 
 			var counterparts = new HashSet<IMetadata>();
@@ -115,7 +116,7 @@ namespace Metadata
 				}
 			}
 
-            Logo.Info(StringBuilderPool.GetStringAndReturn(sbText));
+            Logo.Info(sbText);
 		}
 
         public bool IsEmpty ()
