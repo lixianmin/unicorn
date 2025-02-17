@@ -13,6 +13,16 @@ namespace Unicorn.UI
 {
     public partial class UIWindowBase
     {
+        private enum EventType : int
+        {
+            OnLoaded = 0,
+            OnOpened = 1,
+            OnActivated = 2,
+            OnDeactivating = 3,
+            OnClosing = 4,
+            OnUnloading = 5,
+        }
+
         protected UIWindowBase()
         {
             _fetus = new WindowFetus(this);
@@ -21,36 +31,36 @@ namespace Unicorn.UI
         internal void InnerOnLoaded(string title)
         {
             UIManager.It.OnLoaded.Invoke(this);
-            _Handle(OnLoaded, title, 0);
+            _Handle(OnLoaded, title, EventType.OnLoaded);
         }
 
         internal void InnerOnOpened(string title)
         {
             UIManager.It.OnOpened.Invoke(this);
-            _Handle(OnOpened, title, 1);
+            _Handle(OnOpened, title, EventType.OnOpened);
         }
 
         internal void InnerOnActivated(string title)
         {
             UIManager.It.OnActivated.Invoke(this);
-            _Handle(OnActivated, title, 2);
+            _Handle(OnActivated, title, EventType.OnActivated);
         }
 
         internal void InnerOnDeactivating(string title)
         {
-            _Handle(OnDeactivating, title, 3);
+            _Handle(OnDeactivating, title, EventType.OnDeactivating);
             UIManager.It.OnDeactivating.Invoke(this);
         }
 
         internal void InnerOnClosing(string title)
         {
-            _Handle(OnClosing, title, 4);
+            _Handle(OnClosing, title, EventType.OnClosing);
             UIManager.It.OnClosing.Invoke(this);
         }
 
         internal void InnerOnUnloading(string title)
         {
-            _Handle(OnUnloading, title, 5);
+            _Handle(OnUnloading, title, EventType.OnUnloading);
             UIManager.It.OnUnloading.Invoke(this);
         }
 
@@ -59,8 +69,9 @@ namespace Unicorn.UI
             SlowUpdate(deltaTime);
         }
 
-        private void _Handle(Action handler, string title, int index)
+        private void _Handle(Action handler, string title, EventType idx)
         {
+            var index = (int)idx;
             if (((_ongoings >> index) & 1) == 0)
             {
                 _ongoings |= (byte)(1 << index);
