@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using Unicorn.UI.Internal;
 using UnityEngine;
+using UnityEngine.Events;
 using Object = UnityEngine.Object;
 
 namespace Unicorn.UI
@@ -463,6 +464,13 @@ namespace Unicorn.UI
         /// </summary>
         public static readonly UIManager It = new();
 
+        public readonly UnityEvent<UIWindowBase> OnLoaded = new();
+        public readonly UnityEvent<UIWindowBase> OnOpened = new();
+        public readonly UnityEvent<UIWindowBase> OnActivated = new();
+        public readonly UnityEvent<UIWindowBase> OnDeactivating = new();
+        public readonly UnityEvent<UIWindowBase> OnClosing = new();
+        public readonly UnityEvent<UIWindowBase> OnUnloading = new();
+
         private readonly List<UIWindowBase> _windowsZOrder = new(4);
         private float _nextResetZOrderTime;
         private int _maxZOrder;
@@ -482,6 +490,6 @@ namespace Unicorn.UI
         // 曾经的默认行为是canvas.renderMode = ScreenSpaceCamera, 也就是使用两个Camera, 一个用于UI, 一个用于WorldSpace
         // 现在, 默认行为改成canvas.renderMode = ScreenSpaceOverlay, 也就是不使用UICamera, 这样可以节约一遍绘制
         private Camera _uiCamera; // 用于canvas.renderMode = ScreenSpaceCamera
-        private string _uiCameraName = string.Empty;    // 默认是空, 也就是不使用UICamera
+        private string _uiCameraName = string.Empty; // 默认是空, 也就是不使用UICamera
     }
 }

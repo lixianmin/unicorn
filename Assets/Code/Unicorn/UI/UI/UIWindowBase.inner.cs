@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-10-06
 author:     lixianmin
@@ -19,13 +18,46 @@ namespace Unicorn.UI
             _fetus = new WindowFetus(this);
         }
 
-        internal void InnerOnLoaded(string title) { _Handle(OnLoaded, title, 0); }
-        internal void InnerOnOpened(string title) { _Handle(OnOpened, title, 1); }
-        internal void InnerOnActivated(string title) { _Handle(OnActivated, title, 2); }
-        internal void InnerOnDeactivating(string title) { _Handle(OnDeactivating, title, 3); }
-        internal void InnerOnClosing(string title) { _Handle(OnClosing, title, 4); }
-        internal void InnerOnUnloading(string title) { _Handle(OnUnloading, title, 5); }
-        internal void InnerSlowUpdate(float deltaTime) { SlowUpdate(deltaTime); }
+        internal void InnerOnLoaded(string title)
+        {
+            UIManager.It.OnLoaded.Invoke(this);
+            _Handle(OnLoaded, title, 0);
+        }
+
+        internal void InnerOnOpened(string title)
+        {
+            UIManager.It.OnOpened.Invoke(this);
+            _Handle(OnOpened, title, 1);
+        }
+
+        internal void InnerOnActivated(string title)
+        {
+            UIManager.It.OnActivated.Invoke(this);
+            _Handle(OnActivated, title, 2);
+        }
+
+        internal void InnerOnDeactivating(string title)
+        {
+            _Handle(OnDeactivating, title, 3);
+            UIManager.It.OnDeactivating.Invoke(this);
+        }
+
+        internal void InnerOnClosing(string title)
+        {
+            _Handle(OnClosing, title, 4);
+            UIManager.It.OnClosing.Invoke(this);
+        }
+
+        internal void InnerOnUnloading(string title)
+        {
+            _Handle(OnUnloading, title, 5);
+            UIManager.It.OnUnloading.Invoke(this);
+        }
+
+        internal void InnerSlowUpdate(float deltaTime)
+        {
+            SlowUpdate(deltaTime);
+        }
 
         private void _Handle(Action handler, string title, int index)
         {
@@ -45,7 +77,7 @@ namespace Unicorn.UI
                 // AssertTools.IsTrue(((_ongoings >> index) & 1) == 0);
             }
         }
-        
+
         internal void Dispose()
         {
             if (_isReleased)
@@ -55,7 +87,7 @@ namespace Unicorn.UI
 
             _isReleased = true;
             UIManager.It._RemoveWindow(GetType());
-            
+
             _fetus.Dispose();
             _fetus = null;
             _transform = null;
@@ -74,11 +106,15 @@ namespace Unicorn.UI
                         item.RemoveAllListeners();
                     }
                 }
+
                 _widgets.Clear();
             }
         }
 
-        internal WindowFetus GetFetus() { return _fetus; }
+        internal WindowFetus GetFetus()
+        {
+            return _fetus;
+        }
 
         internal void _InitComponents(Transform transform, Canvas canvas)
         {
@@ -95,7 +131,7 @@ namespace Unicorn.UI
             if (_sortingOrder != order)
             {
                 _sortingOrder = order;
-                
+
                 // canvas需要设置canvas.overrideSorting = true, 并且设置不一样的sortingOrder, 加载出来的按钮才不是灰化的
                 // order越大, 越显示在前面
                 // if (_canvas is not null)
@@ -122,6 +158,6 @@ namespace Unicorn.UI
         private Transform _transform;
         private Canvas _canvas;
         private bool _isReleased;
-        private byte _ongoings;    // 防止回调方法递归调用自己
+        private byte _ongoings; // 防止回调方法递归调用自己
     }
 }
