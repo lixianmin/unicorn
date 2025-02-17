@@ -63,7 +63,7 @@ namespace Unicorn.UI
                 return widget;
             }
 
-            widget = _transform.DeepFindComponent(name, type);
+            widget = _transform.DigComponent(name, type);
             _widgets.Add(key, widget);
             return widget;
         }

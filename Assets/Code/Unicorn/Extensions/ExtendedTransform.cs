@@ -21,11 +21,11 @@ namespace Unicorn
             }
         }
 
-        public static Component DeepFindComponent(this Transform father, string name, Type type)
+        public static Component DigComponent(this Transform father, string name, Type type)
         {
             if (null != type)
             {
-                var trans = father.DeepFind(name);
+                var trans = father.Dig(name);
                 if (null != trans && type != typeof(Transform))
                 {
                     var component = trans.GetComponent(type);
@@ -75,7 +75,7 @@ namespace Unicorn
 //			return null;
 //        }
 
-        public static Transform DeepFind(this Transform father, string name)
+        public static Transform Dig(this Transform father, string name)
         {
             if (null == father || null == name)
             {
@@ -87,11 +87,11 @@ namespace Unicorn
                 return father;
             }
 
-            var found = _InternalDeepFind(father, name);
+            var found = _InnerDeepFind(father, name);
             return found;
         }
 
-        private static Transform _InternalDeepFind(Transform father, string name)
+        private static Transform _InnerDeepFind(Transform father, string name)
         {
             var targetChild = father.Find(name);
             if (null != targetChild)
@@ -103,7 +103,7 @@ namespace Unicorn
             for (int i = 0; i < childCount; ++i)
             {
                 var child = father.GetChild(i);
-                var grandson = _InternalDeepFind(child, name);
+                var grandson = _InnerDeepFind(child, name);
                 if (null != grandson)
                 {
                     return grandson;
