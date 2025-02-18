@@ -13,7 +13,7 @@ namespace Unicorn.UI
 {
     public partial class UIWindowBase
     {
-        private enum EventType : int
+        private enum EventIndices
         {
             OnLoaded = 0,
             OnOpened = 1,
@@ -31,36 +31,36 @@ namespace Unicorn.UI
         internal void InnerOnLoaded(string title)
         {
             UIManager.It.OnLoaded.Invoke(this);
-            _Handle(OnLoaded, title, EventType.OnLoaded);
+            _Handle(OnLoaded, title, EventIndices.OnLoaded);
         }
 
         internal void InnerOnOpened(string title)
         {
             UIManager.It.OnOpened.Invoke(this);
-            _Handle(OnOpened, title, EventType.OnOpened);
+            _Handle(OnOpened, title, EventIndices.OnOpened);
         }
 
         internal void InnerOnActivated(string title)
         {
             UIManager.It.OnActivated.Invoke(this);
-            _Handle(OnActivated, title, EventType.OnActivated);
+            _Handle(OnActivated, title, EventIndices.OnActivated);
         }
 
         internal void InnerOnDeactivating(string title)
         {
-            _Handle(OnDeactivating, title, EventType.OnDeactivating);
+            _Handle(OnDeactivating, title, EventIndices.OnDeactivating);
             UIManager.It.OnDeactivating.Invoke(this);
         }
 
         internal void InnerOnClosing(string title)
         {
-            _Handle(OnClosing, title, EventType.OnClosing);
+            _Handle(OnClosing, title, EventIndices.OnClosing);
             UIManager.It.OnClosing.Invoke(this);
         }
 
         internal void InnerOnUnloading(string title)
         {
-            _Handle(OnUnloading, title, EventType.OnUnloading);
+            _Handle(OnUnloading, title, EventIndices.OnUnloading);
             UIManager.It.OnUnloading.Invoke(this);
         }
 
@@ -69,7 +69,7 @@ namespace Unicorn.UI
             SlowUpdate(deltaTime);
         }
 
-        private void _Handle(Action handler, string title, EventType idx)
+        private void _Handle(Action handler, string title, EventIndices idx)
         {
             var index = (int)idx;
             if (((_ongoings >> index) & 1) == 0)
