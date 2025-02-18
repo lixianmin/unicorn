@@ -75,11 +75,11 @@ namespace Unicorn.UI
                     switch (idx)
                     {
                         case EventIndices.OnDeactivating:
-                            manager.Deactivating?.Invoke(this);
+                            // manager.Deactivating?.Invoke(this);
                             Deactivating?.Invoke();
                             break;
                         case EventIndices.OnClosing:
-                            manager.Closing?.Invoke(this);
+                            // manager.Closing?.Invoke(this);
                             Closing?.Invoke();
                             break;
                         case EventIndices.OnUnloading:
@@ -98,11 +98,11 @@ namespace Unicorn.UI
                             break;
                         case EventIndices.OnOpened:
                             Opened?.Invoke();
-                            manager.Opened?.Invoke(this);
+                            // manager.Opened?.Invoke(this);
                             break;
                         case EventIndices.OnActivated:
                             Activated?.Invoke();
-                            manager.Activated?.Invoke(this);
+                            // manager.Activated?.Invoke(this);
                             break;
                     }
                 }

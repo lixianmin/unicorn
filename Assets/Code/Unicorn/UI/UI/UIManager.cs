@@ -464,12 +464,12 @@ namespace Unicorn.UI
         /// </summary>
         public static readonly UIManager It = new();
 
-        public readonly Action<UIWindowBase> Loaded;
-        public readonly Action<UIWindowBase> Opened;
-        public readonly Action<UIWindowBase> Activated;
-        public readonly Action<UIWindowBase> Deactivating;
-        public readonly Action<UIWindowBase> Closing;
-        public readonly Action<UIWindowBase> Unloading;
+        public Action<UIWindowBase> Loaded;
+        // public Action<UIWindowBase> Opened;
+        // public Action<UIWindowBase> Activated;
+        // public Action<UIWindowBase> Deactivating;
+        // public Action<UIWindowBase> Closing;
+        public Action<UIWindowBase> Unloading;
 
         private readonly List<UIWindowBase> _windowsZOrder = new(4);
         private float _nextResetZOrderTime;
