@@ -30,38 +30,32 @@ namespace Unicorn.UI
 
         internal void InnerOnLoaded(string title)
         {
-            UIManager.It.OnLoaded.Invoke(this);
             _Handle(OnLoaded, title, EventIndices.OnLoaded);
         }
 
         internal void InnerOnOpened(string title)
         {
-            UIManager.It.OnOpened.Invoke(this);
             _Handle(OnOpened, title, EventIndices.OnOpened);
         }
 
         internal void InnerOnActivated(string title)
         {
-            UIManager.It.OnActivated.Invoke(this);
             _Handle(OnActivated, title, EventIndices.OnActivated);
         }
 
         internal void InnerOnDeactivating(string title)
         {
             _Handle(OnDeactivating, title, EventIndices.OnDeactivating);
-            UIManager.It.OnDeactivating.Invoke(this);
         }
 
         internal void InnerOnClosing(string title)
         {
             _Handle(OnClosing, title, EventIndices.OnClosing);
-            UIManager.It.OnClosing.Invoke(this);
         }
 
         internal void InnerOnUnloading(string title)
         {
             _Handle(OnUnloading, title, EventIndices.OnUnloading);
-            UIManager.It.OnUnloading.Invoke(this);
         }
 
         internal void InnerSlowUpdate(float deltaTime)
@@ -75,9 +69,42 @@ namespace Unicorn.UI
             if (((_ongoings >> index) & 1) == 0)
             {
                 _ongoings |= (byte)(1 << index);
+                var manager = UIManager.It;
                 try
                 {
+                    switch (idx)
+                    {
+                        case EventIndices.OnDeactivating:
+                            manager.Deactivating?.Invoke(this);
+                            Deactivating?.Invoke();
+                            break;
+                        case EventIndices.OnClosing:
+                            manager.Closing?.Invoke(this);
+                            Closing?.Invoke();
+                            break;
+                        case EventIndices.OnUnloading:
+                            manager.Unloading?.Invoke(this);
+                            Unloading?.Invoke();
+                            break;
+                    }
+
                     handler();
+
+                    switch (idx)
+                    {
+                        case EventIndices.OnLoaded:
+                            Loaded?.Invoke();
+                            manager.Loaded?.Invoke(this);
+                            break;
+                        case EventIndices.OnOpened:
+                            Opened?.Invoke();
+                            manager.Opened?.Invoke(this);
+                            break;
+                        case EventIndices.OnActivated:
+                            Activated?.Invoke();
+                            manager.Activated?.Invoke(this);
+                            break;
+                    }
                 }
                 catch (Exception ex)
                 {
