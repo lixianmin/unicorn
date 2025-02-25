@@ -25,6 +25,21 @@ namespace Unicorn
                 }
             }
         }
+        
+        public static void Handle<T>(Action<T> handler, T self, string title = "")
+        {
+            if (handler == null)
+                return;
+            try
+            {
+                handler(self);
+            }
+            catch (Exception ex)
+            {
+                Logo.Warn(
+                    $"[CallbackTools.Handle()] {(object)title}, ex= {(object)ex},\n\n StackTrace={(object)ex.StackTrace},\n\n this= {(object)self}");
+            }
+        }
 
         public static void Handle(ref Action handler, string title = "")
         {
