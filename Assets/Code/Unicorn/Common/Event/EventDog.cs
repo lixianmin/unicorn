@@ -9,7 +9,7 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
-using System.Collections.Generic;
+using Unicorn.Collections;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
@@ -107,6 +107,6 @@ namespace Unicorn
             RemoveAllListeners();
         }
 
-        private readonly List<Action> _removeList = new(4);
+        private readonly Slice<Action> _removeList = new(4);
     }
 }

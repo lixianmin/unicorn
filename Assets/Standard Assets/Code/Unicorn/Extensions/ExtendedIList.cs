@@ -25,23 +25,23 @@ namespace Unicorn
             return 0;
         }
 
-        public static int MoveTo(this IList srcList, IList destList)
-        {
-            if (null != srcList && null != destList)
-            {
-                var count = srcList.Count;
-                for (int i = 0; i < count; ++i)
-                {
-                    var item = srcList[i];
-                    destList.Add(item);
-                }
-
-                srcList.Clear();
-                return count;
-            }
-
-            return 0;
-        }
+        // public static int MoveTo(this IList srcList, IList destList)
+        // {
+        //     if (null != srcList && null != destList)
+        //     {
+        //         var count = srcList.Count;
+        //         for (int i = 0; i < count; ++i)
+        //         {
+        //             var item = srcList[i];
+        //             destList.Add(item);
+        //         }
+        //
+        //         srcList.Clear();
+        //         return count;
+        //     }
+        //
+        //     return 0;
+        // }
 
         public static void Reserve<T>(this List<T> list, int minCapacity)
         {
@@ -118,67 +118,67 @@ namespace Unicorn
             return false;
         }
 
-        public static bool AddUnique<T>(this IList<T> list, T item)
-        {
-            if (null != list && list.IndexOf(item) < 0)
-            {
-                list.Add(item);
-                return true;
-            }
+        // public static bool AddUnique<T>(this IList<T> list, T item)
+        // {
+        //     if (null != list && list.IndexOf(item) < 0)
+        //     {
+        //         list.Add(item);
+        //         return true;
+        //     }
+        //
+        //     return false;
+        // }
 
-            return false;
-        }
+        // public static T PopBack<T>(this IList<T> list)
+        // {
+        //     if (null != list)
+        //     {
+        //         var count = list.Count;
+        //         if (count > 0)
+        //         {
+        //             var idxLast = count - 1;
+        //             var back = list[idxLast];
+        //             list.RemoveAt(idxLast);
+        //
+        //             return back;
+        //         }
+        //     }
+        //
+        //     return default;
+        // }
+        //
+        // public static T Back<T>(this IList<T> list)
+        // {
+        //     if (null != list)
+        //     {
+        //         var count = list.Count;
+        //         if (count > 0)
+        //         {
+        //             var idxLast = count - 1;
+        //             var back = list[idxLast];
+        //
+        //             return back;
+        //         }
+        //     }
+        //
+        //     return default;
+        // }
 
-        public static T PopBack<T>(this IList<T> list)
-        {
-            if (null != list)
-            {
-                var count = list.Count;
-                if (count > 0)
-                {
-                    var idxLast = count - 1;
-                    var back = list[idxLast];
-                    list.RemoveAt(idxLast);
-
-                    return back;
-                }
-            }
-
-            return default;
-        }
-
-        public static T Back<T>(this IList<T> list)
-        {
-            if (null != list)
-            {
-                var count = list.Count;
-                if (count > 0)
-                {
-                    var idxLast = count - 1;
-                    var back = list[idxLast];
-
-                    return back;
-                }
-            }
-
-            return default;
-        }
-
-        [Obsolete("use DisposeAll().Clear() for instead")]
-        public static void DisposeAllAndClear<T>(this IList<T> list)
-        {
-            var count = list?.Count;
-            if (count > 0)
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    var item = list[i] as IDisposable;
-                    item?.Dispose();
-                }
-
-                list.Clear();
-            }
-        }
+        // [Obsolete("use DisposeAll().Clear() for instead")]
+        // public static void DisposeAllAndClear<T>(this IList<T> list)
+        // {
+        //     var count = list?.Count;
+        //     if (count > 0)
+        //     {
+        //         for (int i = 0; i < count; i++)
+        //         {
+        //             var item = list[i] as IDisposable;
+        //             item?.Dispose();
+        //         }
+        //
+        //         list.Clear();
+        //     }
+        // }
 
         public static IList<T> DisposeAll<T>(this IList<T> list)
         {

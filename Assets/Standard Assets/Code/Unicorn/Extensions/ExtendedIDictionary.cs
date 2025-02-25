@@ -71,24 +71,24 @@ namespace Unicorn
             }
         }
 
-        [Obsolete("use DisposeAll().Clear() for instead")]
-        public static void DisposeAllAndClear(this IDictionary table)
-        {
-            var count = table?.Count;
-            if (count > 0)
-            {
-                var iter = table.GetEnumerator();
-                while (iter.MoveNext())
-                {
-                    if (iter.Value is IDisposable item)
-                    {
-                        item.Dispose();
-                    }
-                }
-
-                table.Clear();
-            }
-        }
+        // [Obsolete("use DisposeAll().Clear() for instead")]
+        // public static void DisposeAllAndClear(this IDictionary table)
+        // {
+        //     var count = table?.Count;
+        //     if (count > 0)
+        //     {
+        //         var iter = table.GetEnumerator();
+        //         while (iter.MoveNext())
+        //         {
+        //             if (iter.Value is IDisposable item)
+        //             {
+        //                 item.Dispose();
+        //             }
+        //         }
+        //
+        //         table.Clear();
+        //     }
+        // }
 
         public static IDictionary DisposeAll(this IDictionary table)
         {
