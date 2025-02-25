@@ -134,8 +134,8 @@ namespace Metadata
                 var lhsList = lhsTarget as IList;
                 var rhsList = rhsTarget as IList;
 
-                var lhsCount = lhsList.GetCount();
-                var rhsCount = rhsList.GetCount();
+                var lhsCount = lhsList?.Count ?? 0;
+                var rhsCount = rhsList?.Count ?? 0;
                 if (lhsCount != rhsCount)
                 {
                     return false;

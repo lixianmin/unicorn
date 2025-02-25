@@ -14,16 +14,16 @@ namespace Unicorn
 {
     public static class ExtendedIList
     {
-        public static int GetCount(this IList list)
-        {
-            if (null != list)
-            {
-                var count = list.Count;
-                return count;
-            }
-
-            return 0;
-        }
+        // public static int GetCount(this IList list)
+        // {
+        //     if (null != list)
+        //     {
+        //         var count = list.Count;
+        //         return count;
+        //     }
+        //
+        //     return 0;
+        // }
 
         // public static int MoveTo(this IList srcList, IList destList)
         // {
@@ -82,25 +82,25 @@ namespace Unicorn
             return null;
         }
 
-        public static void EnsureSize<T>(this IList<T> list, int size)
-        {
-            if (null != list)
-            {
-                var count = list.Count;
-                for (int i = count; i < size; ++i)
-                {
-                    list.Add(default);
-                }
-            }
-        }
+        // public static void EnsureSize<T>(this IList<T> list, int size)
+        // {
+        //     if (null != list)
+        //     {
+        //         var count = list.Count;
+        //         for (int i = count; i < size; ++i)
+        //         {
+        //             list.Add(default);
+        //         }
+        //     }
+        // }
 
-        public static void Clear<T>(this IList<T> list)
-        {
-            if (list is { Count: > 0 })
-            {
-                list.Clear();
-            }
-        }
+        // public static void Clear<T>(this IList<T> list)
+        // {
+        //     if (list is { Count: > 0 })
+        //     {
+        //         list.Clear();
+        //     }
+        // }
 
         public static bool IsNullOrEmpty<T>(this IList<T> list)
         {
@@ -129,40 +129,40 @@ namespace Unicorn
         //     return false;
         // }
 
-        // public static T PopBack<T>(this IList<T> list)
-        // {
-        //     if (null != list)
-        //     {
-        //         var count = list.Count;
-        //         if (count > 0)
-        //         {
-        //             var idxLast = count - 1;
-        //             var back = list[idxLast];
-        //             list.RemoveAt(idxLast);
-        //
-        //             return back;
-        //         }
-        //     }
-        //
-        //     return default;
-        // }
-        //
-        // public static T Back<T>(this IList<T> list)
-        // {
-        //     if (null != list)
-        //     {
-        //         var count = list.Count;
-        //         if (count > 0)
-        //         {
-        //             var idxLast = count - 1;
-        //             var back = list[idxLast];
-        //
-        //             return back;
-        //         }
-        //     }
-        //
-        //     return default;
-        // }
+        public static T PopBack<T>(this IList<T> list)
+        {
+            if (null != list)
+            {
+                var count = list.Count;
+                if (count > 0)
+                {
+                    var idxLast = count - 1;
+                    var back = list[idxLast];
+                    list.RemoveAt(idxLast);
+        
+                    return back;
+                }
+            }
+        
+            return default;
+        }
+        
+        public static T Back<T>(this IList<T> list)
+        {
+            if (null != list)
+            {
+                var count = list.Count;
+                if (count > 0)
+                {
+                    var idxLast = count - 1;
+                    var back = list[idxLast];
+        
+                    return back;
+                }
+            }
+        
+            return default;
+        }
 
         // [Obsolete("use DisposeAll().Clear() for instead")]
         // public static void DisposeAllAndClear<T>(this IList<T> list)
