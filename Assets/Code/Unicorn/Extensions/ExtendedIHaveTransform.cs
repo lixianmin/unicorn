@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2023-06-25
 author:     lixianmin
@@ -13,17 +12,6 @@ namespace Unicorn
 {
     public static class ExtendedIHaveTransform
     {
-        public static T AddComponent<T>(this IHaveTransform my) where T : Component
-        {
-            var transform = my?.GetTransform();
-            if (transform != null)
-            {
-                return transform.gameObject.AddComponent(typeof(T)) as T;
-            }
-
-            return null;
-        }
-
         public static Component AddComponent(this IHaveTransform my, Type type)
         {
             var transform = my?.GetTransform();
@@ -35,12 +23,12 @@ namespace Unicorn
             return null;
         }
 
-        public static T GetComponent<T>(this IHaveTransform my) where T : Component
+        public static Component GetComponent(this IHaveTransform my, Type type)
         {
             var transform = my?.GetTransform();
-            if (transform != null)
+            if (transform != null && type != null)
             {
-                return transform.GetComponent<T>();
+                return transform.GetComponent(type);
             }
 
             return null;
