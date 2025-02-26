@@ -112,21 +112,21 @@ namespace Unicorn
             return null;
         }
 
-        // public static string GetScenePath(this Transform transform)
-        // {
-        //     if (null != transform)
-        //     {
-        //         var path = transform.name;
-        //         while ((transform = transform.parent) != null)
-        //         {
-        //             path = transform.name + "/" + path;
-        //         }
-        //
-        //         return path;
-        //     }
-        //
-        //     return string.Empty;
-        // }
+        public static string GetScenePath(this Transform transform)
+        {
+            if (null != transform)
+            {
+                var path = transform.name;
+                while ((transform = transform.parent) != null)
+                {
+                    path = transform.name + "/" + path;
+                }
+        
+                return path;
+            }
+        
+            return string.Empty;
+        }
 
         public static string GetFindPath(this Transform transform)
         {
