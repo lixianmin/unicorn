@@ -7,7 +7,6 @@ Copyright (C) - All Rights Reserved
 
 using UnityEngine;
 using System;
-using System.Collections.Generic;
 
 namespace Unicorn
 {
@@ -21,7 +20,7 @@ namespace Unicorn
             }
         }
 
-        public static Component DigComponent(this Transform father, string name, Type type)
+        public static Component Dig(this Transform father, string name, Type type)
         {
             if (null != type)
             {
@@ -113,21 +112,21 @@ namespace Unicorn
             return null;
         }
 
-        public static string GetScenePath(this Transform transform)
-        {
-            if (null != transform)
-            {
-                var path = transform.name;
-                while ((transform = transform.parent) != null)
-                {
-                    path = transform.name + "/" + path;
-                }
-
-                return path;
-            }
-
-            return string.Empty;
-        }
+        // public static string GetScenePath(this Transform transform)
+        // {
+        //     if (null != transform)
+        //     {
+        //         var path = transform.name;
+        //         while ((transform = transform.parent) != null)
+        //         {
+        //             path = transform.name + "/" + path;
+        //         }
+        //
+        //         return path;
+        //     }
+        //
+        //     return string.Empty;
+        // }
 
         public static string GetFindPath(this Transform transform)
         {
@@ -158,22 +157,22 @@ namespace Unicorn
             sbPath.Append(transform.name);
         }
 
-        internal static IEnumerable<Transform> EnumerateChildren(this Transform father)
-        {
-            if (null != father)
-            {
-                yield return father;
-
-                var childCount = father.childCount;
-                for (var i = 0; i < childCount; ++i)
-                {
-                    var child = father.GetChild(i);
-                    foreach (var node in EnumerateChildren(child))
-                    {
-                        yield return node;
-                    }
-                }
-            }
-        }
+        // internal static IEnumerable<Transform> EnumerateChildren(this Transform father)
+        // {
+        //     if (null != father)
+        //     {
+        //         yield return father;
+        //
+        //         var childCount = father.childCount;
+        //         for (var i = 0; i < childCount; ++i)
+        //         {
+        //             var child = father.GetChild(i);
+        //             foreach (var node in EnumerateChildren(child))
+        //             {
+        //                 yield return node;
+        //             }
+        //         }
+        //     }
+        // }
     }
 }

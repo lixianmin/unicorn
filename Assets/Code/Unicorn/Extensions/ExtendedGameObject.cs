@@ -20,34 +20,34 @@ namespace Unicorn
                 UnityEngine.Object.Destroy(my);
             }
         }
-        
-        public static void GetComponentsInChildren(this GameObject go, string type, bool includeInactive, List<Component> results)
-        {
-            if (null != go && !string.IsNullOrEmpty(type) && null != results)
-            {
-                _GetComponentsInChildren(go, type, includeInactive, results);
-            }
-        }
 
-        private static void _GetComponentsInChildren(GameObject go, string type, bool includeInactive, List<Component> results)
-        {
-            if (includeInactive || go.activeSelf)
-            {
-                var component = go.GetComponent(type);
-                if (null != component)
-                {
-                    results.Add(component);
-                }
-
-                var parent = go.transform;
-                var count = parent.childCount;
-                for (int i = 0; i < count; ++i)
-                {
-                    var child = parent.GetChild(i);
-                    _GetComponentsInChildren(child.gameObject, type, includeInactive, results);
-                }
-            }
-        }
+        // public static void GetComponentsInChildren(this GameObject go, string type, bool includeInactive, List<Component> results)
+        // {
+        //     if (null != go && !string.IsNullOrEmpty(type) && null != results)
+        //     {
+        //         _GetComponentsInChildren(go, type, includeInactive, results);
+        //     }
+        // }
+        //
+        // private static void _GetComponentsInChildren(GameObject go, string type, bool includeInactive, List<Component> results)
+        // {
+        //     if (includeInactive || go.activeSelf)
+        //     {
+        //         var component = go.GetComponent(type);
+        //         if (null != component)
+        //         {
+        //             results.Add(component);
+        //         }
+        //
+        //         var parent = go.transform;
+        //         var count = parent.childCount;
+        //         for (int i = 0; i < count; ++i)
+        //         {
+        //             var child = parent.GetChild(i);
+        //             _GetComponentsInChildren(child.gameObject, type, includeInactive, results);
+        //         }
+        //     }
+        // }
 
 //        public static T GetComponentInParentEx<T> (this GameObject go) where T : Component
 //        {
@@ -128,14 +128,13 @@ namespace Unicorn
         {
             if (null != go && null != type)
             {
-                var component = go.GetComponent(type);
-
-                if (null == component)
+                var item = go.GetComponent(type);
+                if (null == item)
                 {
-                    component = go.AddComponent(type);
+                    item = go.AddComponent(type);
                 }
 
-                return component;
+                return item;
             }
 
             return null;
@@ -143,19 +142,7 @@ namespace Unicorn
 
         public static T SetDefaultComponent<T>(this GameObject go) where T : Component
         {
-            if (null != go)
-            {
-                var component = go.GetComponent<T>();
-
-                if (null == component)
-                {
-                    component = go.AddComponent<T>();
-                }
-
-                return component;
-            }
-
-            return null;
+            return SetDefaultComponent(go, typeof(T)) as T;
         }
     }
 }

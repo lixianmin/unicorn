@@ -58,7 +58,7 @@ namespace Unicorn.UI.States
         {
             // _playAnimationMask.CloseWindow();
             _isPlaying = false;
-            _closeAnimation.SetEnabledEx(false);
+            _closeAnimation.SetEnabled(false);
 
             if (_delayedAction == DelayedAction.OpenWindow)
             {

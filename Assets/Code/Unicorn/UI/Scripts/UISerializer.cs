@@ -64,8 +64,8 @@ namespace Unicorn.UI
             _scripts.Add(this, this);
 
             // 在进入OpenAnimationState的时候, 会设置openWindowAnimation.enable=true
-            openWindowAnimation.SetEnabledEx(false);
-            closeWindowAnimation.SetEnabledEx(false);
+            openWindowAnimation.SetEnabled(false);
+            closeWindowAnimation.SetEnabled(false);
         }
 
         private void Destroy ()
