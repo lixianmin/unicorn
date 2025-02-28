@@ -109,7 +109,6 @@ namespace Unicorn.Collections
         // }
 
 
-
         public void Reserve(int minCapacity)
         {
             var capacity = Items?.Length ?? 0;
@@ -131,15 +130,7 @@ namespace Unicorn.Collections
 
         public int IndexOf(T item)
         {
-            for (var index = 0; index < Size; ++index)
-            {
-                if (Equals(Items[index], item))
-                {
-                    return index;
-                }
-            }
-
-            return -1;
+            return Array.IndexOf(Items, item, 0, Size);
         }
 
         public T this[int index]
@@ -178,7 +169,8 @@ namespace Unicorn.Collections
         {
             if (index < 0 || index >= Size)
             {
-                throw new ArgumentOutOfRangeException("index is out of range.");
+                const string text = "index is out of range.";
+                throw new ArgumentOutOfRangeException(text);
             }
         }
 
