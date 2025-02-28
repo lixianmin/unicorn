@@ -193,7 +193,7 @@ namespace Unicorn.Web
             }
         }
 
-        public static void EnableReloadShader(bool enable)
+        public static void EnableReloadShaders(bool enable)
         {
             _enableReloadShaders = enable;
         }
