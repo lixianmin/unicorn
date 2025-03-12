@@ -54,7 +54,7 @@ namespace Unicorn.UI
         /// <returns></returns>
         public bool IsLoaded()
         {
-            return _fetus.HasFlag(FetusFlags.Loaded);
+            return _fetus?.HasFlag(FetusFlags.Loaded) ?? false;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Unicorn.UI
         /// <returns></returns>
         public bool IsDisposed()
         {
-            return _fetus.HasFlag(FetusFlags.Disposed);
+            return _isDisposed;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Unicorn.UI
         /// <returns>IWebNode</returns>
         public IWebNode GetWebNode()
         {
-            return _fetus.GetWebNode();
+            return _fetus?.GetWebNode();
         }
 
         // 事件相关: 以下6个事件, gameObject都是可用的, widget变量都是可用的

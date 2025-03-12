@@ -118,12 +118,12 @@ namespace Unicorn.UI
 
         internal void Dispose()
         {
-            if (_isReleased)
+            if (_isDisposed)
             {
                 return;
             }
 
-            _isReleased = true;
+            _isDisposed = true;
             UIManager.It._RemoveWindow(GetType());
 
             _fetus.Dispose();
@@ -203,7 +203,7 @@ namespace Unicorn.UI
         private WindowFetus _fetus;
         private Transform _transform;
         private Canvas _canvas;
-        private bool _isReleased;
+        private bool _isDisposed;
         private byte _ongoings; // 防止回调方法递归调用自己
     }
 }

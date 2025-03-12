@@ -23,6 +23,7 @@ Copyright (C) - All Rights Reserved
 
 using System;
 using System.Collections.Generic;
+using Unicorn.Collections;
 using Unicorn.UI.Internal;
 using UnityEngine;
 using UnityEngine.Events;
@@ -70,7 +71,7 @@ namespace Unicorn.UI
                 return null;
             }
 
-            window.GetFetus().OpenWindow();
+            window.GetFetus()?.OpenWindow();
             return window;
         }
 
@@ -82,7 +83,7 @@ namespace Unicorn.UI
         public void CloseWindow(Type windowType)
         {
             var item = _IndexWindow(windowType);
-            item.window?.GetFetus().CloseWindow();
+            item.window?.GetFetus()?.CloseWindow();
         }
 
         internal void _RemoveWindow(Type windowType)
@@ -109,21 +110,19 @@ namespace Unicorn.UI
         internal void SlowUpdate(float deltaTime)
         {
             var snapshot = _TakeSnapshot();
-            var windows = snapshot.windows;
-            var count = windows.Count;
+            var windows = snapshot.Windows;
 
             // 有些场景并没有UI, 也找不到UICamera, 如果任由_CheckUICameraChanged()调用, 会大量报错
-            if (count > 0)
+            if (windows.Count > 0)
             {
                 if (_uiCameraName != string.Empty && _uiCamera == null)
                 {
                     _CheckUICameraChanged(windows);
                 }
 
-                for (var i = 0; i < count; i++)
+                foreach(var window in windows)
                 {
-                    var window = windows[i];
-                    if (window.GetFetus().HasFlag(FetusFlags.Loaded))
+                    if (window.IsLoaded())
                     {
                         window.InnerSlowUpdate(deltaTime);
                     }
@@ -135,7 +134,7 @@ namespace Unicorn.UI
         /// 在切换场景的时候UICamera可能会重建, 这会导致原先的ui中对UICamera的引用消失
         /// </summary>
         /// <param name="windows"></param>
-        private void _CheckUICameraChanged(List<UIWindowBase> windows)
+        private void _CheckUICameraChanged(Slice<UIWindowBase> windows)
         {
             var nextCamera = GetUICamera();
             if (nextCamera == null)
@@ -184,18 +183,17 @@ namespace Unicorn.UI
         internal void ExpensiveUpdate(float deltaTime)
         {
             var snapshot = _TakeSnapshot();
-            var windows = snapshot.windows;
-            var count = windows.Count;
-            for (var i = 0; i < count; i++)
+            foreach(var window in snapshot.Windows)
             {
-                var window = windows[i];
                 var fetus = window.GetFetus();
-                fetus.ExpensiveUpdate();
-
-                if (fetus.HasFlag(FetusFlags.Loaded))
+                if (fetus != null)
                 {
-                    var updater = window as IExpensiveUpdater;
-                    updater?.ExpensiveUpdate(deltaTime);
+                    fetus.ExpensiveUpdate();
+                    if (fetus.HasFlag(FetusFlags.Loaded))
+                    {
+                        var updater = window as IExpensiveUpdater;
+                        updater?.ExpensiveUpdate(deltaTime);
+                    }
                 }
             }
 
@@ -268,7 +266,8 @@ namespace Unicorn.UI
                 for (var i = count - 1; i >= 0; i--)
                 {
                     var window = _windowsZOrder[i];
-                    if (window._sortingOrder < foregroundOrder && window.GetFetus().HasFlag(FetusFlags.Opened))
+                    var fetus = window.GetFetus();
+                    if (window._sortingOrder < foregroundOrder && fetus != null && fetus.HasFlag(FetusFlags.Opened))
                     {
                         return window;
                     }
@@ -449,11 +448,11 @@ namespace Unicorn.UI
 
         private Snapshot _TakeSnapshot()
         {
-            if (_version != _snapshot.version)
+            if (_version != _snapshot.Version)
             {
-                _snapshot.windows.Clear();
-                _snapshot.windows.AddRange(_windowsZOrder);
-                _snapshot.version = _version;
+                _snapshot.Windows.Clear();
+                _snapshot.Windows.AddRange(_windowsZOrder);
+                _snapshot.Version = _version;
             }
 
             return _snapshot;
@@ -465,6 +464,7 @@ namespace Unicorn.UI
         public static readonly UIManager It = new();
 
         public Action<UIWindowBase> Loaded;
+
         // public Action<UIWindowBase> Opened;
         // public Action<UIWindowBase> Activated;
         // public Action<UIWindowBase> Deactivating;
@@ -480,8 +480,8 @@ namespace Unicorn.UI
 
         private class Snapshot
         {
-            public readonly List<UIWindowBase> windows = new(4);
-            public int version;
+            public readonly Slice<UIWindowBase> Windows = new(4);
+            public int Version;
         }
 
         private readonly UIWindowBase[] _foregroundWindows = new UIWindowBase[5]; // 第0个位置必然一直是null
