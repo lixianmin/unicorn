@@ -7,6 +7,7 @@ Copyright (C) - All Rights Reserved
 
 using System;
 using Unicorn.UI.Internal;
+using Unicorn.UI.States;
 using UnityEngine;
 
 namespace Unicorn.UI
@@ -25,7 +26,9 @@ namespace Unicorn.UI
 
         protected UIWindowBase()
         {
-            _fetus = new WindowFetus(this);
+            _fetus = FetusCache.It.TakeFetus(GetType()) ?? new WindowFetus();
+            _fetus.master = this;
+            _fetus.ChangeState(StateKind.Load);
         }
 
         internal void InnerOnLoaded(string title)
@@ -126,7 +129,17 @@ namespace Unicorn.UI
             _isDisposed = true;
             UIManager.It._RemoveWindow(GetType());
 
-            _fetus.Dispose();
+            var flags = GetWindowFlags();
+            var needCache = flags.HasFlag(WindowFlags.Cache);
+            if (needCache)
+            {
+                FetusCache.It.AddFetus(_fetus);
+            }
+            else
+            {
+                _fetus.Dispose();
+            }
+
             _fetus = null;
             _transform = null;
             _canvas = null;

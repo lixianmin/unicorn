@@ -29,14 +29,17 @@ namespace Unicorn.UI.States
 
             // 如果在UIRoot下找到名为assetPath的节点，则直接使用该节点；否则当作UI资源的路径从addressable加载
             // 通常3d界面可能是内置到场景中的
-            var needLoadAsset = child == null;
-            if (needLoadAsset)
+            if (child != null)
             {
-                _LoadAsset(fetus, assetPath);
+                _OnLoadGameObject(fetus, child);
+            }
+            else if (fetus.GetTransform() is not null)
+            {
+                _OnLoadGameObject(fetus, fetus.GetTransform());
             }
             else
             {
-                _OnLoadGameObject(fetus, child.gameObject);
+                _LoadAsset(fetus, assetPath);
             }
         }
 
@@ -70,7 +73,8 @@ namespace Unicorn.UI.States
 
             if (fetus.IsDebugging())
             {
-                Logo.Warn($"[LoadState.OnCloseWindow()] _delayedAction={_delayedAction} assetPath={fetus.GetAssetPath()}");
+                Logo.Warn(
+                    $"[LoadState.OnCloseWindow()] _delayedAction={_delayedAction} assetPath={fetus.GetAssetPath()}");
             }
         }
 
@@ -92,7 +96,8 @@ namespace Unicorn.UI.States
 
                 if (fetus.IsDebugging())
                 {
-                    Logo.Warn($"[LoadState._OnLoadedPrefab()] _delayedAction={_delayedAction} isLoading={isLoading} assetPath={fetus.GetAssetPath()}");
+                    Logo.Warn(
+                        $"[LoadState._OnLoadedPrefab()] _delayedAction={_delayedAction} isLoading={isLoading} assetPath={fetus.GetAssetPath()}");
                 }
 
                 if (_delayedAction == DelayedAction.CloseWindow)
@@ -112,7 +117,7 @@ namespace Unicorn.UI.States
                     if (goCloned is not null)
                     {
                         goCloned.name = mainAsset.name;
-                        _OnLoadGameObject(fetus, goCloned);
+                        _OnLoadGameObject(fetus, goCloned.transform);
                     }
                     else
                     {
@@ -128,14 +133,15 @@ namespace Unicorn.UI.States
             });
         }
 
-        private void _OnLoadGameObject(WindowFetus fetus, GameObject gameObject)
+        private void _OnLoadGameObject(WindowFetus fetus, Transform transform)
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn($"[LoadState._OnLoadGameObject()] _delayedAction={_delayedAction} assetPath={fetus.GetAssetPath()}");
+                Logo.Warn(
+                    $"[LoadState._OnLoadGameObject()] _delayedAction={_delayedAction} assetPath={fetus.GetAssetPath()}");
             }
 
-            fetus.OnLoadGameObject(gameObject);
+            fetus.OnLoadGameObject(transform);
             // 因为Loaded这个flag代表gameObject可用性, 因此需要在InnerOnLoaded()事件之前加入
             fetus.AddFlag(FetusFlags.Loaded);
 

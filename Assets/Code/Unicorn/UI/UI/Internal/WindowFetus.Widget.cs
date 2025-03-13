@@ -84,13 +84,13 @@ namespace Unicorn.UI.Internal
                         }
 
                         var key = new WidgetKey { name = data.name, type = data.target.GetType() };
-                        _widgets.Add(key, data.target);
+                        _widgets[key] = data.target;
                     }
                 }
             }
         }
 
-        private void _InitWidgetsWindow()
+        private void _InitWidgetsFetus()
         {
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
@@ -107,7 +107,7 @@ namespace Unicorn.UI.Internal
                     if (fieldType.IsSubclassOf(typeof(UIWidgetBase)))
                     {
                         var widget = field.GetValue(master) as UIWidgetBase;
-                        widget?._SetWindow(master);
+                        widget?._SetFetus(this);
                     }
                 }
 

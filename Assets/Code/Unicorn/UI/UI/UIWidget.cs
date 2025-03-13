@@ -6,15 +6,17 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
+using Unicorn.UI.Internal;
 using UnityEngine;
 
 namespace Unicorn.UI
 {
     public abstract class UIWidgetBase
     {
-        internal void _SetWindow(UIWindowBase window)
+        internal void _SetFetus(WindowFetus fetus)
         {
-            _window = window;
+            _fetus = fetus;
+            // Logo.Warn($"fetus={fetus} name={_name}");
         }
 
         public string GetName()
@@ -22,7 +24,7 @@ namespace Unicorn.UI
             return _name;
         }
 
-        protected UIWindowBase _window;
+        internal WindowFetus _fetus;
         protected string _name;
     }
 
@@ -41,7 +43,12 @@ namespace Unicorn.UI
             }
 
             _name = name;
-            _window = window;
+            _SetFetus(window?.GetFetus());
+        }
+
+        public UIWindowBase GetWindow()
+        {
+            return _fetus?.master;
         }
 
         /// <summary>
@@ -53,13 +60,13 @@ namespace Unicorn.UI
             {
                 if (_widget is null)
                 {
-                    if (_window is null)
+                    if (_fetus is null)
                     {
                         Logo.Warn("1.临时变量: 创建时未传window参数 2. 类成员变量: 资源未OnLoaded()");
                         return null;
                     }
 
-                    _widget = _window.GetFetus()?.GetWidget(_name, typeof(T)) as T;
+                    _widget = _fetus.GetWidget(_name, typeof(T)) as T;
                     if (_widget == null)
                     {
                         Logo.Warn("can not find the _widget with _name={0}", _name);

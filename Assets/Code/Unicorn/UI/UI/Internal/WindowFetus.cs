@@ -13,11 +13,6 @@ namespace Unicorn.UI.Internal
 {
     internal partial class WindowFetus
     {
-        public WindowFetus(UIWindowBase master)
-        {
-            this.master = master;
-        }
-
         public void Dispose()
         {
             CloseWindow();
@@ -75,10 +70,10 @@ namespace Unicorn.UI.Internal
             }
         }
 
-        public void OnLoadGameObject(GameObject gameObject)
+        public void OnLoadGameObject(Transform transform)
         {
-            _transform = gameObject.transform;
-            var serializer = gameObject.GetComponent(typeof(UISerializer)) as UISerializer;
+            _transform = transform;
+            var serializer = transform.GetComponent(typeof(UISerializer)) as UISerializer;
             // 接下来，计划无论有无UISerializer脚本，UI相关代码都可以正常运行
             // if (serializer is null)
             // {
@@ -89,11 +84,11 @@ namespace Unicorn.UI.Internal
 
             if (_parent is not null)
             {
-                _transform.SetParent(_parent, false);
+                transform.SetParent(_parent, false);
             }
 
             // 对于UI来说，canvas其实是必须的
-            var canvas = gameObject.GetComponent(typeof(Canvas)) as Canvas;
+            var canvas = transform.GetComponent(typeof(Canvas)) as Canvas;
             if (canvas != null)
             {
                 canvas.overrideSorting = true;
@@ -105,9 +100,9 @@ namespace Unicorn.UI.Internal
                 // 自动设置layer：如果后续有不自动调整layer的需求，只需要在UISerializer中补一个autoSetLayer变量控制即可
                 var layerName = is2D ? "UI" : "Default";
                 var layer = LayerMask.NameToLayer(layerName);
-                if (gameObject.layer != layer)
+                if (transform.gameObject.layer != layer)
                 {
-                    gameObject.SetLayerRecursively(layer);
+                    transform.gameObject.SetLayerRecursively(layer);
                 }
             }
             else
@@ -116,8 +111,8 @@ namespace Unicorn.UI.Internal
                 canvas = null;
             }
 
-            master._InitComponents(_transform, canvas);
-            _InitWidgetsWindow();
+            master._InitComponents(transform, canvas);
+            _InitWidgetsFetus();
             _FillWidgets(serializer);
             UIManager.It._ActivateWindow(master);
         }
@@ -191,7 +186,7 @@ namespace Unicorn.UI.Internal
 
         internal bool IsDebugging()
         {
-            // return master.GetAssetPath().EndsWith("uiprogressbar.prefab");
+            return master.GetAssetPath().EndsWith("uibag.prefab");
             return false;
         }
 
@@ -200,7 +195,12 @@ namespace Unicorn.UI.Internal
             return master.GetAssetPath();
         }
 
-        internal readonly UIWindowBase master;
+        public Transform GetTransform()
+        {
+            return _transform;
+        }
+
+        internal UIWindowBase master;
 
         private UIStateBase _state = UIStateBase.Create(StateKind.None);
         private StateKind _lastKind = StateKind.None;
