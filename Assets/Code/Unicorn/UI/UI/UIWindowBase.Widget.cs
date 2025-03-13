@@ -10,9 +10,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace Unicorn.UI.Internal
+namespace Unicorn.UI
 {
-    partial class WindowFetus
+    partial class UIWindowBase
     {
         private struct WidgetKey : IEquatable<WidgetKey>
         {
