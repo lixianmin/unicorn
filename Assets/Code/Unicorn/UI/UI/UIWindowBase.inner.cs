@@ -26,9 +26,7 @@ namespace Unicorn.UI
 
         protected UIWindowBase()
         {
-            _fetus = FetusCache.It.TakeFetus(GetType()) ?? new WindowFetus();
-            _fetus.master = this;
-            _fetus.ChangeState(StateKind.Load);
+            _fetus = new WindowFetus(this);
         }
 
         internal void InnerOnLoaded(string title)
@@ -119,6 +117,11 @@ namespace Unicorn.UI
             }
         }
 
+        internal void ResetDispose()
+        {
+            _isDisposed = false;
+        }
+        
         internal void Dispose()
         {
             if (_isDisposed)
@@ -133,13 +136,11 @@ namespace Unicorn.UI
             var needCache = flags.HasFlag(WindowFlags.Cache);
             if (needCache)
             {
-                FetusCache.It.AddFetus(_fetus);
-            }
-            else
-            {
-                _fetus.Dispose();
+                WindowCache.It.AddWindow(this);
+                return;
             }
 
+            _fetus.Dispose();
             _fetus = null;
             _transform = null;
             _canvas = null;

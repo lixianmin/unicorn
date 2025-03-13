@@ -22,11 +22,6 @@ namespace Unicorn.UI.States
             {
                 Logo.Warn("[ClosedState.OnOpenWindow()]");    
             }
-            
-            if (fetus.HasFlag(FetusFlags.Cache))
-            {
-                fetus.SetActive(true);
-            }
 
             fetus.ChangeState(StateKind.OpenAnimation);
         }

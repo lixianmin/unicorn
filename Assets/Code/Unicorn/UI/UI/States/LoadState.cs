@@ -45,7 +45,8 @@ namespace Unicorn.UI.States
 
         public override void OnExit(WindowFetus fetus, object arg1)
         {
-            _loadWindowMask.CloseWindow(fetus.GetAssetPath());
+            var assetPath = fetus.GetAssetPath();
+            _loadWindowMask.CloseWindow(assetPath);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)

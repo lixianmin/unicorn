@@ -13,6 +13,11 @@ namespace Unicorn.UI.Internal
 {
     internal class WindowFetus
     {
+        internal WindowFetus(UIWindowBase master)
+        {
+            this.master = master;
+        }
+
         public void Dispose()
         {
             CloseWindow();
@@ -71,6 +76,11 @@ namespace Unicorn.UI.Internal
 
         public void OnLoadGameObject(Transform transform)
         {
+            if (_transform == transform)
+            {
+                return;
+            }
+
             _transform = transform;
             var serializer = transform.GetComponent(typeof(UISerializer)) as UISerializer;
             // 接下来，计划无论有无UISerializer脚本，UI相关代码都可以正常运行
@@ -199,7 +209,7 @@ namespace Unicorn.UI.Internal
             return _transform;
         }
 
-        internal UIWindowBase master;
+        internal readonly UIWindowBase master;
 
         private UIStateBase _state = UIStateBase.Create(StateKind.None);
         private StateKind _lastKind = StateKind.None;

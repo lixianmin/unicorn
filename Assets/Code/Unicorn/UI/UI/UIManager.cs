@@ -208,9 +208,14 @@ namespace Unicorn.UI
                 return item.window;
             }
 
-            if (Activator.CreateInstance(windowType) is not UIWindowBase window)
+            var window = WindowCache.It.TakeWindow(windowType);
+            if (window == null)
             {
-                throw new NullReferenceException("invalid windowType");
+                window = Activator.CreateInstance(windowType) as UIWindowBase;
+                if (window == null)
+                {
+                    throw new NullReferenceException("invalid windowType");
+                }
             }
 
             _windowsZOrder.Add(window);
