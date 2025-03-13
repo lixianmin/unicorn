@@ -11,12 +11,11 @@ using UnityEngine;
 
 namespace Unicorn.UI.Internal
 {
-    internal partial class WindowFetus
+    internal class WindowFetus
     {
         public void Dispose()
         {
             CloseWindow();
-            _RemoveWidgetListeners();
 
             _parent = null;
             _serializer = null;
@@ -112,8 +111,8 @@ namespace Unicorn.UI.Internal
             }
 
             master._InitComponents(transform, canvas);
-            _InitWidgetsFetus();
-            _FillWidgets(serializer);
+            master._InitWidgetsWindow();
+            master._FillWidgets(serializer);
             UIManager.It._ActivateWindow(master);
         }
 
@@ -186,7 +185,7 @@ namespace Unicorn.UI.Internal
 
         internal bool IsDebugging()
         {
-            return master.GetAssetPath().EndsWith("uibag.prefab");
+            // return master.GetAssetPath().EndsWith("uibag.prefab");
             return false;
         }
 

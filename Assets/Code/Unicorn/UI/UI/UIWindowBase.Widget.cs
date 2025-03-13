@@ -68,7 +68,7 @@ namespace Unicorn.UI
             return widget;
         }
 
-        private void _FillWidgets(UISerializer serializer)
+        internal void _FillWidgets(UISerializer serializer)
         {
             if (serializer != null)
             {
@@ -90,12 +90,12 @@ namespace Unicorn.UI
             }
         }
 
-        private void _InitWidgetsFetus()
+        internal void _InitWidgetsWindow()
         {
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
             var topType = typeof(UIWindowBase);
-            var type = master.GetType();
+            var type = this.GetType();
 
             // UISuit竟然继承的UIBag，这样循环调用一把就无法初始化UIBag中的成员变量了
             while (type != null && type != topType)
@@ -106,8 +106,8 @@ namespace Unicorn.UI
                     var fieldType = field.FieldType;
                     if (fieldType.IsSubclassOf(typeof(UIWidgetBase)))
                     {
-                        var widget = field.GetValue(master) as UIWidgetBase;
-                        widget?._SetFetus(this);
+                        var widget = field.GetValue(this) as UIWidgetBase;
+                        widget?._SetWindow(this);
                     }
                 }
 
@@ -131,6 +131,7 @@ namespace Unicorn.UI
             }
         }
 
+        // 所有的widget都是定义在UIWindow类中, 如果只是复用fetus的话, 每次都需要重新创建window对象, 那么这些_widgets的缓存放在fetus中也是没有意义的
         private readonly Dictionary<WidgetKey, Component> _widgets = new(8);
     }
 }

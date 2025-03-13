@@ -144,6 +144,8 @@ namespace Unicorn.UI
             _transform = null;
             _canvas = null;
 
+            _RemoveWidgetListeners();
+
             // 清理所有事件回调
             Loaded = null;
             Opened = null;
