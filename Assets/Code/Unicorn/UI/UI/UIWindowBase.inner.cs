@@ -130,7 +130,6 @@ namespace Unicorn.UI
             _fetus = null;
             _transform = null;
             _canvas = null;
-            RemoveWidgetListeners();
 
             // 清理所有事件回调
             Loaded = null;
@@ -139,22 +138,6 @@ namespace Unicorn.UI
             Deactivating = null;
             Closing = null;
             Unloading = null;
-        }
-
-        private void RemoveWidgetListeners()
-        {
-            if (_widgets.Count > 0)
-            {
-                foreach (var widget in _widgets.Values)
-                {
-                    if (widget is IRemoveAllListeners item)
-                    {
-                        item.RemoveAllListeners();
-                    }
-                }
-
-                _widgets.Clear();
-            }
         }
 
         internal WindowFetus GetFetus()

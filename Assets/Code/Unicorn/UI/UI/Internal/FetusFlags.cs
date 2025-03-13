@@ -17,6 +17,6 @@ namespace Unicorn.UI.Internal
 
         Loaded = 0x10,
         Opened = 0x20, // 指OpenedState
-        Disposed = 0x40, // 指使用CloseWindow()关闭了这个窗体
+        // Disposed = 0x40, // 指使用CloseWindow()关闭了这个窗体
     }
 }

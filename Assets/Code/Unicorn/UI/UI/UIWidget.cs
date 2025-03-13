@@ -59,7 +59,7 @@ namespace Unicorn.UI
                         return null;
                     }
 
-                    _widget = _window.GetWidget(_name, typeof(T)) as T;
+                    _widget = _window.GetFetus()?.GetWidget(_name, typeof(T)) as T;
                     if (_widget == null)
                     {
                         Logo.Warn("can not find the _widget with _name={0}", _name);

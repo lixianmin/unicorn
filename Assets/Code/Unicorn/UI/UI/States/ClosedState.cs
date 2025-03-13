@@ -11,22 +11,9 @@ namespace Unicorn.UI.States
 {
     internal class ClosedState : UIStateBase
     {
-        private static bool _IsWindowCacheable(WindowFetus fetus)
-        {
-            // return fetus._master.CACHE_HINT and LuaUITools.isBigMemoryMode
-            return fetus.HasFlag(FetusFlags.Cache);
-        }
-
         public override void OnEnter(WindowFetus fetus, object failureText)
         {
-            if (_IsWindowCacheable(fetus))
-            {
-                fetus.SetActive(false);
-            }
-            else
-            {
-                fetus.ChangeState(StateKind.Unload);
-            }
+            fetus.ChangeState(StateKind.Unload);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)

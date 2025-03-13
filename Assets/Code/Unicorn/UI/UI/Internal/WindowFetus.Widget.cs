@@ -10,9 +10,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace Unicorn.UI
+namespace Unicorn.UI.Internal
 {
-    public partial class UIWindowBase
+    partial class WindowFetus
     {
         private struct WidgetKey : IEquatable<WidgetKey>
         {
@@ -45,10 +45,10 @@ namespace Unicorn.UI
             }
         }
 
-        public T GetWidget<T>(string name) where T : Component
-        {
-            return GetWidget(name, typeof(T)) as T;
-        }
+        // public T GetWidget<T>(string name) where T : Component
+        // {
+        //     return GetWidget(name, typeof(T)) as T;
+        // }
 
         public Component GetWidget(string name, Type type)
         {
@@ -68,7 +68,7 @@ namespace Unicorn.UI
             return widget;
         }
 
-        internal void _FillWidgets(UISerializer serializer)
+        private void _FillWidgets(UISerializer serializer)
         {
             if (serializer != null)
             {
@@ -90,12 +90,12 @@ namespace Unicorn.UI
             }
         }
 
-        internal void _InitWidgetsWindow()
+        private void _InitWidgetsWindow()
         {
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
             var topType = typeof(UIWindowBase);
-            var type = GetType();
+            var type = master.GetType();
 
             // UISuit竟然继承的UIBag，这样循环调用一把就无法初始化UIBag中的成员变量了
             while (type != null && type != topType)
@@ -106,12 +106,28 @@ namespace Unicorn.UI
                     var fieldType = field.FieldType;
                     if (fieldType.IsSubclassOf(typeof(UIWidgetBase)))
                     {
-                        var widget = field.GetValue(this) as UIWidgetBase;
-                        widget?._SetWindow(this);
+                        var widget = field.GetValue(master) as UIWidgetBase;
+                        widget?._SetWindow(master);
                     }
                 }
 
                 type = type.BaseType;
+            }
+        }
+
+        private void _RemoveWidgetListeners()
+        {
+            if (_widgets.Count > 0)
+            {
+                foreach (var widget in _widgets.Values)
+                {
+                    if (widget is IRemoveAllListeners item)
+                    {
+                        item.RemoveAllListeners();
+                    }
+                }
+
+                _widgets.Clear();
             }
         }
 
