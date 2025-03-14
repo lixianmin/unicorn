@@ -97,6 +97,14 @@ namespace Unicorn
             }
         }
 
+        public void AddRemoveHandler(Action handler)
+        {
+            if (handler != null)
+            {
+                _removeList.Add(handler);
+            }
+        }
+
         public void RemoveAllListeners()
         {
             _removeList.InvokeAndClear();
