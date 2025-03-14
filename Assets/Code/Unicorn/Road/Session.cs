@@ -251,7 +251,8 @@ namespace Unicorn.Road
                     _OnReceivedHandshake(pack);
                     break;
                 case PacketKind.Heartbeat:
-                    _heartbeatTimeoutTime = Time.time + Mathf.Max(_heartbeatInterval * 3, 1.0f);
+                    const float timeout = 5f;
+                    _heartbeatTimeoutTime = Time.time + timeout;
                     // Logo.Info("[_OnReceivedPacket] received heartbeat");
                     break;
                 case PacketKind.Kick:
