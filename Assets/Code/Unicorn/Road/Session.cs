@@ -128,7 +128,8 @@ namespace Unicorn.Road
                 return;
             }
 
-            if (_sessionThread == null || _sessionThread.IsClosed())
+            var now = Time.time;
+            if (_sessionThread == null || _sessionThread.IsClosed() || now > _heartbeatTimeoutTime)
             {
                 // _nonce>0 意味着已经收到 HandShaken
                 // server确保返回的 nonce>0
@@ -139,7 +140,6 @@ namespace Unicorn.Road
                     _nonce = 0;
                 }
 
-                var now = Time.time;
                 if (now >= _nextReconnectTime)
                 {
                     var backoffSeconds = Math.Min(1 * (float)Math.Pow(2, _reconnectAttempt), 30);
@@ -169,7 +169,7 @@ namespace Unicorn.Road
         private void _CheckRequestTimeout()
         {
             var now = Time.time;
-            if (now > _nextTimeoutTime && _requestHandlers.Count > 0)
+            if (now > _nextCheckRequestTimeoutTime && _requestHandlers.Count > 0)
             {
                 foreach (var handler in _requestHandlers.Values)
                 {
@@ -180,7 +180,7 @@ namespace Unicorn.Road
                 }
 
                 _requestHandlers.RemoveAll((_, handler) => handler.done);
-                _nextTimeoutTime = now + 0.5f;
+                _nextCheckRequestTimeoutTime = now + 0.5f;
             }
         }
 
@@ -251,7 +251,8 @@ namespace Unicorn.Road
                     _OnReceivedHandshake(pack);
                     break;
                 case PacketKind.Heartbeat:
-                    // Logo.Info(pack);
+                    _heartbeatTimeoutTime = Time.time + Mathf.Max(_heartbeatInterval * 3, 1.0f);
+                    // Logo.Info("[_OnReceivedPacket] received heartbeat");
                     break;
                 case PacketKind.Kick:
                     var reason = Encoding.UTF8.GetString(pack.Data);
@@ -561,11 +562,11 @@ namespace Unicorn.Road
 
         private float _nextHeartbeatTime = float.MaxValue;
         private float _heartbeatInterval;
-        private float _nextTimeoutTime = 0;
+        private float _heartbeatTimeoutTime = float.MaxValue;
+        private float _nextCheckRequestTimeoutTime;
 
         private readonly Error _clientSideTimeoutError = new()
             { Code = "ClientSideTimeout", Message = "request timeout on client side" };
-
 
         private byte[] _heartbeatBuffer;
         private int _requestIdGenerator;
