@@ -95,6 +95,18 @@ namespace Unicorn.Road
 
         public void Close()
         {
+            // 断线重连时, 强制所有的handler超时, 防止handler回调不到导致tree被永远卡死
+            // 这个放到前面, 因为会使用到_serde变量
+            if (_requestHandlers.Count > 0)
+            {
+                foreach (var handler in _requestHandlers.Values)
+                {
+                    handler.Invoke(null, _clientSideTimeoutError);
+                }
+
+                _requestHandlers.Clear();
+            }
+
             _sessionThread?.Close();
             _sessionThread = null;
 
@@ -108,7 +120,6 @@ namespace Unicorn.Road
 
             _nextHeartbeatTime = float.MaxValue;
             _packets.Clear();
-            _requestHandlers.Clear();
         }
 
         public void Update()
