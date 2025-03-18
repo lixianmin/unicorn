@@ -1,4 +1,4 @@
-﻿/********************************************************************
+/********************************************************************
 created:    2017-11-27
 author:     lixianmin
 
@@ -138,7 +138,7 @@ namespace Unicorn.UI
 
                     foreach (var type in assembly.GetExportedTypes())
                     {
-                        if (type.IsSubclassOf(typeof(UIWindowBase)))
+                        if (type.IsSubclassOf(typeof(UIWindowBase)) && !type.IsAbstract && !type.IsGenericType)
                         {
                             _allWindowTypes.Add(type);
                         }
@@ -171,8 +171,7 @@ namespace Unicorn.UI
                 // Logo.Info("assetPath={0}", assetPath);
             }
 
-            Logo.Error(
-                $"Can not find assetPath ends with prefabName={prefabName}， windowTypes.Count={windowTypes.Count}");
+            Logo.Error($"Can not find assetPath with prefabName={prefabName}，windowTypes.Count={windowTypes.Count}");
             return null;
         }
 
@@ -183,6 +182,7 @@ namespace Unicorn.UI
             var layouts = _GetLayouts(window);
             if (layouts.Count == 0)
             {
+                Logo.Info($"[_CollectWidgetFromCode()] layouts.Count=0, root={root}, window={window}");
                 return;
             }
 
@@ -193,17 +193,14 @@ namespace Unicorn.UI
                 var lastData = _GetWidgetData(dataList, name, type);
                 if (null != lastData)
                 {
-                    Logo.Error(
-                        "[_CollectWidgetFromCode()] Found an old widgetData with the same name={0}, type={1}", name,
-                        type);
+                    Logo.Error($"[_CollectWidgetFromCode()] Found duplicated widget, name={name}, type={type}");
                     continue;
                 }
 
                 var currentData = _FillWidgetData(root, string.Empty, name, type);
                 if (null == currentData)
                 {
-                    Logo.Error("[_CollectWidgetFromCode()] Can not find a widgetData with name = {0} ",
-                        name);
+                    Logo.Error("[_CollectWidgetFromCode()] Can not find a widgetData with name={name}, type={type}");
                     return;
                 }
 
@@ -223,8 +220,8 @@ namespace Unicorn.UI
             var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (var field in fields)
             {
-                var fieldType = field.FieldType;
-                if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(UIWidget<>))
+                var fieldType = _GetGenericWidgetType(field.FieldType);
+                if (null != fieldType)
                 {
                     var argType1 = fieldType.GetGenericArguments()[0];
                     var widget = field.GetValue(window) as UIWidgetBase;
@@ -233,6 +230,22 @@ namespace Unicorn.UI
             }
 
             return list;
+        }
+
+        private static Type _GetGenericWidgetType(Type type)
+        {
+            var current = type;
+            while (current != null)
+            {
+                if (current.IsGenericType && current.GetGenericTypeDefinition() == typeof(UIWidget<>))
+                {
+                    return current;
+                }
+
+                current = current.BaseType;
+            }
+
+            return null;
         }
 
         private static void _AddUniqueWidgetData(IList<UISerializer.WidgetData> dataList,
@@ -273,24 +286,24 @@ namespace Unicorn.UI
             ListPool.Return(labelList);
         }
 
-//        [MenuItem("Assets/Test", false, 0)]
-//        private static void _BroadcastControlMenu ()
-//        {
-//            var goSelected = Selection.activeObject as GameObject;
-//            if (null == goSelected)
-//            {
-//                Console.Warning.WriteLine("Please select a prefab.");
-//                return;
-//            }
-//
-//            var sbText = new System.Text.StringBuilder();
-//            foreach (var trans in _ForEachNode(goSelected.transform))
-//            {
-//                sbText.AppendLine(trans.name);
-//            }
-//
-//            Logo.Info(sbText);
-//        }
+        //        [MenuItem("Assets/Test", false, 0)]
+        //        private static void _BroadcastControlMenu ()
+        //        {
+        //            var goSelected = Selection.activeObject as GameObject;
+        //            if (null == goSelected)
+        //            {
+        //                Console.Warning.WriteLine("Please select a prefab.");
+        //                return;
+        //            }
+        //
+        //            var sbText = new System.Text.StringBuilder();
+        //            foreach (var trans in _ForEachNode(goSelected.transform))
+        //            {
+        //                sbText.AppendLine(trans.name);
+        //            }
+        //
+        //            Logo.Info(sbText);
+        //        }
 
         private static IEnumerable<Transform> _ForEachNode(Transform father)
         {
@@ -362,7 +375,8 @@ namespace Unicorn.UI
                 {
                     var lastPath = transLast.GetFindPath();
                     var currentPath = child.GetFindPath();
-                    Logo.Warn($"Duplication name found: lastPath={root.name}/{lastPath}, currentPath={root.name}/{currentPath}\n");
+                    Logo.Warn(
+                        $"Duplication name found: lastPath={root.name}/{lastPath}, currentPath={root.name}/{currentPath}\n");
                 }
                 else
                 {
