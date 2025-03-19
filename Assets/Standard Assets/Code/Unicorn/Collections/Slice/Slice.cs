@@ -90,8 +90,19 @@ namespace Unicorn.Collections
                 var nextSize = Size + othersCount;
                 Reserve(nextSize);
 
-                others.CopyTo(Items, Size);
+                others!.CopyTo(Items, Size);
                 Size = nextSize;
+            }
+        }
+
+        public void AddRange(IEnumerable<T> others)
+        {
+            if (others != null)
+            {
+                foreach (var item in others)
+                {
+                    Add(item);
+                }
             }
         }
 

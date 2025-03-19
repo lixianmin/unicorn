@@ -7,7 +7,7 @@ Copyright (C) - All Rights Reserved
 
 namespace Unicorn.Collections
 {
-    public static class ExtendedSlice
+    public static class SliceEx
     {
         public static bool IsNullOrEmpty<T>(this Slice<T> my)
         {
