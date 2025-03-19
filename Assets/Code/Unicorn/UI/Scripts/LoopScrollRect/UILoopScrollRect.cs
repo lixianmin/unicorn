@@ -120,7 +120,7 @@ namespace Unicorn.UI
 
         private void OnDestroy()
         {
-            RemoveAllCells();
+            RemoveAll();
             _ClearPool();
             // Logo.Info("loop scroll rect is destroying");
         }
@@ -178,8 +178,9 @@ namespace Unicorn.UI
             }
         }
 
-        public void AddCell(IWidget widget)
+        public void AddWidget(IWidget widget)
         {
+            // widget看起来可以是null
             if (cellTransform == null)
             {
                 return;
@@ -203,31 +204,31 @@ namespace Unicorn.UI
             _SetDirty();
         }
 
-        public void RemoveCell(int index)
-        {
-            var count = _cells.Count;
-            if (index < 0 || index >= count)
-            {
-                return;
-            }
+        // public void RemoveCell(int index)
+        // {
+        //     var count = _cells.Count;
+        //     if (index < 0 || index >= count)
+        //     {
+        //         return;
+        //     }
+        //
+        //     var lastIndex = count - 1;
+        //     // 所有cell的transform均匀向前移动一格
+        //     for (var i = lastIndex; i > index; i--)
+        //     {
+        //         var back = _cells[i] as Cell;
+        //         var front = _cells[i - 1] as Cell;
+        //         back!.CopyFrom(front);
+        //     }
+        //
+        //     var firstCell = _cells[index] as Cell;
+        //     _HideCell(firstCell);
+        //
+        //     _cells.RemoveAt(index);
+        //     _SetDirty();
+        // }
 
-            var lastIndex = count - 1;
-            // 所有cell的transform均匀向前移动一格
-            for (var i = lastIndex; i > index; i--)
-            {
-                var back = _cells[i] as Cell;
-                var front = _cells[i - 1] as Cell;
-                back!.CopyFrom(front);
-            }
-
-            var firstCell = _cells[index] as Cell;
-            _HideCell(firstCell);
-
-            _cells.RemoveAt(index);
-            _SetDirty();
-        }
-
-        public void RemoveAllCells()
+        public void RemoveAll()
         {
             var size = _cells.Count;
             if (size > 0)
@@ -360,7 +361,7 @@ namespace Unicorn.UI
             return null;
         }
 
-        public int GetCellCount()
+        public int GetCount()
         {
             return _cells.Count;
         }
