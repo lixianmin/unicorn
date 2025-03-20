@@ -162,7 +162,7 @@ namespace Unicorn
         private static void _LateUpdate()
         {
             // 这个不能放到UnicornMain.ExpensiveUpdate()中, 否则看不见
-            _instanceManager.LateUpdate();
+            // _instanceManager.LateUpdate();
 
             DisposableRecycler.Update();
         }
@@ -187,7 +187,7 @@ namespace Unicorn
         private static readonly PartUpdateSystem _partUpdateSystem = new();
         private static readonly CoroutineManager _coroutineManager = CoroutineManager.It;
         private static readonly UIManager _uiManager = UIManager.It;
-        private static readonly InstanceManager _instanceManager = InstanceManager.It;
+        // private static readonly InstanceManager _instanceManager = InstanceManager.It;
 
         private static float _lastSlowUpdateTime;
         private static float _nextSlowUpdateTime;
