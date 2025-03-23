@@ -426,8 +426,8 @@ namespace Unicorn.Road
             else
             {
                 var route = _kindRoutes[pack.Kind];
-                _registeredHandlers.TryGetValue(route, out var handler);
-                return handler;
+                _registeredHandlers.TryGetValue(route, out var item);
+                return item as Handler;
             }
         }
 
@@ -556,7 +556,7 @@ namespace Unicorn.Road
         private readonly Dictionary<string, int> _routeKinds = new();
         private readonly Dictionary<int, string> _kindRoutes = new();
         private readonly SortedTable<int, Handler> _requestHandlers = new();
-        private readonly Dictionary<string, Handler> _registeredHandlers = new();
+        private readonly Dictionary<string, object> _registeredHandlers = new(); // value是Handler
 
         private Action _reconnectAction;
         private int _reconnectAttempt;

@@ -87,7 +87,7 @@ namespace Metadata
                 private ConstructorInfo _constructor;
                 private Type _elementType;
 
-                private static readonly Dictionary<System.Type, object> _builderCache = new();
+                private static readonly Dictionary<Type, object> _builderCache = new();
             }
 
             public static IList Load(IOctetsReader reader, Type fieldType)
