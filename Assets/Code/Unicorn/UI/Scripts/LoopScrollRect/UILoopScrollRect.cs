@@ -204,29 +204,29 @@ namespace Unicorn.UI
             _SetDirty();
         }
 
-        // public void RemoveCell(int index)
-        // {
-        //     var count = _cells.Count;
-        //     if (index < 0 || index >= count)
-        //     {
-        //         return;
-        //     }
-        //
-        //     var lastIndex = count - 1;
-        //     // 所有cell的transform均匀向前移动一格
-        //     for (var i = lastIndex; i > index; i--)
-        //     {
-        //         var back = _cells[i] as Cell;
-        //         var front = _cells[i - 1] as Cell;
-        //         back!.CopyFrom(front);
-        //     }
-        //
-        //     var firstCell = _cells[index] as Cell;
-        //     _HideCell(firstCell);
-        //
-        //     _cells.RemoveAt(index);
-        //     _SetDirty();
-        // }
+        public void RemoveWidget(int index)
+        {
+            var count = _cells.Count;
+            if (index < 0 || index >= count)
+            {
+                return;
+            }
+        
+            var lastIndex = count - 1;
+            // 所有cell的transform均匀向前移动一格
+            for (var i = lastIndex; i > index; i--)
+            {
+                var back = _cells[i] as Cell;
+                var front = _cells[i - 1] as Cell;
+                back!.CopyFrom(front);
+            }
+        
+            var firstCell = _cells[index] as Cell;
+            _HideCell(firstCell);
+        
+            _cells.RemoveAt(index);
+            _SetDirty();
+        }
 
         public void RemoveAll()
         {

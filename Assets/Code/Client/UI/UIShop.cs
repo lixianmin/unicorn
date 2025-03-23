@@ -29,12 +29,12 @@ namespace Clients.UI
 
         private void _ReloadWidgets()
         {
-            _loopScrollRect.UI.RemoveAllCells();
+            _loopScrollRect.UI.RemoveAll();
 
             foreach (var good in ShopManager.It.GetGoods())
             {
                 var widget = new UIShopWidget(good);
-                _loopScrollRect.UI.AddCell(widget);
+                _loopScrollRect.UI.AddWidget(widget);
                 Logo.Info($"tid={good.GetTemplateId()}, good={good}");
             }
         }
@@ -42,20 +42,20 @@ namespace Clients.UI
         private void _OnInsertGoods(ShopGood good)
         {
             var widget = new UIShopWidget(good);
-            _loopScrollRect.UI.AddCell(widget);
+            _loopScrollRect.UI.AddWidget(widget);
         }
 
         private void _OnDeleteGoods(ShopGood good)
         {
             var ui = _loopScrollRect.UI;
-            var count = ui.GetCellCount();
+            var count = ui.GetCount();
             for (int i = 0; i < count; i++)
             {
                 var cell = ui.GetCell(i);
                 var widget = cell.GetWidget() as UIShopWidget;
                 if (widget!.GetTemplateId() == good.GetTemplateId())
                 {
-                    ui.RemoveCell(i);
+                    ui.RemoveWidget(i);
                     break;
                 }
             }
