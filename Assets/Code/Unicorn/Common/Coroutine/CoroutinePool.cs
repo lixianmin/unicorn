@@ -20,8 +20,6 @@ namespace Unicorn
 
         internal CoroutineItem Spawn(IEnumerator routine, bool isRecyclable)
         {
-            AssertTools.IsNotNull(routine);
-
             CoroutineItem item;
             var checkIndex = _size;
             if (checkIndex < _capacity && null != _items[checkIndex])

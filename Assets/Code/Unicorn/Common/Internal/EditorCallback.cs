@@ -13,7 +13,7 @@ namespace Unicorn
 {
 	internal static class EditorCallback
 	{
-		[System.Diagnostics.Conditional("UNITY_EDITOR")]
+		// [System.Diagnostics.Conditional("UNITY_EDITOR")]
 		public static void AttachToUpdate(Action action)
 		{
 			if (!Application.isEditor || null == action)
