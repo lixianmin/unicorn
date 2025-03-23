@@ -46,7 +46,7 @@ namespace Metadata
             }
 
             var guid = text.GetGUID();
-            uint localeIndex = GetLocaleIndex(guid);
+            var localeIndex = GetLocaleIndex(guid);
             writer.Write(localeIndex);
             writer.Write(isFullMode);
 
@@ -98,14 +98,14 @@ namespace Metadata
                 }
                 else
                 {
-                    localeIndices = new Dictionary<string, uint>();
+                    localeIndices = new Dictionary<string, int>();
                     _SetLocaleIndices(localeIndices);
                 }
 
                 for (int i = 0; i < count; ++i)
                 {
-                    string guid = reader.ReadString();
-                    uint index = reader.ReadUInt32();
+                    var guid = reader.ReadString();
+                    var index = reader.ReadInt32();
                     localeIndices[guid] = index;
                 }
             }
@@ -153,8 +153,8 @@ namespace Metadata
                 while (iter.MoveNext())
                 {
                     var pair = iter.Current;
-                    string guid = pair.Key;
-                    uint index = pair.Value;
+                    var guid = pair.Key;
+                    var index = pair.Value;
 
                     writer.Write(guid);
                     writer.Write(index);
@@ -188,10 +188,10 @@ namespace Metadata
             Array.Sort(guidArray, textArray, ReversedStringComparer.It);
             _SetLocaleTexts(textArray);
 
-            var localeIndices = new Dictionary<string, uint>(count);
+            var localeIndices = new Dictionary<string, int>(count);
             _SetLocaleIndices(localeIndices);
 
-            for (uint i = 0; i < count; ++i)
+            for (int i = 0; i < count; ++i)
             {
                 var guid = guidArray[i]; // from entry.Key, so can not be null.
                 localeIndices[guid] = i;
@@ -217,15 +217,15 @@ namespace Metadata
             _localeTexts = localeTexts ?? Array.Empty<string>();
         }
 
-        private void _SetLocaleIndices(Dictionary<string, uint> localeIndices)
+        private void _SetLocaleIndices(Dictionary<string, int> localeIndices)
         {
-            _localeIndices = localeIndices ?? new Dictionary<string, uint>();
+            _localeIndices = localeIndices ?? new Dictionary<string, int>();
         }
 
-        internal uint GetLocaleIndex(string guid)
+        internal int GetLocaleIndex(string guid)
         {
             var localeIndices = _localeIndices;
-            uint index = 0;
+            int index = 0;
             if (null != localeIndices && !string.IsNullOrEmpty(guid))
             {
                 if (!localeIndices.TryGetValue(guid, out index))
@@ -258,6 +258,6 @@ namespace Metadata
         public static readonly LocaleTextManager It = new();
 
         private string[] _localeTexts = Array.Empty<string>();
-        private Dictionary<string, uint> _localeIndices;
+        private Dictionary<string, int> _localeIndices;
     }
 }
