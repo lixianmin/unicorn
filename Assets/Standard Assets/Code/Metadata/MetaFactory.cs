@@ -182,7 +182,7 @@ namespace Metadata
                                 _subTypes.Add(baseType, list);
                             }
 
-                            list.Add(t);
+                            (list as List<Type>)!.Add(t);
                             t = baseType;
                         }
                     }
@@ -190,7 +190,7 @@ namespace Metadata
 
                 if (_subTypes.TryGetValue(type, out var result))
                 {
-                    return result;
+                    return result as List<Type>;
                 }
             }
 
@@ -207,6 +207,6 @@ namespace Metadata
         public static readonly string outerFactoryGetLookupTableByName = "_GetLookupTableByName";
 
         private static Hashtable _lookupTableByName;
-        private static Dictionary<Type, List<Type>> _subTypes = null;
+        private static Dictionary<Type, object> _subTypes; // value是List<Type>
     }
 }
