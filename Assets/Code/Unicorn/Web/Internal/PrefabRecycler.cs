@@ -32,17 +32,19 @@ namespace Unicorn.Web.Internal
 
         public static void AddReference(string localPath)
         {
-            if (_cache.TryGetValue(localPath, out var cached))
+            if (_cache.TryGetValue(localPath, out var item))
             {
-                cached.counter++;
+                var cached = item as RecyclerItem;
+                cached!.counter++;
             }
         }
 
         public static void RemoveReference(string localPath)
         {
-            if (_cache.TryGetValue(localPath, out var cached))
+            if (_cache.TryGetValue(localPath, out var item))
             {
-                cached.counter--;
+                var cached = item as RecyclerItem;
+                cached!.counter--;
                 if (cached.counter == 0)
                 {
                     _cache.Remove(localPath);
@@ -54,17 +56,17 @@ namespace Unicorn.Web.Internal
         {
             var sb = new StringBuilder();
             sb.Append($"count={_cache.Count}\n");
-            foreach (var item in _cache)
+            foreach (var (key, value) in _cache)
             {
-                sb.Append(item.Key);
+                sb.Append(key);
                 sb.Append(": ");
-                sb.Append(item.Value.counter);
+                sb.Append(((RecyclerItem)value).counter);
                 sb.Append("\n");
             }
 
             Logo.Warn(sb.ToString());
         }
 
-        private static readonly Dictionary<string, RecyclerItem> _cache = new(128);
+        private static readonly Dictionary<string, object> _cache = new(128);
     }
 }
