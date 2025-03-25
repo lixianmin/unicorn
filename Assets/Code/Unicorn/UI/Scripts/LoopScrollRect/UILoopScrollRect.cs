@@ -183,6 +183,13 @@ namespace Unicorn.UI
             // widget看起来可以是null
             if (cellTransform == null)
             {
+                Logo.Warn("[AddWidget] cellTransform=null");
+                return;
+            }
+
+            if (_direction == null)
+            {
+                Logo.Warn("[AddWidget] _direction=null");
                 return;
             }
 
