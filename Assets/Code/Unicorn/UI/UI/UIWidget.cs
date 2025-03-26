@@ -63,7 +63,7 @@ namespace Unicorn.UI
                     _widget = _window.GetWidget(_name, typeof(T)) as T;
                     if (_widget == null)
                     {
-                        Logo.Warn("can not find the _widget with _name={0}", _name);
+                        Logo.Warn($"can not find {typeof(T)} with name={_name}");
                         _widget = null;
                     }
                 }

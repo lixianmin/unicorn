@@ -189,7 +189,7 @@ namespace Unicorn.UI
 
             if (_direction == null)
             {
-                Logo.Warn("[AddWidget] _direction=null");
+                Logo.Warn("[AddWidget] _direction=null, the script should Awake()");
                 return;
             }
 
