@@ -11,9 +11,9 @@ using System.Collections.Generic;
 namespace Unicorn
 {
     //[Obfuscators.ObfuscatorIgnore]
-    public static class ExtendedBinarySearch
+    public static class BinarySearchEx
     {
-        public static int BinarySearchEx<T> (this IList<T> list, int key, Func<T, int> extract)
+        public static int BinarySearch<T> (this IList<T> list, int key, Func<T, int> extract)
         {
             if (null == list)
             {
@@ -44,7 +44,7 @@ namespace Unicorn
             return j;
         }
 
-        public static int BinarySearchEx<T> (this IList<T> list, float key, Func<T, float> extract)
+        public static int BinarySearch<T> (this IList<T> list, float key, Func<T, float> extract)
         {
             if (null == list)
             {
@@ -75,7 +75,7 @@ namespace Unicorn
             return j;
         }
 
-        public static int BinarySearchEx<T> (this T[] list, int key, Func<T, int> extract)
+        public static int BinarySearch<T> (this T[] list, int key, Func<T, int> extract)
         {
             if (null == list)
             {
@@ -106,7 +106,7 @@ namespace Unicorn
             return j;
         }
 
-        public static int BinarySearchEx<T> (this T[] list, float key, Func<T, float> extract)
+        public static int BinarySearch<T> (this T[] list, float key, Func<T, float> extract)
         {
             if (null == list)
             {
@@ -137,7 +137,7 @@ namespace Unicorn
             return j;
         }
 
-        public static int BinarySearchEx<ItemType, KeyType> (this ItemType[] list, KeyType key, Func<ItemType, KeyType> extract)
+        public static int BinarySearch<ItemType, KeyType> (this ItemType[] list, KeyType key, Func<ItemType, KeyType> extract)
             where KeyType: IEquatable<KeyType>, IComparable<KeyType>
         {
             if (null == list)
