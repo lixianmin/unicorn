@@ -70,16 +70,19 @@ namespace Unicorn
                 return null;
             }
 
-            if (null == _currentAssemblies)
+            var currentAssemblies = _currentAssemblies;
+            if (null == currentAssemblies)
             {
-                _currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-                Array.Sort(_currentAssemblies, new AssemblyComparer());
+                currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+                Array.Sort(currentAssemblies, new AssemblyComparer());
+
+                _currentAssemblies = currentAssemblies;
             }
 
-            var count = _currentAssemblies.Length;
+            var count = currentAssemblies.Length;
             for (int i = 0; i < count; ++i)
             {
-                var assembly = _currentAssemblies[i];
+                var assembly = currentAssemblies[i];
                 var type = assembly.GetType(typeFullName);
 
                 if (null != type)
