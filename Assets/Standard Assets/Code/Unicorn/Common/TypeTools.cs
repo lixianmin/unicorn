@@ -73,10 +73,16 @@ namespace Unicorn
             var currentAssemblies = _currentAssemblies;
             if (null == currentAssemblies)
             {
-                currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-                Array.Sort(currentAssemblies, new AssemblyComparer());
-
-                _currentAssemblies = currentAssemblies;
+                lock (_assemblyLock)
+                {
+                    currentAssemblies = _currentAssemblies;
+                    if (null == currentAssemblies)
+                    {
+                        currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+                        Array.Sort(currentAssemblies, new AssemblyComparer());
+                        _currentAssemblies = currentAssemblies;
+                    }
+                }
             }
 
             var count = currentAssemblies.Length;
@@ -214,6 +220,7 @@ namespace Unicorn
         private static readonly Dictionary<Type, object> _sortedFields = new(100);
         private static Func<Type, Type[], Type> _lpfnMakeGenericType;
 
+        private static readonly object _assemblyLock = new();
         private static System.Reflection.Assembly _editorAssembly;
         private static System.Reflection.Assembly[] _currentAssemblies;
         private static System.Reflection.Assembly[] _customAssemblies;
