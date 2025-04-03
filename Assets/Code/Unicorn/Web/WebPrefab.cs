@@ -17,11 +17,11 @@ namespace Unicorn.Web
         {
             // _webItem这里也需要同步赋值, 因为回调handler有可能是一个小时之后的事, 中间万一使用到了_webItem就可能是null了.
             // 你永远也不知道构造方法和handler谁先到来
-            var node = WebManager.It.LoadAsset(argument, webItem =>
+            var node = WebManager.It.LoadAsset(argument, node =>
             {
                 if (!IsDisposed())
                 {
-                    if (webItem.Asset is GameObject mainAsset)
+                    if (node.Asset is GameObject mainAsset)
                     {
                         var script = mainAsset.GetComponent<MbPrefabAid>();
                         if (script is null)
@@ -44,13 +44,13 @@ namespace Unicorn.Web
                         PrefabRecycler.AddReference(argument.key);
 
                         // 这里的handler是有可能立即调用到的, 所以不能外面new WebItem()返回值的时候设置_webItem
-                        _webItem = webItem;
+                        _webNode = node;
                     }
                     else
                     {
                         Logo.Warn(
-                            $"webItem.Asset is not gameObject, argument.key={argument.key}, webItem.Asset={webItem.Asset}");
-                        _webItem = EmptyWebNode.It;
+                            $"node.Asset is not gameObject, argument.key={argument.key}, node.Asset={node.Asset}");
+                        _webNode = EmptyWebNode.It;
                     }
                 }
 
@@ -58,7 +58,7 @@ namespace Unicorn.Web
             });
 
             // 如果_webItem==null，说明LoadAsset()的handler还未执行，所以在些设置一次；之所以这样做，是因为_webItem有可能已经被设置为EmptyWebNode了
-            _webItem ??= node;
+            _webNode ??= node;
         }
 
         protected override void _DoDispose(int flags)
@@ -66,7 +66,7 @@ namespace Unicorn.Web
             if (_aidScript != null)
             {
                 var key = _aidScript.key;
-                
+
                 // WebPrefab也算作计数1次
                 PrefabRecycler.RemoveReference(key);
 
@@ -82,17 +82,17 @@ namespace Unicorn.Web
         //     return $"WebPrefab: id={_id.ToString()}, key={_webItem.Key}";
         // }
 
-        public bool IsDone => _webItem.IsDone;
-        public bool IsSucceeded => _webItem.IsSucceeded;
+        public bool IsDone => _webNode.IsDone;
+        public bool IsSucceeded => _webNode.IsSucceeded;
 
-        UnityEngine.Object IWebNode.Asset => _webItem.Asset;
+        UnityEngine.Object IWebNode.Asset => _webNode.Asset;
 
         /// <summary>
         /// 返回mainAsset
         /// </summary>
-        public GameObject Asset => _webItem.Asset as GameObject;
+        public GameObject Asset => _webNode.Asset as GameObject;
 
-        private IWebNode _webItem;
+        private IWebNode _webNode;
 
         private MbPrefabAid _aidScript;
         // private readonly int _id = WebTools.GetNextId();
