@@ -36,23 +36,23 @@ namespace Unicorn
         //     }
         // }
 
-        public void AddListener(IEventListener listener, Action handler)
-        {
-            if (listener != null && handler != null)
-            {
-                listener.AddListener(handler);
-                _removeList.Add(() => { listener.RemoveListener(handler); });
-            }
-        }
-
-        public void AddListener<T>(IEventListener<T> listener, Action<T> handler)
-        {
-            if (listener != null && handler != null)
-            {
-                listener.AddListener(handler);
-                _removeList.Add(() => { listener.RemoveListener(handler); });
-            }
-        }
+        // public void AddListener(IEventListener listener, Action handler)
+        // {
+        //     if (listener != null && handler != null)
+        //     {
+        //         listener.AddListener(handler);
+        //         _removeList.Add(() => { listener.RemoveListener(handler); });
+        //     }
+        // }
+        //
+        // public void AddListener<T>(IEventListener<T> listener, Action<T> handler)
+        // {
+        //     if (listener != null && handler != null)
+        //     {
+        //         listener.AddListener(handler);
+        //         _removeList.Add(() => { listener.RemoveListener(handler); });
+        //     }
+        // }
 
         public void AddListener(UnityEvent evt, UnityAction handler)
         {
