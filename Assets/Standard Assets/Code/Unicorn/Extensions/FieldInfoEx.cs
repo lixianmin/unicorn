@@ -7,16 +7,13 @@ Copyright (C) - All Rights Reserved
 *********************************************************************/
 
 using System;
-using Unicorn.IO;
-
-using BindingFlags = System.Reflection.BindingFlags;
 using FieldInfo = System.Reflection.FieldInfo;
 
 namespace Unicorn
 {
-    public static class ExtendedFieldInfo
+    public static class FieldInfoEx
     {
-        static ExtendedFieldInfo ()
+        static FieldInfoEx ()
         {
             _Init_lpfnSetValueInternal();
         }

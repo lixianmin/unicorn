@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Unicorn
 {
-    static partial class ExtendedSort
+    static partial class SortEx
     {
         public static void Sort<T>(this IList<T> list, Comparison<T> comparison)
         {

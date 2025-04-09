@@ -62,7 +62,7 @@ namespace Metadata
                             , memberName
                             , e.LineNumber.ToString()
                             , target
-                            , _currentReader.GetDecodedBufferEx());
+                            , _currentReader.GetDecodedBuffer());
                         break;
                     }
                 }
@@ -72,7 +72,7 @@ namespace Metadata
                 Logo.Error("unknown={0}, LineNumber={1}, ObjectBeingDeserialized=null \n\n clipText={2}"
                     , elementName
                     , e.LineNumber.ToString()
-                    , _currentReader.GetDecodedBufferEx());
+                    , _currentReader.GetDecodedBuffer());
             }
         }
 

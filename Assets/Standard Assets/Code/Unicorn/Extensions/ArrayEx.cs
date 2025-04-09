@@ -9,7 +9,7 @@ using System;
 
 namespace Unicorn
 {
-    public static class ExtendedArray
+    public static class ArrayEx
     {
         public static bool IsNullOrEmpty<T>(this T[] array)
         {

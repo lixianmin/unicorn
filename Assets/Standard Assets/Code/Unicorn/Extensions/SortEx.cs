@@ -12,7 +12,7 @@ using System;
 
 namespace Unicorn
 {
-    public static partial class ExtendedSort
+    public static partial class SortEx
     {
         public static void Sort<T>(this T[] list, Comparison<T> comparison)
         {

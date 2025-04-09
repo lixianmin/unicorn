@@ -115,7 +115,7 @@ namespace Metadata
                         _writer.WriteLine("{{ \"{0}\", new {1}(()=> new {2}()) }},"
                             , rawType.FullName
                             , nameof(MetaCreator)
-                            , rawType.GetTypeNameEx()
+                            , rawType.GetTypeName()
                         );
                     }
                 }

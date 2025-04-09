@@ -144,7 +144,7 @@ namespace Metadata.LuaCode
 				using (CodeScope.CreateLuaScope(writer))
 				{
                     writer.WriteLine("local aid = {0}", typeof(Metadata.LuaLoadAid).FullName);
-                    writer.WriteLine("if aid.Seek ('{0}', idTemplate) and aid.ReadBoolean() then", type.GetTypeNameEx());
+                    writer.WriteLine("if aid.Seek ('{0}', idTemplate) and aid.ReadBoolean() then", type.GetTypeName());
 					
 					using (CodeScope.CreateLuaScope(writer))
 					{
@@ -183,7 +183,7 @@ namespace Metadata.LuaCode
 				using (CodeScope.Create(writer, string.Empty, "end\n\n"))
 				{
                     writer.WriteLine("local aid = {0}", typeof(Metadata.LuaLoadAid).FullName);
-                    writer.WriteLine("{0} = aid.EnumerateIDs ('{1}')", ids, type.GetTypeNameEx());
+                    writer.WriteLine("{0} = aid.EnumerateIDs ('{1}')", ids, type.GetTypeName());
 					writer.WriteLine("cache.{0} = {0}", ids);
                 }
                 
@@ -208,7 +208,7 @@ namespace Metadata.LuaCode
 					}
 
                     writer.WriteLine("local aid = {0}", typeof(Metadata.LuaLoadAid).FullName);
-                    writer.WriteLine("if aid.Seek ('{0}', 0) and aid.ReadBoolean() then", type.GetTypeNameEx());
+                    writer.WriteLine("if aid.Seek ('{0}', 0) and aid.ReadBoolean() then", type.GetTypeName());
 					using (CodeScope.CreateLuaScope(writer))
 					{
 						writer.WriteLine("config = {0}._Create{0} (aid)", name);

@@ -12,7 +12,7 @@ using Unicorn.Collections;
 
 namespace Unicorn
 {
-    public static class ExtendedIDictionary
+    public static class IDictionaryEx
     {
         public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
         {

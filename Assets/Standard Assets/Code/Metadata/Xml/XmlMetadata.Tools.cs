@@ -109,7 +109,7 @@ namespace Metadata
             }
             catch (Exception ex)
             {
-                var bufferText = reader.GetDecodedBufferEx();
+                var bufferText = reader.GetDecodedBuffer();
                 Debug.LogWarning($"xmlFile={xmlFile}, ex=\n{ex}\n, bufferText=\n{bufferText}\n");
                 reader?.Dispose();
             }

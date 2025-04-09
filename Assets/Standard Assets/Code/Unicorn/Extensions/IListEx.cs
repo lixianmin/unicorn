@@ -12,7 +12,7 @@ using Unicorn.Collections;
 
 namespace Unicorn
 {
-    public static class ExtendedIList
+    public static class IListEx
     {
         // public static int GetCount(this IList list)
         // {

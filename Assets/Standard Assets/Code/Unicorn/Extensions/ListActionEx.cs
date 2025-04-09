@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Unicorn
 {
-    public static class ExtendedListAction
+    public static class ListActionEx
     {   
 	    /// <summary>
 	    /// 用于实现RemoveAllListeners()的unregister事件回调函数的效果

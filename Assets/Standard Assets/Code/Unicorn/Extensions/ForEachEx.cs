@@ -11,9 +11,9 @@ using System.Collections.Generic;
 
 namespace Unicorn
 {
-    public static class ExtendedForEach
+    public static class ForEachEx
     {
-        public static void ForEachEx<T> (this T[] array, Action<T> action)
+        public static void ForEach<T> (this T[] array, Action<T> action)
         {
             if (null != array && null != action)
             {
@@ -25,12 +25,12 @@ namespace Unicorn
             }
         }
 
-        public static void ForEachNotNullEx<T> (this T[] array, Action<T> action)
+        public static void ForEachNotNull<T> (this T[] array, Action<T> action)
         {
             if (null != array && null != action)
             {
 				var length = array.Length;
-                for (int i= 0; i< length; ++i)
+                for (var i= 0; i< length; ++i)
                 {
                     var item = array[i];
                     if (null != item)
@@ -41,7 +41,7 @@ namespace Unicorn
             }
         }
 
-		public static void ForEachEx<T> (this HashSet<T> hashSet, Action<T> action)
+		public static void ForEach<T> (this HashSet<T> hashSet, Action<T> action)
 		{
 			if (null != hashSet && null != action)
 			{
@@ -56,7 +56,7 @@ namespace Unicorn
 			}
 		}
 
-        public static void ForEachEx<T> (this LinkedList<T> linkedList, Action<T> action)
+        public static void ForEach<T> (this LinkedList<T> linkedList, Action<T> action)
         {
             if (null != linkedList && null != action)
             {
@@ -71,7 +71,7 @@ namespace Unicorn
             }
         }
 
-        public static void ForEachNotNullEx<T> (this LinkedList<T> linkedList, Action<T> action)
+        public static void ForEachNotNull<T> (this LinkedList<T> linkedList, Action<T> action)
         {
             if (null != linkedList && null != action)
             {
@@ -90,7 +90,7 @@ namespace Unicorn
             }
         }
 
-        public static void ForEachEx<K, V> (this Dictionary<K, V> dict, Action<KeyValuePair<K, V>> action)
+        public static void ForEach<K, V> (this Dictionary<K, V> dict, Action<KeyValuePair<K, V>> action)
         {
             if (null != dict && null != action)
             {
@@ -105,7 +105,7 @@ namespace Unicorn
             }
         }
 
-		public static void ForEachEx (this Queue queue, Action<object> action)
+		public static void ForEach (this Queue queue, Action<object> action)
 		{
 			if (null != queue && null != action)
 			{
@@ -117,7 +117,7 @@ namespace Unicorn
 			}
 		}
 		
-		public static void ForEachNotNullEx (this Queue queue, Action<object> action)
+		public static void ForEachNotNull (this Queue queue, Action<object> action)
 		{
 			if (null != queue && null != action)
 			{
@@ -133,7 +133,7 @@ namespace Unicorn
 			}
 		}
 
-        public static void ForEachEx<T> (this Queue<T> queue, Action<T> action)
+        public static void ForEach<T> (this Queue<T> queue, Action<T> action)
         {
             if (null != queue && null != action)
             {
@@ -148,7 +148,7 @@ namespace Unicorn
             }
         }
 
-        public static void ForEachNotNullEx<T> (this Queue<T> queue, Action<T> action)
+        public static void ForEachNotNull<T> (this Queue<T> queue, Action<T> action)
         {
             if (null != queue && null != action)
             {
@@ -167,7 +167,7 @@ namespace Unicorn
             }
         }
 
-		public static void ForEachEx (this ArrayList list, Action<object> action)
+		public static void ForEach (this ArrayList list, Action<object> action)
 		{
 			if (null != list && null != action)
 			{
@@ -183,7 +183,7 @@ namespace Unicorn
 			}
 		}
 
-		public static void ForEachNotNullEx (this ArrayList list, Action<object> action)
+		public static void ForEachNotNull (this ArrayList list, Action<object> action)
 		{
 			if (null != list && null != action)
 			{
