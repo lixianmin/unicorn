@@ -18,6 +18,12 @@ author:     lixianmin
  |  dispose <-- unload <-- close animation <-- close <-- deactive <-- |
  ----------------------------------------------------------------------
 
+1. 窗体类中, 所有async/coroutine返回的位置, 都需要判断IsLoaded(), 然后再进行处理. 异步IO需谨慎
+2. 如果在UIManager.OpenWindow()后, 调用了window.Init(xxx)传参, 则建议在OnOpened()方法进行初始化, 该方法最早在下一帧调用到, 因此可以确保
+    时序上在window.Init(xxx)之后. 反之, OnLoaded()方法则有可能早于或晚于window.Init(xxx)方法
+3. EventDog的方案, 需要主动在OnUnloading()中调用_dog.RemoveAllListeners(). 目前更推荐使用 Unloading += button.onClick(xxx)的方案
+4. UISerializer, 如果序列存储了窗体类中声明的控件, 同时如果这些控件在rename时交换了名字, 则会导致代码逻辑跟看到的效果不一致的情况, 此时需要重新手动序列化
+
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
