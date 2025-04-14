@@ -25,7 +25,7 @@ namespace Clients.Web
         {
             argument.key ??= string.Empty;
             _argument = argument;
-            _state = WebState.Loading;
+            _status = WebStatus.Loading;
             CoroutineManager.It.StartCoroutine(_CoLoad(argument, handler));
         }
 
@@ -41,10 +41,10 @@ namespace Clients.Web
             }
 
             // 无论加载是否成功，都需要回调到handler
-            _state = loadHandle.Status == EOperationStatus.Succeed ? WebState.Succeeded : WebState.Failed;
+            _status = loadHandle.Status == EOperationStatus.Succeed ? WebStatus.Succeeded : WebStatus.Failed;
 
             // 如果是editor，则处理root game objects，重新给shader赋值
-            if (_state == WebState.Succeeded && Application.isEditor)
+            if (_status == WebStatus.Succeeded && Application.isEditor)
             {
                 var scene = loadHandle.SceneObject;
                 var rootObjects = new List<GameObject>(scene.rootCount);
@@ -76,13 +76,13 @@ namespace Clients.Web
         }
 
         public string Key => _argument.key;
-        public WebState GetState() => _state;
+        public WebStatus Status => _status;
 
         UObject IWebNode.Asset => throw new InvalidOperationException("we do not need to implement this property");
 
         private readonly WebArgument _argument;
         private SceneHandle _loadHandle;
-        private WebState _state;
+        private WebStatus _status;
     }
 }
 

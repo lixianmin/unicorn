@@ -41,7 +41,7 @@ namespace Clients.Web
 
             WebManager.It.LoadAsset(argument, node =>
             {
-                if (node.GetState() == WebState.Succeeded)
+                if (node.Status == WebStatus.Succeeded)
                 {
                     if (node.Asset is T asset)
                     {

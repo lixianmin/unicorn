@@ -10,7 +10,7 @@ namespace Unicorn.Web
 {
     public class EmptyWebNode : IWebNode
     {
-        public WebState GetState() => WebState.Succeeded;
+        public WebStatus Status => WebStatus.Succeeded;
 
         /// <summary>
         /// 返回加载的资源对象

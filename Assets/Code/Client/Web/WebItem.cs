@@ -23,7 +23,7 @@ namespace Clients.Web
         {
             argument.key ??= string.Empty;
             _argument = argument;
-            _state = WebState.Loading;
+            _status = WebStatus.Loading;
             CoroutineManager.It.StartCoroutine(_CoLoad(argument, handler), out _coroutineItem);
         }
 
@@ -39,7 +39,7 @@ namespace Clients.Web
             }
 
             // 无论加载是否成功，都需要回调到handler
-            _state = loadHandle.Status == EOperationStatus.Succeed ? WebState.Succeeded : WebState.Failed;
+            _status = loadHandle.Status == EOperationStatus.Succeed ? WebStatus.Succeeded : WebStatus.Failed;
             CallbackTools.Handle(ref handler, this, string.Empty);
         }
 
@@ -52,13 +52,13 @@ namespace Clients.Web
 
         public string Key => _argument.key;
 
-        public WebState GetState() => _state;
+        public WebStatus Status => _status;
 
         public UObject Asset
         {
             get
             {
-                if (_state == WebState.Succeeded)
+                if (_status == WebStatus.Succeeded)
                 {
                     return _loadHandle.AssetObject;
                 }
@@ -70,7 +70,7 @@ namespace Clients.Web
         private readonly WebArgument _argument;
         private AssetHandle _loadHandle;
         private readonly CoroutineItem _coroutineItem;
-        private WebState _state;
+        private WebStatus _status;
     }
 }
 
