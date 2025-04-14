@@ -10,6 +10,11 @@ namespace Unicorn.Web
 {
     public class EmptyWebNode : IWebNode
     {
+        public void Cancel()
+        {
+            
+        }
+
         public WebStatus Status => WebStatus.Succeeded;
 
         /// <summary>

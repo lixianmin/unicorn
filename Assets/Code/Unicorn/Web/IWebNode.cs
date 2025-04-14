@@ -9,6 +9,11 @@ namespace Unicorn.Web
 {
     public interface IWebNode
     {
+        /// <summary>
+        /// 取消加载, 但不见得会成功
+        /// </summary>
+        void Cancel();
+        
         WebStatus Status { get; }
 
         /// <summary>

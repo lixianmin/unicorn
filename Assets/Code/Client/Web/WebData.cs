@@ -14,6 +14,10 @@ namespace Unicorn.Web
         public WebStatus Status { get; set; }
         public Object Asset { get; set; }
 
+        public void Cancel()
+        {
+        }
+
         public void CopyFrom(IWebNode other)
         {
             if (other != null)

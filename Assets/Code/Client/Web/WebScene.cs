@@ -75,6 +75,10 @@ namespace Clients.Web
             }
         }
 
+        public void Cancel()
+        {
+        }
+
         public string Key => _argument.key;
         public WebStatus Status => _status;
 

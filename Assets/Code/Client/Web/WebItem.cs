@@ -50,6 +50,10 @@ namespace Clients.Web
             // Logo.Info($"[_DoDispose()] assetPath = {_argument.key}");
         }
 
+        public void Cancel()
+        {
+        }
+
         public string Key => _argument.key;
 
         public WebStatus Status => _status;
