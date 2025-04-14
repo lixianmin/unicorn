@@ -11,25 +11,24 @@ namespace Unicorn.Web
 {
     public class WebData : IWebNode
     {
-        public bool IsDone { get; set; }
-        public bool IsSucceeded { get; set; }
+        public WebState GetState() => _state;
         public Object Asset { get; set; }
 
         public void CopyFrom(IWebNode other)
         {
             if (other != null)
             {
-                IsDone = other.IsDone;
-                IsSucceeded = other.IsSucceeded;
+                _state = other.GetState();
                 Asset = other.Asset;
             }
         }
 
         public void Reset()
         {
-            IsDone = false;
-            IsSucceeded = false;
+            _state = WebState.None;
             Asset = null;
         }
+
+        private WebState _state = WebState.None;
     }
 }

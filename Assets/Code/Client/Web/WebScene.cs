@@ -4,6 +4,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 #if UNICORN_EDITOR
 
 using System;
@@ -24,6 +25,7 @@ namespace Clients.Web
         {
             argument.key ??= string.Empty;
             _argument = argument;
+            _state = WebState.Loading;
             CoroutineManager.It.StartCoroutine(_CoLoad(argument, handler));
         }
 
@@ -39,11 +41,10 @@ namespace Clients.Web
             }
 
             // 无论加载是否成功，都需要回调到handler
-            IsDone = true;
-            IsSucceeded = loadHandle.Status == EOperationStatus.Succeed;
+            _state = loadHandle.Status == EOperationStatus.Succeed ? WebState.Succeeded : WebState.Failed;
 
             // 如果是editor，则处理root game objects，重新给shader赋值
-            if (IsSucceeded && Application.isEditor)
+            if (_state == WebState.Succeeded && Application.isEditor)
             {
                 var scene = loadHandle.SceneObject;
                 var rootObjects = new List<GameObject>(scene.rootCount);
@@ -60,7 +61,7 @@ namespace Clients.Web
                     skybox.shader = Shader.Find(skybox.shader.name);
                 }
             }
-            
+
             CallbackTools.Handle(ref handler, this, string.Empty);
         }
 
@@ -74,14 +75,14 @@ namespace Clients.Web
             }
         }
 
-        public bool IsDone { get; private set; }
-        public bool IsSucceeded { get; private set; }
         public string Key => _argument.key;
+        public WebState GetState() => _state;
 
         UObject IWebNode.Asset => throw new InvalidOperationException("we do not need to implement this property");
 
         private readonly WebArgument _argument;
         private SceneHandle _loadHandle;
+        private WebState _state;
     }
 }
 

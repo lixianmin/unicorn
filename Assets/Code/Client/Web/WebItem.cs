@@ -1,10 +1,10 @@
-
 /********************************************************************
 created:    2022-08-12
 author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 #if UNICORN_EDITOR
 
 using System;
@@ -23,6 +23,7 @@ namespace Clients.Web
         {
             argument.key ??= string.Empty;
             _argument = argument;
+            _state = WebState.Loading;
             CoroutineManager.It.StartCoroutine(_CoLoad(argument, handler), out _coroutineItem);
         }
 
@@ -38,8 +39,7 @@ namespace Clients.Web
             }
 
             // 无论加载是否成功，都需要回调到handler
-            IsDone = true;
-            IsSucceeded = loadHandle.Status == EOperationStatus.Succeed;
+            _state = loadHandle.Status == EOperationStatus.Succeed ? WebState.Succeeded : WebState.Failed;
             CallbackTools.Handle(ref handler, this, string.Empty);
         }
 
@@ -50,15 +50,15 @@ namespace Clients.Web
             // Logo.Info($"[_DoDispose()] assetPath = {_argument.key}");
         }
 
-        public bool IsDone { get; private set; }
-        public bool IsSucceeded { get; private set; }
         public string Key => _argument.key;
+
+        public WebState GetState() => _state;
 
         public UObject Asset
         {
             get
             {
-                if (IsSucceeded)
+                if (_state == WebState.Succeeded)
                 {
                     return _loadHandle.AssetObject;
                 }
@@ -70,6 +70,7 @@ namespace Clients.Web
         private readonly WebArgument _argument;
         private AssetHandle _loadHandle;
         private readonly CoroutineItem _coroutineItem;
+        private WebState _state;
     }
 }
 

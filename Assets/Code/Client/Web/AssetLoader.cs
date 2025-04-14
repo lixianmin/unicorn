@@ -13,14 +13,14 @@ using Unicorn.Web;
 
 namespace Clients.Web
 {
-    public class AssetLoader<T> where T: UnityEngine.Object
+    public class AssetLoader<T> where T : UnityEngine.Object
     {
         private class AssetItem
         {
-            public IWebNode Node;   // webItem如果被gc了，则asset也会被回收
+            public IWebNode Node; // webItem如果被gc了，则asset也会被回收
             public T Asset;
         }
-        
+
         public bool LoadAsset(string address, Action<T> handler)
         {
             if (string.IsNullOrEmpty(address))
@@ -33,7 +33,7 @@ namespace Clients.Web
                 return true;
             }
 
-            _assetItems[address] = null;    // 加一个哨兵
+            _assetItems[address] = null; // 加一个哨兵
             var argument = new WebArgument
             {
                 key = address
@@ -41,17 +41,17 @@ namespace Clients.Web
 
             WebManager.It.LoadAsset(argument, node =>
             {
-                if (node.IsSucceeded)
+                if (node.GetState() == WebState.Succeeded)
                 {
                     if (node.Asset is T asset)
                     {
-                        _assetItems[address] = new AssetItem{Node = node, Asset = asset};
+                        _assetItems[address] = new AssetItem { Node = node, Asset = asset };
                         Logo.Info("asset={0} is loaded successfully", address);
                         handler?.Invoke(asset);
                         return;
                     }
                 }
-                
+
                 _assetItems.Remove(address);
                 Logo.Error("failed to load asset={0}", address);
             });
