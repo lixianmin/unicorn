@@ -14,6 +14,11 @@ namespace Unicorn
 {
     public static class IDictionaryEx
     {
+        public static bool IsNullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> dict)
+        {
+            return dict == null || dict.Count == 0;
+        }
+
         public static TValue Get<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
         {
             return dict.Get(key, default);
