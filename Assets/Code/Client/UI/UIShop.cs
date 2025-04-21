@@ -9,6 +9,7 @@ Copyright (C) - All Rights Reserved
 
 using Unicorn;
 using Unicorn.UI;
+using UnityEngine;
 
 namespace Clients.UI
 {
@@ -25,6 +26,17 @@ namespace Clients.UI
 
             _dog.AddListener(ShopManager.It.OnInsertGood, _OnInsertGoods);
             _dog.AddListener(ShopManager.It.OnDeleteGood, _OnDeleteGoods);
+            Logo.Warn($"[OnLoaded] frameCount={Time.frameCount}");
+        }
+
+        protected override void OnOpened()
+        {
+            Logo.Warn($"[OnOpened] frameCount={Time.frameCount}");
+        }
+
+        protected override void OnActivated()
+        {
+            Logo.Warn($"[OnActivated] frameCount={Time.frameCount}");
         }
 
         private void _ReloadWidgets()
