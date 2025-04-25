@@ -7,7 +7,6 @@ Copyright (C) - All Rights Reserved
 
 using System;
 using Unicorn.UI.Internal;
-using Unicorn.UI.States;
 using UnityEngine;
 
 namespace Unicorn.UI
@@ -77,7 +76,7 @@ namespace Unicorn.UI
                     {
                         case EventIndices.OnDeactivating:
                             // manager.Deactivating?.Invoke(this);
-                            Deactivating?.Invoke();
+                            // Deactivating?.Invoke();
                             break;
                         case EventIndices.OnClosing:
                             // manager.Closing?.Invoke(this);
@@ -102,7 +101,7 @@ namespace Unicorn.UI
                             // manager.Opened?.Invoke(this);
                             break;
                         case EventIndices.OnActivated:
-                            Activated?.Invoke();
+                            // Activated?.Invoke();
                             // manager.Activated?.Invoke(this);
                             break;
                     }
@@ -132,11 +131,16 @@ namespace Unicorn.UI
             _isDisposed = true;
             UIManager.It._RemoveWindow(GetType());
             
-            // 清理所有事件回调 (即使是被Cache, 也要清理Loaded, Unloading这些回调事件, 否则再次激活的时候, 很可能会被重复加入两次同样的回调方法)
+            // 1. 清理所有事件回调 (即使是被Cache, 也要清理Loaded, Unloading这些回调事件, 否则再次激活的时候, 很可能会被重复加入两次同样的回调方法)
+            // 2. 在这个代码位置全部设置为null作为兜底逻辑是合适的, 因为代码执行到这里, 意味着window从逻辑上已经Dispose了 (Cache算优化, 不影响逻辑)
+            // 3. 因为Loaded, Opened, Closing, Unloading在window生命周期只执行一次, 因此在OnLoaded(), OnOpened() 中用 Unloading += button.onClick(fn)
+            //  是合理的, 在window重新被OpenWindow()的时候也不会重复注册同一个事件多次. 但是, 在OnActivated()中注册 Deactivating += button.onClick(fn)
+            //  可能是不合理的, 除非程序员记得在 OnDeactivating()中手动反注册这些回调方法
+            // 4. 为了防止程序员出错, 先移除Activated, Deactivating事件, 也是一个选择, 毕竟对它们的使用本就罕见.
             Loaded = null;
             Opened = null;
-            Activated = null;
-            Deactivating = null;
+            // Activated = null;
+            // Deactivating = null;
             Closing = null;
             Unloading = null;
 

@@ -105,7 +105,7 @@ namespace Unicorn.UI
         {
         }
 
-        public event Action Activated;
+        // public event Action Activated;
 
         /// <summary>
         /// 时机: 准备失去焦点事件, 与OnActivated()呼应. 当通用OpenWindow()打开其它window时, 当前位于前台的window会收到OnDeactivating()事件
@@ -115,7 +115,7 @@ namespace Unicorn.UI
         {
         }
 
-        public event Action Deactivating;
+        // public event Action Deactivating;
 
         /// <summary>
         /// 时机: 准备关闭事件, 与OnOpened()呼应. 本事件执行完成后, 会开始close animation 
