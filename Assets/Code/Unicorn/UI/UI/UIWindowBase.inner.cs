@@ -131,6 +131,14 @@ namespace Unicorn.UI
 
             _isDisposed = true;
             UIManager.It._RemoveWindow(GetType());
+            
+            // 清理所有事件回调 (即使是被Cache, 也要清理Loaded, Unloading这些回调事件, 否则再次激活的时候, 很可能会被重复加入两次同样的回调方法)
+            Loaded = null;
+            Opened = null;
+            Activated = null;
+            Deactivating = null;
+            Closing = null;
+            Unloading = null;
 
             var flags = GetWindowFlags();
             var needCache = flags.HasFlag(WindowFlags.Cache);
@@ -146,14 +154,6 @@ namespace Unicorn.UI
             _canvas = null;
 
             _RemoveWidgetListeners();
-
-            // 清理所有事件回调
-            Loaded = null;
-            Opened = null;
-            Activated = null;
-            Deactivating = null;
-            Closing = null;
-            Unloading = null;
         }
 
         internal WindowFetus GetFetus()
