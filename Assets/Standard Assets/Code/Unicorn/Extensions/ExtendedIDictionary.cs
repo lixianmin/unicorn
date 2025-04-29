@@ -12,7 +12,7 @@ using Unicorn.Collections;
 
 namespace Unicorn
 {
-    public static class IDictionaryEx
+    public static class ExtendedIDictionary
     {
         public static bool IsNullOrEmpty<TKey, TValue>(this IDictionary<TKey, TValue> dict)
         {

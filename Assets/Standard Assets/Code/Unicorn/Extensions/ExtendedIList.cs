@@ -12,37 +12,8 @@ using Unicorn.Collections;
 
 namespace Unicorn
 {
-    public static class IListEx
+    public static class ExtendedIList
     {
-        // public static int GetCount(this IList list)
-        // {
-        //     if (null != list)
-        //     {
-        //         var count = list.Count;
-        //         return count;
-        //     }
-        //
-        //     return 0;
-        // }
-
-        // public static int MoveTo(this IList srcList, IList destList)
-        // {
-        //     if (null != srcList && null != destList)
-        //     {
-        //         var count = srcList.Count;
-        //         for (int i = 0; i < count; ++i)
-        //         {
-        //             var item = srcList[i];
-        //             destList.Add(item);
-        //         }
-        //
-        //         srcList.Clear();
-        //         return count;
-        //     }
-        //
-        //     return 0;
-        // }
-
         public static void Reserve<T>(this List<T> list, int minCapacity)
         {
             if (null != list)
@@ -117,18 +88,7 @@ namespace Unicorn
 
             return false;
         }
-
-        // public static bool AddUnique<T>(this IList<T> list, T item)
-        // {
-        //     if (null != list && list.IndexOf(item) < 0)
-        //     {
-        //         list.Add(item);
-        //         return true;
-        //     }
-        //
-        //     return false;
-        // }
-
+        
         public static T PopBack<T>(this IList<T> list)
         {
             if (null != list)

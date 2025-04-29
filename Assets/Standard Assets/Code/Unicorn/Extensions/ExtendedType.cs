@@ -9,15 +9,15 @@ using System;
 
 namespace Unicorn
 {
-    public static class TypeEx
+    public static class ExtendedType
     {
-        internal static bool IsStaticClass(this Type type)
-        {
-            return null != type
-                   && type.GetConstructor(Type.EmptyTypes) == null
-                   && type.IsAbstract
-                   && type.IsSealed;
-        }
+        // internal static bool IsStaticClass(this Type type)
+        // {
+        //     return null != type
+        //            && type.GetConstructor(Type.EmptyTypes) == null
+        //            && type.IsAbstract
+        //            && type.IsSealed;
+        // }
 
         public static string GetTypeName(this Type type)
         {

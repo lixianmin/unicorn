@@ -13,7 +13,7 @@ using System.Globalization;
 
 namespace Unicorn
 {
-    public static class StringEx
+    public static class ExtendedString
     {
         public static TEnum ToEnum<TEnum>(this string name) where TEnum : struct
         {

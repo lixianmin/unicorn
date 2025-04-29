@@ -11,9 +11,9 @@ using FieldInfo = System.Reflection.FieldInfo;
 
 namespace Unicorn
 {
-    public static class FieldInfoEx
+    public static class ExtendedFieldInfo
     {
-        static FieldInfoEx ()
+        static ExtendedFieldInfo ()
         {
             _Init_lpfnSetValueInternal();
         }

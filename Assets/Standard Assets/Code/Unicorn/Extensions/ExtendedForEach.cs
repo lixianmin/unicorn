@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Unicorn
 {
-    public static class ForEachEx
+    public static class ExtendedForEach
     {
         public static void ForEach<T> (this T[] array, Action<T> action)
         {

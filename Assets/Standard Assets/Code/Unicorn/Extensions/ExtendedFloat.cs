@@ -7,7 +7,7 @@ Copyright (C) - All Rights Reserved
 
 namespace Unicorn
 {
-    public static class FloatEx
+    public static class ExtendedFloat
     {
         public static bool IsZero(this float my, float eps = Eps)
         {

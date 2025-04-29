@@ -9,7 +9,7 @@ using System.IO;
 
 namespace Unicorn
 {
-    public static class TextReaderEx
+    public static class ExtendedTextReader
     {
         public static string GetDecodedBuffer(this TextReader reader)
         {

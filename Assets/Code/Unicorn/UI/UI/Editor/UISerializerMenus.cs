@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2022-11-02
 author:     lixianmin
@@ -28,12 +27,12 @@ namespace Unicorn.UI
         //     
         //     return true;
         // }
-        
+
         [MenuItem("Assets/*Add UISerializer", false, 2000)]
         private static void _SerializePrefab()
         {
             var prefab = Selection.activeGameObject;
-            var script = prefab.SetDefaultComponent<UISerializer>();
+            var script = prefab.SetDefaultComponent(typeof(UISerializer)) as UISerializer;
             UISerializerEditor.SerializePrefab(script);
         }
     }

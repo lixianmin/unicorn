@@ -12,13 +12,14 @@ namespace Unicorn
 {
     public static class ExtendedTransform
     {
-        public static void Destroy(this Transform my)
-        {
-            if (my != null)
-            {
-                UnityEngine.Object.Destroy(my.gameObject);
-            }
-        }
+        // 这个方法, 是适合在client写, 然后方便加日志用于调试
+        // public static void Destroy(this Transform my)
+        // {
+        //     if (my != null)
+        //     {
+        //         UnityEngine.Object.Destroy(my.gameObject);
+        //     }
+        // }
 
         public static Component Dig(this Transform father, string name, Type type)
         {

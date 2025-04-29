@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Unicorn
 {
-    public static class BehaviourEx
+    public static class ExtendedBehaviour
     {
         public static void SetEnabled(this Behaviour behaviour, bool enabled)
         {

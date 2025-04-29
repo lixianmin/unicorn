@@ -10,8 +10,7 @@ using System.Collections.Generic;
 
 namespace Unicorn
 {
-    //[Obfuscators.ObfuscatorIgnore]
-    public static class BinarySearchEx
+    public static class ExtendedBinarySearch
     {
         public static int BinarySearch<T> (this IList<T> list, int key, Func<T, int> extract)
         {

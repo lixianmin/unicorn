@@ -10,7 +10,7 @@ using System.IO;
 
 namespace Unicorn
 {
-    public static class StreamEx
+    public static class ExtendedStream
     {
         public static bool ReadBoolean(this Stream stream)
         {
