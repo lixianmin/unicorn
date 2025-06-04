@@ -31,12 +31,12 @@ namespace Unicorn.Collections
         /// </summary>
         /// <param name="slice"></param>
         /// <typeparam name="T"></typeparam>
-        public static void Return<T>(Slice2<T> slice)
+        public static void Return<T>(Slice<T> slice)
         {
-            if (slice is { IsDisposed: false })
+            if (slice is Slice2<T> { IsDisposed: false } it)
             {
-                slice.IsDisposed = true;
-                InnerData<T>.Pool.Return(slice);
+                it.IsDisposed = true;
+                InnerData<T>.Pool.Return(it);
             }
         }
 
