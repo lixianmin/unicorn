@@ -15,8 +15,10 @@ namespace Unicorn.Collections
         {
             void IDisposable.Dispose()
             {
-                InnerData<T>.Pool.Return(this);
+                Return(this);
             }
+
+            public bool IsDisposed;
         }
 
         public static Slice2<T> Get<T>()
@@ -24,18 +26,23 @@ namespace Unicorn.Collections
             return InnerData<T>.Pool.Get();
         }
 
-        // public static void Return<T>(Slice2<T> slice)
-        // {
-        //     if (slice is { IsDisposed: false })
-        //     {
-        //         slice.IsDisposed = true;
-        //         InnerData<T>.Pool.Return(slice);
-        //     }
-        // }
+        /// <summary>
+        /// 并不是所有的slice都可以使用 using 自动ReturnPool, 有时候我们会定义为类成员变量, 就需要主动return一把了
+        /// </summary>
+        /// <param name="slice"></param>
+        /// <typeparam name="T"></typeparam>
+        public static void Return<T>(Slice2<T> slice)
+        {
+            if (slice is { IsDisposed: false })
+            {
+                slice.IsDisposed = true;
+                InnerData<T>.Pool.Return(slice);
+            }
+        }
 
         private static class InnerData<T>
         {
-            public static readonly ObjectPool<Slice2<T>> Pool = new(null, slice => slice.Clear());
+            public static readonly ObjectPool<Slice2<T>> Pool = new(slice=> slice.IsDisposed = false, slice => slice.Clear());
         }
     }
 }
