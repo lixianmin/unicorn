@@ -14,6 +14,7 @@ using Clients.Web;
 using UnityEngine;
 using Unicorn;
 using Metadata;
+using Unicorn.Collections;
 using Unicorn.UI;
 
 public class MbUnicornGame : MonoBehaviour
@@ -40,7 +41,9 @@ public class MbUnicornGame : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        
+        using var list = SlicePool.Get<string>();
+        list.Add("hello");
+        list.Add("world");
     }
 
     private readonly GameWebManager _webManager = GameWebManager.It; // 初始化基类中的Instance引用

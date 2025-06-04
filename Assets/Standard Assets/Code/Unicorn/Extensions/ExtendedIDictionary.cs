@@ -100,7 +100,7 @@ namespace Unicorn
             var count = table?.Count ?? 0;
             if (count > 0)
             {
-                var snapshot = SlicePool.Get<IDisposable>();
+                using var snapshot = SlicePool.Get<IDisposable>();
                 var iter = table!.GetEnumerator();
                 while (iter.MoveNext())
                 {
@@ -122,8 +122,8 @@ namespace Unicorn
                     var item = snapshot[i];
                     item.Dispose();
                 }
-
-                SlicePool.Return(snapshot);
+                
+                // SlicePool.Return(snapshot);
             }
 
             return table;

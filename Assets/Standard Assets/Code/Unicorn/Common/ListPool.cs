@@ -14,17 +14,17 @@ namespace Unicorn
     {
         public static List<T> Get<T> ()
         {
-            return InnerData<T>._pool.Get();
+            return InnerData<T>.Pool.Get();
         }
     
         public static void Return<T> (List<T> list)
         {
-            InnerData<T>._pool.Return(list);
+            InnerData<T>.Pool.Return(list);
         }
         
         private static class InnerData<T>
         {
-            public static readonly ObjectPool<List<T>> _pool = new(null, list => list.Clear());
+            public static readonly ObjectPool<List<T>> Pool = new(null, list => list.Clear());
         }
     }
 }
