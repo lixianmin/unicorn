@@ -44,6 +44,11 @@ public class MbUnicornGame : MonoBehaviour
         using var list = SlicePool.Get<string>();
         list.Add("hello");
         list.Add("world");
+        
+        // 主动调用SlicePool.Return()也是可以的
+        SlicePool.Return(list);
+        SlicePool.Return(list);
+        SlicePool.Return(list);
     }
 
     private readonly GameWebManager _webManager = GameWebManager.It; // 初始化基类中的Instance引用
