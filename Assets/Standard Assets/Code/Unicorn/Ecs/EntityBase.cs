@@ -84,7 +84,7 @@ namespace Unicorn
         /// Entity原本实现了Dispose()方法, 但目前评估加一个Clear()方法可能更合理. 原因是:
         /// 1. Dispose()方法是销毁对象, 但之后对象就无法复用了. 对比之下Clear()方法代表对象还可以接着使用, Clear()方法优势更大
         /// 2. 有些类一开始并未做Ecs设计, 因此Entity只能后续作为作为其类的成员对象出现, 则有自动Dispose()的需求. 
-        /// 3. 然而, Disposeable是在主线程回收的, 目前无法支持到Unicorn.Core
+        /// 3. 然而, Disposable是在主线程回收的, 目前无法支持到Unicorn.Core
         /// </summary>
         public virtual void Clear()
         {

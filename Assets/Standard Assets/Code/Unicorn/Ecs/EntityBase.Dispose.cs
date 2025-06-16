@@ -26,12 +26,13 @@ namespace Unicorn
 
             try
             {
+                // 在_DoDispose()之前设置 _isDisposed = true, 以防止递归调用自己
+                _isDisposed = true;
                 _DoDispose(flags);
                 Clear();
             }
             finally
             {
-                _isDisposed = true;
                 GC.SuppressFinalize(this);
             }
         }
