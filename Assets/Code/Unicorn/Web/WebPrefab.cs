@@ -63,7 +63,7 @@ namespace Unicorn.Web
 
         protected override void _DoDispose(int flags)
         {
-            if (_aidScript != null)
+            if (_aidScript)
             {
                 var key = _aidScript.key;
 
