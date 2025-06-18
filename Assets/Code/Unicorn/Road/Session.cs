@@ -7,6 +7,8 @@ Copyright (C) - All Rights Reserved
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -310,14 +312,23 @@ namespace Unicorn.Road
 
             _routeKinds.Clear();
             _kindRoutes.Clear();
-            var routes = handshake.routes ?? Array.Empty<string>();
-            var size = routes.Length;
-            for (var i = 0; i < size; i++)
+
+            // 解码handshake.routes: base64解码 -> deflate-raw解压缩 -> 按空格分割
+            var base64Data = Convert.FromBase64String(handshake.routes);
+            using (var inputStream = new MemoryStream(base64Data))
+            using (var deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress))
+            using (var reader = new StreamReader(deflateStream, Encoding.UTF8))
             {
-                var kind = (int)PacketKind.UserBase + i;
-                var route = routes[i];
-                _routeKinds[route] = kind;
-                _kindRoutes[kind] = route;
+                var decompressedData = reader.ReadToEnd();
+                var routes = decompressedData.Split(' ');
+                var size = routes.Length;
+                for (var i = 0; i < size; i++)
+                {
+                    var kind = (int)PacketKind.UserBase + i;
+                    var route = routes[i];
+                    _routeKinds[route] = kind;
+                    _kindRoutes[kind] = route;
+                }
             }
 
             _nonce = handshake.nonce;
@@ -505,7 +516,7 @@ namespace Unicorn.Road
 
             // _registeredHandlers的key必须使用string而不能使用byte[], 因为byte[]是一个ref类型, 没有像string一个重载GetHash()相关的方法
             _registeredHandlers[route] = new Handler()
-                { callback = (data1, err) => { _CallHandler(handler, data1, err); } };
+            { callback = (data1, err) => { _CallHandler(handler, data1, err); } };
         }
 
         private void _CallHandler<T>(Action<T, Error> handler, byte[] data, Error err) where T : new()
@@ -578,7 +589,7 @@ namespace Unicorn.Road
         private float _nextCheckRequestTimeoutTime;
 
         private readonly Error _clientSideTimeoutError = new()
-            { Code = "ClientSideTimeout", Message = "request timeout on client side" };
+        { Code = "ClientSideTimeout", Message = "request timeout on client side" };
 
         private byte[] _heartbeatBuffer;
         private int _requestIdGenerator;

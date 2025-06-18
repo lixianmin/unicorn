@@ -25,7 +25,7 @@ namespace Unicorn.Road
         public string gid; // client断线重连时, 基于此判断client重连的是不是上一次的同一个server进程
 
         // 有序的routes, 其kinds值从Userdata(1000)有序增加; 只所以这么做并不是为了省流量, 而是unity3d的JsonUtility不支持反序列化Dictionary
-        public string[] routes;
+        public string routes;
         public long sid;
     }
 
