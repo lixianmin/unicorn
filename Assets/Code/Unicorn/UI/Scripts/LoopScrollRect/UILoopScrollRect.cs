@@ -35,6 +35,8 @@ namespace Unicorn.UI
             _InitViewportAndContent();
             _InitRank();
             _ResetContentArea();
+            
+            Logo.Info($"[{name}] _viewportArea={_viewportArea} _rank={_rank} _contentTransform.sizeDelta={_contentTransform.sizeDelta}");
         }
 
         private void _InitCellTransform()
@@ -75,9 +77,9 @@ namespace Unicorn.UI
             var rectAncestor = transform as RectTransform;
             // copy其viewport的sizeDelta到content
             var size = rectAncestor!.sizeDelta;
-            if (size.x.IsZero() || size.y.IsZero())
+            if (size.x <= 0 || size.y <= 0)
             {
-                Logo.Warn($"size={size}, rectAncestor={rectAncestor}, root={_contentTransform.root}");
+                Logo.Warn($"[_InitViewportAndContent] size={size}, {name}不能是streth mode");
                 return;
             }
 
@@ -209,6 +211,11 @@ namespace Unicorn.UI
 
             _cells.PushBack(cell);
             _SetDirty();
+
+            if (isDebugging)
+            {
+                Logo.Info($"[AddWidget] relativeArea={relativeArea} area={area} isVisible={isVisible}");
+            }
         }
 
         public void RemoveWidget(int index)
@@ -297,28 +304,28 @@ namespace Unicorn.UI
         /// <summary>
         /// 重置anchoredPosition到初始化的位置
         /// </summary>
-        private void _ResetAnchoredPosition()
-        {
-            _ResetContentArea();
-            var dir = _direction.GetDirection();
-            switch (dir)
-            {
-                case Direction.LeftToRight:
-                    _contentTransform.anchoredPosition = new Vector2(0, 0);
-                    break;
-                case Direction.RightToLeft:
-                    var posX = -_contentTransform.sizeDelta.x + _viewportArea.width;
-                    _contentTransform.anchoredPosition = new Vector2(posX, 0);
-                    break;
-                case Direction.BottomToTop:
-                    _contentTransform.anchoredPosition = new Vector2(0, 0);
-                    break;
-                case Direction.TopToBottom:
-                    var posY = _contentTransform.sizeDelta.y - _viewportArea.height;
-                    _contentTransform.anchoredPosition = new Vector2(0, posY);
-                    break;
-            }
-        }
+        // private void _ResetAnchoredPosition()
+        // {
+        //     _ResetContentArea();
+        //     var dir = _direction.GetDirection();
+        //     switch (dir)
+        //     {
+        //         case Direction.LeftToRight:
+        //             _contentTransform.anchoredPosition = new Vector2(0, 0);
+        //             break;
+        //         case Direction.RightToLeft:
+        //             var posX = -_contentTransform.sizeDelta.x + _viewportArea.width;
+        //             _contentTransform.anchoredPosition = new Vector2(posX, 0);
+        //             break;
+        //         case Direction.BottomToTop:
+        //             _contentTransform.anchoredPosition = new Vector2(0, 0);
+        //             break;
+        //         case Direction.TopToBottom:
+        //             var posY = _contentTransform.sizeDelta.y - _viewportArea.height;
+        //             _contentTransform.anchoredPosition = new Vector2(0, posY);
+        //             break;
+        //     }
+        // }
 
         private void _SetDirty()
         {
@@ -375,6 +382,7 @@ namespace Unicorn.UI
 
         public RectTransform cellTransform;
         public Direction direction = Direction.BottomToTop;
+        public bool isDebugging;
 
         private ScrollRect _scrollRect;
         private RectTransform _contentTransform;

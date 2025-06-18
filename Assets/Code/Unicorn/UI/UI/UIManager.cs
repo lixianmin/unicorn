@@ -383,7 +383,7 @@ namespace Unicorn.UI
 
                 const int step = (int)RenderQueue.Geometry - (int)RenderQueue.Background;
                 var count = _windowsZOrder.Count;
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
                     var window = _windowsZOrder[i];
                     var lastSortingOrder = window._sortingOrder;
