@@ -292,8 +292,7 @@ namespace Unicorn.Road
             // release的时候, 不打印routes细节
             if (os.IsReleaseMode)
             {
-                Logo.Info(
-                    $"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} gid={handshake.gid} sid={handshake.sid}");
+                Logo.Info($"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} sid={handshake.sid}");
             }
             else
             {
@@ -306,7 +305,7 @@ namespace Unicorn.Road
             //     return;
             // }
 
-            _serverGid = handshake.gid;
+            // _serverGid = handshake.gid;
             _heartbeatInterval = handshake.heartbeat;
             _nextHeartbeatTime = Time.time + _heartbeatInterval;
 
@@ -349,7 +348,7 @@ namespace Unicorn.Road
 
             // 如果被踢了, 就老老实实的退出去吧, 别想着断线重连了
             _reconnectAction = null;
-            _serverGid = string.Empty;
+            // _serverGid = string.Empty;
             CallbackTools.Handle(_onKickedHandler, reason, string.Empty);
             Logo.Warn($"kicked by server, reason={reason}");
         }
@@ -581,7 +580,7 @@ namespace Unicorn.Road
         private Action _onClosedHandler;
         private Action<string> _onKickedHandler;
         private int _nonce;
-        private string _serverGid = string.Empty;
+        // private string _serverGid = string.Empty;
 
         private float _nextHeartbeatTime = float.MaxValue;
         private float _heartbeatInterval;
