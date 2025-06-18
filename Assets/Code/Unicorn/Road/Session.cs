@@ -288,17 +288,8 @@ namespace Unicorn.Road
         {
             var text = Encoding.UTF8.GetString(pack.Data);
             var handshake = (JsonHandshake)JsonUtility.FromJson(text, typeof(JsonHandshake));
-
-            // release的时候, 不打印routes细节
-            if (os.IsReleaseMode)
-            {
-                Logo.Info($"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} sid={handshake.sid}");
-            }
-            else
-            {
-                Logo.Info("handshake={0}", text);
-            }
-
+            
+            Logo.Info($"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} sid={handshake.sid}");
             // if (!_serverGid.IsNullOrEmpty() && _serverGid != handshake.gid)
             // {
             //     _Kick("kicked by server restart");
@@ -327,6 +318,12 @@ namespace Unicorn.Road
                     var route = routes[i];
                     _routeKinds[route] = kind;
                     _kindRoutes[kind] = route;
+                }
+                
+                // release的时候, 不打印routes细节
+                if (!os.IsReleaseMode)
+                {
+                    Logo.Info("handshake: routes={0}", decompressedData);
                 }
             }
 
