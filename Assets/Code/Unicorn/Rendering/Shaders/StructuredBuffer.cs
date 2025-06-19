@@ -19,6 +19,8 @@ namespace Unicorn
             _type = type;
             _nameId = Shader.PropertyToID(name);
             _stride = stride;
+
+            OnDisposing += _buffer.Dispose;
         }
 
         public void SetData(Array data)
@@ -37,11 +39,6 @@ namespace Unicorn
                 _buffer.Dispose();
                 _buffer = new ComputeBuffer(size, _stride, _type);
             }
-        }
-
-        protected override void _DoDispose(int flags)
-        {
-            _buffer.Dispose();
         }
 
         public ComputeBuffer GetBuffer()

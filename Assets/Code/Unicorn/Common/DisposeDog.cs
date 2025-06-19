@@ -12,6 +12,11 @@ namespace Unicorn
 {
     public class DisposeDog : Disposable
     {
+        public DisposeDog()
+        {
+            OnDisposing += DisposeAndClear;
+        }
+
         public T Add<T>(T item) where T : IDisposable
         {
             if (item != null)
@@ -35,11 +40,6 @@ namespace Unicorn
 
                 _items.Clear();
             }
-        }
-
-        protected override void _DoDispose(int flags)
-        {
-            DisposeAndClear();
         }
 
         private readonly ArrayList _items = new();

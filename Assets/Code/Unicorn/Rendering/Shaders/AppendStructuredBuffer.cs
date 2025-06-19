@@ -17,14 +17,12 @@ namespace Unicorn
         {
             _lpfnOnAsyncGPUReadback = _OnAsyncGPUReadback;
             _argBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.IndirectArguments);
-        }
 
-        protected override void _DoDispose(int flags)
-        {
-            _argBuffer.Dispose();
-            _argsCount[0] = 0; // 重置count=0
-
-            base._DoDispose(flags);
+            OnDisposing += () =>
+            {
+                _argBuffer.Dispose();
+                _argsCount[0] = 0; // 重置count=0
+            };
         }
 
         public T[] GetData()

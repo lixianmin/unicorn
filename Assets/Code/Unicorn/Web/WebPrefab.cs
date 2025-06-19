@@ -15,6 +15,8 @@ namespace Unicorn.Web
     {
         internal WebPrefab(WebArgument argument, Action<WebPrefab> handler)
         {
+            OnDisposing += _OnDisposing;
+
             // _webItem这里也需要同步赋值, 因为回调handler有可能是一个小时之后的事, 中间万一使用到了_webItem就可能是null了.
             // 你永远也不知道构造方法和handler谁先到来
             var node = WebManager.It.LoadAsset(argument, node =>
@@ -61,7 +63,7 @@ namespace Unicorn.Web
             _webNode ??= node;
         }
 
-        protected override void _DoDispose(int flags)
+        private void _OnDisposing()
         {
             if (_aidScript)
             {

@@ -34,6 +34,11 @@ namespace Unicorn.Road
             public bool done;
         }
 
+        public Session()
+        {
+            OnDisposing += Close;
+        }
+
         public void Connect(string hostNameOrAddress, int port, Func<Session, ISerde> serdeBuilder,
             Action<JsonHandshake> onHandShaken = null, Action onClosed = null)
         {
@@ -88,11 +93,6 @@ namespace Unicorn.Road
             }
 
             return null;
-        }
-
-        protected override void _DoDispose(int flags)
-        {
-            Close();
         }
 
         public void Close()
@@ -288,7 +288,7 @@ namespace Unicorn.Road
         {
             var text = Encoding.UTF8.GetString(pack.Data);
             var handshake = (JsonHandshake)JsonUtility.FromJson(text, typeof(JsonHandshake));
-            
+
             Logo.Info($"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} sid={handshake.sid}");
             // if (!_serverGid.IsNullOrEmpty() && _serverGid != handshake.gid)
             // {
@@ -319,7 +319,7 @@ namespace Unicorn.Road
                     _routeKinds[route] = kind;
                     _kindRoutes[kind] = route;
                 }
-                
+
                 // release的时候, 不打印routes细节
                 if (!os.IsReleaseMode)
                 {
@@ -512,7 +512,7 @@ namespace Unicorn.Road
 
             // _registeredHandlers的key必须使用string而不能使用byte[], 因为byte[]是一个ref类型, 没有像string一个重载GetHash()相关的方法
             _registeredHandlers[route] = new Handler()
-            { callback = (data1, err) => { _CallHandler(handler, data1, err); } };
+                { callback = (data1, err) => { _CallHandler(handler, data1, err); } };
         }
 
         private void _CallHandler<T>(Action<T, Error> handler, byte[] data, Error err) where T : new()
@@ -585,7 +585,7 @@ namespace Unicorn.Road
         private float _nextCheckRequestTimeoutTime;
 
         private readonly Error _clientSideTimeoutError = new()
-        { Code = "ClientSideTimeout", Message = "request timeout on client side" };
+            { Code = "ClientSideTimeout", Message = "request timeout on client side" };
 
         private byte[] _heartbeatBuffer;
         private int _requestIdGenerator;

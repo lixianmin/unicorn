@@ -12,7 +12,7 @@ using System;
 
 namespace Unicorn
 {
-    public abstract class Disposable : IDisposable, IIsDisposed
+    public class Disposable : IDisposable, IIsDisposed
     {
         ~Disposable()
         {
@@ -21,22 +21,22 @@ namespace Unicorn
 
         public void Dispose()
         {
-            Dispose(0);
-        }
-
-        public void Dispose(int flags)
-        {
             if (IsDisposed())
             {
                 return;
             }
-            
+
             try
             {
                 // 在_DoDispose()之前设置 _isDisposed = true, 以防止递归调用自己
                 // 注意同步修改EntityBase
                 _isDisposed = true;
-                _DoDispose(flags);
+
+                if (OnDisposing != null)
+                {
+                    OnDisposing();
+                    OnDisposing = null;
+                }
             }
             finally
             {
@@ -49,8 +49,7 @@ namespace Unicorn
             return _isDisposed;
         }
 
-        protected abstract void _DoDispose(int flags);
-
+        public event Action OnDisposing;
         private bool _isDisposed;
     }
 }

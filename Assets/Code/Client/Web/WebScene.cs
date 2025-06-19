@@ -27,6 +27,8 @@ namespace Clients.Web
             _argument = argument;
             _status = WebStatus.Loading;
             CoroutineManager.It.StartCoroutine(_CoLoad(argument, handler));
+            
+            OnDisposing += _OnDisposing;
         }
 
         private IEnumerator _CoLoad(WebArgument argument, Action<WebScene> handler)
@@ -65,7 +67,7 @@ namespace Clients.Web
             CallbackTools.Handle(ref handler, this, string.Empty);
         }
 
-        protected override void _DoDispose(int flags)
+        private void _OnDisposing()
         {
             Logo.Info($"[_DoDispose()] _loadHandle.IsValid()={_loadHandle.IsValid} , Key={Key}");
             if (_loadHandle.IsValid)

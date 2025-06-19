@@ -17,6 +17,11 @@ namespace Unicorn
 {
     public class EventDog : Disposable
     {
+        public EventDog()
+        {
+            OnDisposing += RemoveAllListeners;
+        }
+
         // Action不行, 因为它初始很可能是null, 因此必须使用ref; 然后使用ref后又无法用于lambda表达式中. 放弃, 直接使用UnityEvent吧
         // public void AddListener(Action evt, Action handler)
         // {
@@ -108,11 +113,6 @@ namespace Unicorn
         public void RemoveAllListeners()
         {
             _removeList.InvokeAndClear();
-        }
-
-        protected override void _DoDispose(int flags)
-        {
-            RemoveAllListeners();
         }
 
         private readonly Slice<Action> _removeList = new(4);
