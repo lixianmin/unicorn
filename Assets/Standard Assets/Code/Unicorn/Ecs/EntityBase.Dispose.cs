@@ -1,4 +1,3 @@
-
 /********************************************************************
 created:    2024-10-18
 author:     lixianmin
@@ -14,11 +13,6 @@ namespace Unicorn
     {
         public void Dispose()
         {
-            Dispose(0);
-        }
-
-        public void Dispose(int flags)
-        {
             if (IsDisposed())
             {
                 return;
@@ -28,7 +22,13 @@ namespace Unicorn
             {
                 // 在_DoDispose()之前设置 _isDisposed = true, 以防止递归调用自己
                 _isDisposed = true;
-                _DoDispose(flags);
+
+                if (OnDisposing != null)
+                {
+                    OnDisposing();
+                    OnDisposing = null;
+                }
+
                 Clear();
             }
             finally
@@ -42,11 +42,7 @@ namespace Unicorn
             return _isDisposed;
         }
 
-        protected virtual void _DoDispose(int flags)
-        {
-
-        }
-
+        public event Action OnDisposing;
         private bool _isDisposed;
     }
 }
