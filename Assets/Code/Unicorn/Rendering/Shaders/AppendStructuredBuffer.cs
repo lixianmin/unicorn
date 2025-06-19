@@ -18,7 +18,7 @@ namespace Unicorn
             _lpfnOnAsyncGPUReadback = _OnAsyncGPUReadback;
             _argBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.IndirectArguments);
 
-            OnDisposing += () =>
+            AtDisposing += () =>
             {
                 _argBuffer.Dispose();
                 _argsCount[0] = 0; // 重置count=0

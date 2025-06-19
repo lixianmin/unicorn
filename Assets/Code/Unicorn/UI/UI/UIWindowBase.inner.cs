@@ -80,11 +80,11 @@ namespace Unicorn.UI
                             break;
                         case EventIndices.OnClosing:
                             // manager.Closing?.Invoke(this);
-                            Closing?.Invoke();
+                            AtClosing?.Invoke();
                             break;
                         case EventIndices.OnUnloading:
                             manager.Unloading?.Invoke(this);
-                            Unloading?.Invoke();
+                            AtUnloading?.Invoke();
                             break;
                     }
 
@@ -93,11 +93,11 @@ namespace Unicorn.UI
                     switch (idx)
                     {
                         case EventIndices.OnLoaded:
-                            Loaded?.Invoke();
+                            AtLoaded?.Invoke();
                             manager.Loaded?.Invoke(this);
                             break;
                         case EventIndices.OnOpened:
-                            Opened?.Invoke();
+                            AtOpened?.Invoke();
                             // manager.Opened?.Invoke(this);
                             break;
                         case EventIndices.OnActivated:
@@ -137,12 +137,12 @@ namespace Unicorn.UI
             //  是合理的, 在window重新被OpenWindow()的时候也不会重复注册同一个事件多次. 但是, 在OnActivated()中注册 Deactivating += button.onClick(fn)
             //  可能是不合理的, 除非程序员记得在 OnDeactivating()中手动反注册这些回调方法
             // 4. 为了防止程序员出错, 先移除Activated, Deactivating事件, 也是一个选择, 毕竟对它们的使用本就罕见.
-            Loaded = null;
-            Opened = null;
+            AtLoaded = null;
+            AtOpened = null;
             // Activated = null;
             // Deactivating = null;
-            Closing = null;
-            Unloading = null;
+            AtClosing = null;
+            AtUnloading = null;
 
             var flags = GetWindowFlags();
             var needCache = flags.HasFlag(WindowFlags.Cache);

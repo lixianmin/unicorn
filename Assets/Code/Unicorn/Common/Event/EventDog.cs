@@ -19,7 +19,7 @@ namespace Unicorn
     {
         public EventDog()
         {
-            OnDisposing += RemoveAllListeners;
+            AtDisposing += RemoveAllListeners;
         }
 
         // Action不行, 因为它初始很可能是null, 因此必须使用ref; 然后使用ref后又无法用于lambda表达式中. 放弃, 直接使用UnityEvent吧

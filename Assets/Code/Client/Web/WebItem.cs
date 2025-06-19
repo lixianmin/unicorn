@@ -26,7 +26,7 @@ namespace Clients.Web
             _status = WebStatus.Loading;
             CoroutineManager.It.StartCoroutine(_CoLoad(argument, handler), out _coroutineItem);
 
-            OnDisposing += _OnDisposing;
+            AtDisposing += _AtDisposing;
         }
 
         private IEnumerator _CoLoad(WebArgument argument, Action<WebItem> handler)
@@ -45,7 +45,7 @@ namespace Clients.Web
             CallbackTools.Handle(ref handler, this, string.Empty);
         }
 
-        private void _OnDisposing()
+        private void _AtDisposing()
         {
             _loadHandle.Dispose();
             _coroutineItem?.Kill();

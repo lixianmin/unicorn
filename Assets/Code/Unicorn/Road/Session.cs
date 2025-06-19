@@ -36,7 +36,7 @@ namespace Unicorn.Road
 
         public Session()
         {
-            OnDisposing += Close;
+            AtDisposing += Close;
         }
 
         public void Connect(string hostNameOrAddress, int port, Func<Session, ISerde> serdeBuilder,

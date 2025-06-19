@@ -32,10 +32,10 @@ namespace Unicorn
                 // 注意同步修改EntityBase
                 _isDisposed = true;
 
-                if (OnDisposing != null)
+                if (AtDisposing != null)
                 {
-                    OnDisposing();
-                    OnDisposing = null;
+                    AtDisposing();
+                    AtDisposing = null;
                 }
             }
             finally
@@ -49,7 +49,7 @@ namespace Unicorn
             return _isDisposed;
         }
 
-        public event Action OnDisposing;
+        public event Action AtDisposing;
         private bool _isDisposed;
     }
 }

@@ -85,7 +85,7 @@ namespace Unicorn.UI
         {
         }
 
-        public event Action Loaded;
+        public event Action AtLoaded;
 
         /// <summary>
         /// 时机: 打开完成事件, 与OnClosing呼应. 此时window与widget对象已经可见了, open animation执行完成, window等待玩家输入
@@ -95,7 +95,7 @@ namespace Unicorn.UI
         {
         }
 
-        public event Action Opened;
+        public event Action AtOpened;
 
         /// <summary>
         /// 时机: 获得焦点事件, 与OnDeactivating()呼应. 当通过OpenWindow()打开window时, 该window会被激活并收到OnActivated()事件
@@ -125,7 +125,7 @@ namespace Unicorn.UI
         {
         }
 
-        public event Action Closing;
+        public event Action AtClosing;
 
         /// <summary>
         /// 时机: 准备销毁事件, 与OnLoaded()呼应. gameObject与widgets尚未销毁, 都处于可用状态
@@ -135,7 +135,7 @@ namespace Unicorn.UI
         {
         }
 
-        public event Action Unloading;
+        public event Action AtUnloading;
 
         /// <summary>
         /// 慢速帧，大概10fps；如果感觉频率不够，可考虑实现IExpensiveUpdater接口

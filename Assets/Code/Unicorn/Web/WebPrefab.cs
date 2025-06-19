@@ -15,7 +15,7 @@ namespace Unicorn.Web
     {
         internal WebPrefab(WebArgument argument, Action<WebPrefab> handler)
         {
-            OnDisposing += _OnDisposing;
+            AtDisposing += _AtDisposing;
 
             // _webItem这里也需要同步赋值, 因为回调handler有可能是一个小时之后的事, 中间万一使用到了_webItem就可能是null了.
             // 你永远也不知道构造方法和handler谁先到来
@@ -63,7 +63,7 @@ namespace Unicorn.Web
             _webNode ??= node;
         }
 
-        private void _OnDisposing()
+        private void _AtDisposing()
         {
             if (_aidScript)
             {

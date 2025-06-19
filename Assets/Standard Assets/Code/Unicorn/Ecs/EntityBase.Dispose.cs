@@ -23,10 +23,10 @@ namespace Unicorn
                 // 在_DoDispose()之前设置 _isDisposed = true, 以防止递归调用自己
                 _isDisposed = true;
 
-                if (OnDisposing != null)
+                if (AtDisposing != null)
                 {
-                    OnDisposing();
-                    OnDisposing = null;
+                    AtDisposing();
+                    AtDisposing = null;
                 }
 
                 Clear();
@@ -42,7 +42,7 @@ namespace Unicorn
             return _isDisposed;
         }
 
-        public event Action OnDisposing;
+        public event Action AtDisposing;
         private bool _isDisposed;
     }
 }

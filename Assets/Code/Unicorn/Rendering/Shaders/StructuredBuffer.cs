@@ -20,7 +20,7 @@ namespace Unicorn
             _nameId = Shader.PropertyToID(name);
             _stride = stride;
 
-            OnDisposing += _buffer.Dispose;
+            AtDisposing += _buffer.Dispose;
         }
 
         public void SetData(Array data)
