@@ -121,7 +121,7 @@ namespace Unicorn.UI.Internal
             }
 
             master._InitComponents(transform, canvas);
-            master._InitWidgetsWindow();
+            master._InitWidgetsWindowField();
             master._FillWidgets(serializer);
             UIManager.It._ActivateWindow(master);
         }
