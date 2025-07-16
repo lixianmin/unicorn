@@ -122,6 +122,12 @@ namespace Unicorn.Road
 
             _nextHeartbeatTime = float.MaxValue;
             _packets.Clear();
+
+            // 1. 2025-07-02 有一个改动, 是将NetManager中的_session重新new了一个, 理由是"主动退出时防止断线重连", 但这个改动导致游戏初始
+            //    化时, 通过session.On(route, xxx)注册的回调都找不到了, 因此不能重建session, 全局只能使用一个
+            // 2. 2025-07-16 尝试在session.Close()的时候, 默认就直接关闭 _reconnectionAction. 为了防止在断线重连的过程中出问题, 断线
+            //    重连的逻辑中会先备份一下_reconnectAction变量
+            _reconnectAction = null;
         }
 
         public void Update()
@@ -146,11 +152,14 @@ namespace Unicorn.Road
             {
                 // _nonce>0 意味着已经收到 HandShaken
                 // server确保返回的 nonce>0
+                var reconnectAction = _reconnectAction;
                 if (_onClosedHandler != null && _nonce > 0)
                 {
-                    _onClosedHandler();
-                    _onClosedHandler = null;
+                    CallbackTools.Handle(ref _onClosedHandler, "");
                     _nonce = 0;
+                    
+                    // 2025-07-16 目前Close()方法会重置_reconnectAction的值, 但如果这个是由于断线重连的逻辑调用了Close(), 则先备份一下, 不能因此进行不下去
+                    _reconnectAction = reconnectAction;
                 }
 
                 if (now >= _nextReconnectTime)
@@ -343,8 +352,9 @@ namespace Unicorn.Road
             //     _nextReconnectTime = Time.time + 10f;
             // }
 
-            // 如果被踢了, 就老老实实的退出去吧, 别想着断线重连了
-            _reconnectAction = null;
+            // ~~如果被踢了, 就老老实实的退出去吧, 别想着断线重连了~~
+            // _reconnectAction = null;
+            
             // _serverGid = string.Empty;
             CallbackTools.Handle(_onKickedHandler, reason, string.Empty);
             Logo.Warn($"kicked by server, reason={reason}");
@@ -510,9 +520,12 @@ namespace Unicorn.Road
                 return;
             }
 
-            // _registeredHandlers的key必须使用string而不能使用byte[], 因为byte[]是一个ref类型, 没有像string一个重载GetHash()相关的方法
-            _registeredHandlers[route] = new Handler()
-                { callback = (data1, err) => { _CallHandler(handler, data1, err); } };
+            // 1. _registeredHandlers的key必须使用string而不能使用byte[], 因为byte[]是一个ref类型, 没有像string一个重载GetHash()相关的方法
+            // 2. route对应的Handler, 这个是游戏一开始初始化的时候注册的, 要小心切换session实例就找不到了
+            _registeredHandlers[route] = new Handler
+            {
+                callback = (data1, err) => { _CallHandler(handler, data1, err); }
+            };
         }
 
         private void _CallHandler<T>(Action<T, Error> handler, byte[] data, Error err) where T : new()
@@ -563,7 +576,7 @@ namespace Unicorn.Road
         private readonly Dictionary<string, int> _routeKinds = new();
         private readonly Dictionary<int, string> _kindRoutes = new();
         private readonly SortedTable<int, Handler> _requestHandlers = new();
-        private readonly Dictionary<string, object> _registeredHandlers = new(); // value是Handler
+        private readonly Dictionary<string, object> _registeredHandlers = new();
 
         private Action _reconnectAction;
         private int _reconnectAttempt;
