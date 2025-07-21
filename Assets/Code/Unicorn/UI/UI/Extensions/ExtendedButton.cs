@@ -1,5 +1,5 @@
-/********************************************************************
-created:    2017-07-26
+﻿/********************************************************************
+created:    2025-07-21
 author:     lixianmin
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 *********************************************************************/
 
-using UnityEngine;
-using UnityEngine.UI;
+using System;
+using UnityEngine.Events;
 
 namespace Unicorn.UI
 {
-    public class UIText1 : Text
+    public static class ExtendedButton
     {
-        public string GetGUID ()
+        public static Action onClick(this UIWidget<UIButton> my, UnityAction fn)
         {
-            return _guid;
-        }
+            if (my != null && fn != null)
+            {
+                my.UI.onClick.AddListener(fn);
+                return () => { my.UI.onClick.RemoveListener(fn); };
+            }
 
-        [SerializeField] private string _guid = string.Empty;
+            return null;
+        }
     }
 }

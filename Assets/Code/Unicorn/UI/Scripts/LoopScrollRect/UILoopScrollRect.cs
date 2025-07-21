@@ -12,7 +12,17 @@ author:     lixianmin
 1. 代码启动时会自动设置Content与cellTransform节点的anchor类型为"左上", 代码以这个为基础计算显隐关系
 2. 这个script目前不适用于运行时AddComponent<>到UI上, 因为Awake()方法会使用cellTransform
 
-Copyright (C) - All Rights Reserved
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 *********************************************************************/
 
 using Unicorn.Collections;

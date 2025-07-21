@@ -4,6 +4,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 #if UNICORN_EDITOR
 
 using Unicorn;
@@ -11,7 +12,7 @@ using Unicorn.UI;
 
 namespace Clients.UI
 {
-    public class UIBag: UIWindowBase
+    public class UIBag : UIWindowBase
     {
         public override string GetAssetPath()
         {
@@ -25,7 +26,7 @@ namespace Clients.UI
 
         protected override void OnLoaded()
         {
-            _btnClickBag.UI.onClick.AddListener(() =>
+            AtUnloading += _btnClickBag.onClick(() =>
             {
                 Logo.Info("bag button is clicked");
                 UIManager.It.CloseWindow(typeof(UIMain));
@@ -33,7 +34,7 @@ namespace Clients.UI
 
             Logo.Info("bag is OnLoaded");
         }
-        
+
         protected override void OnOpened()
         {
             Logo.Info("bag is OnOpened");
