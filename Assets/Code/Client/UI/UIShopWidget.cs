@@ -7,6 +7,7 @@ Copyright (C) - All Rights Reserved
 
 #if UNICORN_EDITOR
 
+using System;
 using Unicorn;
 using Unicorn.UI;
 using UnityEngine;
@@ -29,12 +30,13 @@ namespace Clients.UI
                 title.text = "item: " + _good.GetTemplateId();
 
                 var btn = _rect.GetComponentInChildren<UIButton>();
-                _dog.AddListener(btn.onClick, _OnClickButton);
-                _dog.AddListener(_good.OnUpdateGoods, _OnUpdateGoods);
+                AtChanged += btn.onClick.On(_OnClickButton);
+                AtChanged += _good.OnUpdateGoods.On(_OnUpdateGoods);
             }
             else
             {
-                _dog.RemoveAllListeners();
+                AtChanged?.Invoke();
+                AtChanged = null;
             }
         }
 
@@ -42,7 +44,7 @@ namespace Clients.UI
         {
             var nextId = ShopManager.It.GetNextId();
             _good.SetName(nextId.ToString());
-            
+
             // ShopManager.It.DeleteGoods(_tid);
             // ShopManager.It.InsertGoods(nextId);
         }
@@ -58,11 +60,11 @@ namespace Clients.UI
         {
             return _good.GetTemplateId();
         }
-        
+
         private readonly ShopGood _good;
         private RectTransform _rect;
 
-        private readonly EventDog _dog = new();
+        public event Action AtChanged;
     }
 }
 
