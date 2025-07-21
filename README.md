@@ -43,6 +43,16 @@ A powerful, production-ready Unity core library providing essential components f
    - Download the latest release
    - Import the `.unitypackage` into your project
 
+## 📁 Project Structure
+
+- **Core Library**: All modules under `Assets/Code/Unicorn/` and `Assets/Standard Assets/Code/Unicorn/` are production-ready library code
+- **Example Code**: The `Assets/Code/Client/` directory contains example implementations controlled by the `UNICORN_EDITOR` macro
+  - Examples only compile in Unity Editor mode
+  - Demonstrates typical usage patterns and integration approaches
+  - Safe to remove or modify for your specific needs
+
+> **Note**: The `UNICORN_EDITOR` macro ensures example code doesn't affect production builds while providing clear integration examples during development.
+
 ## 📖 Core Modules
 
 ### Entity Component System (ECS)
@@ -119,13 +129,15 @@ var webPrefab = WebManager.It.LoadPrefab(new WebArgument
 
 ### Game Networking (Road)
 
-Long-connection networking system designed for real-time multiplayer games. Works seamlessly with the [Gonsole](https://github.com/lixianmin/gonsole) backend framework:
+Protocol-based long-connection networking system designed for real-time multiplayer games. Features a flexible ISerde serialization interface with JsonSerde as a dependency-free example. Production projects can implement custom serializers (Protobuf, MessagePack, etc.) for optimal performance. Works seamlessly with the [Gonsole](https://github.com/lixianmin/gonsole) backend framework:
 
 ```csharp
 // Create a network session
 var session = new Session();
 
-// Connect to game server
+// Connect to game server with flexible serialization
+// JsonSerde is provided as a dependency-free example
+// Production projects can use ProtobufSerde, MessagePackSerde, etc. for better performance
 session.Connect("localhost", 8080, session => new JsonSerde(), onHandShaken =>
 {
     // Connection established and handshake complete
@@ -147,15 +159,49 @@ session.Call("player.move", message, (response, error) =>
     }
 });
 
-// Handle automatic compression and serialization
-// Supports JSON serialization with automatic gzip compression
+// Custom serialization example for production use:
+// session.Connect("localhost", 8080, session => new ProtobufSerde(), ...);
+// or
+// session.Connect("localhost", 8080, session => new MessagePackSerde(), ...);
+
+// Protocol includes handshake, heartbeat, and custom message types
+// ISerde interface allows any serialization method (JSON, Protobuf, MessagePack, etc.)
+```
+
+**Custom Serialization Implementation:**
+
+```csharp
+// Example: Implementing Protobuf serialization for better performance
+public class ProtobufSerde : ISerde
+{
+    public byte[] Serialize(object item)
+    {
+        // Use Google.Protobuf or similar library
+        // return ProtobufSerializer.Serialize(item);
+        throw new NotImplementedException("Add your protobuf serialization here");
+    }
+
+    public T Deserialize<T>(byte[] data) where T : new()
+    {
+        // Use Google.Protobuf or similar library
+        // return ProtobufSerializer.Deserialize<T>(data);
+        throw new NotImplementedException("Add your protobuf deserialization here");
+    }
+}
+
+// Benefits of custom serialization:
+// - Protobuf: ~3x faster, ~2x smaller than JSON
+// - MessagePack: ~2x faster, ~1.5x smaller than JSON
+// - Custom binary: Maximum performance for specific use cases
 ```
 
 **Key Features:**
+- **Protocol-based architecture** with structured packet handling
 - WebSocket-based long connections for low latency
-- Automatic JSON serialization/deserialization
+- **Flexible serialization** via ISerde interface (JSON example included, supports protobuf, MessagePack, etc.)
 - Built-in gzip compression for bandwidth optimization
 - Session management with reconnection support
+- RPC-style method calls with response handling
 - Compatible with [Gonsole](https://github.com/lixianmin/gonsole) game server framework
 
 ### High-Performance Collections
@@ -218,6 +264,7 @@ private IEnumerator MyCoroutine()
 ┌─────────────────────────────────────────────────────────────┐
 │         Gonsole Game Server (Backend Framework)            │
 │          https://github.com/lixianmin/gonsole               │
+│               (Protocol-compatible backend)                │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -249,9 +296,16 @@ private IEnumerator MyCoroutine()
 
 | Method | Description |
 |--------|-------------|
-| `Connect(host, port, serdeBuilder, onHandShaken, onClosed)` | Establishes connection to game server |
+| `Connect(host, port, serdeBuilder, onHandShaken, onClosed)` | Establishes connection with custom ISerde serializer |
 | `Call(method, data, callback)` | Sends RPC call to server with response handling |
 | `Close()` | Closes the network connection |
+
+### ISerde Interface
+
+| Method | Description |
+|--------|-------------|
+| `Serialize(object)` | Converts object to byte array using custom serialization |
+| `Deserialize<T>(byte[])` | Converts byte array back to object of type T |
 
 ## 🤝 Contributing
 
@@ -282,11 +336,16 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - **Optional Examples**: 
   - YooAsset 2.1.1+ (for resource loading examples)
   - DOTween (for animation examples)
+- **Production Serialization** (optional, for better performance):
+  - Google.Protobuf (for Protobuf serialization)
+  - MessagePack (for MessagePack serialization)
+  - Custom binary serialization libraries
 
 ## 🐛 Known Issues
 
 - Some reflection-based features require specific managed stripping levels
 - UI serialization may require manual re-serialization when control names are exchanged
+- Example code in `Client/` directory requires `UNICORN_EDITOR` macro to be defined in Editor mode
 
 ## 📄 License
 
