@@ -9,9 +9,9 @@ A powerful, production-ready Unity core library providing essential components f
 ## ✨ Key Features
 
 - **🏗️ Entity Component System (ECS)** - Lightweight, decoupled component architecture
-- **🎛️ Kit System** - Modern alternative to MonoBehaviour with reduced coupling
 - **🖼️ Advanced UI Management** - Complete UI lifecycle with animations and layering
 - **📦 Smart Resource Management** - Async asset loading with automatic memory management
+- **🌐 Game Networking (Road)** - Long-connection networking system for real-time games
 - **⚡ High-Performance Collections** - Optimized data structures (Deque, SortedTable, Slice)
 - **🔄 Coroutine Management** - Efficient coroutine system with better performance than Unity's default
 - **⚙️ Configuration Management** - Flexible metadata and configuration system
@@ -23,18 +23,19 @@ A powerful, production-ready Unity core library providing essential components f
 
 - Unity 2022.3 LTS or later
 - .NET Standard 2.1 compatible
-- YooAsset package (for resource management)
+- TextMeshPro (included with Unity)
+- Universal Render Pipeline (URP)
 
 ### Installation
 
 1. **Via Unity Package Manager**
    ```
-   https://github.com/yourusername/unicorn.git
+   https://github.com/lixianmin/unicorn.git
    ```
 
 2. **Via Git Clone**
    ```bash
-   git clone https://github.com/yourusername/unicorn.git
+   git clone https://github.com/lixianmin/unicorn.git
    cd unicorn
    ```
 
@@ -65,34 +66,6 @@ public class MovePart : Part, IExpensiveUpdater
         transform.position += velocity * deltaTime;
     }
 }
-```
-
-### Kit System
-
-Modern replacement for MonoBehaviour with automatic lifecycle management:
-
-```csharp
-// Define a Kit
-public class PlayerKit : KitBase
-{
-    protected override void Awake()
-    {
-        // Initialization logic
-    }
-    
-    protected override void OnEnable()
-    {
-        // Enable logic
-    }
-    
-    protected override void SlowUpdate(float deltaTime)
-    {
-        // 10fps update for performance
-    }
-}
-
-// Use Kit with MbKitProvider in scene
-// No direct coupling between scene objects and code
 ```
 
 ### UI Management
@@ -144,6 +117,47 @@ var webPrefab = WebManager.It.LoadPrefab(new WebArgument
 // Resources are automatically managed and disposed
 ```
 
+### Game Networking (Road)
+
+Long-connection networking system designed for real-time multiplayer games. Works seamlessly with the [Gonsole](https://github.com/lixianmin/gonsole) backend framework:
+
+```csharp
+// Create a network session
+var session = new Session();
+
+// Connect to game server
+session.Connect("localhost", 8080, session => new JsonSerde(), onHandShaken =>
+{
+    // Connection established and handshake complete
+    Logo.Info("Connected to game server");
+}, onClosed =>
+{
+    // Connection closed
+    Logo.Info("Disconnected from server");
+});
+
+// Send data to server
+var message = new { action = "move", x = 10, y = 20 };
+session.Call("player.move", message, (response, error) =>
+{
+    if (error == null)
+    {
+        // Handle server response
+        Logo.Info($"Move result: {response}");
+    }
+});
+
+// Handle automatic compression and serialization
+// Supports JSON serialization with automatic gzip compression
+```
+
+**Key Features:**
+- WebSocket-based long connections for low latency
+- Automatic JSON serialization/deserialization
+- Built-in gzip compression for bandwidth optimization
+- Session management with reconnection support
+- Compatible with [Gonsole](https://github.com/lixianmin/gonsole) game server framework
+
 ### High-Performance Collections
 
 Optimized data structures for game development:
@@ -189,13 +203,21 @@ private IEnumerator MyCoroutine()
 ┌─────────────────────────────────────────────────────────────┐
 │                     Client Application                     │
 ├─────────────────────────────────────────────────────────────┤
-│  UI Management  │  Kit System   │  Resource Loading        │
+│  UI Management  │  ECS Framework  │  Resource Loading      │
 ├─────────────────────────────────────────────────────────────┤
-│  ECS Framework  │  Collections  │  Coroutine Management    │
+│  Collections    │  Networking     │  Configuration System  │
+│                 │  (Road)         │                        │
 ├─────────────────────────────────────────────────────────────┤
-│  Core Utilities │  Extensions   │  Configuration System    │
+│  Core Utilities │  Extensions     │  Coroutine Management  │
 ├─────────────────────────────────────────────────────────────┤
 │                     Unity Engine                           │
+└─────────────────────────────────────────────────────────────┘
+                              ▲
+                              │ WebSocket
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│         Gonsole Game Server (Backend Framework)            │
+│          https://github.com/lixianmin/gonsole               │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -223,6 +245,14 @@ private IEnumerator MyCoroutine()
 | `StartCoroutine(IEnumerator)` | Starts a managed coroutine |
 | `StopCoroutine(IEnumerator)` | Stops a running coroutine |
 
+### Session (Road Networking)
+
+| Method | Description |
+|--------|-------------|
+| `Connect(host, port, serdeBuilder, onHandShaken, onClosed)` | Establishes connection to game server |
+| `Call(method, data, callback)` | Sends RPC call to server with response handling |
+| `Close()` | Closes the network connection |
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
@@ -246,16 +276,17 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ## 📋 Requirements
 
 - **Unity**: 2022.3 LTS or later
-- **Dependencies**: 
-  - YooAsset 2.1.1+
-  - DOTween (included)
-  - TextMeshPro
+- **Core Dependencies**: 
+  - TextMeshPro (included with Unity)
   - Universal Render Pipeline (URP)
+- **Optional Examples**: 
+  - YooAsset 2.1.1+ (for resource loading examples)
+  - DOTween (for animation examples)
 
 ## 🐛 Known Issues
 
-- Kit auto code generation may not load all kit classes on first run
 - Some reflection-based features require specific managed stripping levels
+- UI serialization may require manual re-serialization when control names are exchanged
 
 ## 📄 License
 
@@ -280,15 +311,16 @@ limitations under the License.
 ## 🙏 Acknowledgments
 
 - Unity Technologies for the amazing engine
-- YooAsset team for asset management solutions
-- DOTween for animation support
+- TextMeshPro team for advanced text rendering
+- Universal Render Pipeline team for modern rendering
+- [Gonsole](https://github.com/lixianmin/gonsole) backend framework for seamless server integration
 - All contributors who have helped improve this library
 
 ## 📞 Support
 
-- 📖 [Documentation](https://github.com/yourusername/unicorn/wiki)
-- 🐛 [Issue Tracker](https://github.com/yourusername/unicorn/issues)
-- 💬 [Discussions](https://github.com/yourusername/unicorn/discussions)
+- 📖 [Documentation](https://github.com/lixianmin/unicorn/wiki)
+- 🐛 [Issue Tracker](https://github.com/lixianmin/unicorn/issues)
+- 💬 [Discussions](https://github.com/lixianmin/unicorn/discussions)
 
 ---
 
