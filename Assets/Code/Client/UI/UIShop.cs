@@ -24,8 +24,8 @@ namespace Clients.UI
         {
             _ReloadWidgets();
 
-            _dog.AddListener(ShopManager.It.OnInsertGood, _OnInsertGoods);
-            _dog.AddListener(ShopManager.It.OnDeleteGood, _OnDeleteGoods);
+            AtUnloading += ShopManager.It.OnInsertGood.On(_OnInsertGoods);
+            AtUnloading += ShopManager.It.OnDeleteGood.On(_OnDeleteGoods);
             Logo.Warn($"[OnLoaded] frameCount={Time.frameCount}");
         }
 
@@ -75,11 +75,9 @@ namespace Clients.UI
 
         protected override void OnUnloading()
         {
-            _dog.RemoveAllListeners();
             Logo.Info("uishop is unloading");
         }
 
-        private readonly EventDog _dog = new();
         private readonly UIWidget<UILoopScrollRect> _loopScrollRect = new("shop_view");
     }
 }
