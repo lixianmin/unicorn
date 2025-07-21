@@ -24,7 +24,17 @@ author:     lixianmin
 3. EventDog的方案, 需要主动在OnUnloading()中调用_dog.RemoveAllListeners(). 目前更推荐使用 Unloading += button.onClick(xxx)的方案
 4. UISerializer, 如果序列存储了窗体类中声明的控件, 同时如果这些控件在rename时交换了名字, 则会导致代码逻辑跟看到的效果不一致的情况, 此时需要重新手动序列化
 
-Copyright (C) - All Rights Reserved
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 *********************************************************************/
 
 using System;
