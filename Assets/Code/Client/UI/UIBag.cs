@@ -26,7 +26,7 @@ namespace Clients.UI
 
         protected override void OnLoaded()
         {
-            AtUnloading += _btnClickBag.onClick(() =>
+            AtUnloading += _btnClickBag.UI.onClick.On(() =>
             {
                 Logo.Info("bag button is clicked");
                 UIManager.It.CloseWindow(typeof(UIMain));

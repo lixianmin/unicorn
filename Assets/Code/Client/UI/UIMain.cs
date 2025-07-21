@@ -4,6 +4,7 @@ author:     lixianmin
 
 Copyright (C) - All Rights Reserved
 *********************************************************************/
+
 #if UNICORN_EDITOR
 
 using Unicorn;
@@ -17,28 +18,16 @@ namespace Clients.UI
         {
             return "Assets/res/prefabs/ui/uimain.prefab";
         }
-        
+
         protected override void OnLoaded()
         {
-            _btnOpenBag.UI.onClick.AddListener(() =>
-            {
-                UIManager.It.OpenWindow(typeof(UIBag));
-            });
-            
-            _btnCloseBag.UI.onClick.AddListener(() =>
-            {
-                UIManager.It.CloseWindow(typeof(UIBag));
-            });
-            
-            _btnOpenShop.UI.onClick.AddListener(() =>
-            {
-                UIManager.It.OpenWindow(typeof(UIShop));
-            });
-            
-            _btnCloseShop.UI.onClick.AddListener(() =>
-            {
-                UIManager.It.CloseWindow(typeof(UIShop));
-            });
+            AtUnloading += _btnOpenBag.UI.onClick.On(() => { UIManager.It.OpenWindow(typeof(UIBag)); });
+
+            AtUnloading += _btnCloseBag.UI.onClick.On(() => { UIManager.It.CloseWindow(typeof(UIBag)); });
+
+            AtUnloading += _btnOpenShop.UI.onClick.On(() => { UIManager.It.OpenWindow(typeof(UIShop)); });
+
+            AtUnloading += _btnCloseShop.UI.onClick.On(() => { UIManager.It.CloseWindow(typeof(UIShop)); });
 
             // Logo.Info(_btnCloseBagObject.UI.localPosition);
             Logo.Info("main is OnLoaded");
@@ -62,7 +51,8 @@ namespace Clients.UI
 
         protected override void OnDeactivating()
         {
-            Logo.Info("main is OnDeactivating, state={0}, foreground={1}", GetFetus().GetState(), UIManager.It.GetForegroundWindow(GetRenderQueue()));
+            Logo.Info("main is OnDeactivating, state={0}, foreground={1}", GetFetus().GetState(),
+                UIManager.It.GetForegroundWindow(GetRenderQueue()));
             // UIManager.It.OpenWindow(GetType());
             // UIManager.It.CloseWindow(GetType());
         }
@@ -81,8 +71,8 @@ namespace Clients.UI
             // UIManager.It.CloseWindow(GetType());
         }
 
-        private readonly UIWidget<UIButton> _btnOpenBag = new( "btn_open_bag");
-        private readonly UIWidget<UIButton> _btnCloseBag = new( "btn_close_bag");
+        private readonly UIWidget<UIButton> _btnOpenBag = new("btn_open_bag");
+        private readonly UIWidget<UIButton> _btnCloseBag = new("btn_close_bag");
         private readonly UIWidget<UIButton> _btnOpenShop = new("btn_open_shop");
         private readonly UIWidget<UIButton> _btnCloseShop = new("btn_close_shop");
     }
