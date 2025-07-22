@@ -163,8 +163,7 @@ namespace Unicorn.Web
             }
             catch (Exception ex)
             {
-                Logo.Error(
-                    $"[HttpTexture._DeleteCacheFileSafely] Failed to delete cache file {filePath}: {ex.Message}");
+                Logo.Warn($"[_DeleteCacheFileSafely] Failed to delete cache file {filePath}: {ex.Message}");
             }
         }
 
@@ -213,7 +212,7 @@ namespace Unicorn.Web
             }
             catch (Exception ex)
             {
-                Logo.Error($"[ClearAllCache] Failed to clear cache directory: {ex.Message}");
+                Logo.Warn($"[ClearAllCache] Failed to clear cache directory: {ex.Message}");
             }
         }
 
@@ -239,7 +238,7 @@ namespace Unicorn.Web
             }
             catch (Exception ex)
             {
-                Logo.Error($"[GetCacheSize] Failed to calculate cache size: {ex.Message}");
+                Logo.Warn($"[GetCacheSize] Failed to calculate cache size: {ex.Message}");
             }
 
             return totalSize;
