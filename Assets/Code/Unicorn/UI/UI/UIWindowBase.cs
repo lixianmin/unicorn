@@ -115,6 +115,9 @@ namespace Unicorn.UI
         {
         }
 
+        // 1. 因为Loaded, Opened, Closing, Unloading在window生命周期只执行一次, 因此在OnLoaded(), OnOpened() 中用 Unloading += button.onClick(fn)
+        //  是合理的, 在window重新被OpenWindow()的时候也不会重复注册同一个事件多次. 但是, 在OnActivated()中注册 Deactivating += button.onClick(fn) 可能是
+        //  不合理的, 除非永远记得在 OnDeactivating()中手动注销这些回调方法. 为了防止程序员出错, 先移除Activated, Deactivating事件, 毕竟对它们的使用本就罕见.
         // public event Action Activated;
 
         /// <summary>

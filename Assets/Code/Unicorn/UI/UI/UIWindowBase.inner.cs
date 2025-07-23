@@ -84,6 +84,24 @@ namespace Unicorn.UI
                 {
                     switch (idx)
                     {
+                        // 2025-07-23
+                        // 1. AtLoaded事件, 本来是在handler()之后处理, 但是当使用InitBy(fn)对window进行初始化的时候, 有可能借助AtLoaded配置一些
+                        //  window相关的数值, 而这些数值进一步有可能在OnLoaded()回调中使用到, 因此调整为先执行AtLoaded事件, 后执行OnLoaded()回调
+                        // 2. AtLoaded, AtOpened, AtClosing, AtUnloading事件在生命周期中只执行一次, 因此执行完成可以合理的清理掉
+                        case EventIndices.OnLoaded:
+                            AtLoaded?.Invoke();
+                            AtLoaded = null;
+                            manager.Loaded?.Invoke(this);
+                            break;
+                        case EventIndices.OnOpened:
+                            AtOpened?.Invoke();
+                            AtOpened = null;
+                            // manager.Opened?.Invoke(this);
+                            break;
+                        case EventIndices.OnActivated:
+                            // Activated?.Invoke();
+                            // manager.Activated?.Invoke(this);
+                            break;
                         case EventIndices.OnDeactivating:
                             // manager.Deactivating?.Invoke(this);
                             // Deactivating?.Invoke();
@@ -91,30 +109,16 @@ namespace Unicorn.UI
                         case EventIndices.OnClosing:
                             // manager.Closing?.Invoke(this);
                             AtClosing?.Invoke();
+                            AtClosing = null;
                             break;
                         case EventIndices.OnUnloading:
                             manager.Unloading?.Invoke(this);
                             AtUnloading?.Invoke();
+                            AtUnloading = null;
                             break;
                     }
 
                     handler();
-
-                    switch (idx)
-                    {
-                        case EventIndices.OnLoaded:
-                            AtLoaded?.Invoke();
-                            manager.Loaded?.Invoke(this);
-                            break;
-                        case EventIndices.OnOpened:
-                            AtOpened?.Invoke();
-                            // manager.Opened?.Invoke(this);
-                            break;
-                        case EventIndices.OnActivated:
-                            // Activated?.Invoke();
-                            // manager.Activated?.Invoke(this);
-                            break;
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -130,7 +134,7 @@ namespace Unicorn.UI
         {
             _isDisposed = false;
         }
-        
+
         internal void Dispose()
         {
             if (_isDisposed)
@@ -140,13 +144,10 @@ namespace Unicorn.UI
 
             _isDisposed = true;
             UIManager.It._RemoveWindow(GetType());
-            
+
             // 1. 清理所有事件回调 (即使是被Cache, 也要清理Loaded, Unloading这些回调事件, 否则再次激活的时候, 很可能会被重复加入两次同样的回调方法)
             // 2. 在这个代码位置全部设置为null作为兜底逻辑是合适的, 因为代码执行到这里, 意味着window从逻辑上已经Dispose了 (Cache算优化, 不影响逻辑)
-            // 3. 因为Loaded, Opened, Closing, Unloading在window生命周期只执行一次, 因此在OnLoaded(), OnOpened() 中用 Unloading += button.onClick(fn)
-            //  是合理的, 在window重新被OpenWindow()的时候也不会重复注册同一个事件多次. 但是, 在OnActivated()中注册 Deactivating += button.onClick(fn)
-            //  可能是不合理的, 除非程序员记得在 OnDeactivating()中手动反注册这些回调方法
-            // 4. 为了防止程序员出错, 先移除Activated, Deactivating事件, 也是一个选择, 毕竟对它们的使用本就罕见.
+            // 3. 2025-07-23 这些事件, 在_Handle()方法已经清理过了, 这里算保底
             AtLoaded = null;
             AtOpened = null;
             // Activated = null;
