@@ -42,19 +42,50 @@ namespace Unicorn.Web
             _InitCacheDirectory();
             _cacheFilePath = _GetCacheFilePath(url);
 
-            // 检查缓存是否存在
-            if (_CheckLoadFromCache(fn))
+            if (File.Exists(_cacheFilePath))
             {
-                Status = WebStatus.Succeeded;
-                CallbackTools.Handle(ref fn, this);
+                CoroutineManager.It.StartCoroutine(_CoCheckLoadOrDownload(url, fn));
             }
             else
             {
-                var request = UnityWebRequestTexture.GetTexture(url);
-                CoroutineManager.It.StartCoroutine(_CoDownload(request, fn));
+                CoroutineManager.It.StartCoroutine(_CoDownload(url, fn));
             }
 
             AtDisposing += _AtDisposing;
+        }
+
+        private IEnumerator _CoCheckLoadOrDownload(string url, Action<HttpTexture> fn)
+        {
+            try
+            {
+                // 从缓存文件加载纹理
+                var fileData = File.ReadAllBytes(_cacheFilePath);
+                // 创建最小的占位纹理，LoadImage会自动调整为实际大小
+                _texture = new Texture2D(1, 1);
+                if (_texture.LoadImage(fileData))
+                {
+                    Status = WebStatus.Succeeded;
+                    CallbackTools.Handle(ref fn, this);
+                    yield break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logo.Warn($"[_CheckLoadFromCache] Failed to load cached texture from {_cacheFilePath}: {ex.Message}");
+            }
+
+            Object.Destroy(_texture);
+            _texture = null;
+
+            // 缓存文件可能损坏，删除并重新下载
+            _DeleteCacheFileSafely(_cacheFilePath);
+
+            // 启动网编下载
+            var iter = _CoDownload(url, fn);
+            while (iter.MoveNext())
+            {
+                yield return null;
+            }
         }
 
         private static void _InitCacheDirectory()
@@ -83,41 +114,9 @@ namespace Unicorn.Web
             return Path.Combine(_cacheDirectory, hash + ".jpg");
         }
 
-        private bool _CheckLoadFromCache(Action<HttpTexture> fn)
+        private IEnumerator _CoDownload(string url, Action<HttpTexture> fn)
         {
-            if (!File.Exists(_cacheFilePath))
-            {
-                return false;
-            }
-
-            try
-            {
-                // 从缓存文件加载纹理
-                var fileData = File.ReadAllBytes(_cacheFilePath);
-
-                // 创建最小的占位纹理，LoadImage会自动调整为实际大小
-                _texture = new Texture2D(1, 1);
-
-                if (_texture.LoadImage(fileData))
-                {
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logo.Warn($"[_CheckLoadFromCache] Failed to load cached texture from {_cacheFilePath}: {ex.Message}");
-            }
-
-            Object.Destroy(_texture);
-            _texture = null;
-
-            // 缓存文件可能损坏，删除并重新下载
-            _DeleteCacheFileSafely(_cacheFilePath);
-            return false;
-        }
-
-        private IEnumerator _CoDownload(UnityWebRequest request, Action<HttpTexture> fn)
-        {
+            var request = UnityWebRequestTexture.GetTexture(url);
             request.SendWebRequest();
             while (!request.isDone)
             {
@@ -130,26 +129,22 @@ namespace Unicorn.Web
                 _texture = DownloadHandlerTexture.GetContent(request);
 
                 // 保存到缓存
-                _SaveToCache(request.downloadHandler.data);
+                var data = request.downloadHandler.data;
+                try
+                {
+                    if (data is { Length: > 0 })
+                    {
+                        FileTools.WriteAllBytesSafely(_cacheFilePath, data);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logo.Warn($"[_SaveToCache] Failed to save texture to cache {_cacheFilePath}: {ex.Message}");
+                }
             }
 
             request.Dispose();
             CallbackTools.Handle(ref fn, this);
-        }
-
-        private void _SaveToCache(byte[] data)
-        {
-            try
-            {
-                if (data is { Length: > 0 })
-                {
-                    FileTools.WriteAllBytesSafely(_cacheFilePath, data);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logo.Warn($"[_SaveToCache] Failed to save texture to cache {_cacheFilePath}: {ex.Message}");
-            }
         }
 
         private static void _DeleteCacheFileSafely(string filePath)
