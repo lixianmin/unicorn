@@ -29,7 +29,9 @@ namespace Unicorn.UI
             const string method = nameof(LoadImage);
             if (string.IsNullOrEmpty(imagePath))
             {
-                Logo.Warn($"[{method}] imagePath is empty");
+                // Logo.Warn($"[{method}] imagePath is empty");
+                // UIRawImage支持加载空的路径, 实现把图片置空
+                _OnLoadSuccess(EmptyWebNode.It, imagePath, null);
                 return EmptyWebNode.It;
             }
 
@@ -61,12 +63,8 @@ namespace Unicorn.UI
                     return;
                 }
 
-                _web?.Dispose();
-                _web = node as IDisposable;
-                _imagePath = imagePath;
-
-                texture = asset;
-                Logo.Info($"[{method}] load texture success, imagePath={imagePath}");
+                _OnLoadSuccess(node as IDisposable, imagePath, asset);
+                // Logo.Info($"[{method}] load texture success, imagePath={imagePath}");
             });
         }
 
@@ -81,13 +79,18 @@ namespace Unicorn.UI
                     return;
                 }
 
-                _web?.Dispose();
-                _web = node;
-                _imagePath = imagePath;
-
-                texture = node.GetTexture();
+                _OnLoadSuccess(node, imagePath, node.GetTexture());
                 // Logo.Info($"[{method}] download image success, imagePath={imagePath}");
             });
+        }
+
+        private void _OnLoadSuccess(IDisposable web, string imagePath, Texture texture1)
+        {
+            _web?.Dispose();
+            _web = web;
+            _imagePath = imagePath;
+
+            texture = texture1;
         }
 
         private bool _CheckAcceptImage(string method, IWebNode node, string imagePath, int version)

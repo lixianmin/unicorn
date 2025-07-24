@@ -6,13 +6,18 @@ author:     lixianmin
 Copyright (C) - All Rights Reserved
 *********************************************************************/
 
+using System;
+
 namespace Unicorn.Web
 {
-    public class EmptyWebNode : IWebNode
+    public class EmptyWebNode : IWebNode, IDisposable
     {
         public void Cancel()
         {
-            
+        }
+
+        void IDisposable.Dispose()
+        {
         }
 
         public WebStatus Status => WebStatus.Succeeded;
