@@ -48,7 +48,7 @@ namespace Unicorn.Web
             }
             else
             {
-                CoroutineManager.It.StartCoroutine(_CoDownload(url, fn));
+                CoroutineManager.It.StartCoroutine(_CoDownloadImage(url, fn));
             }
 
             AtDisposing += _AtDisposing;
@@ -56,16 +56,31 @@ namespace Unicorn.Web
 
         private IEnumerator _CoCheckLoadOrDownload(string url, Action<HttpTexture> fn)
         {
+            // 1. 在 try...catch 外部启动异步文件读取任务
+            // 这行代码本身不会抛出文件相关的异常，它只是创建并启动一个任务
+            var readTask = File.ReadAllBytesAsync(_cacheFilePath);
+
+            // 2. 等待任务完成。这个循环现在位于 try...catch 之外，是合法的。
+            // 协程会在这里暂停，直到文件读取操作结束（无论成功或失败）。
+            while (!readTask.IsCompleted)
+            {
+                yield return null;
+            }
+
             try
             {
-                // 从缓存文件加载纹理
-                var fileData = File.ReadAllBytes(_cacheFilePath);
+                // 3. 在 try 块内部获取任务的结果。
+                // 如果任务因异常（如文件未找到、无权限）而失败，
+                // 访问 .Result 会将该异常抛出，并被下面的 catch 块捕获。
+                var fileData = readTask.Result;
+                
                 // 创建最小的占位纹理，LoadImage会自动调整为实际大小
                 _texture = new Texture2D(1, 1);
                 if (_texture.LoadImage(fileData))
                 {
                     Status = WebStatus.Succeeded;
                     CallbackTools.Handle(ref fn, this);
+                    // Logo.Info($"[_CoCheckLoadOrDownload] loaded texture done, _cacheFilePath={_cacheFilePath}");
                     yield break;
                 }
             }
@@ -80,8 +95,8 @@ namespace Unicorn.Web
             // 缓存文件可能损坏，删除并重新下载
             _DeleteCacheFileSafely(_cacheFilePath);
 
-            // 启动网编下载
-            var iter = _CoDownload(url, fn);
+            // 如果本机加载失败, 则启动网络下载
+            var iter = _CoDownloadImage(url, fn);
             while (iter.MoveNext())
             {
                 yield return null;
@@ -114,7 +129,7 @@ namespace Unicorn.Web
             return Path.Combine(_cacheDirectory, hash + ".jpg");
         }
 
-        private IEnumerator _CoDownload(string url, Action<HttpTexture> fn)
+        private IEnumerator _CoDownloadImage(string url, Action<HttpTexture> fn)
         {
             var request = UnityWebRequestTexture.GetTexture(url);
             request.SendWebRequest();

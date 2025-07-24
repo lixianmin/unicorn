@@ -86,7 +86,7 @@ namespace Unicorn.UI
                 _imagePath = imagePath;
 
                 texture = node.GetTexture();
-                Logo.Info($"[{method}] download image success, imagePath={imagePath}");
+                // Logo.Info($"[{method}] download image success, imagePath={imagePath}");
             });
         }
 
