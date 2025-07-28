@@ -72,7 +72,8 @@ namespace Unicorn.UI
         {
             const string method = nameof(_DownloadImage);
             var version = ++_version;
-            return new HttpTexture(imagePath, node =>
+
+            return HttpTextureManager.It.LoadTexture(imagePath, node =>
             {
                 if (!_CheckAcceptImage(method, node, imagePath, version))
                 {
@@ -86,7 +87,12 @@ namespace Unicorn.UI
 
         private void _OnLoadSuccess(IDisposable web, string imagePath, Texture texture1)
         {
-            _web?.Dispose();
+            // 只有WebItem加载的texture才需要Dispose(), 如果是HttpTexture, 因为使用HttpTextureManager管理, 就不销毁了
+            if (_web != null && _web is not HttpTexture)
+            {
+                _web.Dispose();
+            }
+
             _web = web;
             _imagePath = imagePath;
 

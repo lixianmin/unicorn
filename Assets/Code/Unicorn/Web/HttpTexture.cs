@@ -73,7 +73,7 @@ namespace Unicorn.Web
                 // 如果任务因异常（如文件未找到、无权限）而失败，
                 // 访问 .Result 会将该异常抛出，并被下面的 catch 块捕获。
                 var fileData = readTask.Result;
-                
+
                 // 创建最小的占位纹理，LoadImage会自动调整为实际大小
                 _texture = new Texture2D(1, 1);
                 if (_texture.LoadImage(fileData))
@@ -188,16 +188,6 @@ namespace Unicorn.Web
             Status = WebStatus.None;
         }
 
-        public Texture2D GetTexture()
-        {
-            return _texture;
-        }
-
-        public string GetUrl()
-        {
-            return _url;
-        }
-
         public void Cancel()
         {
         }
@@ -253,6 +243,9 @@ namespace Unicorn.Web
 
             return totalSize;
         }
+
+        public Texture2D GetTexture() => _texture;
+        public string GetUrl() => _url;
 
         public WebStatus Status { get; private set; }
         public Object Asset => _texture;
