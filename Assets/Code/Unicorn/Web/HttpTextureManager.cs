@@ -2,6 +2,9 @@
 created:    2024-02-28
 author:     lixianmin
 
+目前使用 Hashtable 作为缓存容器, 如果有一天这个缓存需要改为LRU之类的策略缓存, 可以
+考虑使用System.Runtime.Caching.MemoryCache, 但这个类似乎只能基于NuGet去下载
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
