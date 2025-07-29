@@ -1,9 +1,6 @@
 ﻿/********************************************************************
-created:    2024-02-28
+created:    2024-02-29
 author:     lixianmin
-
-目前使用 Hashtable 作为缓存容器, 如果有一天这个缓存需要改为LRU之类的策略缓存, 可以
-考虑使用System.Runtime.Caching.MemoryCache, 但这个类似乎只能基于NuGet去下载
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,9 +21,9 @@ using UnityEngine.SceneManagement;
 
 namespace Unicorn.Web
 {
-    internal class HttpTextureManager
+    internal class BuiltinTextureLoader: ITextureLoader
     {
-        private HttpTextureManager()
+        public BuiltinTextureLoader()
         {
             SceneManager.sceneLoaded += _OnSceneLoaded;
         }
@@ -61,7 +58,5 @@ namespace Unicorn.Web
         }
 
         private readonly Hashtable _textures = new();
-
-        public static readonly HttpTextureManager It = new();
     }
 }
