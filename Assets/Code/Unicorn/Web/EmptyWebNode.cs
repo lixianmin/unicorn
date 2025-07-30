@@ -12,6 +12,11 @@ namespace Unicorn.Web
 {
     public class EmptyWebNode : IWebNode, IDisposable
     {
+        private EmptyWebNode(WebStatus status)
+        {
+            Status = status;
+        }
+
         public void Cancel()
         {
         }
@@ -20,13 +25,14 @@ namespace Unicorn.Web
         {
         }
 
-        public WebStatus Status => WebStatus.Succeeded;
+        public WebStatus Status { get; }
 
         /// <summary>
         /// 返回加载的资源对象
         /// </summary>
         UnityEngine.Object IWebNode.Asset => null;
 
-        public static readonly EmptyWebNode It = new();
+        public static readonly EmptyWebNode Succeeded = new(WebStatus.Succeeded);
+        public static readonly EmptyWebNode Failed = new(WebStatus.Failed);
     }
 }

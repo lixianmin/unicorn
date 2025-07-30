@@ -31,14 +31,14 @@ namespace Unicorn.UI
             {
                 // Logo.Warn($"[{method}] imagePath is empty");
                 // UIRawImage支持加载空的路径, 实现把图片置空
-                _OnLoadSuccess(EmptyWebNode.It, imagePath, null);
-                return EmptyWebNode.It;
+                _OnLoadDone(EmptyWebNode.Failed, imagePath, null);
+                return EmptyWebNode.Failed;
             }
 
             if (imagePath == _imagePath)
             {
                 Logo.Info($"[{method}] load the same image, imagePath={imagePath}");
-                return EmptyWebNode.It;
+                return EmptyWebNode.Succeeded;
             }
 
             return imagePath.StartsWith("Assets") ? _LoadTexture(imagePath) : _DownloadImage(imagePath);
@@ -63,7 +63,7 @@ namespace Unicorn.UI
                     return;
                 }
 
-                _OnLoadSuccess(node as IDisposable, imagePath, asset);
+                _OnLoadDone(node as IDisposable, imagePath, asset);
                 // Logo.Info($"[{method}] load texture success, imagePath={imagePath}");
             });
         }
@@ -80,12 +80,12 @@ namespace Unicorn.UI
                     return;
                 }
 
-                _OnLoadSuccess(node, imagePath, node.GetTexture());
+                _OnLoadDone(node, imagePath, node.GetTexture());
                 // Logo.Info($"[{method}] download image success, imagePath={imagePath}");
             });
         }
 
-        private void _OnLoadSuccess(IDisposable web, string imagePath, Texture texture1)
+        private void _OnLoadDone(IDisposable web, string imagePath, Texture texture1)
         {
             // 只有WebItem加载的texture才需要Dispose(), 如果是HttpTexture, 因为使用HttpTextureManager管理, 就不销毁了
             if (_web != null && _web is not HttpTexture)

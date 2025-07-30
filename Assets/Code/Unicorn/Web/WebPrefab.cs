@@ -52,7 +52,7 @@ namespace Unicorn.Web
                     {
                         Logo.Warn(
                             $"node.Asset is not gameObject, argument.key={argument.key}, node.Asset={node.Asset}");
-                        _webNode = EmptyWebNode.It;
+                        _webNode = EmptyWebNode.Failed;
                     }
                 }
 
