@@ -76,8 +76,11 @@ namespace Unicorn.Web
 
                 // 创建最小的占位纹理，LoadImage会自动调整为实际大小
                 _texture = new Texture2D(1, 1);
+
                 if (_texture.LoadImage(fileData))
                 {
+                    _ExtractEmbedData(url, fileData);
+
                     Status = WebStatus.Succeeded;
                     CallbackTools.Handle(ref fn, this);
                     // Logo.Info($"[_CoCheckLoadOrDownload] loaded texture done, _cacheFilePath={_cacheFilePath}");
@@ -91,6 +94,7 @@ namespace Unicorn.Web
 
             Object.Destroy(_texture);
             _texture = null;
+            _embedData = null;
 
             // 缓存文件可能损坏，删除并重新下载
             _DeleteCacheFileSafely(_cacheFilePath);
@@ -101,6 +105,12 @@ namespace Unicorn.Web
             {
                 yield return null;
             }
+        }
+
+        private static bool _IsJpegImage(string filename)
+        {
+            return filename != null && (filename.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                                        filename.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase));
         }
 
         private static void _InitCacheDirectory()
@@ -150,6 +160,7 @@ namespace Unicorn.Web
                     if (data is { Length: > 0 })
                     {
                         FileTools.WriteAllBytesSafely(_cacheFilePath, data);
+                        _ExtractEmbedData(url, data);
                     }
                 }
                 catch (Exception ex)
@@ -160,6 +171,15 @@ namespace Unicorn.Web
 
             request.Dispose();
             CallbackTools.Handle(ref fn, this);
+        }
+
+        private void _ExtractEmbedData(string filename, byte[] imageData)
+        {
+            _embedData = null;
+            if (_IsJpegImage(filename))
+            {
+                _embedData = JpegTools.ExtractEmbedded(imageData);
+            }
         }
 
         private static void _DeleteCacheFileSafely(string filePath)
@@ -246,11 +266,13 @@ namespace Unicorn.Web
 
         public Texture2D GetTexture() => _texture;
         public string GetUrl() => _url;
+        public byte[] GetEmbedData() => _embedData;
 
         public WebStatus Status { get; private set; }
         public Object Asset => _texture;
 
         private Texture2D _texture;
+        private byte[] _embedData;
         private readonly string _url;
         private readonly string _cacheFilePath;
 
