@@ -39,5 +39,16 @@ namespace Unicorn
 
             return null;
         }
+        
+        public static Action On<T1, T2>(this UnityEvent<T1, T2> my, UnityAction<T1, T2> fn)
+        {
+            if (my != null && fn != null)
+            {
+                my.AddListener(fn);
+                return () => { my.RemoveListener(fn); };
+            }
+
+            return null;
+        }
     }
 }
