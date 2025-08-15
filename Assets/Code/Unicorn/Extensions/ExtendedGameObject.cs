@@ -16,8 +16,7 @@ namespace Unicorn
         {
             if (null != go && null != type)
             {
-                var widget = go.GetComponent(type);
-                if (null == widget)
+                if (!go.TryGetComponent(type, out var widget))
                 {
                     widget = go.AddComponent(type);
                 }
@@ -27,7 +26,7 @@ namespace Unicorn
 
             return null;
         }
-        
+
         public static void SetLayerRecursively(this GameObject go, int layer)
         {
             if (null != go)
