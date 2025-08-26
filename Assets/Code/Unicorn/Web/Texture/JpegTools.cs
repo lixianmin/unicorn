@@ -118,7 +118,7 @@ namespace Unicorn.Web
                 }
             }
 
-            Logo.Warn("未在 JPEG 数据中找到包含数据的 COM 段。");
+            // Logo.Info("未在 JPEG 数据中找到包含数据的 COM 段。");
             return null;
         }
     }
