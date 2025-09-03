@@ -153,7 +153,7 @@ namespace Unicorn
             LogFile.ExpensiveUpdate();
 
             _coroutineManager.ExpensiveUpdate();
-            _partUpdateSystem.ExpensiveUpdate(deltaTime);
+            // _partUpdateSystem.ExpensiveUpdate(deltaTime);
             // _kitManager.ExpensiveUpdate(deltaTime);
             _uiManager.ExpensiveUpdate(deltaTime);
 
@@ -194,7 +194,7 @@ namespace Unicorn
             _coroutineManager.Clear();
         }
 
-        private static readonly PartUpdateSystem _partUpdateSystem = new();
+        // private static readonly PartUpdateSystem _partUpdateSystem = new();
         private static readonly CoroutineManager _coroutineManager = CoroutineManager.It;
         private static readonly UIManager _uiManager = UIManager.It;
         // private static readonly InstanceManager _instanceManager = InstanceManager.It;

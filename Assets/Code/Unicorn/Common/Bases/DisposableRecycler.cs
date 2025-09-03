@@ -10,9 +10,9 @@ using System.Collections;
 
 namespace Unicorn
 {
-	internal static class DisposableRecycler
+	public static class DisposableRecycler
 	{
-		internal static void Recycle(IDisposable obj)
+		public static void Recycle(IDisposable obj)
 		{
 			if (null != obj)
 			{
