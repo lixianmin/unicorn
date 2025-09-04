@@ -4,15 +4,14 @@
 [![Unity](https://img.shields.io/badge/Unity-2022.3%2B-green.svg)](https://unity3d.com)
 [![C#](https://img.shields.io/badge/C%23-9.0-blue.svg)](https://docs.microsoft.com/en-us/dotnet/csharp/)
 
-A powerful, production-ready Unity core library providing essential components for building scalable and maintainable Unity applications. Unicorn offers a modern, decoupled architecture with high-performance systems for UI management, resource loading, entity management, and more.
+A powerful, production-ready Unity core library providing essential components for building scalable and maintainable Unity applications. Unicorn offers a modern architecture with high-performance systems for UI management, resource loading, networking, and data structures.
 
 ## ✨ Key Features
 
-- **🏗️ Entity Component System (ECS)** - Lightweight, decoupled component architecture
 - **🖼️ Advanced UI Management** - Complete UI lifecycle with animations and layering
 - **📦 Smart Resource Management** - Async asset loading with automatic memory management
 - **🌐 Game Networking (Road)** - Long-connection networking system for real-time games
-- **⚡ High-Performance Collections** - Optimized data structures (Deque, SortedTable, Slice)
+- **⚡ High-Performance Collections** - Optimized data structures (Deque, SortedTable, Slice, PriorityQueue)
 - **🔄 Coroutine Management** - Efficient coroutine system with better performance than Unity's default
 - **⚙️ Configuration Management** - Flexible metadata and configuration system
 - **🛠️ Utility Extensions** - Comprehensive set of extension methods and tools
@@ -28,20 +27,24 @@ A powerful, production-ready Unity core library providing essential components f
 
 ### Installation
 
-1. **Via Unity Package Manager**
-   ```
-   https://github.com/lixianmin/unicorn.git
-   ```
+**Download Source Code and Compile**
 
-2. **Via Git Clone**
+1. **Git Clone**
+
    ```bash
    git clone https://github.com/lixianmin/unicorn.git
    cd unicorn
    ```
 
-3. **Via Unity Package**
-   - Download the latest release
-   - Import the `.unitypackage` into your project
+2. **Direct Download**
+
+   - Visit GitHub repository: https://github.com/lixianmin/unicorn
+   - Click "Code" → "Download ZIP" to download source package
+   - Extract to your working directory
+
+3. **Import to Unity Project**
+   - Open the downloaded project with Unity
+   - Or copy `Assets/Code/Unicorn/` and `Assets/Standard Assets/Code/Unicorn/` directories to your project
 
 ## 📁 Project Structure
 
@@ -55,29 +58,6 @@ A powerful, production-ready Unity core library providing essential components f
 
 ## 📖 Core Modules
 
-### Entity Component System (ECS)
-
-A lightweight ECS implementation for decoupled component architecture:
-
-```csharp
-// Create an entity
-var entity = new Entity();
-
-// Add components (Parts)
-var movePart = entity.AddPart<MovePart>();
-var healthPart = entity.AddPart<HealthPart>();
-
-// Components are automatically updated via PartUpdateSystem
-public class MovePart : Part, IExpensiveUpdater
-{
-    public void ExpensiveUpdate(float deltaTime)
-    {
-        // Update logic here
-        transform.position += velocity * deltaTime;
-    }
-}
-```
-
 ### UI Management
 
 Comprehensive UI system with lifecycle management:
@@ -87,18 +67,30 @@ Comprehensive UI system with lifecycle management:
 public class MainMenuWindow : UIWindowBase
 {
     public override string GetAssetPath() => "UI/MainMenu";
-    
+
     protected override void OnLoaded()
     {
-        // Setup UI components
-        var startButton = GetWidget<Button>("StartButton");
-        startButton.onClick.AddListener(OnStartGame);
+        // Setup UI component event listeners
+        AtUnloading += _startButton.UI.onClick.On(() =>
+        {
+            // Start game button click event
+            OnStartGame();
+        });
     }
-    
+
     protected override void OnOpened()
     {
         // Window opened with animation complete
     }
+
+    private void OnStartGame()
+    {
+        // Game start logic
+        Logo.Info("Start Game clicked");
+    }
+
+    // Declare UI components
+    private readonly UIWidget<UIButton> _startButton = new("StartButton");
 }
 
 // Open/Close windows
@@ -112,9 +104,9 @@ Efficient async resource loading with automatic memory management:
 
 ```csharp
 // Load a prefab
-var webPrefab = WebManager.It.LoadPrefab(new WebArgument 
-{ 
-    key = "Characters/Player" 
+var webPrefab = WebManager.It.LoadPrefab(new WebArgument
+{
+    key = "Characters/Player"
 }, prefab =>
 {
     if (prefab.Asset != null)
@@ -196,6 +188,7 @@ public class ProtobufSerde : ISerde
 ```
 
 **Key Features:**
+
 - **Protocol-based architecture** with structured packet handling
 - WebSocket-based long connections for low latency
 - **Flexible serialization** via ISerde interface (JSON example included, supports protobuf, MessagePack, etc.)
@@ -209,22 +202,36 @@ public class ProtobufSerde : ISerde
 Optimized data structures for game development:
 
 ```csharp
-// Slice<T> - High-performance List<T> alternative
+// Slice<T> - High-performance List<T> alternative with object pooling
 using var slice = SlicePool.Get<Transform>();
 slice.Add(transform1);
 slice.Add(transform2);
 // Automatically returned to pool when disposed
 
-// Deque<T> - Double-ended queue
+// Deque<T> - Double-ended queue for efficient front/back operations
 var deque = new Deque<int>();
 deque.PushBack(1);
 deque.PushFront(0);
 var front = deque.PopFront(); // 0
 var back = deque.PopBack();   // 1
 
-// SortedTable<TKey, TValue> - Sorted dictionary
+// SortedTable<TKey, TValue> - Sorted dictionary with fast lookups
 var table = new SortedTable<string, PlayerData>();
 table.Add("player1", playerData);
+
+// PriorityQueue<T> - Efficient priority-based operations
+var queue = new PriorityQueue<Task>();
+queue.Enqueue(highPriorityTask);
+var nextTask = queue.Dequeue();
+
+// ThreadSwapper<T> - Safe data exchange between threads
+var swapper = new ThreadSwapper<string>();
+// Producer thread
+swapper.GetProducer().Add("data");
+swapper.Put(true);
+// Consumer thread
+swapper.Take(false);
+var data = swapper.GetConsumer();
 ```
 
 ### Coroutine Management
@@ -249,12 +256,12 @@ private IEnumerator MyCoroutine()
 ┌─────────────────────────────────────────────────────────────┐
 │                     Client Application                     │
 ├─────────────────────────────────────────────────────────────┤
-│  UI Management  │  ECS Framework  │  Resource Loading      │
+│  UI Management  │  Resource Loading │  High-Perf Collections │
 ├─────────────────────────────────────────────────────────────┤
-│  Collections    │  Networking     │  Configuration System  │
-│                 │  (Road)         │                        │
+│  Networking     │  Coroutine Mgmt  │  Configuration System  │
+│  (Road)         │                  │                        │
 ├─────────────────────────────────────────────────────────────┤
-│  Core Utilities │  Extensions     │  Coroutine Management  │
+│  Core Utilities │  Extensions      │  Editor Tools          │
 ├─────────────────────────────────────────────────────────────┤
 │                     Unity Engine                           │
 └─────────────────────────────────────────────────────────────┘
@@ -272,40 +279,51 @@ private IEnumerator MyCoroutine()
 
 ### UIManager
 
-| Method | Description |
-|--------|-------------|
-| `OpenWindow(Type)` | Opens a UI window with lifecycle management |
-| `CloseWindow(Type)` | Closes a UI window with animation support |
-| `GetWindow(Type)` | Gets an existing window instance |
+| Method              | Description                                 |
+| ------------------- | ------------------------------------------- |
+| `OpenWindow(Type)`  | Opens a UI window with lifecycle management |
+| `CloseWindow(Type)` | Closes a UI window with animation support   |
+| `GetWindow(Type)`   | Gets an existing window instance            |
 
 ### WebManager
 
-| Method | Description |
-|--------|-------------|
-| `LoadAsset(WebArgument, Action<IWebNode>)` | Loads an asset asynchronously |
+| Method                                       | Description                                     |
+| -------------------------------------------- | ----------------------------------------------- |
+| `LoadAsset(WebArgument, Action<IWebNode>)`   | Loads an asset asynchronously                   |
 | `LoadPrefab(WebArgument, Action<WebPrefab>)` | Loads a prefab with automatic memory management |
 
 ### CoroutineManager
 
-| Method | Description |
-|--------|-------------|
+| Method                        | Description                |
+| ----------------------------- | -------------------------- |
 | `StartCoroutine(IEnumerator)` | Starts a managed coroutine |
-| `StopCoroutine(IEnumerator)` | Stops a running coroutine |
+| `StopCoroutine(IEnumerator)`  | Stops a running coroutine  |
 
 ### Session (Road Networking)
 
-| Method | Description |
-|--------|-------------|
+| Method                                                      | Description                                          |
+| ----------------------------------------------------------- | ---------------------------------------------------- |
 | `Connect(host, port, serdeBuilder, onHandShaken, onClosed)` | Establishes connection with custom ISerde serializer |
-| `Call(method, data, callback)` | Sends RPC call to server with response handling |
-| `Close()` | Closes the network connection |
+| `Call(method, data, callback)`                              | Sends RPC call to server with response handling      |
+| `Close()`                                                   | Closes the network connection                        |
+
+### Collections API
+
+| Class              | Key Methods                                            | Description                                    |
+| ------------------ | ------------------------------------------------------ | ---------------------------------------------- |
+| `Slice<T>`         | `Add()`, `RemoveAt()`, `Clear()`                       | High-performance List alternative with pooling |
+| `SlicePool`        | `Get<T>()`, `Return<T>()`                              | Object pool for Slice instances                |
+| `Deque<T>`         | `PushBack()`, `PopFront()`, `PushFront()`, `PopBack()` | Double-ended queue                             |
+| `SortedTable<K,V>` | `Add()`, `Remove()`, `ContainsKey()`                   | Sorted dictionary                              |
+| `PriorityQueue<T>` | `Enqueue()`, `Dequeue()`, `Peek()`                     | Priority-based queue                           |
+| `ThreadSwapper<T>` | `Put()`, `Take()`, `GetProducer()`, `GetConsumer()`    | Thread-safe data exchange                      |
 
 ### ISerde Interface
 
-| Method | Description |
-|--------|-------------|
-| `Serialize(object)` | Converts object to byte array using custom serialization |
-| `Deserialize<T>(byte[])` | Converts byte array back to object of type T |
+| Method                   | Description                                              |
+| ------------------------ | -------------------------------------------------------- |
+| `Serialize(object)`      | Converts object to byte array using custom serialization |
+| `Deserialize<T>(byte[])` | Converts byte array back to object of type T             |
 
 ## 🤝 Contributing
 
@@ -330,10 +348,10 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ## 📋 Requirements
 
 - **Unity**: 2022.3 LTS or later
-- **Core Dependencies**: 
+- **Core Dependencies**:
   - TextMeshPro (included with Unity)
   - Universal Render Pipeline (URP)
-- **Optional Examples**: 
+- **Optional Examples**:
   - YooAsset 2.1.1+ (for resource loading examples)
   - DOTween (for animation examples)
 - **Production Serialization** (optional, for better performance):
@@ -346,6 +364,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - Some reflection-based features require specific managed stripping levels
 - UI serialization may require manual re-serialization when control names are exchanged
 - Example code in `Client/` directory requires `UNICORN_EDITOR` macro to be defined in Editor mode
+- Road networking requires stable internet connection for optimal performance
 
 ## 📄 License
 
@@ -384,4 +403,3 @@ limitations under the License.
 ---
 
 ⭐ **If you find this library useful, please consider giving it a star!** ⭐
-
