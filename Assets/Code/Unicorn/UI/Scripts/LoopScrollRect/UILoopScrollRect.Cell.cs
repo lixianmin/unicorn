@@ -85,7 +85,12 @@ namespace Unicorn.UI
                 }
             }
 
-            public abstract void OnVisibleChanged();
+            internal void InnerOnVisibleChanged()
+            {
+                OnVisibleChanged();
+            }
+            
+            protected abstract void OnVisibleChanged();
 
             private Rect _area; // 相对于viewport判定可见性
 

@@ -31,7 +31,7 @@ namespace Clients.UI
             _good = good;
         }
 
-        public override void OnVisibleChanged()
+        protected override void OnVisibleChanged()
         {
             if (IsVisible())
             {

@@ -298,7 +298,7 @@ namespace Unicorn.UI
                 cell.SetVisible(true);
                 var rect = _SpawnCellTransform(cell);
                 cell.SetTransform(rect);
-                cell.OnVisibleChanged();
+                cell.InnerOnVisibleChanged();
             }
         }
 
@@ -308,7 +308,7 @@ namespace Unicorn.UI
             {
                 cell.SetVisible(false);
                 // 确保所有的OnVisibleChanged事件中, Transform都是可用的, 方便client设置一些东西
-                cell.OnVisibleChanged();
+                cell.InnerOnVisibleChanged();
 
                 // 逻辑可保证只有visible的cell才有transform, 才需要回收
                 var rect = cell.GetTransform();
