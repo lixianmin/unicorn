@@ -215,8 +215,7 @@ namespace Unicorn.UI
             var index = _cells.Count;
             var areaPos = _direction.GetCellAreaPos(index, _rank, sizeDelta);
 
-            // 1. cell跟record是一一对应的, 只不过record是纯数据层, 而cell把record包了一层
-            // 2. cell中使用哪一个transform是不确定的, 是显示的时候从pool中挖出来的
+            // 1. cell就是数据层, 数量会很大. 因此cell使用哪一个transform是不确定的, 是显示的那一刻从pool中挖出来的
             var area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
             cell.SetArea(area);
             
