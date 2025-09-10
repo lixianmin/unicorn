@@ -27,12 +27,13 @@ namespace Unicorn
     {
         static Logo()
         {
-            _idMainThread = Thread.CurrentThread.ManagedThreadId;
             Flags = LogoFlags.DetailedMessage;
         }
 
         internal static void Init()
         {
+            _idMainThread = Thread.CurrentThread.ManagedThreadId;
+
             // 编辑器中, 启用每次输出log, 方便开发过程中调试
             if (!os.IsReleaseMode)
             {
@@ -42,12 +43,21 @@ namespace Unicorn
 
         internal static void ExpensiveUpdate()
         {
-            var nextTime = Time.realtimeSinceStartup;
-            _deltaRealtime = nextTime - _realtimeSinceStartup;
-            _realtimeSinceStartup = nextTime;
-
-            _frameCount = Time.frameCount;
+            _UpdateFrameCountAndSoOn();
             _CheckFlushLogText();
+        }
+
+        private static void _UpdateFrameCountAndSoOn()
+        {
+            var frameCount = Time.frameCount;
+            if (frameCount > _frameCount)
+            {
+                var nextTime = Time.realtimeSinceStartup;
+                _deltaRealtime = nextTime - _realtimeSinceStartup;
+                _realtimeSinceStartup = nextTime;
+
+                _frameCount = frameCount;
+            }
         }
 
         public static void Debug(string format, params object[] args)
@@ -121,25 +131,18 @@ namespace Unicorn
 
         private static void _WriteLine(Action<object> output, object message)
         {
-            // var isMainThread = Thread.CurrentThread.ManagedThreadId == _idMainThread;
-
             if (_HasFlags(LogoFlags.DetailedMessage))
             {
-                // int frameCount;
-                // string time;
-                //
-                // if (isMainThread)
-                // {
-                // 	// 以下两行代码不能在MonoBehaviour的构造方法中调用
-                //  // 发现AndroidLogcatInternalLog插件，会在非主线程中调用到下面这行代码，所以只能先注释掉了
-                // 	frameCount = UnityEngine.Time.frameCount;
-                // 	time = UnityEngine.Time.realtimeSinceStartup.ToString("F3");
-                // }
-                // else
-                // {
-                // 	frameCount = os.frameCount;
-                // 	time = _time.ToString("F3");
-                // }
+                var isMainThread = Thread.CurrentThread.ManagedThreadId == _idMainThread;
+                if (isMainThread)
+                {
+                    // ~~以下两行代码不能在MonoBehaviour的构造方法中调用~~
+                    // ~~发现AndroidLogcatInternalLog插件，会在非主线程中调用到下面这行代码，所以只能先注释掉了~~
+                    //
+                    // 2025-09-09 前述AndroidLogcatInternalLog插件的事, 有可能是因为原先_idMainThread是在构造方法初始化导致的, 现在
+                    // 放到Init()方法中初始化, 是否就不会有这个问题, 待测试确认
+                    _UpdateFrameCountAndSoOn();
+                }
 
                 var frameCount = _frameCount;
                 if (_lastFrameCount != frameCount)
@@ -259,7 +262,7 @@ namespace Unicorn
 
         private static LogoFlags _flags;
 
-        private static readonly int _idMainThread;
+        private static int _idMainThread;
         private static int _frameCount;
         private static int _lastFrameCount;
         private static float _realtimeSinceStartup;
@@ -274,14 +277,14 @@ namespace Unicorn
 
         private static readonly string[] _messageFormat =
         {
-            "[",        // 过滤日志使用: adb logcat | grep 'Unity '
-            "(-_-)",    // 1. Time.frameCount
-            " ",        // 2. 空格
-            null,       // 3. Time.realtimeSinceStartup
-            " ",        // 4. 空格
-            null,       // 5. deltaRealtime
-            "] ",       // 6.
-            null        // 7. message
+            "[", // 过滤日志使用: adb logcat | grep 'Unity '
+            "(-_-)", // 1. Time.frameCount
+            " ", // 2. 空格
+            null, // 3. Time.realtimeSinceStartup
+            " ", // 4. 空格
+            null, // 5. deltaRealtime
+            "] ", // 6.
+            null // 7. message
         };
     }
 }
