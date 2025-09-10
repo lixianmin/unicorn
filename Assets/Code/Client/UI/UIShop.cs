@@ -32,7 +32,7 @@ namespace Clients.UI
 
         protected override void OnLoaded()
         {
-            _ReloadWidgets();
+            _ReloadCells();
 
             AtUnloading += ShopManager.It.OnInsertGood.On(_OnInsertGoods);
             AtUnloading += ShopManager.It.OnDeleteGood.On(_OnDeleteGoods);
@@ -49,22 +49,22 @@ namespace Clients.UI
             Logo.Warn($"[OnActivated] frameCount={Time.frameCount}");
         }
 
-        private void _ReloadWidgets()
+        private void _ReloadCells()
         {
             _loopScrollRect.UI.RemoveAll();
 
             foreach (var good in ShopManager.It.GetGoods())
             {
-                var record = new ShopRecord(good);
-                _loopScrollRect.UI.AddRecord(record);
+                var record = new ShopCell(good);
+                _loopScrollRect.UI.AddCell(record);
                 Logo.Info($"tid={good.GetTemplateId()}, good={good}");
             }
         }
 
         private void _OnInsertGoods(ShopGood good)
         {
-            var widget = new ShopRecord(good);
-            _loopScrollRect.UI.AddRecord(widget);
+            var widget = new ShopCell(good);
+            _loopScrollRect.UI.AddCell(widget);
         }
 
         private void _OnDeleteGoods(ShopGood good)
@@ -73,11 +73,10 @@ namespace Clients.UI
             var count = ui.GetCount();
             for (int i = 0; i < count; i++)
             {
-                var cell = ui.GetCell(i);
-                var record = cell.GetRecord() as ShopRecord;
-                if (record!.GetTemplateId() == good.GetTemplateId())
+                var cell = ui.GetCell(i) as ShopCell;
+                if (cell!.GetTemplateId() == good.GetTemplateId())
                 {
-                    ui.RemoveRecord(i);
+                    ui.RemoveCell(i);
                     break;
                 }
             }

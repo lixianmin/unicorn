@@ -154,7 +154,7 @@ namespace Unicorn.UI
         private void _RefreshCellsVisibility()
         {
             var relativeArea = _GetRelativeViewportArea();
-            foreach (Cell cell in _cells)
+            foreach (CellBase cell in _cells)
             {
                 var lastVisible = cell!.IsVisible();
                 var nextVisible = relativeArea.Overlaps(cell.GetArea());
@@ -190,9 +190,14 @@ namespace Unicorn.UI
             }
         }
 
-        public void AddRecord(IRecord record)
+        public void AddCell(CellBase cell)
         {
-            const string method = nameof(AddRecord);
+            if (cell == null)
+            {
+                return;
+            }
+            
+            const string method = nameof(AddCell);
             // widget看起来可以是null
             if (cellTransform == null)
             {
@@ -213,8 +218,8 @@ namespace Unicorn.UI
             // 1. cell跟record是一一对应的, 只不过record是纯数据层, 而cell把record包了一层
             // 2. cell中使用哪一个transform是不确定的, 是显示的时候从pool中挖出来的
             var area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
-            var cell = new Cell(area, record);
-
+            cell.SetArea(area);
+            
             var relativeArea = _GetRelativeViewportArea();
             var isVisible = relativeArea.Overlaps(area);
             if (isVisible)
@@ -231,7 +236,7 @@ namespace Unicorn.UI
             }
         }
 
-        public void RemoveRecord(int index)
+        public void RemoveCell(int index)
         {
             var count = _cells.Count;
             if (index < 0 || index >= count)
@@ -243,12 +248,12 @@ namespace Unicorn.UI
             // 所有cell的transform均匀向前移动一格
             for (var i = lastIndex; i > index; i--)
             {
-                var back = _cells[i] as Cell;
-                var front = _cells[i - 1] as Cell;
+                var back = _cells[i] as CellBase;
+                var front = _cells[i - 1] as CellBase;
                 back!.CopyFrom(front);
             }
         
-            var firstCell = _cells[index] as Cell;
+            var firstCell = _cells[index] as CellBase;
             _HideCell(firstCell);
         
             _cells.RemoveAt(index);
@@ -262,7 +267,7 @@ namespace Unicorn.UI
             {
                 for (var i = 0; i < size; i++)
                 {
-                    var cell = _cells[i] as Cell;
+                    var cell = _cells[i] as CellBase;
                     _HideCell(cell);
                 }
 
@@ -285,27 +290,24 @@ namespace Unicorn.UI
             }
         }
 
-        private void _ShowCell(Cell cell)
+        private void _ShowCell(CellBase cell)
         {
             if (cell != null && !cell.IsVisible())
             {
                 cell.SetVisible(true);
                 var rect = _SpawnCellTransform(cell);
                 cell.SetTransform(rect);
-
-                var record = cell.GetRecord();
-                record?.OnVisibleChanged(cell);
+                cell.OnVisibleChanged();
             }
         }
 
-        private void _HideCell(Cell cell)
+        private void _HideCell(CellBase cell)
         {
             if (cell != null && cell.IsVisible())
             {
                 cell.SetVisible(false);
                 // 确保所有的OnVisibleChanged事件中, Transform都是可用的, 方便client设置一些东西
-                var record = cell.GetRecord();
-                record?.OnVisibleChanged(cell);
+                cell.OnVisibleChanged();
 
                 // 逻辑可保证只有visible的cell才有transform, 才需要回收
                 var rect = cell.GetTransform();
@@ -345,7 +347,7 @@ namespace Unicorn.UI
             _isDirty = true;
         }
 
-        private RectTransform _SpawnCellTransform(Cell cell)
+        private RectTransform _SpawnCellTransform(CellBase cell)
         {
             if (_goPool.Count > 0)
             {
@@ -360,7 +362,7 @@ namespace Unicorn.UI
             return rect;
         }
 
-        private void _OnSpawnCellTransform(RectTransform rect, Cell cell)
+        private void _OnSpawnCellTransform(RectTransform rect, CellBase cell)
         {
             rect!.anchoredPosition = _direction.GetTransformAnchoredPos(cell);
             // Logo.Info($"anchoredPosition={trans.anchoredPosition}");
@@ -377,11 +379,11 @@ namespace Unicorn.UI
             }
         }
 
-        public Cell GetCell(int index)
+        public CellBase GetCell(int index)
         {
             if (index >= 0 && index < _cells.Count)
             {
-                var cell = _cells[index] as Cell;
+                var cell = _cells[index] as CellBase;
                 return cell;
             }
 

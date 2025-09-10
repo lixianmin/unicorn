@@ -604,10 +604,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3498626957271230314}
-  - component: {fileID: 3498626957271230319}
   - component: {fileID: 3498626957271230316}
   - component: {fileID: 3498626957271230317}
-  - component: {fileID: 3498626957271230318}
+  - component: {fileID: 3498626957271230319}
+  - component: {fileID: 6934371166572054842}
   m_Layer: 0
   m_Name: shop_view
   m_TagString: Untagged
@@ -635,36 +635,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 600, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3498626957271230319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3498626957271230315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86572f729d1847689116aa553ea7a0d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Content: {fileID: 3498626956393542457}
-  m_Horizontal: 0
-  m_Vertical: 1
-  m_MovementType: 1
-  m_Elasticity: 0.1
-  m_Inertia: 1
-  m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
-  m_Viewport: {fileID: 3498626956885478954}
-  m_HorizontalScrollbar: {fileID: 0}
-  m_VerticalScrollbar: {fileID: 0}
-  m_HorizontalScrollbarVisibility: 2
-  m_VerticalScrollbarVisibility: 2
-  m_HorizontalScrollbarSpacing: -3
-  m_VerticalScrollbarSpacing: -3
-  m_OnValueChanged:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!222 &3498626957271230316
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -703,7 +673,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3498626957271230318
+--- !u!114 &3498626957271230319
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -712,11 +682,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 3498626957271230315}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c17eb5ee1c9c24e294bfcee98fa60dc, type: 3}
+  m_Script: {fileID: 11500000, guid: 86572f729d1847689116aa553ea7a0d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Content: {fileID: 3498626956393542457}
+  m_Horizontal: 0
+  m_Vertical: 1
+  m_MovementType: 1
+  m_Elasticity: 0.1
+  m_Inertia: 1
+  m_DecelerationRate: 0.135
+  m_ScrollSensitivity: 1
+  m_Viewport: {fileID: 3498626956885478954}
+  m_HorizontalScrollbar: {fileID: 0}
+  m_VerticalScrollbar: {fileID: 0}
+  m_HorizontalScrollbarVisibility: 2
+  m_VerticalScrollbarVisibility: 2
+  m_HorizontalScrollbarSpacing: -3
+  m_VerticalScrollbarSpacing: -3
+  m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &6934371166572054842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3498626957271230315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f13010cceac823429f0d53204413e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cellTransform: {fileID: 3498626957365623175}
   direction: 2
+  isDebugging: 0
 --- !u!1 &3498626957365623172
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,7 +1010,7 @@ MonoBehaviour:
   widgets:
   - name: shop_view
     type: UILoopScrollRect
-    target: {fileID: 3498626957271230318}
+    target: {fileID: 0}
     userdata: 
   openWindowAnimation: {fileID: 0}
   closeWindowAnimation: {fileID: 0}

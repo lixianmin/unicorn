@@ -52,7 +52,7 @@ namespace Unicorn.UI
                 return _direction;
             }
 
-            public virtual Vector2 GetTransformAnchoredPos(Cell cell)
+            public virtual Vector2 GetTransformAnchoredPos(CellBase cell)
             {
                 return Vector2.zero;
             }
@@ -67,7 +67,7 @@ namespace Unicorn.UI
 
         public class HorizontalDir : DirBase
         {
-            public override Vector2 GetTransformAnchoredPos(Cell cell)
+            public override Vector2 GetTransformAnchoredPos(CellBase cell)
             {
                 var area = cell.GetArea();
                 return new Vector2(area.width * 0.5f + area.x, area.y);
@@ -83,7 +83,7 @@ namespace Unicorn.UI
 
         public class VerticalDir : DirBase
         {
-            public override Vector2 GetTransformAnchoredPos(Cell cell)
+            public override Vector2 GetTransformAnchoredPos(CellBase cell)
             {
                 var area = cell.GetArea();
                 return new Vector2(area.width * .5f + area.x, area.height * .5f + area.y);

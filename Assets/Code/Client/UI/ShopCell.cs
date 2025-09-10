@@ -24,18 +24,18 @@ using UnityEngine;
 
 namespace Clients.UI
 {
-    public class ShopRecord : UILoopScrollRect.IRecord
+    public class ShopCell : UILoopScrollRect.CellBase
     {
-        public ShopRecord(ShopGood good)
+        public ShopCell(ShopGood good)
         {
             _good = good;
         }
 
-        public void OnVisibleChanged(UILoopScrollRect.Cell cell)
+        public override void OnVisibleChanged()
         {
-            if (cell.IsVisible())
+            if (IsVisible())
             {
-                _rect = cell.GetTransform();
+                _rect = GetTransform();
                 var title = _rect.GetComponentInChildren<UIText>();
                 title.text = "item: " + _good.GetTemplateId();
 
@@ -61,9 +61,9 @@ namespace Clients.UI
 
         private void _OnUpdateGoods(ShopGood good)
         {
-            var image = _rect.GetComponentInChildren<UIImage>();
-            // 如果一个cell隐藏又显示了, 因为有transform的交换, 可能会导致变色
-            image.color = image.color == Color.white ? Color.red : Color.white;
+            // var image = _rect.GetComponentInChildren<UIImage>();
+            // // 如果一个cell隐藏又显示了, 因为有transform的交换, 可能会导致变色
+            // image.color = image.color == Color.white ? Color.red : Color.white;
         }
 
         public int GetTemplateId()
