@@ -21,13 +21,16 @@ namespace Unicorn.UI
 {
     partial class UILoopScrollRect
     {
-        public abstract class CellBase : IHaveTransform
+        /// <summary>
+        /// 有些CellBase的子类希望能支持AtDisposing事件, 因此在这里继承一下Disposable
+        /// </summary>
+        public abstract class CellBase : Disposable, IHaveTransform
         {
             internal void SetArea(Rect area)
             {
                 _area = area;
             }
-            
+
             internal Rect GetArea()
             {
                 return _area;
@@ -64,10 +67,10 @@ namespace Unicorn.UI
                 {
                     _area = other._area;
                     _isVisible = other._isVisible;
-            
+
                     // 不能直接替换transform, 而是只能复制transform的位置. 因为transform上已经设置了很多玩家数据, 这个是不能直接替换的
                     // _transform = other._transform;
-            
+
                     if (other._transform is not null)
                     {
                         if (_transform is not null)
@@ -81,7 +84,7 @@ namespace Unicorn.UI
                     }
                 }
             }
-            
+
             public abstract void OnVisibleChanged();
 
             private Rect _area; // 相对于viewport判定可见性

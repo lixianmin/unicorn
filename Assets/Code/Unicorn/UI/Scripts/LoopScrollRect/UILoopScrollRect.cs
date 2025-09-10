@@ -254,6 +254,7 @@ namespace Unicorn.UI
         
             var firstCell = _cells[index] as CellBase;
             _HideCell(firstCell);
+            firstCell!.Dispose();
         
             _cells.RemoveAt(index);
             _SetDirty();
@@ -268,6 +269,7 @@ namespace Unicorn.UI
                 {
                     var cell = _cells[i] as CellBase;
                     _HideCell(cell);
+                    cell!.Dispose();
                 }
 
                 _cells.Clear();
