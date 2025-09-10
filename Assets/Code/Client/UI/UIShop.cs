@@ -74,10 +74,10 @@ namespace Clients.UI
             for (int i = 0; i < count; i++)
             {
                 var cell = ui.GetCell(i);
-                var widget = cell.GetRecord() as ShopRecord;
-                if (widget!.GetTemplateId() == good.GetTemplateId())
+                var record = cell.GetRecord() as ShopRecord;
+                if (record!.GetTemplateId() == good.GetTemplateId())
                 {
-                    ui.RemoveWidget(i);
+                    ui.RemoveRecord(i);
                     break;
                 }
             }

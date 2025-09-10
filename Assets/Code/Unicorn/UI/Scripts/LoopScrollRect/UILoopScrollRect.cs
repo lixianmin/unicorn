@@ -192,16 +192,17 @@ namespace Unicorn.UI
 
         public void AddRecord(IRecord record)
         {
+            const string method = nameof(AddRecord);
             // widget看起来可以是null
             if (cellTransform == null)
             {
-                Logo.Warn("[AddWidget] cellTransform=null");
+                Logo.Warn($"[{method}] cellTransform=null");
                 return;
             }
 
             if (_direction == null)
             {
-                Logo.Warn("[AddWidget] _direction=null, the script should Awake()");
+                Logo.Warn($"[{method}] _direction=null, the script should Awake()");
                 return;
             }
 
@@ -226,11 +227,11 @@ namespace Unicorn.UI
 
             if (isDebugging)
             {
-                Logo.Info($"[AddWidget] relativeArea={relativeArea} area={area} isVisible={isVisible}");
+                Logo.Info($"[{method}] relativeArea={relativeArea} area={area} isVisible={isVisible}");
             }
         }
 
-        public void RemoveWidget(int index)
+        public void RemoveRecord(int index)
         {
             var count = _cells.Count;
             if (index < 0 || index >= count)
@@ -292,8 +293,8 @@ namespace Unicorn.UI
                 var rect = _SpawnCellTransform(cell);
                 cell.SetTransform(rect);
 
-                var widget = cell.GetRecord();
-                widget?.OnVisibleChanged(cell);
+                var record = cell.GetRecord();
+                record?.OnVisibleChanged(cell);
             }
         }
 
