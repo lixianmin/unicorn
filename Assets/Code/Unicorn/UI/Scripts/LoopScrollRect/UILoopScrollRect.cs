@@ -190,7 +190,7 @@ namespace Unicorn.UI
             }
         }
 
-        public void AddWidget(IWidget widget)
+        public void AddRecord(IRecord record)
         {
             // widget看起来可以是null
             if (cellTransform == null)
@@ -209,8 +209,10 @@ namespace Unicorn.UI
             var index = _cells.Count;
             var areaPos = _direction.GetCellAreaPos(index, _rank, sizeDelta);
 
+            // 1. cell跟record是一一对应的, 只不过record是纯数据层, 而cell把record包了一层
+            // 2. cell中使用哪一个transform是不确定的, 是显示的时候从pool中挖出来的
             var area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
-            var cell = new Cell(area, widget);
+            var cell = new Cell(area, record);
 
             var relativeArea = _GetRelativeViewportArea();
             var isVisible = relativeArea.Overlaps(area);
@@ -290,7 +292,7 @@ namespace Unicorn.UI
                 var rect = _SpawnCellTransform(cell);
                 cell.SetTransform(rect);
 
-                var widget = cell.GetWidget();
+                var widget = cell.GetRecord();
                 widget?.OnVisibleChanged(cell);
             }
         }
@@ -301,8 +303,8 @@ namespace Unicorn.UI
             {
                 cell.SetVisible(false);
                 // 确保所有的OnVisibleChanged事件中, Transform都是可用的, 方便client设置一些东西
-                var widget = cell.GetWidget();
-                widget?.OnVisibleChanged(cell);
+                var record = cell.GetRecord();
+                record?.OnVisibleChanged(cell);
 
                 // 逻辑可保证只有visible的cell才有transform, 才需要回收
                 var rect = cell.GetTransform();

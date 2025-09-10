@@ -55,16 +55,16 @@ namespace Clients.UI
 
             foreach (var good in ShopManager.It.GetGoods())
             {
-                var widget = new UIShopWidget(good);
-                _loopScrollRect.UI.AddWidget(widget);
+                var record = new ShopRecord(good);
+                _loopScrollRect.UI.AddRecord(record);
                 Logo.Info($"tid={good.GetTemplateId()}, good={good}");
             }
         }
 
         private void _OnInsertGoods(ShopGood good)
         {
-            var widget = new UIShopWidget(good);
-            _loopScrollRect.UI.AddWidget(widget);
+            var widget = new ShopRecord(good);
+            _loopScrollRect.UI.AddRecord(widget);
         }
 
         private void _OnDeleteGoods(ShopGood good)
@@ -74,7 +74,7 @@ namespace Clients.UI
             for (int i = 0; i < count; i++)
             {
                 var cell = ui.GetCell(i);
-                var widget = cell.GetWidget() as UIShopWidget;
+                var widget = cell.GetRecord() as ShopRecord;
                 if (widget!.GetTemplateId() == good.GetTemplateId())
                 {
                     ui.RemoveWidget(i);

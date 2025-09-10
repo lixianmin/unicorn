@@ -21,17 +21,17 @@ namespace Unicorn.UI
 {
     partial class UILoopScrollRect
     {
-        public interface IWidget
+        public interface IRecord
         {
             void OnVisibleChanged(Cell cell);
         }
 
         public class Cell : IHaveTransform
         {
-            public Cell(Rect area, IWidget widget)
+            public Cell(Rect area, IRecord record)
             {
                 _area = area;
-                _widget = widget;
+                _record = record;
             }
 
             internal Rect GetArea()
@@ -65,12 +65,12 @@ namespace Unicorn.UI
             }
 
             /// <summary>
-            /// 如果widget一开始传进来的就是null, 那么它就只能是null了
+            /// 如果record一开始传进来的就是null, 那么它就只能是null了
             /// </summary>
             /// <returns></returns>
-            public IWidget GetWidget()
+            public IRecord GetRecord()
             {
-                return _widget;
+                return _record;
             }
 
             internal void CopyFrom(Cell other)
@@ -98,7 +98,7 @@ namespace Unicorn.UI
             }
 
             private Rect _area; // 相对于viewport判定可见性
-            private readonly IWidget _widget;
+            private readonly IRecord _record;
 
             private bool _isVisible;
             private RectTransform _transform;

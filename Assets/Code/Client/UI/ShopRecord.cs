@@ -24,9 +24,9 @@ using UnityEngine;
 
 namespace Clients.UI
 {
-    public class UIShopWidget : UILoopScrollRect.IWidget
+    public class ShopRecord : UILoopScrollRect.IRecord
     {
-        public UIShopWidget(ShopGood good)
+        public ShopRecord(ShopGood good)
         {
             _good = good;
         }
