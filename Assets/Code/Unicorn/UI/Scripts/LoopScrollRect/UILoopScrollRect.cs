@@ -25,6 +25,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 *********************************************************************/
 
+using System;
 using Unicorn.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,14 +62,14 @@ namespace Unicorn.UI
 
         private void _InitViewportAndContent()
         {
-            var rectContent = _scrollRect.content;
-            _contentTransform = rectContent;
+            var contentTransform = _scrollRect.content;
+            _contentTransform = contentTransform;
 
             // 设置Content对齐方式为左上角
-            rectContent.anchorMin = Vector2.up;
-            rectContent.anchorMax = Vector2.up;
+            contentTransform.anchorMin = Vector2.up;
+            contentTransform.anchorMax = Vector2.up;
             // 设置pivot为 (0, 1), 至少在uishop中需要这样子
-            rectContent.pivot = Vector2.up;
+            contentTransform.pivot = Vector2.up;
 
             // var rectAncestor = rectContent.parent as RectTransform;
             // // 如果是stretch mode, 就取其父节点
@@ -93,7 +94,7 @@ namespace Unicorn.UI
                 return;
             }
 
-            rectContent.sizeDelta = size;
+            contentTransform.sizeDelta = size;
 
             // 初始化_viewportArea
             _viewportArea = new Rect(0, -size.y, size.x, size.y);
@@ -177,16 +178,50 @@ namespace Unicorn.UI
             var cellSize = cellTransform!.sizeDelta;
             var nonRankCount = (_cells.Count + _rank - 1) / _rank;
 
+            string k;
+            float v;
+
             var dir = _direction.GetDirection();
             if (dir is Direction.LeftToRight or Direction.RightToLeft)
             {
-                var totalWidth = nonRankCount * cellSize.x;
-                _contentTransform.sizeDelta = new Vector2(totalWidth, _contentTransform.sizeDelta.y);
+                v = nonRankCount * cellSize.x;
+                _contentTransform.sizeDelta = new Vector2(v, _contentTransform.sizeDelta.y);
+                k = "totalWidth";
             }
             else
             {
-                var totalHeight = nonRankCount * cellSize.y;
-                _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, totalHeight);
+                v = nonRankCount * cellSize.y;
+                _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, v);
+                k = "totalHeight";
+            }
+
+            if (isDebugging)
+            {
+                const string method = nameof(_ResetContentArea);
+                Logo.Info($"[{method}] {k}={v} dir={dir} _cells.Count={_cells.Count} _rank={_rank} nonRankCount={nonRankCount} cellSize={cellSize}");
+                _PrintDirection(dir);
+            }
+        }
+
+        private static void _PrintDirection(Direction direction)
+        {
+            const string method = nameof(_PrintDirection);
+            switch (direction)
+            {
+                case Direction.BottomToTop:
+                    Logo.Info($"[{method}] BottomToTop => 向下拉scrollbar的时候, 内容从bottom到top走");
+                    break;
+                case Direction.TopToBottom:
+                    Logo.Info($"[{method}] TopToBottom => 向下拉scrollbar的时候, 内容从top到bottom走");
+                    break;
+                case Direction.LeftToRight:
+                    Logo.Info($"[{method}] LeftToRight => 向右拉scrollbar的时候, 内容从left到right走");
+                    break;
+                case Direction.RightToLeft:
+                    Logo.Info($"[{method}] RightToLeft => 向右拉scrollbar的时候, 内容从right到left走");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
 
