@@ -206,7 +206,7 @@ namespace Unicorn.UI.Internal
         internal bool IsDebugging()
         {
             // return master.GetAssetPath().EndsWith("uibag.prefab");
-            return false;
+            return HasFlag(FetusFlags.Debugging);
         }
 
         internal string GetAssetPath()

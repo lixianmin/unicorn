@@ -24,6 +24,7 @@ namespace Unicorn.UI.Internal
     {
         None = 0x00,
         Cache = 0x01,
+        Debugging = 0x02,
 
         Loaded = 0x10,
         Opened = 0x20, // 指OpenedState

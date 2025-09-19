@@ -24,5 +24,6 @@ namespace Unicorn.UI
     {
         None = 0x00,
         Cache = 0x01, // 加载后, 缓存窗体gameObject在内存中, 但会执行完整的从Loaded->Unloading的所有事件流程
+        Debugging = 0x02, // 激活调试模式, 打印状态机切换的日志
     }
 }
