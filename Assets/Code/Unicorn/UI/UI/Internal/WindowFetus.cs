@@ -169,24 +169,15 @@ namespace Unicorn.UI.Internal
             }
         }
 
-        internal UIStateBase GetState()
-        {
-            return _state;
-        }
+        internal UIStateBase GetState() => _state;
 
-        public UISerializer GetSerializer()
-        {
-            return _serializer;
-        }
+        public UISerializer GetSerializer() => _serializer;
 
         /// <summary>
         /// 用于度量window的加载进度
         /// </summary>
         /// <returns></returns>
-        public WebData GetWebNode()
-        {
-            return _webNode;
-        }
+        public WebData GetWebNode() => _webNode;
 
         public void AddFlag(FetusFlags flag)
         {
@@ -209,15 +200,14 @@ namespace Unicorn.UI.Internal
             return HasFlag(FetusFlags.Debugging);
         }
 
-        internal string GetAssetPath()
+        public override string ToString()
         {
-            return master.GetAssetPath();
+            return $"_nextKind={_nextKind} assetPath={master.GetAssetPath()}";
         }
 
-        public Transform GetTransform()
-        {
-            return _transform;
-        }
+        internal string GetAssetPath() => master.GetAssetPath();
+        public Transform GetTransform() => _transform;
+        // public StateKind GetNextStateKind() => _nextKind;
 
         internal readonly UIWindowBase master;
 

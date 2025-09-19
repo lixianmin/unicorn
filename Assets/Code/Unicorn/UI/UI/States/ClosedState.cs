@@ -30,7 +30,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[ClosedState.OnOpenWindow()]");    
+                Logo.Warn($"[ClosedState.OnOpenWindow()] fetus=[{fetus}]");    
             }
 
             fetus.ChangeState(StateKind.OpenAnimation);

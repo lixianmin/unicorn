@@ -25,7 +25,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn($"[CloseAnimationState.OnEnter()] _delayedAction={_delayedAction}");    
+                Logo.Warn($"[CloseAnimationState.OnEnter()] _delayedAction={_delayedAction} fetus=[{fetus}]");    
             }
             
             var serializer = fetus.GetSerializer();
@@ -52,7 +52,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn($"[CloseAnimationState.OnExit()] _delayedAction={_delayedAction}");    
+                Logo.Warn($"[CloseAnimationState.OnExit()] _delayedAction={_delayedAction} fetus=[{fetus}]");    
             }
             
             _closeAnimation = null;
@@ -85,7 +85,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[CloseAnimationState.OnOpenWindow()]");    
+                Logo.Warn($"[CloseAnimationState.OnOpenWindow()] fetus=[{fetus}]");    
             }
 
             if (_isPlaying)
@@ -104,7 +104,7 @@ namespace Unicorn.UI.States
             
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[CloseAnimationState.OnCloseWindow()]");    
+                Logo.Warn($"[CloseAnimationState.OnCloseWindow()] fetus=[{fetus}]");    
             }
         }
 

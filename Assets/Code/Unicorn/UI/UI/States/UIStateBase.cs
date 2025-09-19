@@ -58,15 +58,19 @@ namespace Unicorn.UI.States
             return state;
         }
 
-        public virtual void OnEnter(WindowFetus fetus, object arg1) {}
+        public virtual void OnEnter(WindowFetus fetus, object arg1)
+        {
+        }
 
-        public virtual void OnExit(WindowFetus fetus, object arg1) {}
+        public virtual void OnExit(WindowFetus fetus, object arg1)
+        {
+        }
 
         public virtual void OnOpenWindow(WindowFetus fetus)
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[UIStateBase.OnOpenWindow()]");    
+                Logo.Warn($"[UIStateBase.OnOpenWindow()] fetus=[{fetus}]");
             }
         }
 
@@ -74,7 +78,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[UIStateBase.OnCloseWindow()]");    
+                Logo.Warn($"[UIStateBase.OnCloseWindow()] fetus=[{fetus}]");
             }
         }
 

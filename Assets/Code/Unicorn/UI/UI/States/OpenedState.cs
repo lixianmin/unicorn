@@ -57,7 +57,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[OpenedState.OnOpenWindow()]");    
+                Logo.Warn($"[OpenedState.OnOpenWindow()] fetus=[{fetus}]");    
             }
             
             if (fetus.HasFlag(FetusFlags.Opened))
@@ -88,7 +88,7 @@ namespace Unicorn.UI.States
             
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[ClosedState.OnOpenWindow()]");    
+                Logo.Warn($"[ClosedState.OnOpenWindow()] fetus=[{fetus}]");    
             }
         }
 

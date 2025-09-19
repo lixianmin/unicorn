@@ -63,10 +63,19 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[LoadState.OnOpenWindow()]");
+                Logo.Warn($"[LoadState.OnOpenWindow()] fetus=[{fetus}]");
             }
 
-            _delayedAction = DelayedAction.OpenWindow;
+            // 如果gameObject已经加载完成了, 即使当前是LoadState也需要设置一下Load状态. 这是因为在连续多次的开关过程中, _nextKind不一定是啥值
+            var isLoaded = fetus.HasFlag(FetusFlags.Loaded);
+            if (isLoaded)
+            {
+                fetus.ChangeState(StateKind.Load);
+            }
+            else
+            {
+                _delayedAction = DelayedAction.OpenWindow;
+            }
         }
 
         public override void OnCloseWindow(WindowFetus fetus)
@@ -84,8 +93,7 @@ namespace Unicorn.UI.States
 
             if (fetus.IsDebugging())
             {
-                Logo.Warn(
-                    $"[LoadState.OnCloseWindow()] _delayedAction={_delayedAction} assetPath={fetus.GetAssetPath()}");
+                Logo.Warn($"[LoadState.OnCloseWindow()] _delayedAction={_delayedAction} fetus=[{fetus}]");
             }
         }
 
@@ -108,7 +116,7 @@ namespace Unicorn.UI.States
                 if (fetus.IsDebugging())
                 {
                     Logo.Warn(
-                        $"[LoadState._OnLoadedPrefab()] _delayedAction={_delayedAction} isLoading={isLoading} assetPath={fetus.GetAssetPath()}");
+                        $"[LoadState._OnLoadedPrefab()] _delayedAction={_delayedAction} isLoading={isLoading} fetus=[{fetus}]");
                 }
 
                 if (_delayedAction == DelayedAction.CloseWindow)
@@ -148,8 +156,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn(
-                    $"[LoadState._OnLoadGameObject()] _delayedAction={_delayedAction} assetPath={fetus.GetAssetPath()}");
+                Logo.Warn($"[LoadState._OnLoadGameObject()] _delayedAction={_delayedAction} fetus=[{fetus}]");
             }
 
             fetus.OnLoadGameObject(transform);

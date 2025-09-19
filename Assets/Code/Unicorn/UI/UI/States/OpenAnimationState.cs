@@ -74,7 +74,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn($"[OpenAnimationState.OnOpenWindow()] assetPath={fetus.GetAssetPath()}");
+                Logo.Warn($"[OpenAnimationState.OnOpenWindow()] fetus=[{fetus}]");
             }
 
             _delayedAction = DelayedAction.OpenWindow;
@@ -94,7 +94,7 @@ namespace Unicorn.UI.States
 
             if (fetus.IsDebugging())
             {
-                Logo.Warn($"[OpenAnimationState.OnCloseWindow()] assetPath={fetus.GetAssetPath()}");
+                Logo.Warn($"[OpenAnimationState.OnCloseWindow()] fetus=[{fetus}]");
             }
         }
 

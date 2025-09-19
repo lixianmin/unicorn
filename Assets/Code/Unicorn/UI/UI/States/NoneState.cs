@@ -25,7 +25,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[NoneState.OnOpenWindow()]");    
+                Logo.Warn($"[NoneState.OnOpenWindow()] fetus=[{fetus}]");    
             }
             
             fetus.ChangeState(StateKind.Load);
@@ -35,7 +35,7 @@ namespace Unicorn.UI.States
         {
             if (fetus.IsDebugging())
             {
-                Logo.Warn("[NoneState.OnCloseWindow()]");    
+                Logo.Warn($"[NoneState.OnCloseWindow()] fetus=[{fetus}]");    
             }
             
             fetus.ChangeState(StateKind.None);
