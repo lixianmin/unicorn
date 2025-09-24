@@ -22,7 +22,7 @@ namespace Unicorn
             public bool IsDisposed;
         }
 
-        public static List<T> Get<T>()
+        public static List2<T> Get<T>()
         {
             return InnerData<T>.Pool.Get();
         }
