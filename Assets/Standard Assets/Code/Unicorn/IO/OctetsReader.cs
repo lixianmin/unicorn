@@ -158,26 +158,12 @@ namespace Unicorn.IO
 
         public override int ReadInt32()
         {
-            if (_dontCompress)
-            {
-                return base.ReadInt32();
-            }
-            else
-            {
-                return _UnpackInt32();
-            }
+            return _dontCompress ? base.ReadInt32() : _UnpackInt32();
         }
 
         public override uint ReadUInt32()
         {
-            if (_dontCompress)
-            {
-                return base.ReadUInt32();
-            }
-            else
-            {
-                return _UnpackUInt32();
-            }
+            return _dontCompress ? base.ReadUInt32() : _UnpackUInt32();
         }
 
         public new int Read7BitEncodedInt()

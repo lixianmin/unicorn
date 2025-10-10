@@ -88,17 +88,19 @@ namespace Unicorn.Road
         private static Chunk<byte> _ReadBytes(OctetsReader reader)
         {
             var size = reader.Read7BitEncodedInt();
-            var bytes = reader.ReadBytes(size);
-            if (bytes.Length != size)
+            if (size == 0)
+            {
+                return default;
+            }
+
+            var chunk = ChunkPool.Get<byte>(size);
+            var readNum = reader.Read(chunk.Items, 0, size);
+            if (readNum != size)
             {
                 throw new EndOfStreamException(nameof(size));
             }
 
-            return new Chunk<byte>
-            {
-                Items = bytes,
-                Size = size
-            };
+            return chunk;
         }
 
         private static void _WriteBytes(OctetsWriter writer, Chunk<byte> chunk)

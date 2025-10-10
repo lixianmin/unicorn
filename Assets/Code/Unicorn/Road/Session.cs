@@ -268,6 +268,7 @@ namespace Unicorn.Road
                     {
                         var pack = _packets.Items[i];
                         _OnReceivedPacket(pack);
+                        pack.ReturnToPool();
                     }
 
                     _packets.Clear();
@@ -426,7 +427,7 @@ namespace Unicorn.Road
                 return;
             }
 
-            var hasError = pack.Code.Size > 0;
+            var hasError = pack.Code.Items is { Length: > 0 };
             if (hasError)
             {
                 var err = new Error
@@ -519,6 +520,7 @@ namespace Unicorn.Road
             }
 
             _SendPacket(pack);
+            pack.ReturnToPool();
             return SocketError.Success;
         }
 
@@ -546,7 +548,8 @@ namespace Unicorn.Road
                 return;
             }
 
-            if (data.Size > 0)
+            // data.Size有时候正常情况下也是0
+            if (err == null)
             {
                 var response = _serde.Deserialize<T>(data);
                 try

@@ -25,6 +25,12 @@ namespace Unicorn.Road
         public int RequestId; // 请求的rid, 用于client请求时定位response的handler
         public Chunk<byte> Code; // error code
         public Chunk<byte> Data; // 如果有error code, 则Data是error message; 否则Data是数据payload
+
+        internal void ReturnToPool()
+        {
+            ChunkPool.Return(Code);
+            ChunkPool.Return(Data);
+        }
     }
 
     // server握手协议, 使用json序列化
