@@ -32,7 +32,7 @@ namespace Unicorn
             var length = items?.Length ?? 0;
             if (length > 0 && (length & (length - 1)) == 0)
             {
-                // ArrayPool<T>.Shared.Return(items, clearArray);
+                ArrayPool<T>.Shared.Return(items, clearArray);
             }
         }
     }

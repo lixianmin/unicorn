@@ -19,9 +19,9 @@ namespace Unicorn.Road
 {
     public interface ISerde
     {
-        public byte[] Serialize(object item);
+        public Chunk<byte> Serialize(object input);
 
-        public T Deserialize<T>(byte[] data) where T : new();
+        public T Deserialize<T>(Chunk<byte> input) where T : new();
 
         public string GetName();
     }

@@ -23,33 +23,41 @@ namespace Unicorn.Road
 {
     public class JsonSerde : ISerde
     {
-        public byte[] Serialize(object item)
+        public Chunk<byte> Serialize(object input)
         {
-            if (null != item)
+            if (null != input)
             {
-                if (item is byte[] buffer)
+                if (input is byte[] buffer)
                 {
-                    return buffer;
+                    return new Chunk<byte>
+                    {
+                        Items = buffer,
+                        Size = buffer.Length
+                    };
                 }
 
-                var text = JsonUtility.ToJson(item);
+                var text = JsonUtility.ToJson(input);
                 var bytes = Encoding.UTF8.GetBytes(text);
-                return bytes;
+                return new Chunk<byte>
+                {
+                    Items = bytes,
+                    Size = bytes.Length
+                };
             }
 
-            return Array.Empty<byte>();
+            return new Chunk<byte> { Items = Array.Empty<byte>() };
         }
 
-        public T Deserialize<T>(byte[] data) where T : new()
+        public T Deserialize<T>(Chunk<byte> input) where T : new()
         {
-            return (T)Deserialize(data, typeof(T));
+            return (T)Deserialize(input, typeof(T));
         }
 
-        public object Deserialize(byte[] data, Type type)
+        public object Deserialize(Chunk<byte> input, Type type)
         {
-            if (data != null && type != null)
+            if (input.Size > 0 && type != null)
             {
-                var text = Encoding.UTF8.GetString(data);
+                var text = Encoding.UTF8.GetString(input.Items);
                 return JsonUtility.FromJson(text, type);
             }
 

@@ -23,8 +23,8 @@ namespace Unicorn.Road
 
         // public byte[] Route; // kind >= RouteBase <=> Route有值
         public int RequestId; // 请求的rid, 用于client请求时定位response的handler
-        public byte[] Code; // error code
-        public byte[] Data; // 如果有error code, 则Data是error message; 否则Data是数据payload
+        public Chunk<byte> Code; // error code
+        public Chunk<byte> Data; // 如果有error code, 则Data是error message; 否则Data是数据payload
     }
 
     // server握手协议, 使用json序列化

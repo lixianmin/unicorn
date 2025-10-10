@@ -33,14 +33,14 @@ namespace Unicorn.Road
     {
         private class Handler
         {
-            public void Invoke(byte[] data, Error err)
+            public void Invoke(Chunk<byte> data, Error err)
             {
                 done = true;
                 callback(data, err);
             }
 
             public float expireTime;
-            public Action<byte[], Error> callback;
+            public Action<Chunk<byte>, Error> callback;
             public bool done;
         }
 
@@ -113,7 +113,7 @@ namespace Unicorn.Road
             {
                 foreach (var handler in _requestHandlers.Values)
                 {
-                    handler.Invoke(null, _clientSideTimeoutError);
+                    handler.Invoke(default, _clientSideTimeoutError);
                 }
 
                 _requestHandlers.Clear();
@@ -207,7 +207,7 @@ namespace Unicorn.Road
                 {
                     if (now > handler.expireTime)
                     {
-                        handler.Invoke(null, _clientSideTimeoutError);
+                        handler.Invoke(default, _clientSideTimeoutError);
                     }
                 }
 
@@ -288,7 +288,7 @@ namespace Unicorn.Road
                     // Logo.Info("[_OnReceivedPacket] received heartbeat");
                     break;
                 case PacketKind.Kick:
-                    var reason = Encoding.UTF8.GetString(pack.Data);
+                    var reason = Encoding.UTF8.GetString(pack.Data.AsSpan());
                     _Kick(reason);
                     break;
                 case PacketKind.RouteKind:
@@ -305,7 +305,7 @@ namespace Unicorn.Road
 
         private void _OnReceivedHandshake(Packet pack)
         {
-            var text = Encoding.UTF8.GetString(pack.Data);
+            var text = Encoding.UTF8.GetString(pack.Data.AsSpan());
             var handshake = (JsonHandshake)JsonUtility.FromJson(text, typeof(JsonHandshake));
 
             Logo.Info($"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} sid={handshake.sid}");
@@ -364,7 +364,7 @@ namespace Unicorn.Road
 
             // ~~如果被踢了, 就老老实实的退出去吧, 别想着断线重连了~~
             // _reconnectAction = null;
-            
+
             // _serverGid = string.Empty;
             CallbackTools.Handle(_onKickedHandler, reason, string.Empty);
             Logo.Warn($"kicked by server, reason={reason}");
@@ -390,7 +390,7 @@ namespace Unicorn.Road
 
         private void _OnReceivedRouteKind(Packet pack)
         {
-            var text = Encoding.UTF8.GetString(pack.Data);
+            var text = Encoding.UTF8.GetString(pack.Data.AsSpan());
             var bean = (JsonRouteKind)JsonUtility.FromJson(text, typeof(JsonRouteKind));
             _routeKinds[bean.route] = bean.kind;
             _kindRoutes[bean.kind] = bean.route;
@@ -426,15 +426,15 @@ namespace Unicorn.Road
                 return;
             }
 
-            var hasError = pack.Code is { Length: > 0 };
+            var hasError = pack.Code.Size > 0;
             if (hasError)
             {
                 var err = new Error
                 {
-                    Code = Encoding.UTF8.GetString(pack.Code),
-                    Message = Encoding.UTF8.GetString(pack.Data)
+                    Code = Encoding.UTF8.GetString(pack.Code.AsSpan()),
+                    Message = Encoding.UTF8.GetString(pack.Data.AsSpan())
                 };
-                handler.Invoke(null, err);
+                handler.Invoke(default, err);
             }
             else
             {
@@ -538,7 +538,7 @@ namespace Unicorn.Road
             };
         }
 
-        private void _CallHandler<T>(Action<T, Error> handler, byte[] data, Error err) where T : new()
+        private void _CallHandler<T>(Action<T, Error> handler, Chunk<byte> data, Error err) where T : new()
         {
             if (_serde == null)
             {
@@ -546,7 +546,7 @@ namespace Unicorn.Road
                 return;
             }
 
-            if (data != null)
+            if (data.Size > 0)
             {
                 var response = _serde.Deserialize<T>(data);
                 try

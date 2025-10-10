@@ -85,7 +85,7 @@ namespace Unicorn.Road
             }
         }
 
-        private static byte[] _ReadBytes(OctetsReader reader)
+        private static Chunk<byte> _ReadBytes(OctetsReader reader)
         {
             var size = reader.Read7BitEncodedInt();
             var bytes = reader.ReadBytes(size);
@@ -94,16 +94,20 @@ namespace Unicorn.Road
                 throw new EndOfStreamException(nameof(size));
             }
 
-            return bytes;
+            return new Chunk<byte>
+            {
+                Items = bytes,
+                Size = size
+            };
         }
 
-        private static void _WriteBytes(OctetsWriter writer, byte[] bytes)
+        private static void _WriteBytes(OctetsWriter writer, Chunk<byte> chunk)
         {
-            if (bytes != null)
+            if (chunk.Size > 0)
             {
-                var size = bytes.Length;
+                var size = chunk.Size;
                 writer.Write7BitEncodedInt(size);
-                writer.Write(bytes);
+                writer.Write(chunk.Items, 0, size);
             }
             else
             {
