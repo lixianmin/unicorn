@@ -26,7 +26,7 @@ using Unicorn.IO;
 using Unicorn.Collections;
 namespace Unicorn.Road
 {
-    internal class SessionThread
+    internal sealed class SessionThread
     {
         public SessionThread(IPAddress address, int port)
         {

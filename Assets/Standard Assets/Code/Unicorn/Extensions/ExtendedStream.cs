@@ -16,7 +16,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             return stream.ReadByte() != 0;
@@ -26,7 +26,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             _byteBuffer[0] = (byte)((!v) ? 0 : 1);
@@ -37,7 +37,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             _ReadFloatBuffer(stream, 4);
@@ -49,7 +49,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             _floatBuffer[0] = num;
@@ -60,7 +60,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             _ = stream.Read(_byteBuffer, 0, 4);
@@ -77,7 +77,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             _byteBuffer[0] = (byte)num;
@@ -92,7 +92,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             stream.Read(_byteBuffer, 0, 8);
@@ -115,7 +115,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             int shift = 0;
@@ -132,7 +132,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             var count = stream.ReadInt32();
@@ -152,7 +152,7 @@ namespace Unicorn
         {
             if (null == stream)
             {
-                throw new ArgumentNullException("stream = null.");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             bytes ??= Array.Empty<byte>();
