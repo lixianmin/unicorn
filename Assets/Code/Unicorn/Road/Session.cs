@@ -289,7 +289,7 @@ namespace Unicorn.Road
                     // Logo.Info("[_OnReceivedPacket] received heartbeat");
                     break;
                 case PacketKind.Kick:
-                    var reason = Encoding.UTF8.GetString(pack.Data.AsSpan());
+                    var reason = _EncodeToString(pack.Data);
                     _Kick(reason);
                     break;
                 case PacketKind.RouteKind:
@@ -306,7 +306,7 @@ namespace Unicorn.Road
 
         private void _OnReceivedHandshake(Packet pack)
         {
-            var text = Encoding.UTF8.GetString(pack.Data.AsSpan());
+            var text = _EncodeToString(pack.Data);
             var handshake = (JsonHandshake)JsonUtility.FromJson(text, typeof(JsonHandshake));
 
             Logo.Info($"handshake: nonce={handshake.nonce} heartbeat={handshake.heartbeat} sid={handshake.sid}");
@@ -391,12 +391,17 @@ namespace Unicorn.Road
 
         private void _OnReceivedRouteKind(Packet pack)
         {
-            var text = Encoding.UTF8.GetString(pack.Data.AsSpan());
+            var text = _EncodeToString(pack.Data);
             var bean = (JsonRouteKind)JsonUtility.FromJson(text, typeof(JsonRouteKind));
             _routeKinds[bean.route] = bean.kind;
             _kindRoutes[bean.kind] = bean.route;
 
             Logo.Info($"[_OnReceivedRouteKind()] kind={bean.kind} route={bean.route}");
+        }
+
+        private static string _EncodeToString(Chunk<byte> chunk)
+        {
+            return Encoding.UTF8.GetString(chunk.Items.AsSpan(0, chunk.Size));
         }
 
         private void _OnReceivedEcho(Packet pack)
@@ -432,8 +437,8 @@ namespace Unicorn.Road
             {
                 var err = new Error
                 {
-                    Code = Encoding.UTF8.GetString(pack.Code.AsSpan()),
-                    Message = Encoding.UTF8.GetString(pack.Data.AsSpan())
+                    Code = _EncodeToString(pack.Code),
+                    Message = _EncodeToString(pack.Data)
                 };
                 handler.Invoke(default, err);
             }

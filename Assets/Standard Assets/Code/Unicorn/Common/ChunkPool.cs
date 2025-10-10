@@ -25,6 +25,7 @@ namespace Unicorn
                 };
             }
 
+            // 这里必须返回一个非null的Items, 否则protobuf中的new CodedOutputStream(chunk.Items) 会抛出异常
             return new Chunk<T> { Items = Array.Empty<T>() };
         }
 
@@ -32,6 +33,7 @@ namespace Unicorn
         {
             var items = chunk.Items;
             var length = items?.Length ?? 0;
+            // 可以放到pool中的都需要是2的N次方长度的array
             if (length > 0 && (length & (length - 1)) == 0)
             {
                 ArrayPool<T>.Shared.Return(items, clearArray);

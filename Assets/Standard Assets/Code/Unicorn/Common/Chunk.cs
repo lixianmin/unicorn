@@ -13,7 +13,6 @@ namespace Unicorn
     {
         public T[] Items;
         public int Size;
-        // public static Chunk<T> Empty => new() { Items = EmptyArray<T>.It, Size = 0 };
 
         public Span<T> AsSpan()
         {
