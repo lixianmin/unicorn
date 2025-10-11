@@ -26,7 +26,7 @@ namespace Unicorn.UI.States
         public override void OnEnter(WindowFetus fetus, object arg1)
         {
             var assetPath = fetus.GetAssetPath();
-            _loadWindowMask.OpenWindow(assetPath);
+            _loadWindowMask.OpenWindow(fetus);
 
             if (string.IsNullOrEmpty(assetPath))
             {
@@ -55,8 +55,7 @@ namespace Unicorn.UI.States
 
         public override void OnExit(WindowFetus fetus, object arg1)
         {
-            var assetPath = fetus.GetAssetPath();
-            _loadWindowMask.CloseWindow(assetPath);
+            _loadWindowMask.CloseWindow(fetus);
         }
 
         public override void OnOpenWindow(WindowFetus fetus)

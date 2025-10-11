@@ -16,6 +16,7 @@ limitations under the License.
 *********************************************************************/
 
 using System.Collections;
+using Unicorn.UI.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,9 +29,14 @@ namespace Unicorn.UI
             _discolorTime = Mathf.Max(discolorTime, 0);
         }
 
-        public void OpenWindow(string assetPath)
+        public void OpenWindow(WindowFetus fetus)
         {
-            // Logo.Warn($"[OpenWindow()] _openCount={_openCount}, assetPath={assetPath}");
+            if (fetus.IsDebugging())
+            {
+                var assetPath = fetus.GetAssetPath();
+                Logo.Warn($"[UILoadingMask.OpenWindow()] _openCount={_openCount}, assetPath={assetPath}");
+            }
+
             _EnsureCreateGameObject();
 
             if (_openCount == 0)
@@ -48,16 +54,25 @@ namespace Unicorn.UI
             _openCount++;
         }
 
-        public void CloseWindow(string assetPath)
+        public void CloseWindow(WindowFetus fetus)
         {
+            var assetPath = fetus.GetAssetPath();
             if (_openCount <= 0)
             {
-                // Logo.Warn($"[CloseWindow()] _openCount={_openCount}, assetPath={assetPath}");
+                if (fetus.IsDebugging())
+                {
+                    Logo.Warn($"[UILoadingMask.CloseWindow()] _openCount={_openCount}, assetPath={assetPath}");
+                }
+
                 return;
             }
 
             _openCount--;
-            // Logo.Warn($"[CloseWindow()] _openCount={_openCount}, assetPath={assetPath}");
+            if (fetus.IsDebugging())
+            {
+                Logo.Warn($"[UILoadingMask.CloseWindow()] _openCount={_openCount}, assetPath={assetPath}");
+            }
+
             if (_openCount == 0)
             {
                 _gameObject.SetActive(false);
