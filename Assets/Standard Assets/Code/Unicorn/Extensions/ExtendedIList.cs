@@ -145,7 +145,7 @@ namespace Unicorn
             var count = list?.Count ?? 0;
             if (count > 0)
             {
-                using var snapshot = SlicePool.Get<IDisposable>();
+                using var snapshot = SlicePool.Rent<IDisposable>();
                 for (var i = 0; i < count; i++)
                 {
                     if (list![i] is IDisposable item)

@@ -51,7 +51,7 @@ public class MbUnicornGame : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        using var list = SlicePool.Get<string>();
+        using var list = SlicePool.Rent<string>();
         list.Add("hello");
         list.Add("world");
         

@@ -19,12 +19,12 @@ namespace Unicorn
                 Return(this);
             }
 
-            public bool IsDisposed;
+            internal bool IsDisposed;
         }
 
-        public static List2<T> Get<T>()
+        public static List2<T> Rent<T>()
         {
-            return InnerData<T>.Pool.Get();
+            return InnerData<T>.Pool.Rent();
         }
 
         public static void Return<T>(List<T> list)

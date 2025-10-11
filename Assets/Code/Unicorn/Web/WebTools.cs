@@ -142,7 +142,7 @@ namespace Unicorn.Web
             }
 
             _CheckInitVisualEffectPaths();
-            var list = ListPool.Get<VisualEffect>();
+            var list = ListPool.Rent<VisualEffect>();
             goAsset.GetComponentsInChildren(true, list);
 
             var count = list.Count;

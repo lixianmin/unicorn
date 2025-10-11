@@ -99,7 +99,7 @@ namespace Unicorn
                 var root = transform.root;
                 if (transform != root)
                 {
-                    var sbPath = StringBuilderPool.Get();
+                    var sbPath = StringBuilderPool.Rent();
                     _CollectFindPath(transform, root, sbPath);
                     var path = StringBuilderPool.Return(sbPath).ToString();
                     return path;

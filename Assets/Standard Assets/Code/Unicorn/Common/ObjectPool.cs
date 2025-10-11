@@ -18,7 +18,7 @@ namespace Unicorn
             _recycleAction = recycleAction;
         }
 
-        public T Get()
+        public T Rent()
         {
             T item = default;
             var isOk = false;

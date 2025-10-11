@@ -20,7 +20,7 @@ namespace Unicorn
         /// </summary>
         /// <param name="capacity"></param>
         /// <returns></returns>
-        public static StringBuilder Get(int capacity = 256)
+        public static StringBuilder Rent(int capacity = 256)
         {
             var cache = _cache;
             if (cache != null && cache.Capacity >= capacity)

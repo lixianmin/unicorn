@@ -271,7 +271,7 @@ namespace Unicorn.UI
 
         private static void _FetchLabels(UISerializer script)
         {
-            var labelList = ListPool.Get<Text>();
+            var labelList = ListPool.Rent<Text>();
 
             foreach (var node in _ForEachNode(script.transform))
             {
@@ -411,7 +411,7 @@ namespace Unicorn.UI
             _CheckEventSystemExistence(root);
 
             rootScript.widgets = null;
-            var dataList = ListPool.Get<UISerializer.WidgetData>();
+            var dataList = ListPool.Rent<UISerializer.WidgetData>();
             _CollectWidgetFromCode(root, dataList);
 
             _FetchLabels(rootScript);
