@@ -20,7 +20,7 @@ namespace Unicorn
 
         public T Rent()
         {
-            T item = default;
+            T item = null;
             var isOk = false;
 
             // lock (_locker)

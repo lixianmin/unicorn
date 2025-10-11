@@ -12,7 +12,7 @@ namespace Unicorn
 {
     public static class ChunkPool
     {
-        public static Chunk<T> Get<T>(int size)
+        public static Chunk<T> Rent<T>(int size)
         {
             if (size > 0)
             {

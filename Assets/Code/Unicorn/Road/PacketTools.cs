@@ -93,7 +93,7 @@ namespace Unicorn.Road
                 return default;
             }
 
-            var chunk = ChunkPool.Get<byte>(size);
+            var chunk = ChunkPool.Rent<byte>(size);
             var readNum = reader.Read(chunk.Items, 0, size);
             if (readNum != size)
             {
