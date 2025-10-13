@@ -65,11 +65,12 @@ namespace Unicorn.UI.States
                 Logo.Warn($"[LoadState.OnOpenWindow()] fetus=[{fetus}]");
             }
 
-            // 如果gameObject已经加载完成了, 即使当前是LoadState也需要设置一下Load状态. 这是因为在连续多次的开关过程中, _nextKind不一定是啥值
+            // ~~如果gameObject已经加载完成了, 即使当前是LoadState也需要设置一下Load状态. 这是因为在连续多次的开关过程中, _nextKind不一定是啥值~~
+            // 2025-10-13 将下一状态设置为OpenAnimation, 这是为了激活调用到OnExit()方法, 否则会导致_loadWindowMask计数不平衡, 从而loading_mask一直显示
             var isLoaded = fetus.HasFlag(FetusFlags.Loaded);
             if (isLoaded)
             {
-                fetus.ChangeState(StateKind.Load);
+                fetus.ChangeState(StateKind.OpenAnimation);
             }
             else
             {
