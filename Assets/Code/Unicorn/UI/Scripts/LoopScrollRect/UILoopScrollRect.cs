@@ -39,6 +39,12 @@ namespace Unicorn.UI
     {
         private void Awake()
         {
+            if (cellTransform == null)
+            {
+                Logo.Error($"cellTransform is null, UI={transform.GetFindPath()}");
+                return;
+            }
+            
             _scrollRect = GetComponent<ScrollRect>();
             _direction = DirBase.Create(direction);
 
