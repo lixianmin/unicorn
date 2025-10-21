@@ -15,6 +15,7 @@ using UnityEngine;
 
 namespace Unicorn.Web.Internal
 {
+    [UnityEngine.Scripting.Preserve]
     public class MbPrefabAid : MonoBehaviour
     {
         // 1. Caution: Awake() will not be automatically called immediately when _mainAsset is not active.

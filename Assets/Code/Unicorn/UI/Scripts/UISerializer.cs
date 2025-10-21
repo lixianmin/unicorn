@@ -31,6 +31,7 @@ using UnityEngine.UI;
 namespace Unicorn.UI
 {
     [DisallowMultipleComponent]
+    [UnityEngine.Scripting.Preserve]
 	public class UISerializer : MonoBehaviour
     {
         [Serializable]

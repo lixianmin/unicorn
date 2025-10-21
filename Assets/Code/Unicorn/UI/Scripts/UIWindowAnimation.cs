@@ -22,6 +22,12 @@ using UnityEngine;
 
 namespace Unicorn.UI
 {
+    /// <summary>
+    /// 1. 在Assets/link.xml中有Unicorn.dll + stripping level=Low, 但在 ios+hybrid clr的过程中仍然被裁剪掉了
+    /// 2. 目前在client项目的Assets/link.xml中加入本类型是好使的
+    /// 3. 尝试添加 [Preserve] 属性, 希望对改善这件事有帮助, 但未测试, 但相信不会变得更差
+    /// </summary>
+    [UnityEngine.Scripting.Preserve]
     public abstract class UIWindowAnimation : MonoBehaviour
     {
         public async Task Init(Action onAnimationDone)

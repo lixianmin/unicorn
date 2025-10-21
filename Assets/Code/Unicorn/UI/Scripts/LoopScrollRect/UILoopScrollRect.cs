@@ -35,6 +35,7 @@ namespace Unicorn.UI
 {
     [RequireComponent(typeof(UIScrollRect))]
     [DisallowMultipleComponent]
+    [UnityEngine.Scripting.Preserve]
     public partial class UILoopScrollRect : MonoBehaviour
     {
         private void Awake()
