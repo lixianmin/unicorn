@@ -154,6 +154,10 @@ namespace Unicorn.UI
             // Deactivating = null;
             AtClosing = null;
             AtUnloading = null;
+            
+            // 有些window没有机会AtLoaded, 直接就被Dispose()了. 所以AtUnloading不一定会执行, 但AtDisposing一定会执行
+            AtDisposing?.Invoke();
+            AtDisposing = null;
 
             var flags = GetWindowFlags();
             var needCache = flags.HasFlag(WindowFlags.Cache);

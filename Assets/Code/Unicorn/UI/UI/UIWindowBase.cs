@@ -149,6 +149,11 @@ namespace Unicorn.UI
         }
 
         public event Action AtUnloading;
+        
+        /// <summary>
+        /// 有些window没有机会AtLoaded, 直接就被Dispose()了. 所以AtUnloading不一定会执行, 但AtDisposing一定会执行
+        /// </summary>
+        public event Action AtDisposing;
 
         /// <summary>
         /// 慢速帧，大概10fps；如果感觉频率不够，可考虑实现IExpensiveUpdater接口
