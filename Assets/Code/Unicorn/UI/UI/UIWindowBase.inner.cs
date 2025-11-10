@@ -130,7 +130,7 @@ namespace Unicorn.UI
             }
         }
 
-        internal void ResetDispose()
+        internal void ResetDisposed()
         {
             _isDisposed = false;
         }

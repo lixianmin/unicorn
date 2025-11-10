@@ -32,7 +32,7 @@ namespace Unicorn.UI.Internal
                 var transform = window.GetTransform();
                 if (transform != null)
                 {
-                    window.ResetDispose();
+                    window.ResetDisposed();
                     window.GetFetus().ChangeState(StateKind.Load);
                     transform.gameObject.SetActive(true);
                     return window;
