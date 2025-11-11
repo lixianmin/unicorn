@@ -42,10 +42,10 @@ namespace Unicorn.UI
         {
             if (cellTransform == null)
             {
-                Logo.Error($"cellTransform is null, UI={transform.GetFindPath()}");
+                Logo.Error($"[Awake] cellTransform=null, UI={transform.GetFindPath()}");
                 return;
             }
-            
+
             _scrollRect = GetComponent<ScrollRect>();
             _direction = DirBase.Create(direction);
 
@@ -53,8 +53,9 @@ namespace Unicorn.UI
             _InitViewportAndContent();
             _InitRank();
             _ResetContentArea();
-            
-            Logo.Info($"[{name}] _viewportArea={_viewportArea} _rank={_rank} _contentTransform.sizeDelta={_contentTransform.sizeDelta}");
+
+            Logo.Info(
+                $"[Awake] _viewportArea={_viewportArea} _rank={_rank} _contentTransform.sizeDelta={_contentTransform.sizeDelta}");
         }
 
         private void _InitCellTransform()
@@ -147,6 +148,13 @@ namespace Unicorn.UI
 
         private void Update()
         {
+            if (!_contentTransform)
+            {
+                Logo.Error($"[Update] _contentTransform=null, UI={transform.GetFindPath()}");
+                enabled = false;
+                return;
+            }
+
             var anchoredPosition = _contentTransform.anchoredPosition;
             _isDirty |= _lastAnchoredPosition != anchoredPosition;
             _lastAnchoredPosition = anchoredPosition;
@@ -205,7 +213,8 @@ namespace Unicorn.UI
             if (isDebugging)
             {
                 const string method = nameof(_ResetContentArea);
-                Logo.Info($"[{method}] {k}={v} dir={dir} _cells.Count={_cells.Count} _rank={_rank} nonRankCount={nonRankCount} cellSize={cellSize}");
+                Logo.Info(
+                    $"[{method}] {k}={v} dir={dir} _cells.Count={_cells.Count} _rank={_rank} nonRankCount={nonRankCount} cellSize={cellSize}");
                 _PrintDirection(dir);
             }
         }
@@ -238,7 +247,7 @@ namespace Unicorn.UI
             {
                 return;
             }
-            
+
             const string method = nameof(AddCell);
             // widget看起来可以是null
             if (cellTransform == null)
@@ -260,7 +269,7 @@ namespace Unicorn.UI
             // 1. cell就是数据层, 数量会很大. 因此cell使用哪一个transform是不确定的, 是显示的那一刻从pool中挖出来的
             var area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
             cell.SetArea(area);
-            
+
             var relativeArea = _GetRelativeViewportArea();
             var isVisible = relativeArea.Overlaps(area);
             if (isVisible)
@@ -284,7 +293,7 @@ namespace Unicorn.UI
             {
                 return;
             }
-        
+
             var lastIndex = count - 1;
             // 所有cell的transform均匀向前移动一格
             for (var i = lastIndex; i > index; i--)
@@ -293,11 +302,11 @@ namespace Unicorn.UI
                 var front = _cells[i - 1] as CellBase;
                 back!.CopyFrom(front);
             }
-        
+
             var firstCell = _cells[index] as CellBase;
             _HideCell(firstCell);
             firstCell!.Dispose();
-        
+
             _cells.RemoveAt(index);
             _SetDirty();
         }
@@ -384,7 +393,6 @@ namespace Unicorn.UI
         //             break;
         //     }
         // }
-
         private void _SetDirty()
         {
             _isDirty = true;
