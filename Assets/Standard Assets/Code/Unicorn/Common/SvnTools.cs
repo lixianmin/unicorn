@@ -12,9 +12,9 @@ using System.IO;
 
 namespace Unicorn
 {
-    public static class SvnTools1
+    public static class SvnTools
     {
-        static SvnTools1()
+        static SvnTools()
         {
             _svnExePath = _FindSvnExePath();
         }
