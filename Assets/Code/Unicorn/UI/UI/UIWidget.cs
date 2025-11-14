@@ -66,7 +66,7 @@ namespace Unicorn.UI
                 {
                     if (_window is null)
                     {
-                        Logo.Warn("1.临时变量: 创建时未传window参数 2. 类成员变量: 资源未OnLoaded()");
+                        Logo.Warn("_window=null, 可能原因: 1.临时变量: 创建时未传window参数 2. 类成员变量: 资源尚未OnLoaded()");
                         return null;
                     }
 
