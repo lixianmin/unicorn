@@ -69,18 +69,35 @@ namespace Unicorn
         
         private static string _FindSvnExePath()
         {
-            var svnPath = "/usr/local/bin/svn";
+            // Windows路径
+            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            var svnPath = Path.Combine(programFiles, "TortoiseSVN", "bin", "svn.exe");
             if (File.Exists(svnPath))
             {
                 return svnPath;
             }
-
+        
+            var programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            svnPath = Path.Combine(programFilesX86, "TortoiseSVN", "bin", "svn.exe");
+            if (File.Exists(svnPath))
+            {
+                return svnPath;
+            }
+        
+            // macOS/Linux路径
+            svnPath = "/usr/local/bin/svn";
+            if (File.Exists(svnPath))
+            {
+                return svnPath;
+            }
+        
             svnPath = "/usr/bin/svn";
             if (File.Exists(svnPath))
             {
                 return svnPath;
             }
-
+        
+            // 默认使用系统PATH中的svn
             return "svn";
         }
 
