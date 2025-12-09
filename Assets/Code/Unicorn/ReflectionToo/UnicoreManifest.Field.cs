@@ -45,6 +45,8 @@ namespace Unicorn
             public string iOS = "Low";
             public string WebGL = "Low";
             public string StandaloneOSX = "Low";
+            public string StandaloneWindows = "Low";
+            public string StandaloneWindows64 = "Low";
         }
 
         public StrippingLevels managedStrippingLevels = new();

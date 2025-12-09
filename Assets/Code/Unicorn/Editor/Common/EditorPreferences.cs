@@ -115,6 +115,8 @@ namespace Unicorn
                 BuildTarget.iOS => levels.iOS,
                 BuildTarget.WebGL => levels.WebGL,
                 BuildTarget.StandaloneOSX => levels.StandaloneOSX,
+                BuildTarget.StandaloneWindows => levels.StandaloneWindows,
+                BuildTarget.StandaloneWindows64 => levels.StandaloneWindows64,
                 _ => string.Empty
             };
 
