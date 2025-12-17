@@ -61,6 +61,11 @@ namespace Unicorn.Road
                 return;
             }
 
+            _reconnectAttempt = 0;
+            // bug fix: 初始连接时, 给几秒的连接缓冲时间, 避免在Update()中立即判定为重连
+            // Update()中 if(now >= _nextReconnectTime) 会立即成立导致_reconnectAttempt++及再次调用_reconnectAction
+            _nextReconnectTime = Time.time + 3f;
+
             _reconnectAction = () =>
             {
                 _serdeBuilder = serdeBuilder ?? throw new ArgumentNullException(nameof(serdeBuilder));
