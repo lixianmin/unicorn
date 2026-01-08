@@ -22,9 +22,15 @@ namespace Unicorn
             internal bool IsDisposed;
         }
 
-        public static List2<T> Rent<T>()
+        public static List2<T> Rent<T>(params T[] inputs)
         {
-            return InnerData<T>.Pool.Rent();
+            var list = InnerData<T>.Pool.Rent();
+            foreach (var item in inputs)
+            {
+                list.Add(item);
+            }
+
+            return list;
         }
 
         public static void Return<T>(List<T> list)

@@ -21,9 +21,15 @@ namespace Unicorn.Collections
             internal bool IsDisposed;
         }
 
-        public static Slice2<T> Rent<T>()
+        public static Slice2<T> Rent<T>(params T[] inputs)
         {
-            return InnerData<T>.Pool.Rent();
+            var slice = InnerData<T>.Pool.Rent();
+            foreach (var item in inputs)
+            {
+                slice.Add(item);
+            }
+
+            return slice;
         }
 
         /// <summary>
@@ -42,7 +48,8 @@ namespace Unicorn.Collections
 
         private static class InnerData<T>
         {
-            public static readonly ObjectPool<Slice2<T>> Pool = new(slice=> slice.IsDisposed = false, slice => slice.Clear());
+            public static readonly ObjectPool<Slice2<T>> Pool = new(slice => slice.IsDisposed = false,
+                slice => slice.Clear());
         }
     }
 }
