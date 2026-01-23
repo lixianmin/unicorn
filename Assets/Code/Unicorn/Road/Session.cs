@@ -300,9 +300,6 @@ namespace Unicorn.Road
                 case PacketKind.RouteKind:
                     _OnReceivedRouteKind(pack);
                     break;
-                case PacketKind.Echo:
-                    _OnReceivedEcho(pack);
-                    break;
                 default:
                     _OnReceivedUserdata(pack);
                     break;
@@ -408,13 +405,7 @@ namespace Unicorn.Road
         {
             return Encoding.UTF8.GetString(chunk.Items.AsSpan(0, chunk.Size));
         }
-
-        private void _OnReceivedEcho(Packet pack)
-        {
-            _SendPacket(pack);
-            Logo.Info($"[_OnReceivedEcho()] kind={pack.Kind} requestId={pack.RequestId}");
-        }
-
+        
         private void _OnReceivedUserdata(Packet pack)
         {
             var kind = pack.Kind;
