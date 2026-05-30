@@ -26,6 +26,15 @@ namespace Unicorn.UI
         /// </summary>
         public abstract class CellBase : Disposable, IHaveTransform
         {
+            /// <summary>
+            /// 返回 cell 的排版高度。返回 &lt;= 0 时使用 cellTransform.sizeDelta.y（固定高度模式）。
+            /// 子类 override 返回 &gt; 0 的值即可启用可变高度。
+            /// </summary>
+            public virtual float GetCellHeight()
+            {
+                return 0f;
+            }
+
             internal void SetArea(Rect area)
             {
                 _area = area;

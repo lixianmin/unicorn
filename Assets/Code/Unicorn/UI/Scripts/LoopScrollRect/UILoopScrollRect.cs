@@ -190,47 +190,54 @@ namespace Unicorn.UI
 
         private void _ResetContentArea()
         {
-            string k;
-            float contentSize;
+            var cellSize = cellTransform.sizeDelta;
+            var dir = _direction.GetDirection();
+            var isVertical = dir is Direction.BottomToTop or Direction.TopToBottom;
 
-            if (getCellHeight != null)
+            float contentSize;
+            string k;
+
+            // 检测是否有任何 cell 用了可变高度
+            var isVariable = false;
+            for (var i = 0; i < _cells.Count; i++)
+            {
+                var cell = _cells[i] as CellBase;
+                if (cell.GetCellHeight() > 0)
+                {
+                    isVariable = true;
+                    break;
+                }
+            }
+
+            if (isVariable)
             {
                 contentSize = 0f;
                 for (var i = 0; i < _cells.Count; i++)
                 {
-                    var h = getCellHeight(i);
-                    contentSize += h > 0 ? h : cellTransform.sizeDelta.y;
+                    var cell = _cells[i] as CellBase;
+                    var h = cell.GetCellHeight();
+                    contentSize += h > 0 ? h : cellSize.y;
                 }
 
-                var dir = _direction.GetDirection();
-                if (dir is Direction.LeftToRight or Direction.RightToLeft)
-                {
-                    _contentTransform.sizeDelta = new Vector2(contentSize, _contentTransform.sizeDelta.y);
-                    k = "totalWidth";
-                }
-                else
-                {
-                    _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, contentSize);
-                    k = "totalHeight";
-                }
+                _contentTransform.sizeDelta = isVertical
+                    ? new Vector2(_contentTransform.sizeDelta.x, contentSize)
+                    : new Vector2(contentSize, _contentTransform.sizeDelta.y);
+                k = isVertical ? "totalHeight" : "totalWidth";
             }
             else
             {
-                var cellSize = cellTransform!.sizeDelta;
                 var nonRankCount = (_cells.Count + _rank - 1) / _rank;
-
-                var dir = _direction.GetDirection();
-                if (dir is Direction.LeftToRight or Direction.RightToLeft)
-                {
-                    contentSize = nonRankCount * cellSize.x;
-                    _contentTransform.sizeDelta = new Vector2(contentSize, _contentTransform.sizeDelta.y);
-                    k = "totalWidth";
-                }
-                else
+                if (isVertical)
                 {
                     contentSize = nonRankCount * cellSize.y;
                     _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, contentSize);
                     k = "totalHeight";
+                }
+                else
+                {
+                    contentSize = nonRankCount * cellSize.x;
+                    _contentTransform.sizeDelta = new Vector2(contentSize, _contentTransform.sizeDelta.y);
+                    k = "totalWidth";
                 }
             }
 
@@ -238,7 +245,7 @@ namespace Unicorn.UI
             {
                 const string method = nameof(_ResetContentArea);
                 Logo.Info(
-                    $"[{method}] {k}={contentSize} dir={_direction.GetDirection()} _cells.Count={_cells.Count} _rank={_rank} cellTransform.sizeDelta={cellTransform.sizeDelta}");
+                    $"[{method}] {k}={contentSize} dir={dir} _cells.Count={_cells.Count} _rank={_rank} cellTransform.sizeDelta={cellSize}");
             }
         }
 
@@ -287,29 +294,26 @@ namespace Unicorn.UI
 
             var sizeDelta = cellTransform.sizeDelta;
             var index = _cells.Count;
+            var cellHeight = cell.GetCellHeight();
 
             Rect area;
-            if (getCellHeight != null)
+            if (cellHeight > 0)
             {
-                var h = getCellHeight(index);
-                var cellHeight = h > 0 ? h : sizeDelta.y;
-
                 // 累加前面所有 cell 的高度得到 Y 偏移
                 var offsetY = 0f;
                 for (var i = 0; i < index; i++)
                 {
-                    var prevH = getCellHeight(i);
+                    var prevCell = _cells[i] as CellBase;
+                    var prevH = prevCell.GetCellHeight();
                     offsetY += prevH > 0 ? prevH : sizeDelta.y;
                 }
 
                 area = new Rect(0, -offsetY - cellHeight, sizeDelta.x, cellHeight);
-                Logo.Info($"[AddCell] VAR-HEIGHT path: index={index} cellHeight={cellHeight} offsetY={offsetY} area.y={area.y} area.height={area.height}");
             }
             else
             {
                 var areaPos = _direction.GetCellAreaPos(index, _rank, sizeDelta);
                 area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
-                Logo.Info($"[AddCell] FIXED path: index={index} area=({area.x},{area.y},{area.width},{area.height})");
             }
 
             cell.SetArea(area);
@@ -489,12 +493,6 @@ namespace Unicorn.UI
         {
             return _cells.Count;
         }
-
-        /// <summary>
-        /// 可选：为每个 cell 返回不同的高度。返回 null 或 &lt;= 0 时使用 cellTransform.sizeDelta.y。
-        /// 用于聊天等可变高度场景。回调参数为 cell 在列表中的 index（0-based）。
-        /// </summary>
-        public Func<int, float> getCellHeight;
 
         public RectTransform cellTransform;
         public Direction direction = Direction.BottomToTop;
