@@ -161,12 +161,13 @@ namespace Unicorn.UI
             }
 
             var anchoredPosition = _contentTransform.anchoredPosition;
-            _isDirty |= _lastAnchoredPosition != anchoredPosition;
+            _viewportDirty |= _lastAnchoredPosition != anchoredPosition;
             _lastAnchoredPosition = anchoredPosition;
 
-            if (_isDirty)
+            if (_contentDirty)
             {
-                _isDirty = false;
+                _contentDirty = false;
+                _viewportDirty = false;
 
                 var oldContentY = _contentTransform.sizeDelta.y;
                 _ResetContentArea();
@@ -174,14 +175,17 @@ namespace Unicorn.UI
 
                 if (variableHeight && !Mathf.Approximately(oldContentY, newContentY))
                 {
-                    Logo.Info($"[Update] contentHeight changed: {oldContentY:F0} → {newContentY:F0}");
                     _RepositionAllVisibleCells();
                 }
+            }
 
+            if (_viewportDirty)
+            {
+                _viewportDirty = false;
                 _RefreshCellsVisibility();
             }
 
-            if (isDebugging && _isDirty)
+            if (isDebugging)
             {
                 Logo.Info($"[Update] contentPos={anchoredPosition.y:F0} sizeDelta={_contentTransform.sizeDelta}"
                           + $" cells={_cells.Count} variableHeight={variableHeight}");
@@ -478,7 +482,8 @@ namespace Unicorn.UI
         // }
         private void _SetDirty()
         {
-            _isDirty = true;
+            _contentDirty = true;
+            _viewportDirty = true;
         }
 
         private RectTransform _SpawnCellTransform(CellBase cell)
@@ -545,7 +550,8 @@ namespace Unicorn.UI
         private DirBase _direction;
         private int _rank; // 选定scroll的方向后, 每一排的cell个数
 
-        private bool _isDirty;
+        private bool _contentDirty;
+        private bool _viewportDirty;
         private Vector2 _lastAnchoredPosition;
 
         private readonly Deque _cells = new();
