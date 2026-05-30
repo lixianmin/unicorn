@@ -47,6 +47,11 @@ namespace Unicorn.UI
             }
 
             _scrollRect = GetComponent<ScrollRect>();
+
+            Logo.Info($"[Awake] scrollRect.vertical={_scrollRect.vertical} horizontal={_scrollRect.horizontal} "
+                      + $"content={_scrollRect.content?.name} viewport={_scrollRect.viewport?.name} "
+                      + $"transform.sizeDelta={((RectTransform)transform).sizeDelta} variableHeight={variableHeight}");
+
             _direction = DirBase.Create(direction);
 
             _InitCellTransform();
@@ -162,8 +167,24 @@ namespace Unicorn.UI
             if (_isDirty)
             {
                 _isDirty = false;
+
+                var oldContentY = _contentTransform.sizeDelta.y;
                 _ResetContentArea();
+                var newContentY = _contentTransform.sizeDelta.y;
+
+                if (variableHeight && !Mathf.Approximately(oldContentY, newContentY))
+                {
+                    Logo.Info($"[Update] contentHeight changed: {oldContentY:F0} → {newContentY:F0}");
+                    _RepositionAllVisibleCells();
+                }
+
                 _RefreshCellsVisibility();
+            }
+
+            if (isDebugging && _isDirty)
+            {
+                Logo.Info($"[Update] contentPos={anchoredPosition.y:F0} sizeDelta={_contentTransform.sizeDelta}"
+                          + $" cells={_cells.Count} variableHeight={variableHeight}");
             }
         }
 
@@ -183,6 +204,25 @@ namespace Unicorn.UI
                     else
                     {
                         _HideCell(cell);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 将所有已可见 cell 的 anchoredPosition 同步到最新 area。
+        /// 仅在 contentSize 变化时由 Update 调用，不在滚动时触发。
+        /// </summary>
+        private void _RepositionAllVisibleCells()
+        {
+            foreach (CellBase cell in _cells)
+            {
+                if (cell.IsVisible())
+                {
+                    var rect = cell.GetTransform();
+                    if (rect != null)
+                    {
+                        rect.anchoredPosition = _direction.GetTransformAnchoredPos(cell);
                     }
                 }
             }
