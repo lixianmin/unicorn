@@ -197,17 +197,18 @@ namespace Unicorn.UI
             float contentSize;
             string k;
 
-            if (isVertical && _rank == 1)
+            if (variableHeight)
             {
                 contentSize = 0f;
                 foreach (CellBase cell in _cells)
                 {
-                    var h = cell.GetCellHeight();
-                    contentSize += h > 0 ? h : cellSize.y;
+                    contentSize += cell.GetCellHeight();
                 }
 
-                _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, contentSize);
-                k = "totalHeight";
+                _contentTransform.sizeDelta = isVertical
+                    ? new Vector2(_contentTransform.sizeDelta.x, contentSize)
+                    : new Vector2(contentSize, _contentTransform.sizeDelta.y);
+                k = isVertical ? "totalHeight" : "totalWidth";
             }
             else
             {
@@ -279,24 +280,17 @@ namespace Unicorn.UI
 
             var sizeDelta = cellTransform.sizeDelta;
             var index = _cells.Count;
-            var isVertical = _direction.GetDirection() is Direction.BottomToTop or Direction.TopToBottom;
 
             Rect area;
-            if (isVertical && _rank == 1)
+            if (variableHeight)
             {
                 var offsetY = 0f;
                 for (var i = 0; i < index; i++)
                 {
-                    var h = ((CellBase)_cells[i]).GetCellHeight();
-                    offsetY += h > 0 ? h : sizeDelta.y;
+                    offsetY += ((CellBase)_cells[i]).GetCellHeight();
                 }
 
                 var cellHeight = cell.GetCellHeight();
-                if (cellHeight <= 0)
-                {
-                    cellHeight = sizeDelta.y;
-                }
-
                 area = new Rect(0, -offsetY - cellHeight, sizeDelta.x, cellHeight);
             }
             else
@@ -486,6 +480,12 @@ namespace Unicorn.UI
         public RectTransform cellTransform;
         public Direction direction = Direction.BottomToTop;
         public bool isDebugging;
+
+        /// <summary>
+        /// 勾选后启用可变高度模式：AddCell 和 _ResetContentArea 将通过 GetCellHeight() 获取每个 cell 的实际排版高度。
+        /// 不勾选时使用固定高度模式，走 grid/rank 公式计算，完全不调用 GetCellHeight()。
+        /// </summary>
+        public bool variableHeight;
 
         private ScrollRect _scrollRect;
         private RectTransform _contentTransform;
