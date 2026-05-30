@@ -190,32 +190,55 @@ namespace Unicorn.UI
 
         private void _ResetContentArea()
         {
-            var cellSize = cellTransform!.sizeDelta;
-            var nonRankCount = (_cells.Count + _rank - 1) / _rank;
-
             string k;
-            float v;
+            float contentSize;
 
-            var dir = _direction.GetDirection();
-            if (dir is Direction.LeftToRight or Direction.RightToLeft)
+            if (getCellHeight != null)
             {
-                v = nonRankCount * cellSize.x;
-                _contentTransform.sizeDelta = new Vector2(v, _contentTransform.sizeDelta.y);
-                k = "totalWidth";
+                contentSize = 0f;
+                for (var i = 0; i < _cells.Count; i++)
+                {
+                    var h = getCellHeight(i);
+                    contentSize += h > 0 ? h : cellTransform.sizeDelta.y;
+                }
+
+                var dir = _direction.GetDirection();
+                if (dir is Direction.LeftToRight or Direction.RightToLeft)
+                {
+                    _contentTransform.sizeDelta = new Vector2(contentSize, _contentTransform.sizeDelta.y);
+                    k = "totalWidth";
+                }
+                else
+                {
+                    _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, contentSize);
+                    k = "totalHeight";
+                }
             }
             else
             {
-                v = nonRankCount * cellSize.y;
-                _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, v);
-                k = "totalHeight";
+                var cellSize = cellTransform!.sizeDelta;
+                var nonRankCount = (_cells.Count + _rank - 1) / _rank;
+
+                var dir = _direction.GetDirection();
+                if (dir is Direction.LeftToRight or Direction.RightToLeft)
+                {
+                    contentSize = nonRankCount * cellSize.x;
+                    _contentTransform.sizeDelta = new Vector2(contentSize, _contentTransform.sizeDelta.y);
+                    k = "totalWidth";
+                }
+                else
+                {
+                    contentSize = nonRankCount * cellSize.y;
+                    _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, contentSize);
+                    k = "totalHeight";
+                }
             }
 
             if (isDebugging)
             {
                 const string method = nameof(_ResetContentArea);
                 Logo.Info(
-                    $"[{method}] {k}={v} dir={dir} _cells.Count={_cells.Count} _rank={_rank} nonRankCount={nonRankCount} cellSize={cellSize}");
-                _PrintDirection(dir);
+                    $"[{method}] {k}={contentSize} dir={_direction.GetDirection()} _cells.Count={_cells.Count} _rank={_rank} cellTransform.sizeDelta={cellTransform.sizeDelta}");
             }
         }
 
@@ -264,10 +287,31 @@ namespace Unicorn.UI
 
             var sizeDelta = cellTransform.sizeDelta;
             var index = _cells.Count;
-            var areaPos = _direction.GetCellAreaPos(index, _rank, sizeDelta);
 
-            // 1. cell就是数据层, 数量会很大. 因此cell使用哪一个transform是不确定的, 是显示的那一刻从pool中挖出来的
-            var area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
+            Rect area;
+            if (getCellHeight != null)
+            {
+                var h = getCellHeight(index);
+                var cellHeight = h > 0 ? h : sizeDelta.y;
+
+                // 累加前面所有 cell 的高度得到 Y 偏移
+                var offsetY = 0f;
+                for (var i = 0; i < index; i++)
+                {
+                    var prevH = getCellHeight(i);
+                    offsetY += prevH > 0 ? prevH : sizeDelta.y;
+                }
+
+                area = new Rect(0, -offsetY - cellHeight, sizeDelta.x, cellHeight);
+                Logo.Info($"[AddCell] VAR-HEIGHT path: index={index} cellHeight={cellHeight} offsetY={offsetY} area.y={area.y} area.height={area.height}");
+            }
+            else
+            {
+                var areaPos = _direction.GetCellAreaPos(index, _rank, sizeDelta);
+                area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
+                Logo.Info($"[AddCell] FIXED path: index={index} area=({area.x},{area.y},{area.width},{area.height})");
+            }
+
             cell.SetArea(area);
 
             var relativeArea = _GetRelativeViewportArea();
@@ -445,6 +489,12 @@ namespace Unicorn.UI
         {
             return _cells.Count;
         }
+
+        /// <summary>
+        /// 可选：为每个 cell 返回不同的高度。返回 null 或 &lt;= 0 时使用 cellTransform.sizeDelta.y。
+        /// 用于聊天等可变高度场景。回调参数为 cell 在列表中的 index（0-based）。
+        /// </summary>
+        public Func<int, float> getCellHeight;
 
         public RectTransform cellTransform;
         public Direction direction = Direction.BottomToTop;
