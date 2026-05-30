@@ -186,6 +186,23 @@ namespace Unicorn.UI
                     }
                 }
             }
+
+            // 可变高度模式下，_ResetContentArea 更新了 cell area，
+            // 但已可见的 cell 的 transform.anchoredPosition 未更新，需要逐个重定位
+            if (variableHeight)
+            {
+                foreach (CellBase cell in _cells)
+                {
+                    if (cell.IsVisible())
+                    {
+                        var rect = cell.GetTransform();
+                        if (rect != null)
+                        {
+                            rect.anchoredPosition = _direction.GetTransformAnchoredPos(cell);
+                        }
+                    }
+                }
+            }
         }
 
         private void _ResetContentArea()
