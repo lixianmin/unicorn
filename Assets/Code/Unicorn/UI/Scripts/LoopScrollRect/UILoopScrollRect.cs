@@ -47,17 +47,17 @@ namespace Unicorn.UI
             }
 
             _scrollRect = GetComponent<ScrollRect>();
-
-            Logo.Info($"[Awake] scrollRect.vertical={_scrollRect.vertical} horizontal={_scrollRect.horizontal} "
-                      + $"content={_scrollRect.content?.name} viewport={_scrollRect.viewport?.name} "
-                      + $"transform.sizeDelta={((RectTransform)transform).sizeDelta} variableHeight={variableHeight}");
-
             _direction = DirBase.Create(direction);
 
             _InitCellTransform();
             _InitViewportAndContent();
             _InitRank();
-            _ResetContentArea();
+
+            _layoutStrategy = variableHeight
+                ? (LayoutStrategy)new VariableLayoutStrategy(this)
+                : new FixedLayoutStrategy(this);
+
+            _layoutStrategy.BuildContentArea();
 
             Logo.Info(
                 $"[Awake] _viewportArea={_viewportArea} _rank={_rank} _contentTransform.sizeDelta={_contentTransform.sizeDelta}");
@@ -83,19 +83,6 @@ namespace Unicorn.UI
             contentTransform.anchorMax = Vector2.up;
             // 设置pivot为 (0, 1), 至少在uishop中需要这样子
             contentTransform.pivot = Vector2.up;
-
-            // var rectAncestor = rectContent.parent as RectTransform;
-            // // 如果是stretch mode, 就取其父节点
-            // while (rectAncestor != null && rectAncestor.anchorMin != rectAncestor.anchorMax)
-            // {
-            //     rectAncestor = rectAncestor.parent as RectTransform;
-            // }
-            //
-            // if (rectAncestor == null)
-            // {
-            //     Logo.Warn($"Can not find rectAncestor, root={_contentTransform.root}");
-            //     return;
-            // }
 
             // 这个取的应该就是UILoopScrollRect所在的节点, 上一版本按stretch mode取, 如果它自己也设置成了stretch, 就取到上面的节点去了
             var rectAncestor = transform as RectTransform;
@@ -148,7 +135,6 @@ namespace Unicorn.UI
         {
             RemoveAll();
             _ClearPool();
-            // Logo.Info("loop scroll rect is destroying");
         }
 
         private void Update()
@@ -169,12 +155,12 @@ namespace Unicorn.UI
                 _contentDirty = false;
 
                 var oldContentY = _contentTransform.sizeDelta.y;
-                _ResetContentArea();
+                _layoutStrategy.BuildContentArea();
                 var newContentY = _contentTransform.sizeDelta.y;
 
-                if (variableHeight && !Mathf.Approximately(oldContentY, newContentY))
+                if (!Mathf.Approximately(oldContentY, newContentY))
                 {
-                    _RepositionAllVisibleCells();
+                    _layoutStrategy.OnContentSizeChanged();
                 }
             }
 
@@ -183,19 +169,11 @@ namespace Unicorn.UI
                 _viewportDirty = false;
                 _RefreshCellsVisibility();
 
-                // _ShowCell 可能在 OnBecameVisible 后标记了 _contentDirty，
-                // 同帧内立即重算 area 避免新露出的 cell 用旧的估算高度定位
-                if (_contentDirty)
+                if (_layoutStrategy.NeedsContentRebuildAfterRefresh())
                 {
                     _contentDirty = false;
-                    _ResetContentArea();
+                    _layoutStrategy.BuildContentArea();
                 }
-            }
-
-            if (isDebugging)
-            {
-                Logo.Info($"[Update] contentPos={anchoredPosition.y:F0} sizeDelta={_contentTransform.sizeDelta}"
-                          + $" cells={_cells.Count} variableHeight={variableHeight}");
             }
         }
 
@@ -220,100 +198,6 @@ namespace Unicorn.UI
             }
         }
 
-        /// <summary>
-        /// 将所有已可见 cell 的 anchoredPosition 同步到最新 area。
-        /// 仅在 contentSize 变化时由 Update 调用，不在滚动时触发。
-        /// </summary>
-        private void _RepositionAllVisibleCells()
-        {
-            foreach (CellBase cell in _cells)
-            {
-                if (cell.IsVisible())
-                {
-                    var rect = cell.GetTransform();
-                    if (rect != null)
-                    {
-                        rect.anchoredPosition = _direction.GetTransformAnchoredPos(cell);
-                    }
-                }
-            }
-        }
-
-        private void _ResetContentArea()
-        {
-            var cellSize = cellTransform.sizeDelta;
-            var dir = _direction.GetDirection();
-            var isVertical = dir is Direction.BottomToTop or Direction.TopToBottom;
-
-            float contentSize;
-            string k;
-
-            if (variableHeight)
-            {
-                contentSize = 0f;
-                var offsetY = 0f;
-                foreach (CellBase cell in _cells)
-                {
-                    var h = cell.GetCellHeight();
-                    var cellHeight = h > 0 ? h : cellSize.y;
-
-                    cell.SetArea(new Rect(0, -offsetY - cellHeight, cellSize.x, cellHeight));
-                    offsetY += cellHeight;
-                    contentSize += cellHeight;
-                }
-
-                _contentTransform.sizeDelta = isVertical
-                    ? new Vector2(_contentTransform.sizeDelta.x, contentSize)
-                    : new Vector2(contentSize, _contentTransform.sizeDelta.y);
-                k = isVertical ? "totalHeight" : "totalWidth";
-            }
-            else
-            {
-                var nonRankCount = (_cells.Count + _rank - 1) / _rank;
-                if (isVertical)
-                {
-                    contentSize = nonRankCount * cellSize.y;
-                    _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, contentSize);
-                    k = "totalHeight";
-                }
-                else
-                {
-                    contentSize = nonRankCount * cellSize.x;
-                    _contentTransform.sizeDelta = new Vector2(contentSize, _contentTransform.sizeDelta.y);
-                    k = "totalWidth";
-                }
-            }
-
-            if (isDebugging)
-            {
-                const string method = nameof(_ResetContentArea);
-                Logo.Info(
-                    $"[{method}] {k}={contentSize} dir={dir} _cells.Count={_cells.Count} _rank={_rank} cellTransform.sizeDelta={cellSize}");
-            }
-        }
-
-        private static void _PrintDirection(Direction direction)
-        {
-            const string method = nameof(_PrintDirection);
-            switch (direction)
-            {
-                case Direction.BottomToTop:
-                    Logo.Info($"[{method}] BottomToTop => 向下拉scrollbar的时候, 内容从bottom到top走");
-                    break;
-                case Direction.TopToBottom:
-                    Logo.Info($"[{method}] TopToBottom => 向下拉scrollbar的时候, 内容从top到bottom走");
-                    break;
-                case Direction.LeftToRight:
-                    Logo.Info($"[{method}] LeftToRight => 向右拉scrollbar的时候, 内容从left到right走");
-                    break;
-                case Direction.RightToLeft:
-                    Logo.Info($"[{method}] RightToLeft => 向右拉scrollbar的时候, 内容从right到left走");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-        }
-
         public void AddCell(CellBase cell)
         {
             if (cell == null)
@@ -322,7 +206,6 @@ namespace Unicorn.UI
             }
 
             const string method = nameof(AddCell);
-            // widget看起来可以是null
             if (cellTransform == null)
             {
                 Logo.Warn($"[{method}] cellTransform=null");
@@ -335,32 +218,8 @@ namespace Unicorn.UI
                 return;
             }
 
-            var sizeDelta = cellTransform.sizeDelta;
             var index = _cells.Count;
-
-            Rect area;
-            if (variableHeight)
-            {
-                var offsetY = 0f;
-                for (var i = 0; i < index; i++)
-                {
-                    var h = ((CellBase)_cells[i]).GetCellHeight();
-                    offsetY += h > 0 ? h : sizeDelta.y;
-                }
-
-                var cellHeight = cell.GetCellHeight();
-                if (cellHeight <= 0)
-                {
-                    cellHeight = sizeDelta.y;
-                }
-
-                area = new Rect(0, -offsetY - cellHeight, sizeDelta.x, cellHeight);
-            }
-            else
-            {
-                var areaPos = _direction.GetCellAreaPos(index, _rank, sizeDelta);
-                area = new Rect(areaPos.x, areaPos.y, sizeDelta.x, sizeDelta.y);
-            }
+            var area = _layoutStrategy.ComputeCellArea(index, cell);
 
             cell.SetArea(area);
 
@@ -389,7 +248,6 @@ namespace Unicorn.UI
             }
 
             var lastIndex = count - 1;
-            // 所有cell的transform均匀向前移动一格
             for (var i = lastIndex; i > index; i--)
             {
                 var back = _cells[i] as CellBase;
@@ -445,12 +303,7 @@ namespace Unicorn.UI
                 cell.SetTransform(rect);
                 cell.InnerOnVisibleChanged();
 
-                // 可变高度 cell 的 OnBecameVisible 可能更新了实际高度（_cachedHeight），
-                // 标记 content 需要重算以同步 area
-                if (variableHeight)
-                {
-                    _contentDirty = true;
-                }
+                _layoutStrategy.OnCellShown();
             }
         }
 
@@ -459,41 +312,14 @@ namespace Unicorn.UI
             if (cell != null && cell.IsVisible())
             {
                 cell.SetVisible(false);
-                // 确保所有的OnVisibleChanged事件中, Transform都是可用的, 方便client设置一些东西
                 cell.InnerOnVisibleChanged();
 
-                // 逻辑可保证只有visible的cell才有transform, 才需要回收
                 var rect = cell.GetTransform();
                 cell.SetTransform(null);
                 _RecycleCellTransform(rect);
             }
         }
 
-        /// <summary>
-        /// 重置anchoredPosition到初始化的位置
-        /// </summary>
-        // private void _ResetAnchoredPosition()
-        // {
-        //     _ResetContentArea();
-        //     var dir = _direction.GetDirection();
-        //     switch (dir)
-        //     {
-        //         case Direction.LeftToRight:
-        //             _contentTransform.anchoredPosition = new Vector2(0, 0);
-        //             break;
-        //         case Direction.RightToLeft:
-        //             var posX = -_contentTransform.sizeDelta.x + _viewportArea.width;
-        //             _contentTransform.anchoredPosition = new Vector2(posX, 0);
-        //             break;
-        //         case Direction.BottomToTop:
-        //             _contentTransform.anchoredPosition = new Vector2(0, 0);
-        //             break;
-        //         case Direction.TopToBottom:
-        //             var posY = _contentTransform.sizeDelta.y - _viewportArea.height;
-        //             _contentTransform.anchoredPosition = new Vector2(0, posY);
-        //             break;
-        //     }
-        // }
         private void _SetDirty()
         {
             _contentDirty = true;
@@ -518,7 +344,6 @@ namespace Unicorn.UI
         private void _OnSpawnCellTransform(RectTransform rect, CellBase cell)
         {
             rect!.anchoredPosition = _direction.GetTransformAnchoredPos(cell);
-            // Logo.Info($"anchoredPosition={trans.anchoredPosition}");
             rect.gameObject.SetActive(true);
         }
 
@@ -553,8 +378,8 @@ namespace Unicorn.UI
         public bool isDebugging;
 
         /// <summary>
-        /// 勾选后启用可变高度模式：AddCell 和 _ResetContentArea 将通过 GetCellHeight() 获取每个 cell 的实际排版高度。
-        /// 不勾选时使用固定高度模式，走 grid/rank 公式计算，完全不调用 GetCellHeight()。
+        /// 勾选后启用可变高度模式：使用 VariableLayoutStrategy，通过 CellBase.GetCellHeight() 获取每个 cell 的实际排版高度。
+        /// 不勾选时使用 FixedLayoutStrategy，沿用固定高度 grid/rank 公式。
         /// </summary>
         public bool variableHeight;
 
@@ -563,6 +388,8 @@ namespace Unicorn.UI
         private Rect _viewportArea;
         private DirBase _direction;
         private int _rank; // 选定scroll的方向后, 每一排的cell个数
+
+        private LayoutStrategy _layoutStrategy;
 
         private bool _contentDirty;
         private bool _viewportDirty;
