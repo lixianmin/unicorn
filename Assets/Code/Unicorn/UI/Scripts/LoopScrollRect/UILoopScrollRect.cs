@@ -202,7 +202,8 @@ namespace Unicorn.UI
                 contentSize = 0f;
                 foreach (CellBase cell in _cells)
                 {
-                    contentSize += cell.GetCellHeight();
+                    var h = cell.GetCellHeight();
+                    contentSize += h > 0 ? h : cellSize.y;
                 }
 
                 _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, contentSize);
@@ -286,10 +287,16 @@ namespace Unicorn.UI
                 var offsetY = 0f;
                 for (var i = 0; i < index; i++)
                 {
-                    offsetY += ((CellBase)_cells[i]).GetCellHeight();
+                    var h = ((CellBase)_cells[i]).GetCellHeight();
+                    offsetY += h > 0 ? h : sizeDelta.y;
                 }
 
                 var cellHeight = cell.GetCellHeight();
+                if (cellHeight <= 0)
+                {
+                    cellHeight = sizeDelta.y;
+                }
+
                 area = new Rect(0, -offsetY - cellHeight, sizeDelta.x, cellHeight);
             }
             else
