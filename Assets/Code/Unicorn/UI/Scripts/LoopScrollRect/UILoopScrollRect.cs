@@ -197,32 +197,16 @@ namespace Unicorn.UI
             float contentSize;
             string k;
 
-            // 检测是否有任何 cell 用了可变高度
-            var isVariable = false;
-            for (var i = 0; i < _cells.Count; i++)
-            {
-                var cell = _cells[i] as CellBase;
-                if (cell.GetCellHeight() > 0)
-                {
-                    isVariable = true;
-                    break;
-                }
-            }
-
-            if (isVariable)
+            if (isVertical && _rank == 1)
             {
                 contentSize = 0f;
-                for (var i = 0; i < _cells.Count; i++)
+                foreach (CellBase cell in _cells)
                 {
-                    var cell = _cells[i] as CellBase;
-                    var h = cell.GetCellHeight();
-                    contentSize += h > 0 ? h : cellSize.y;
+                    contentSize += cell.GetCellHeight();
                 }
 
-                _contentTransform.sizeDelta = isVertical
-                    ? new Vector2(_contentTransform.sizeDelta.x, contentSize)
-                    : new Vector2(contentSize, _contentTransform.sizeDelta.y);
-                k = isVertical ? "totalHeight" : "totalWidth";
+                _contentTransform.sizeDelta = new Vector2(_contentTransform.sizeDelta.x, contentSize);
+                k = "totalHeight";
             }
             else
             {
@@ -294,20 +278,18 @@ namespace Unicorn.UI
 
             var sizeDelta = cellTransform.sizeDelta;
             var index = _cells.Count;
-            var cellHeight = cell.GetCellHeight();
+            var isVertical = _direction.GetDirection() is Direction.BottomToTop or Direction.TopToBottom;
 
             Rect area;
-            if (cellHeight > 0)
+            if (isVertical && _rank == 1)
             {
-                // 累加前面所有 cell 的高度得到 Y 偏移
                 var offsetY = 0f;
                 for (var i = 0; i < index; i++)
                 {
-                    var prevCell = _cells[i] as CellBase;
-                    var prevH = prevCell.GetCellHeight();
-                    offsetY += prevH > 0 ? prevH : sizeDelta.y;
+                    offsetY += ((CellBase)_cells[i]).GetCellHeight();
                 }
 
+                var cellHeight = cell.GetCellHeight();
                 area = new Rect(0, -offsetY - cellHeight, sizeDelta.x, cellHeight);
             }
             else
