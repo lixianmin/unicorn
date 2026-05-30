@@ -173,6 +173,7 @@ namespace Unicorn.UI
                 {
                     _contentDirty = false;
                     _layoutStrategy.BuildContentArea();
+                    _layoutStrategy.OnContentSizeChanged();
                 }
             }
         }
