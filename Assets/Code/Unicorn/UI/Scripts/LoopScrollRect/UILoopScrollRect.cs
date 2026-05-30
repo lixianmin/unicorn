@@ -167,7 +167,6 @@ namespace Unicorn.UI
             if (_contentDirty)
             {
                 _contentDirty = false;
-                _viewportDirty = false;
 
                 var oldContentY = _contentTransform.sizeDelta.y;
                 _ResetContentArea();
@@ -183,6 +182,14 @@ namespace Unicorn.UI
             {
                 _viewportDirty = false;
                 _RefreshCellsVisibility();
+
+                // _ShowCell 可能在 OnBecameVisible 后标记了 _contentDirty，
+                // 同帧内立即重算 area 避免新露出的 cell 用旧的估算高度定位
+                if (_contentDirty)
+                {
+                    _contentDirty = false;
+                    _ResetContentArea();
+                }
             }
 
             if (isDebugging)
@@ -437,6 +444,13 @@ namespace Unicorn.UI
                 var rect = _SpawnCellTransform(cell);
                 cell.SetTransform(rect);
                 cell.InnerOnVisibleChanged();
+
+                // 可变高度 cell 的 OnBecameVisible 可能更新了实际高度（_cachedHeight），
+                // 标记 content 需要重算以同步 area
+                if (variableHeight)
+                {
+                    _contentDirty = true;
+                }
             }
         }
 
