@@ -138,13 +138,14 @@ namespace Unicorn.UI.Internal
 
         public void OpenWindow()
         {
+            openingFrame = Time.frameCount;
             _state.OnOpenWindow(this);
 
-            var flags = (FetusFlags)master.GetWindowFlags();
+            var flags = (FetusFlags) master.GetWindowFlags();
             AddFlag(flags);
             // RemoveFlag(FetusFlags.Disposed);
 
-            // 如果当前状态是NoneState，则立即推动到LoadState, 否则UI会延迟1帧后才加载, 对立马显示loading动画有影响
+            // 如果当前状态是 NoneState，则立即推动到 LoadState, 否则 UI 会延迟1帧后才加载, 对立马显示 loading 动画有影响
             if (_state is NoneState)
             {
                 ExpensiveUpdate();
@@ -157,17 +158,17 @@ namespace Unicorn.UI.Internal
             _state.OnCloseWindow(this);
         }
 
-        public void SetActive(bool isActive)
-        {
-            if (_transform is not null)
-            {
-                var go = _transform.gameObject;
-                if (null != go && go.activeSelf != isActive)
-                {
-                    go.SetActive(isActive);
-                }
-            }
-        }
+        // public void SetActive(bool isActive)
+        // {
+        //     if (_transform is not null)
+        //     {
+        //         var go = _transform.gameObject;
+        //         if (null != go && go.activeSelf != isActive)
+        //         {
+        //             go.SetActive(isActive);
+        //         }
+        //     }
+        // }
 
         internal UIStateBase GetState() => _state;
 
@@ -210,6 +211,7 @@ namespace Unicorn.UI.Internal
         // public StateKind GetNextStateKind() => _nextKind;
 
         internal readonly UIWindowBase master;
+        internal int openingFrame; // window.InitXXX() 系列方法，必须在 OnLoaded 系列事件之前有机会执行，因此只能强制后者必须延迟一帧
 
         private UIStateBase _state = UIStateBase.Create(StateKind.None);
         private StateKind _lastKind = StateKind.None;

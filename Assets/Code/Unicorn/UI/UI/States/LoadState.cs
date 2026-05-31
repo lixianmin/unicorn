@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 *********************************************************************/
 
+using System.Collections;
 using Unicorn.UI.Internal;
 using Unicorn.Web;
 using UnityEngine;
@@ -37,15 +38,15 @@ namespace Unicorn.UI.States
             var uiRoot = UIManager.It.GetUIRoot();
             var child = uiRoot.Find(assetPath);
 
-            // 如果在UIRoot下找到名为assetPath的节点，则直接使用该节点；否则当作UI资源的路径从addressable加载
-            // 通常3d界面可能是内置到场景中的
+            // 如果在 UIRoot 下找到名为 assetPath 的节点，则直接使用该节点；否则当作UI资源的路径从 YooAsset 加载
+            // 通常 3d 界面可能是内置到场景中的
             if (child != null)
             {
-                _OnLoadGameObject(fetus, child);
+                _CheckOnLoadGameObject(fetus, child);
             }
             else if (fetus.GetTransform() is not null)
             {
-                _OnLoadGameObject(fetus, fetus.GetTransform());
+                _CheckOnLoadGameObject(fetus, fetus.GetTransform());
             }
             else
             {
@@ -136,7 +137,7 @@ namespace Unicorn.UI.States
                     if (goCloned is not null)
                     {
                         goCloned.name = mainAsset.name;
-                        _OnLoadGameObject(fetus, goCloned.transform);
+                        _CheckOnLoadGameObject(fetus, goCloned.transform);
                     }
                     else
                     {
@@ -152,6 +153,25 @@ namespace Unicorn.UI.States
             });
         }
 
+        private void _CheckOnLoadGameObject(WindowFetus fetus, Transform transform)
+        {
+            if (Time.frameCount > fetus.openingFrame)
+            {
+                _OnLoadGameObject(fetus, transform);
+            }
+            else
+            {
+                // window.InitXXX() 系列方法，必须在 OnLoaded 系列事件之前有机会执行，因此只能强制后者必须延迟一帧
+                CoroutineManager.It.StartCoroutine(_CoLoadGameObject(fetus, transform));
+            }
+        }
+
+        private IEnumerator _CoLoadGameObject(WindowFetus fetus, Transform transform)
+        {
+            yield return null;
+            _OnLoadGameObject(fetus, transform);
+        }
+        
         private void _OnLoadGameObject(WindowFetus fetus, Transform transform)
         {
             if (fetus.IsDebugging())
@@ -160,7 +180,7 @@ namespace Unicorn.UI.States
             }
 
             fetus.OnLoadGameObject(transform);
-            // 因为Loaded这个flag代表gameObject可用性, 因此需要在InnerOnLoaded()事件之前加入
+            // 因为 Loaded 这个 flag 代表 gameObject 可用性, 因此需要在 InnerOnLoaded() 事件之前加入
             fetus.AddFlag(FetusFlags.Loaded);
 
             var master = fetus.master;
@@ -171,6 +191,6 @@ namespace Unicorn.UI.States
             fetus.ChangeState(next);
         }
 
-        private DelayedAction _delayedAction; // 遇到了CloseWindow()的请求
+        private DelayedAction _delayedAction; // 遇到了 CloseWindow() 的请求
     }
 }
