@@ -25,7 +25,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 *********************************************************************/
 
-using System;
 using Unicorn.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -53,10 +52,7 @@ namespace Unicorn.UI
             _InitViewportAndContent();
             _InitRank();
 
-            _layoutStrategy = variableHeight
-                ? (LayoutStrategy)new VariableLayoutStrategy(this)
-                : new FixedLayoutStrategy(this);
-
+            _layoutStrategy = dynamicHeight ? new DynamicLayoutStrategy(this) : new StaticLayoutStrategy(this);
             _layoutStrategy.BuildContentArea();
 
             Logo.Info(
@@ -84,20 +80,28 @@ namespace Unicorn.UI
             // 设置pivot为 (0, 1), 至少在uishop中需要这样子
             contentTransform.pivot = Vector2.up;
 
-            // 这个取的应该就是UILoopScrollRect所在的节点, 上一版本按stretch mode取, 如果它自己也设置成了stretch, 就取到上面的节点去了
-            var rectAncestor = transform as RectTransform;
-            // copy其viewport的sizeDelta到content
-            var size = rectAncestor!.sizeDelta;
-            if (size.x <= 0 || size.y <= 0)
+            // selfSize = UILoopScrollRect 节点的实际尺寸，即用户可见区域
+            var self = transform as RectTransform;
+            var selfSize = self!.sizeDelta;
+
+            // vpSize = ScrollRect viewport 的 rect 尺寸，ScrollRect 用此计算滚动范围
+            var vp = _scrollRect.viewport != null ? _scrollRect.viewport : self;
+            var vpSize = new Vector2(vp.rect.width, vp.rect.height);
+
+            if (selfSize.x <= 0 || selfSize.y <= 0)
             {
-                Logo.Warn($"[_InitViewportAndContent] size={size}, {name}不能是streth mode");
+                Logo.Warn($"[_InitViewportAndContent] selfSize={selfSize}, {name}不能是stretch mode");
                 return;
             }
 
-            contentTransform.sizeDelta = size;
+            // content 初始大小设为 viewport 大小，确保 ScrollRect 的 bounds 计算正确
+            contentTransform.sizeDelta = vpSize;
 
-            // 初始化_viewportArea
-            _viewportArea = new Rect(0, -size.y, size.x, size.y);
+            // _viewportArea 用 selfSize 管理 cell 可见性（实际可见区域）
+            _viewportArea = new Rect(0, -selfSize.y, selfSize.x, selfSize.y);
+
+            // 记录额外的 padding = viewport 超出可见区域的部分
+            _extraPaddingY = vpSize.y - selfSize.y;
         }
 
         private void _InitRank()
@@ -376,17 +380,19 @@ namespace Unicorn.UI
 
         public RectTransform cellTransform;
         public Direction direction = Direction.BottomToTop;
-        public bool isDebugging;
 
         /// <summary>
-        /// 勾选后启用可变高度模式：使用 VariableLayoutStrategy，通过 CellBase.GetCellHeight() 获取每个 cell 的实际排版高度。
-        /// 不勾选时使用 FixedLayoutStrategy，沿用固定高度 grid/rank 公式。
+        /// 勾选后启用可变高度模式：使用 DynamicLayoutStrategy，通过 CellBase.GetCellHeight() 获取每个 cell 的实际排版高度。
+        /// 不勾选时使用 StaticLayoutStrategy，沿用固定高度 grid/rank 公式。
         /// </summary>
-        public bool variableHeight;
+        public bool dynamicHeight;
+        
+        public bool isDebugging;
 
         private ScrollRect _scrollRect;
         private RectTransform _contentTransform;
         private Rect _viewportArea;
+        private float _extraPaddingY;
         private DirBase _direction;
         private int _rank; // 选定scroll的方向后, 每一排的cell个数
 

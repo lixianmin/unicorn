@@ -54,9 +54,9 @@ namespace Unicorn.UI
         }
 
         /// <summary>固定高度策略：沿用原始的 rank * cellSize 公式，完全不调用 GetCellHeight()</summary>
-        internal sealed class FixedLayoutStrategy : LayoutStrategy
+        internal sealed class StaticLayoutStrategy : LayoutStrategy
         {
-            public FixedLayoutStrategy(UILoopScrollRect owner) : base(owner)
+            public StaticLayoutStrategy(UILoopScrollRect owner) : base(owner)
             {
             }
 
@@ -79,7 +79,7 @@ namespace Unicorn.UI
                 if (isVertical)
                 {
                     contentSize = nonRankCount * cellSize.y;
-                    _owner._contentTransform.sizeDelta = new Vector2(_owner._contentTransform.sizeDelta.x, contentSize);
+                    _owner._contentTransform.sizeDelta = new Vector2(_owner._contentTransform.sizeDelta.x, contentSize + _owner._extraPaddingY);
                     k = "totalHeight";
                 }
                 else
@@ -102,9 +102,9 @@ namespace Unicorn.UI
         /// 可变高度策略：通过 CellBase.GetCellHeight() 获取每个 cell 的实际排版高度。
         /// AddCell 和 BuildContentArea 均按实际高度累积计算，不使用 rank 公式。
         /// </summary>
-        internal sealed class VariableLayoutStrategy : LayoutStrategy
+        internal sealed class DynamicLayoutStrategy : LayoutStrategy
         {
-            public VariableLayoutStrategy(UILoopScrollRect owner) : base(owner)
+            public DynamicLayoutStrategy(UILoopScrollRect owner) : base(owner)
             {
             }
 
@@ -146,7 +146,7 @@ namespace Unicorn.UI
                 }
 
                 _owner._contentTransform.sizeDelta = isVertical
-                    ? new Vector2(_owner._contentTransform.sizeDelta.x, contentSize)
+                    ? new Vector2(_owner._contentTransform.sizeDelta.x, contentSize + _owner._extraPaddingY)
                     : new Vector2(contentSize, _owner._contentTransform.sizeDelta.y);
 
                 if (_owner.isDebugging)
